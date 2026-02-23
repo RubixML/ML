@@ -1,36 +1,37 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers\Multiclass;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
-use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softmax\Softmax;
+use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function count;
-
 /**
- * Binary
+ * Multiclass
  *
- * This Binary layer consists of a single sigmoid neuron capable of distinguishing between
- * two discrete classes.
+ * The Multiclass output layer gives a joint probability estimate of a multiclass classification
+ * problem using the Softmax activation function.
  *
  * @internal
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Binary implements Output
+class Multiclass implements Output
 {
     /**
-     * The labels of either of the possible outcomes.
+     * The unique class labels.
      *
-     * @var float[]
+     * @var string[]
      */
     protected array $classes = [
         //
@@ -44,25 +45,25 @@ class Binary implements Output
     protected ClassificationLoss $costFn;
 
     /**
-     * The sigmoid activation function.
+     * The softmax activation function.
      *
-     * @var Sigmoid
+     * @var Softmax
      */
-    protected Sigmoid $sigmoid;
+    protected Softmax $softmax;
 
     /**
      * The memorized input matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $input = null;
+    protected ?NDArray $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $output = null;
+    protected ?NDArray $output = null;
 
     /**
      * @param string[] $classes
@@ -73,19 +74,15 @@ class Binary implements Output
     {
         $classes = array_values(array_unique($classes));
 
-        if (count($classes) !== 2) {
+        if (count($classes) < 2) {
             throw new InvalidArgumentException('Number of classes'
-                . ' must be 2, ' . count($classes) . ' given.');
+                . ' must be greater than 1, ' . count($classes)
+                . ' given.');
         }
-
-        $classes = [
-            $classes[0] => 0.0,
-            $classes[1] => 1.0,
-        ];
 
         $this->classes = $classes;
         $this->costFn = $costFn ?? new CrossEntropy();
-        $this->sigmoid = new Sigmoid();
+        $this->softmax = new Softmax();
     }
 
     /**
@@ -95,7 +92,7 @@ class Binary implements Output
      */
     public function width() : int
     {
-        return 1;
+        return max(1, count($this->classes));
     }
 
     /**
@@ -108,23 +105,26 @@ class Binary implements Output
      */
     public function initialize(int $fanIn) : int
     {
-        if ($fanIn !== 1) {
+        $fanOut = count($this->classes);
+
+        if ($fanIn !== $fanOut) {
             throw new InvalidArgumentException('Fan in must be'
-                . " equal to 1, $fanIn given.");
+                . " equal to fan out, $fanOut expected but"
+                . " $fanIn given.");
         }
 
-        return 1;
+        return $fanOut;
     }
 
     /**
      * Compute a forward pass through the layer.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
-        $output = $this->sigmoid->activate($input);
+        $output = $this->softmax->activate($input);
 
         $this->input = $input;
         $this->output = $output;
@@ -135,12 +135,13 @@ class Binary implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @throws RuntimeException
+     * @return NDArray
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
-        return $this->sigmoid->activate($input);
+        return $this->softmax->activate($input);
     }
 
     /**
@@ -149,7 +150,7 @@ class Binary implements Output
      * @param string[] $labels
      * @param Optimizer $optimizer
      * @throws RuntimeException
-     * @return (Deferred|float)[]
+     * @return array
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
@@ -161,10 +162,16 @@ class Binary implements Output
         $expected = [];
 
         foreach ($labels as $label) {
-            $expected[] = $this->classes[$label];
+            $dist = [];
+
+            foreach ($this->classes as $class) {
+                $dist[] = $class == $label ? 1.0 : 0.0;
+            }
+
+            $expected[] = $dist;
         }
 
-        $expected = Matrix::quick([$expected]);
+        $expected = NumPower::array($expected);
 
         $input = $this->input;
         $output = $this->output;
@@ -181,25 +188,31 @@ class Binary implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @param Matrix $expected
-     * @return Matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @param NDArray $expected
+     * @return NDArray
      */
-    public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
+    public function gradient(NDArray $input, NDArray $output, NDArray $expected) : NDArray
     {
+        $n = array_product($output->shape());
+
         if ($this->costFn instanceof CrossEntropy) {
-            // Optimization specific to (sigmoid +) binary cross entropy:
-            // the loss derivative cancels with the sigmoid derivative, so dZ = (output - expected).
-            return $output->subtract($expected)
-                ->divide($output->n());
+            return NumPower::divide(
+                NumPower::subtract($output, $expected),
+                $n
+            );
         }
 
-        $dLoss = $this->costFn->differentiate($output, $expected)
-            ->divide($output->n());
+        $dLoss = NumPower::divide(
+            $this->costFn->differentiate($output, $expected),
+            $n
+        );
 
-        return $this->sigmoid->differentiate($input, $output)
-            ->multiply($dLoss);
+        return NumPower::multiply(
+            $this->softmax->differentiate($output),
+            $dLoss
+        );
     }
 
     /**
@@ -211,6 +224,6 @@ class Binary implements Output
      */
     public function __toString() : string
     {
-        return "Binary (cost function: {$this->costFn})";
+        return "Multiclass (cost function: {$this->costFn})";
     }
 }
