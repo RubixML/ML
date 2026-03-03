@@ -189,6 +189,8 @@ class Binary implements Output
     public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
     {
         if ($this->costFn instanceof CrossEntropy) {
+            // Optimization specific to (sigmoid +) binary cross entropy:
+            // the loss derivative cancels with the sigmoid derivative, so dZ = (output - expected).
             return $output->subtract($expected)
                 ->divide($output->n());
         }
