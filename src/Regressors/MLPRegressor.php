@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Regressors;
 
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -356,7 +357,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier2());
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Continuous($this->costFn),

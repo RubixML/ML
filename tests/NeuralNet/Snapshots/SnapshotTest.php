@@ -7,11 +7,11 @@ namespace Rubix\ML\Tests\NeuralNet\Snapshots;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Snapshots\Snapshot;
-use Rubix\ML\NeuralNet\Networks\Network;
-use Rubix\ML\NeuralNet\Layers\Dense\Dense;
-use Rubix\ML\NeuralNet\Layers\Binary\Binary;
 use Rubix\ML\NeuralNet\Layers\Activation\Activation;
+use Rubix\ML\NeuralNet\Layers\Binary\Binary;
+use Rubix\ML\NeuralNet\Networks\FeedForward\FeedForward;
+use Rubix\ML\NeuralNet\Snapshots\Snapshot;
+use Rubix\ML\NeuralNet\Layers\Dense\Dense;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
@@ -24,7 +24,7 @@ class SnapshotTest extends TestCase
 {
     protected Snapshot $snapshot;
 
-    protected Network $network;
+    protected FeedForward $network;
 
     public function testConstructorThrowsWithWrongParameters() : void
     {
@@ -39,7 +39,7 @@ class SnapshotTest extends TestCase
 
     public function testTake() : void
     {
-        $network = new Network(
+        $network = new FeedForward(
             input: new Placeholder1D(1),
             hidden: [
                 new Dense(10),

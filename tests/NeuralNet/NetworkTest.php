@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\NeuralNet;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Network;
@@ -63,7 +64,7 @@ class NetworkTest extends TestCase
             costFn: new CrossEntropy()
         );
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             input: $this->input,
             hidden: $this->hidden,
             output: $this->output,

@@ -8,6 +8,8 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - Remove Network interface
     - RBX Serializer only tracks major library version number
+    - Convert NeuralNet classes to use NDArray instead of Matrix
+    - Turn back Network interface
     
 - 2.5.0
     - Added Vantage Point Spatial tree

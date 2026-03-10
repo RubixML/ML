@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet;
+namespace Rubix\ML\NeuralNet\Networks\Base\Contracts;
 
 use Traversable;
 
@@ -19,7 +19,7 @@ interface Network
     /**
      * Return the layers of the network.
      *
-     * @return Traversable<Layers\Layer>
+     * @return Traversable
      */
     public function layers() : Traversable;
 }

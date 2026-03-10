@@ -1,22 +1,21 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\FeedForwards;
+namespace Rubix\ML\NeuralNet\Networks\FeedForward;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Encoding;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Layer;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
-use Rubix\ML\Encoding;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Networks\Network;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
 use Rubix\ML\NeuralNet\Optimizers\Base\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Traversable;
-
 use function array_reverse;
 
 /**
@@ -32,7 +31,7 @@ use function array_reverse;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class FeedForward extends Network
+class FeedForward implements Network
 {
     /**
      * The input layer to the network.
@@ -193,6 +192,40 @@ class FeedForward extends Network
         }
 
         return NumPower::transpose($input, [1, 0]);
+    }
+
+    public function inferNew(Dataset $dataset) : NDArray
+    {
+        if ($dataset->empty()) {
+            return NumPower::array([]);
+        }
+
+        $normalizedSamples = $this->normalizeSamples($dataset->samples());
+        $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
+
+        foreach ($this->layers() as $layer) {
+            $input = $layer->infer($input);
+        }
+
+        $shape = $input->shape();
+
+        if (count($shape) === 1) {
+            $input = NumPower::reshape($input, [1, $shape[0]]);
+        }
+
+        return NumPower::transpose($input, [1, 0]);
+    }
+
+    /**
+     * Normalize samples to a strict list-of-lists with sequential numeric keys.
+     * NumPower's C extension expects packed arrays and can error or behave unpredictably
+     * when given arrays with non-sequential keys (e.g. after randomize/take/fold operations).
+     * @param array $samples
+     * @return array
+     */
+    private function normalizeSamples(array $samples) : array
+    {
+        return array_map('array_values', array_values($samples));
     }
 
     /**

@@ -2,45 +2,45 @@
 
 namespace Rubix\ML\Regressors\MLPRegressor;
 
-use Rubix\ML\Online;
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use Generator;
+use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Params;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\NeuralNet\Snapshots\Snapshot;
-use Rubix\ML\NeuralNet\Networks\Network;
-use Rubix\ML\NeuralNet\Layers\Dense\Dense;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
-use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
-use Rubix\ML\NeuralNet\Layers\Continuous\Continuous;
-use Rubix\ML\CrossValidation\Metrics\RMSE;
-use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
-use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier\XavierUniform;
-use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
-use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
-use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
-
-use function is_nan;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Learner;
+use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
+use Rubix\ML\NeuralNet\Initializers\Xavier\XavierUniform;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
+use Rubix\ML\NeuralNet\Layers\Continuous\Continuous;
+use Rubix\ML\NeuralNet\Layers\Dense\Dense;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
+use Rubix\ML\NeuralNet\Networks\FeedForward\FeedForward;
+use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Snapshots\Snapshot;
+use Rubix\ML\Online;
+use Rubix\ML\Persistable;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\DatasetIsLabeled;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Verbose;
 use function count;
 use function get_object_vars;
+use function is_nan;
 use function number_format;
 
 /**
@@ -357,7 +357,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers[] = new Dense(1, 0.0, true, new XavierUniform());
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Continuous($this->costFn),
