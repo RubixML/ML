@@ -73,6 +73,13 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
+     * Whether to normalize the samples.
+     *
+     * @var bool
+     */
+    private bool $normalizeSamples;
+
+    /**
      * @param Input $input
      * @param Hidden[] $hidden
      * @param Output $output
@@ -89,6 +96,8 @@ class FeedForward implements Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
+
+        $this->normalizeSamples = false;
     }
 
     /**
@@ -185,32 +194,29 @@ class FeedForward implements Network
      */
     public function infer(Dataset $dataset) : NDArray
     {
-        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        if ($this->normalizeSamples) {
+            if ($dataset->empty()) {
+                return NumPower::array([]);
+            }
 
-        foreach ($this->layers() as $layer) {
-            $input = $layer->infer($input);
-        }
+            $normalizedSamples = $this->normalizeSamples($dataset->samples());
+            $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
 
-        return NumPower::transpose($input, [1, 0]);
-    }
+            foreach ($this->layers() as $layer) {
+                $input = $layer->infer($input);
+            }
 
-    public function inferNew(Dataset $dataset) : NDArray
-    {
-        if ($dataset->empty()) {
-            return NumPower::array([]);
-        }
+            $shape = $input->shape();
 
-        $normalizedSamples = $this->normalizeSamples($dataset->samples());
-        $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
+            if (count($shape) === 1) {
+                $input = NumPower::reshape($input, [1, $shape[0]]);
+            }
+        } else {
+            $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
 
-        foreach ($this->layers() as $layer) {
-            $input = $layer->infer($input);
-        }
-
-        $shape = $input->shape();
-
-        if (count($shape) === 1) {
-            $input = NumPower::reshape($input, [1, $shape[0]]);
+            foreach ($this->layers() as $layer) {
+                $input = $layer->infer($input);
+            }
         }
 
         return NumPower::transpose($input, [1, 0]);
