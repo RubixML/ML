@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\NeuralNet\Networks\Base\Contracts;
 
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Traversable;
 
 /**
@@ -22,4 +25,25 @@ interface Network
      * @return Traversable
      */
     public function layers() : Traversable;
+
+    /**
+     * Return the input layer.
+     *
+     * @return Input
+     */
+    public function input() : Input;
+
+    /**
+     * Return an array of hidden layers indexed left to right.
+     *
+     * @return list<Hidden>
+     */
+    public function hidden() : array;
+
+    /**
+     * Return the output layer.
+     *
+     * @return Output
+     */
+    public function output() : Output;
 }
