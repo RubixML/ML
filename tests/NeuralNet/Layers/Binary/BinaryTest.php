@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Rubix\ML\Tests\NeuralNet\Layers\Binary;
 
@@ -63,7 +63,7 @@ class BinaryTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: array<int, string>}> 
+     * @return array<string, array{0: array<int, string>}>
      */
     public static function badClassesProvider() : array
     {
@@ -155,7 +155,7 @@ class BinaryTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Computes gradient directly given input, output, expected, and batch size')]
+    #[TestDox('Computes gradient directly given input, output and expected')]
     #[DataProvider('backProvider')]
     public function testGradient(array $expectedGradient) : void
     {
@@ -171,9 +171,7 @@ class BinaryTest extends TestCase
         }
         $expected = NumPower::array([$expected]);
 
-        $batchSize = count($this->labels);
-
-        $gradient = $this->layer->gradient($input, $output, $expected, $batchSize);
+        $gradient = $this->layer->gradient($input, $output, $expected);
 
         self::assertInstanceOf(NDArray::class, $gradient);
         self::assertEqualsWithDelta($expectedGradient, $gradient->toArray(), 1e-7);
