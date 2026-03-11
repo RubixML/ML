@@ -6,7 +6,6 @@
     - Exportable Extractors now append by default with option to overwrite
     - Added validation interval parameter to MLPs and GBM Learners
     - Removed output layer L2 Penalty parameter from MLP Learners
-    - Remove Network interface
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
     - Converted back Network interface
