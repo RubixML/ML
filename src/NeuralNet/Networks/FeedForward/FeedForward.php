@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Networks\Base\FeedForward;
+namespace Rubix\ML\NeuralNet\Networks\FeedForward;
 
 use NDArray;
 use NumPower;

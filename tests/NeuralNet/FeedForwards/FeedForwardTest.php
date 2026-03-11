@@ -18,7 +18,7 @@ use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\NeuralNet\Layers\Dense\Dense;
 use Rubix\ML\NeuralNet\Layers\Multiclass\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
-use Rubix\ML\NeuralNet\Networks\Base\FeedForward\FeedForward;
+use Rubix\ML\NeuralNet\Networks\FeedForward\FeedForward;
 use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 
 #[Group('NeuralNet')]
