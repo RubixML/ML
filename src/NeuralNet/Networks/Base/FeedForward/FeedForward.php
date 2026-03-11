@@ -1,28 +1,28 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Networks;
+namespace Rubix\ML\NeuralNet\Networks\Base\FeedForward;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Encoding;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Layer;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
-use Rubix\ML\Encoding;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
 use Rubix\ML\NeuralNet\Optimizers\Base\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Traversable;
-
 use function array_reverse;
 
 /**
- * Network
+ * Feed Forward
  *
- * A  neural network implementation consisting of an input and output layer and any number
- * of intermediate hidden layers.
+ * A feed forward neural network implementation consisting of an input and
+ * output layer and any number of intermediate hidden layers.
  *
  * @internal
  *
@@ -31,7 +31,7 @@ use function array_reverse;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Network
+class FeedForward implements Network
 {
     /**
      * The input layer to the network.

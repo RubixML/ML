@@ -14,7 +14,8 @@ use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\NeuralNet\Layers\Activation\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
-use Rubix\ML\NeuralNet\Networks\Network;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
+use Rubix\ML\NeuralNet\Networks\Base\FeedForward\FeedForward;
 use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
@@ -63,7 +64,7 @@ class NetworkTest extends TestCase
             costFn: new CrossEntropy()
         );
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             input: $this->input,
             hidden: $this->hidden,
             output: $this->output,

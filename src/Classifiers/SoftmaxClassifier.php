@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -285,7 +286,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(count($classes), $this->l2Penalty, true, new Xavier1())],
             new Multiclass($classes, $this->costFn),
