@@ -73,6 +73,13 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
+     * Whether to normalize the samples.
+     *
+     * @var bool
+     */
+    private bool $normalizeSamples;
+
+    /**
      * @param Input $input
      * @param Hidden[] $hidden
      * @param Output $output
@@ -89,6 +96,8 @@ class FeedForward implements Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
+
+        $this->normalizeSamples = false;
     }
 
     /**
@@ -185,10 +194,29 @@ class FeedForward implements Network
      */
     public function infer(Dataset $dataset) : NDArray
     {
-        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        if ($this->normalizeSamples) {
+            if ($dataset->empty()) {
+                return NumPower::array([]);
+            }
 
-        foreach ($this->layers() as $layer) {
-            $input = $layer->infer($input);
+            $normalizedSamples = $this->normalizeSamples($dataset->samples());
+            $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
+
+            foreach ($this->layers() as $layer) {
+                $input = $layer->infer($input);
+            }
+
+            $shape = $input->shape();
+
+            if (count($shape) === 1) {
+                $input = NumPower::reshape($input, [1, $shape[0]]);
+            }
+        } else {
+            $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+
+            foreach ($this->layers() as $layer) {
+                $input = $layer->infer($input);
+            }
         }
 
         return NumPower::transpose($input, [1, 0]);
@@ -271,5 +299,17 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Normalize samples to a strict list-of-lists with sequential numeric keys.
+     * NumPower's C extension expects packed arrays and can error or behave unpredictably
+     * when given arrays with non-sequential keys (e.g. after randomize/take/fold operations).
+     * @param array $samples
+     * @return array
+     */
+    private function normalizeSamples(array $samples) : array
+    {
+        return array_map('array_values', array_values($samples));
     }
 }
