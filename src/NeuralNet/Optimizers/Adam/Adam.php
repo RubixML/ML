@@ -112,6 +112,7 @@ class Adam implements Optimizer, Adaptive
             throw new RuntimeException('Could not locate parameter class.');
         }
 
+        /** @var NDArray $zeros */
         $zeros = NumPower::zeros($param->param()->shape());
 
         $this->cache[$param->id()] = [clone $zeros, $zeros];
