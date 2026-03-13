@@ -127,12 +127,6 @@ parameters:
 			path: src/Clusterers/KMeans.php
 
 		-
-			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Clusterers/MeanShift.php
-
-		-
 			message: '#^Property Rubix\\ML\\Clusterers\\Seeders\\Preset\:\:\$centroids \(list\<list\<float\|int\|string\>\>\) does not accept non\-empty\-list\<array\<float\|int\|string\>\>\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -1529,24 +1523,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/NeuralNet/FeedForward.php
-
-		-
-			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::range\(\) expects list<float|int|string>, array<int<0, max>, float|int> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/MeanShift.php
-
-		-
-			message: '#^Parameter \#1 \$a of method Rubix\\ML\\Kernels\\Distance\\Distance::compute\(\) expects list<float|int|string>, array<int<0, max>, float> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/MeanShift.php
-
-		-
-			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance::compute\(\) expects list<float|int|string>, array<int<0, max>, float|int> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/MeanShift.php
 
 		-
 			message: '#^Parameter \#1 \$current of method Rubix\\ML\\Clusterers\\MeanShift::shift\(\) expects list<array<float|int>>, array<int<0, max>, array<int<0, max>, float|int>> given\.$#'
