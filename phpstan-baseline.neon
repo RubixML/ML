@@ -19,24 +19,6 @@ parameters:
 			path: src/Classifiers/AdaBoost.php
 
 		-
-			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:predict\(\) should return list\<string\> but returns list\<int\|string\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Classifiers/AdaBoost.php
-
-		-
-			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:score\(\) should return list\<array\<float\>\> but returns array\<int\<0, max\>, array\<int\|string, float\>\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Classifiers/AdaBoost.php
-
-		-
-			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:steps\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Classifiers/AdaBoost.php
-
-		-
 			message: '#^PHPDoc tag @return contains unresolvable type\.$#'
 			identifier: return.unresolvableType
 			count: 1
@@ -109,32 +91,8 @@ parameters:
 			path: src/Classifiers/NaiveBayes.php
 
 		-
-			message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$counts \(array\<string, list\<array\<int\<0, max\>\>\>\>\) does not accept non\-empty\-array\<array\<array\<int\<0, max\>\>\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Classifiers/NaiveBayes.php
-
-		-
-			message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$probs \(array\<string, list\<array\<float\>\>\>\) does not accept non\-empty\-array\<array\<array\<float\>\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Classifiers/NaiveBayes.php
-
-		-
-			message: '#^Method Rubix\\ML\\Classifiers\\RandomForest\:\:proba\(\) should return list\<array\<string, float\>\> but returns array\<int, non\-empty\-array\<float\>\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Classifiers/RandomForest.php
-
-		-
 			message: '#^PHPDoc tag @var with type array\<string, int\> is not subtype of native type array\<int\<1, max\>\>\.$#'
 			identifier: varTag.nativeType
-			count: 1
-			path: src/Classifiers/RandomForest.php
-
-		-
-			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<int\<1, max\>\> given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Classifiers/RandomForest.php
 
@@ -163,57 +121,15 @@ parameters:
 			path: src/Clusterers/FuzzyCMeans.php
 
 		-
-			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Clusterers\\GaussianMixture\:\:jointLogLikelihood\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$means \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<\-1, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$means \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<0, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$variances \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<\-1, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$variances \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<0, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
 			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list\<int\>, array given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Clusterers/KMeans.php
 
 		-
-			message: '#^Parameter \#1 \$current of method Rubix\\ML\\Clusterers\\MeanShift\:\:shift\(\) expects list\<array\<float\|int\>\>, array\<int\<0, max\>, list\<float\|int\>\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/MeanShift.php
-
-		-
 			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\> given\.$#'
 			identifier: argument.type
 			count: 2
-			path: src/Clusterers/MeanShift.php
-
-		-
-			message: '#^Parameter \#2 \$previous of method Rubix\\ML\\Clusterers\\MeanShift\:\:shift\(\) expects list\<array\<float\|int\>\>, array\<int\<0, max\>, list\<float\|int\>\> given\.$#'
-			identifier: argument.type
-			count: 1
 			path: src/Clusterers/MeanShift.php
 
 		-
@@ -367,12 +283,6 @@ parameters:
 			path: src/Datasets/Dataset.php
 
 		-
-			message: '#^Offset 0 on non\-empty\-list\<list\<mixed\>\> on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: src/Datasets/Dataset.php
-
-		-
 			message: '#^Property Rubix\\ML\\Datasets\\Dataset\:\:\$samples \(list\<list\<mixed\>\>\) does not accept array\<mixed\>\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -385,26 +295,8 @@ parameters:
 			path: src/Datasets/Generators/Agglomerate.php
 
 		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Datasets/Generators/Agglomerate.php
-
-		-
 			message: '#^Instanceof between Rubix\\ML\\Datasets\\Labeled and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/Datasets/Labeled.php
-
-		-
-			message: '#^PHPDoc tag @var with type array\<Rubix\\ML\\Datasets\\Labeled\> is not subtype of native type array\<non\-empty\-list\>\.$#'
-			identifier: varTag.nativeType
-			count: 1
-			path: src/Datasets/Labeled.php
-
-		-
-			message: '#^PHPDoc tag @var with type list\<Rubix\\ML\\Datasets\\Labeled\> is not subtype of native type array\<non\-empty\-list\>\.$#'
-			identifier: varTag.nativeType
 			count: 1
 			path: src/Datasets/Labeled.php
 
@@ -541,12 +433,6 @@ parameters:
 			path: src/Kernels/Distance/Diagonal.php
 
 		-
-			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\Network\:\:backpropagate\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/NeuralNet/Network.php
-
-		-
 			message: '#^Instanceof between Rubix\\ML\\Transformers\\Transformer and Rubix\\ML\\Transformers\\Transformer will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -623,18 +509,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Transformers/ImageResizer.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 2
-			path: src/Transformers/ImageResizer.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 2
-			path: src/Transformers/ImageVectorizer.php
 
 		-
 			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, array\<mixed\> given\.$#'
