@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests;
+namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CommitteeMachine;
@@ -68,16 +69,19 @@ class CommitteeMachineTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
+    #[Test]
     public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
+    #[Test]
     public function testType() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
+    #[Test]
     public function testCompatibility() : void
     {
         $expected = [
@@ -87,6 +91,7 @@ class CommitteeMachineTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
+    #[Test]
     public function testParams() : void
     {
         $expected = [
@@ -109,6 +114,7 @@ class CommitteeMachineTest extends TestCase
      * @param Backend $backend
      */
     #[DataProvider('provideBackends')]
+    #[Test]
     public function testTrainPredict(Backend $backend) : void
     {
         $this->estimator->setBackend($backend);
@@ -133,6 +139,7 @@ class CommitteeMachineTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    #[Test]
     public function testTrainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -140,6 +147,7 @@ class CommitteeMachineTest extends TestCase
         $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
     }
 
+    #[Test]
     public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
