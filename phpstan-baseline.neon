@@ -1525,6 +1525,12 @@ parameters:
 			path: src/NeuralNet/FeedForward.php
 
 		-
+			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\Networks\\FeedForward\\FeedForward::backpropagate\(\) expects list<float|int|string>, array<mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
+
+		-
 			message: '#^Parameter \#1 \$current of method Rubix\\ML\\Clusterers\\MeanShift::shift\(\) expects list<array<float|int>>, array<int<0, max>, array<int<0, max>, float|int>> given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1553,4 +1559,40 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: src/NeuralNet/Layers/Activation/Activation.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\VantagePoint::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/VantagePoint.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Split::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Split.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Isolator::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Isolator.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Box::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Box.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Ball::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Ball.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Trees\\VantageTree::\$root because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Trees/VantageTree.php
 
