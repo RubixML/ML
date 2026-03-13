@@ -1566,3 +1566,15 @@ parameters:
 			count: 1
 			path: src/Clusterers/GaussianMixture.php
 
+		-
+			message: '#^Cannot call method toArray\(\) on NumPower\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Regressors/Ridge.php
+
+		-
+			message: '#^Call to an undefined method Rubix\\ML\\NeuralNet\\ActivationFunctions\\Base\\Contracts\\ActivationFunction::differentiate\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/NeuralNet/Layers/Activation/Activation.php
+
