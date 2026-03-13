@@ -139,9 +139,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The underlying neural network instance.
      *
-     * @var Network|null
+     * @var FeedForward|null
      */
-    protected ?Network $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The validation scores at each epoch from the last training session.

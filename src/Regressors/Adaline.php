@@ -110,9 +110,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * The underlying neural network instance.
      *
-     * @var Network|null
+     * @var FeedForward|null
      */
-    protected ?Network $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The loss at each epoch from the last training session.
