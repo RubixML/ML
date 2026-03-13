@@ -1470,3 +1470,15 @@ parameters:
 			count: 3
 			path: src/Classifiers/KNearestNeighbors.php
 
+		-
+			message: '#^Invalid array key type float\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Classifiers/SVC.php
+
+		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 1
+			path: src/Classifiers/NaiveBayes.php
+
