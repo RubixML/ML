@@ -306,7 +306,7 @@ class FeedForward implements Network
      * NumPower's C extension expects packed arrays and can error or behave unpredictably
      * when given arrays with non-sequential keys (e.g. after randomize/take/fold operations).
      * @param array $samples
-     * @return array
+     * @return list<list<mixed>>
      */
     private function normalizeSamples(array $samples) : array
     {
