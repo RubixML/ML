@@ -143,6 +143,10 @@ class RBX implements Serializer
 
         [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
 
+        if ($type === null || $hash === null) {
+            throw new RuntimeException('Invalid checksum format.');
+        }
+
         if ($hash !== hash($type, $header)) {
             throw new RuntimeException('Header checksum verification failed.');
         }

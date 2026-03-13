@@ -1512,3 +1512,57 @@ parameters:
 			count: 1
 			path: src/Graph/Nodes/Isolator.php
 
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float|int|string>, non-empty-array<int<0, max>, mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/KNNImputer.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float|int|string>, non-empty-array<int<0, max>, mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/HotDeckImputer.php
+
+		-
+			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\FeedForward::backpropagate\(\) expects list<float|int|string>, array<mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/NeuralNet/FeedForward.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::range\(\) expects list<float|int|string>, array<int<0, max>, float|int> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Parameter \#1 \$a of method Rubix\\ML\\Kernels\\Distance\\Distance::compute\(\) expects list<float|int|string>, array<int<0, max>, float> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance::compute\(\) expects list<float|int|string>, array<int<0, max>, float|int> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Parameter \#1 \$current of method Rubix\\ML\\Clusterers\\MeanShift::shift\(\) expects list<array<float|int>>, array<int<0, max>, array<int<0, max>, float|int>> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Parameter \#1 \$b of method Tensor\\Matrix::matmul\(\) expects Tensor\\Matrix, Tensor\\Matrix|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/AnomalyDetectors/Loda.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Clusterers\\GaussianMixture::jointLogLikelihood\(\) expects list<float|int>, array<float|int> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/GaussianMixture.php
+
