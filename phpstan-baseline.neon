@@ -1531,9 +1531,9 @@ parameters:
 			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
 
 		-
-			message: '#^Parameter \#1 \$current of method Rubix\\ML\\Clusterers\\MeanShift::shift\(\) expects list<array<float|int>>, array<int<0, max>, array<int<0, max>, float|int>> given\.$#'
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::range\(\) expects list<float|int|string>, array<int<0, max>, float|int> given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 6
 			path: src/Clusterers/MeanShift.php
 
 		-
@@ -1595,4 +1595,10 @@ parameters:
 			identifier: unset.possiblyHookedProperty
 			count: 1
 			path: src/Graph/Trees/VantageTree.php
+
+		-
+			message: '#^Possibly invalid array key type float|int|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Datasets/Labeled.php
 
