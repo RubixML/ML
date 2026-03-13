@@ -1482,3 +1482,33 @@ parameters:
 			count: 1
 			path: src/Classifiers/NaiveBayes.php
 
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Ball\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Ball.php
+
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Split\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Split.php
+
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Box\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Box.php
+
+		-
+			message: '#^Property Rubix\\ML\\Datasets\\Dataset\:\:\$samples on left side of \?\? is not nullable nor uninitialized\.$#'
+			identifier: nullCoalesce.initializedProperty
+			count: 1
+			path: src/Datasets/Dataset.php
+
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Isolator\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Isolator.php
+
