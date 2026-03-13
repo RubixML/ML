@@ -1452,3 +1452,21 @@ parameters:
 			count: 1
 			path: tests/Helpers/ParamsTest.php
 
+		-
+			message: '#^Possibly invalid array key type float\|int\|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/AnomalyDetectors/LocalOutlierFactor.php
+
+		-
+			message: '#^Possibly invalid array key type float\|int\|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^Possibly invalid array key type float\|int\|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 3
+			path: src/Classifiers/KNearestNeighbors.php
+
