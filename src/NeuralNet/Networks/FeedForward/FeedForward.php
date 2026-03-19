@@ -73,19 +73,20 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
-     * Whether to normalize the samples.
+     * Whether to pack the samples.
      *
      * @var bool
      */
-    private bool $normalizeSamples;
+    private bool $packSamples;
 
     /**
      * @param Input $input
      * @param Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
+     * @param bool $packSamples
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer, bool $packSamples = false)
     {
         $hidden = array_values($hidden);
 
@@ -97,7 +98,7 @@ class FeedForward implements Network
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
 
-        $this->normalizeSamples = false;
+        $this->packSamples = false;
     }
 
     /**
@@ -194,12 +195,12 @@ class FeedForward implements Network
      */
     public function infer(Dataset $dataset) : NDArray
     {
-        if ($this->normalizeSamples) {
-            if ($dataset->empty()) {
-                return NumPower::array([]);
-            }
+        if ($dataset->empty()) {
+            return NumPower::array([]);
+        }
 
-            $normalizedSamples = $this->normalizeSamples($dataset->samples());
+        if ($this->packSamples) {
+            $normalizedSamples = $this->packSamples($dataset->samples());
             $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
 
             foreach ($this->layers() as $layer) {
@@ -302,13 +303,13 @@ class FeedForward implements Network
     }
 
     /**
-     * Normalize samples to a strict list-of-lists with sequential numeric keys.
+     * Pack samples to a strict list-of-lists with sequential numeric keys.
      * NumPower's C extension expects packed arrays and can error or behave unpredictably
      * when given arrays with non-sequential keys (e.g. after randomize/take/fold operations).
-     * @param array $samples
-     * @return array
+     * @param array<array<mixed>> $samples
+     * @return list<list<mixed>>
      */
-    private function normalizeSamples(array $samples) : array
+    private function packSamples(array $samples) : array
     {
         return array_map('array_values', array_values($samples));
     }
