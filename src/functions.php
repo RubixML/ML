@@ -246,4 +246,23 @@ namespace Rubix\ML
     {
         trigger_error($message, E_USER_DEPRECATED);
     }
+
+    /**
+     * Reindex a nested array to ensure all levels have sequential numeric keys.
+     *
+     * Some extensions (ex.: NumPower) and low-level operations expect "packed" arrays (0..n-1).
+     * Arrays with non-sequential or sparse keys (e.g. after filtering, slicing,
+     * or other transformations) can lead to errors or undefined behavior.
+     *
+     * This function normalizes the structure by resetting keys at both levels.
+     *
+     * @internal
+     *
+     * @param array[] $data
+     * @return list<list<mixed>>
+     */
+    function reindex_nested_array(array $data) : array
+    {
+        return array_map('array_values', array_values($data));
+    }
 }

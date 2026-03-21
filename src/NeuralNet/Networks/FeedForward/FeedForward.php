@@ -200,7 +200,7 @@ class FeedForward implements Network
         }
 
         if ($this->packSamples) {
-            $normalizedSamples = $this->packSamples($dataset->samples());
+            $normalizedSamples = reindex_nested_array($dataset->samples());
             $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
 
             foreach ($this->layers() as $layer) {
@@ -300,17 +300,5 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
-    }
-
-    /**
-     * Pack samples to a strict list-of-lists with sequential numeric keys.
-     * NumPower's C extension expects packed arrays and can error or behave unpredictably
-     * when given arrays with non-sequential keys (e.g. after randomize/take/fold operations).
-     * @param array<array<mixed>> $samples
-     * @return list<list<mixed>>
-     */
-    private function packSamples(array $samples) : array
-    {
-        return array_map('array_values', array_values($samples));
     }
 }
