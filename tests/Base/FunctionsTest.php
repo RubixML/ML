@@ -18,7 +18,6 @@ use function Rubix\ML\sigmoid;
 use function Rubix\ML\comb;
 use function Rubix\ML\linspace;
 use function Rubix\ML\array_transpose;
-use function Rubix\ML\reindex_nested_array;
 use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
 use function Rubix\ML\iterator_filter;
@@ -35,7 +34,6 @@ use function Rubix\ML\iterator_contains_nan;
 #[CoversFunction('\Rubix\ML\iterator_map')]
 #[CoversFunction('\Rubix\ML\linspace')]
 #[CoversFunction('\Rubix\ML\logsumexp')]
-#[CoversFunction('\Rubix\ML\reindex_nested_array')]
 #[CoversFunction('\Rubix\ML\sigmoid')]
 #[CoversFunction('\Rubix\ML\warn_deprecated')]
 class FunctionsTest extends TestCase
@@ -158,44 +156,6 @@ class FunctionsTest extends TestCase
         yield [
             ['NaN', 'NAN'],
             false,
-        ];
-    }
-
-    public static function reindexNestedArrayProvider() : Generator
-    {
-        yield [
-            [
-                5 => [
-                    2 => 10,
-                    9 => 11,
-                ],
-                7 => [
-                    4 => 20,
-                    8 => 21,
-                ],
-            ],
-            [
-                [10, 11],
-                [20, 21],
-            ],
-        ];
-
-        yield [
-            [
-                [
-                    1 => 11,
-                    3 => 33,
-                    7 => 77,
-                ],
-            ],
-            [
-                [11, 33, 77],
-            ],
-        ];
-
-        yield [
-            [],
-            [],
         ];
     }
 
