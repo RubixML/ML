@@ -140,9 +140,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The underlying neural network instance.
      *
-     * @var Network|null
+     * @var FeedForward|null
      */
-    protected ?Network $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The unique class labels.

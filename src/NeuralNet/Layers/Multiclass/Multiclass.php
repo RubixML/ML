@@ -150,7 +150,7 @@ class Multiclass implements Output
      * @param string[] $labels
      * @param Optimizer $optimizer
      * @throws RuntimeException
-     * @return array
+     * @return array{0: Deferred, 1: float}
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {

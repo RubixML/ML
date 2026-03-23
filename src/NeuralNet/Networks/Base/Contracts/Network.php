@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Layer;
 use Traversable;
 
 /**
@@ -25,7 +26,7 @@ interface Network
     /**
      * Return the layers of the network.
      *
-     * @return Traversable
+     * @return Traversable<Layer>
      */
     public function layers() : Traversable;
 

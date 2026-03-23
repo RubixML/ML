@@ -21,7 +21,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use NDArray as nd;
+use NumPower as nd;
 
 use function is_null;
 
@@ -176,7 +176,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $penalties = nd::array(Matrix::diagonal($penalties)->asArray());
 
         $xNp = nd::array($x->asArray());
-        $xT = nd::transpose($xNp);
+        $xT = nd::transpose($xNp, [1, 0]);
 
         $xMul = nd::matmul($xT, $xNp);
         $xMulAdd = nd::add($xMul, $penalties);
