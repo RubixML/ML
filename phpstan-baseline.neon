@@ -331,12 +331,6 @@ parameters:
 			path: src/Datasets/Unlabeled.php
 
 		-
-			message: '#^Call to function is_array\(\) with non\-empty\-array\<string, string\|null\> will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Extractors/CSV.php
-
-		-
 			message: '#^Parameter \#1 \$keys of function array_combine expects array\<int\|string\>, list\<string\|null\> given\.$#'
 			identifier: argument.type
 			count: 1

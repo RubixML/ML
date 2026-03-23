@@ -221,10 +221,6 @@ class CSV implements Extractor, Exporter
 
             if (isset($header)) {
                 $record = array_combine($header, $record);
-
-                if (!is_array($record)) {
-                    throw new RuntimeException("Malformed record on line $line.");
-                }
             }
 
             yield $record;

@@ -84,6 +84,7 @@
             "@check"
         ],
         "analyze": "phpstan analyse -c phpstan.neon --memory-limit 1G",
+        "analyze-ci": "phpstan analyse -c phpstan-ci.neon --memory-limit 1G",
         "benchmark": "phpbench run --report=aggregate",
         "check": [
             "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
