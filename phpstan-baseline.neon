@@ -1519,13 +1519,13 @@ parameters:
 			path: src/Graph/Nodes/Isolator.php
 
 		-
-			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float|int|string>, non-empty-array<int<0, max>, mixed> given\.$#'
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list\<float\|int\|string\>, non\-empty\-array\<int\<0, max\>, mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Transformers/KNNImputer.php
 
 		-
-			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float|int|string>, non-empty-array<int<0, max>, mixed> given\.$#'
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list\<float\|int\|string\>, non\-empty\-array\<int\<0, max\>, mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Transformers/HotDeckImputer.php
