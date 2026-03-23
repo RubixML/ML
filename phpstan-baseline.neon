@@ -115,12 +115,6 @@ parameters:
 			path: src/Classifiers/RandomForest.php
 
 		-
-			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<int\|string, int\<1, max\>\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Classifiers/RandomForest.php
-
-		-
 			message: '#^Method Rubix\\ML\\Clusterers\\DBSCAN\:\:predict\(\) should return list\<int\> but returns array\<int, int\<\-1, max\>\>\.$#'
 			identifier: return.type
 			count: 1
@@ -139,7 +133,7 @@ parameters:
 			path: src/Clusterers/FuzzyCMeans.php
 
 		-
-			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list\<int\>, array\<mixed\> given\.$#'
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list\<int\>, array given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Clusterers/KMeans.php
@@ -1531,6 +1525,12 @@ parameters:
 			path: src/Transformers/KNNImputer.php
 
 		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float\|int\|string>, non\-empty\-array<int<0, max>, mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/HotDeckImputer.php
+
+		-
 			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\FeedForward::backpropagate\(\) expects list<float|int|string>, array<mixed> given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1545,7 +1545,7 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::range\(\) expects list<float|int|string>, array<int<0, max>, float|int> given\.$#'
 			identifier: argument.type
-			count: 4
+			count: 6
 			path: src/Clusterers/MeanShift.php
 
 		-
