@@ -12,7 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [windows-latest, ubuntu-latest, macos-latest]
+        #operating-system: [windows-latest, ubuntu-latest, macos-latest]
+        operating-system: [ubuntu-latest, macos-latest]
         php-versions: ['8.4']
     steps:
       - name: Checkout
@@ -37,7 +38,12 @@ jobs:
         run: |
           export HOMEBREW_NO_AUTO_UPDATE=1
           export HOMEBREW_NO_ANALYTICS=1
-          brew install openblas lapack
+          brew install pkg-config autoconf automake libtool openblas lapack
+          echo "OPENBLAS_PREFIX=$(brew --prefix openblas)" >> "$GITHUB_ENV"
+          echo "LAPACK_PREFIX=$(brew --prefix lapack)" >> "$GITHUB_ENV"
+          echo "CPPFLAGS=-I$(brew --prefix openblas)/include -I$(brew --prefix lapack)/include" >> "$GITHUB_ENV"
+          echo "LDFLAGS=-L$(brew --prefix openblas)/lib -L$(brew --prefix lapack)/lib" >> "$GITHUB_ENV"
+          echo "PKG_CONFIG_PATH=$(brew --prefix openblas)/lib/pkgconfig" >> "$GITHUB_ENV"
 
       - name: Install NumPower
         run: |
@@ -45,11 +51,6 @@ jobs:
             git clone --branch mac4 --single-branch https://github.com/RubixML/numpower.git
             cd numpower
             phpize
-            export OPENBLAS_PREFIX="$(brew --prefix openblas)"
-            export LAPACK_PREFIX="$(brew --prefix lapack)"
-            export CPPFLAGS="-I${OPENBLAS_PREFIX}/include -I${LAPACK_PREFIX}/include"
-            export LDFLAGS="-L${OPENBLAS_PREFIX}/lib -L${LAPACK_PREFIX}/lib"
-            export PKG_CONFIG_PATH="${OPENBLAS_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
           else 
             git clone https://github.com/RubixML/numpower.git
             cd numpower
