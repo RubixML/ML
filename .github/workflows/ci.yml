@@ -36,7 +36,7 @@ jobs:
 
       - name: Install NumPower
         run: |
-          git clone https://github.com/RubixML/numpower.git
+          git clone --branch mac4 --single-branch https://github.com/RubixML/numpower.git
           cd numpower
           phpize
           if [ "${{ matrix.operating-system }}" = "macos-latest" ]; then
