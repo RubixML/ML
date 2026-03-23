@@ -5,6 +5,9 @@ parameters:
     reportUnmatchedIgnoredErrors: false
 
     ignoreErrors:
+        # ----------------------------------------------------
+        # Removing these errors requires a change in the code
+        # ----------------------------------------------------
         -
             message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array<int\|string, int<1, max>> given\.$#'
             identifier: argument.type
