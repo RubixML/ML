@@ -28,15 +28,28 @@ jobs:
           sudo apt-get update -q
           sudo apt-get install -qy libopenblas-dev liblapacke-dev
 
+      - name: Install OpenBLAS/LAPACK (macOS)
+        if: matrix.operating-system == 'macos-latest'
+        run: |
+          brew update
+          brew install openblas lapack
+
       - name: Install NumPower
         run: |
           git clone https://github.com/RubixML/numpower.git
           cd numpower
           phpize
+          if [ "${{ matrix.operating-system }}" = "macos-latest" ]; then
+            export OPENBLAS_PREFIX="$(brew --prefix openblas)"
+            export LAPACK_PREFIX="$(brew --prefix lapack)"
+            export CPPFLAGS="-I${OPENBLAS_PREFIX}/include -I${LAPACK_PREFIX}/include"
+            export LDFLAGS="-L${OPENBLAS_PREFIX}/lib -L${LAPACK_PREFIX}/lib"
+            export PKG_CONFIG_PATH="${OPENBLAS_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+          fi
           ./configure
           make
           sudo make install
-          sudo echo "extension=ndarray.so" >> $(php -i | grep "Loaded Configuration File" | sed -e "s|.*=>\s*||")
+          echo "extension=ndarray.so" | sudo tee -a "$(php -i | grep \"Loaded Configuration File\" | sed -e \"s|.*=>\\s*||\")" > /dev/null
 
       - name: Validate composer.json
         run: composer validate
