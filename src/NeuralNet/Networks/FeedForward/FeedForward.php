@@ -97,8 +97,7 @@ class FeedForward implements Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
-
-        $this->packSamples = false;
+        $this->packSamples = $packSamples;
     }
 
     /**
@@ -199,25 +198,12 @@ class FeedForward implements Network
             return NumPower::array([]);
         }
 
-        if ($this->packSamples) {
-            $normalizedSamples = reindex_nested_array($dataset->samples());
-            $input = NumPower::transpose(NumPower::array($normalizedSamples), [1, 0]);
+        $samples = $this->prepareSamples($dataset);
 
-            foreach ($this->layers() as $layer) {
-                $input = $layer->infer($input);
-            }
+        $input = NumPower::transpose(NumPower::array($samples), [1, 0]);
 
-            $shape = $input->shape();
-
-            if (count($shape) === 1) {
-                $input = NumPower::reshape($input, [1, $shape[0]]);
-            }
-        } else {
-            $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
-
-            foreach ($this->layers() as $layer) {
-                $input = $layer->infer($input);
-            }
+        foreach ($this->layers() as $layer) {
+            $input = $layer->infer($input);
         }
 
         return NumPower::transpose($input, [1, 0]);
@@ -300,5 +286,22 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Prepare samples depending on packing configuration.
+     * @param Dataset $dataset
+     * @return array
+     */
+    private function prepareSamples(Dataset $dataset): array
+    {
+        $samples = $dataset->samples();
+
+        if (!$this->packSamples) {
+            return $samples;
+        }
+
+        // Reindex a nested array to ensure all levels have sequential numeric keys
+        return array_map('array_values', array_values($samples));
     }
 }

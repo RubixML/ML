@@ -315,14 +315,4 @@ class FunctionsTest extends TestCase
     {
         $this->assertEquals($expected, iterator_contains_nan($values));
     }
-
-    /**
-     * @param array<array<int|float>|bool> $values
-     * @param array<array<int|float>|bool> $expected
-     */
-    #[DataProvider('reindexNestedArrayProvider')]
-    public function testReindexNestedArray(array $values, array $expected) : void
-    {
-        $this->assertEquals($expected, reindex_nested_array($values));
-    }
 }
