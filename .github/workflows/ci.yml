@@ -36,15 +36,19 @@ jobs:
 
       - name: Install NumPower
         run: |
-          git clone --branch mac4 --single-branch https://github.com/RubixML/numpower.git
-          cd numpower
-          phpize
           if [ "${{ matrix.operating-system }}" = "macos-latest" ]; then
+            git clone --branch mac4 --single-branch https://github.com/RubixML/numpower.git
+            cd numpower
+            phpize
             export OPENBLAS_PREFIX="$(brew --prefix openblas)"
             export LAPACK_PREFIX="$(brew --prefix lapack)"
             export CPPFLAGS="-I${OPENBLAS_PREFIX}/include -I${LAPACK_PREFIX}/include"
             export LDFLAGS="-L${OPENBLAS_PREFIX}/lib -L${LAPACK_PREFIX}/lib"
             export PKG_CONFIG_PATH="${OPENBLAS_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+          else 
+            git clone https://github.com/RubixML/numpower.git
+            cd numpower
+            phpize
           fi
           ./configure
           make
