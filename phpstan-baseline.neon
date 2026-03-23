@@ -13,6 +13,18 @@ parameters:
 			path: src/BootstrapAggregator.php
 
 		-
+			message: '#^Method Rubix\\ML\\NeuralNet\\Networks\\FeedForward\\FeedForward\:\:prepareSamples\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<list\<mixed\>\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
+
+		-
 			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:losses\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
