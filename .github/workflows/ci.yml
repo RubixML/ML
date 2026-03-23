@@ -61,7 +61,12 @@ jobs:
           ./configure
           make
           sudo make install
-          echo "extension=ndarray.so" | sudo tee -a "$(php -i | grep \"Loaded Configuration File\" | sed -e \"s|.*=>\\s*||\")" > /dev/null
+          ini_dir="$(php -r 'echo PHP_CONFIG_FILE_SCAN_DIR;')"
+          if [ -z "$ini_dir" ] || [ "$ini_dir" = "(none)" ]; then
+            loaded_ini="$(php --ini | sed -n 's|^Loaded Configuration File:\s*||p')"
+            ini_dir="$(dirname "$loaded_ini")"
+          fi
+          echo "extension=ndarray.so" | sudo tee "$ini_dir/99-ndarray.ini" > /dev/null
 
       - name: Validate composer.json
         run: composer validate
