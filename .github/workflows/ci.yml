@@ -51,6 +51,8 @@ jobs:
             git clone --branch mac4 --single-branch https://github.com/RubixML/numpower.git
             cd numpower
             phpize
+            # Work around Apple clang/libc math portability: isnanf() is not available on macos-latest
+            perl -pi -e 's/\bisnanf\(/isnan(/g' src/ndmath/calculation.c
           else 
             git clone https://github.com/RubixML/numpower.git
             cd numpower
