@@ -6,7 +6,7 @@ parameters:
 
     ignoreErrors:
         # ----------------------------------------------------
-        # Removing these errors requires a change in the code
+        # Removing of these errors requires code refactoring
         # ----------------------------------------------------
         -
             message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array<int\|string, int<1, max>> given\.$#'
