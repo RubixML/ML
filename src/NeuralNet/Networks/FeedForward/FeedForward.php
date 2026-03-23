@@ -1,28 +1,28 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Networks;
+namespace Rubix\ML\NeuralNet\Networks\FeedForward;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Encoding;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Layer;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
-use Rubix\ML\Encoding;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
 use Rubix\ML\NeuralNet\Optimizers\Base\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Traversable;
-
 use function array_reverse;
 
 /**
- * Network
+ * Feed Forward
  *
- * A  neural network implementation consisting of an input and output layer and any number
- * of intermediate hidden layers.
+ * A feed forward neural network implementation consisting of an input and
+ * output layer and any number of intermediate hidden layers.
  *
  * @internal
  *
@@ -31,7 +31,7 @@ use function array_reverse;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Network
+class FeedForward implements Network
 {
     /**
      * The input layer to the network.
@@ -73,12 +73,20 @@ class Network
     protected Optimizer $optimizer;
 
     /**
+     * Whether to pack the samples.
+     *
+     * @var bool
+     */
+    private bool $packSamples;
+
+    /**
      * @param Input $input
      * @param Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
+     * @param bool $packSamples
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer, bool $packSamples = false)
     {
         $hidden = array_values($hidden);
 
@@ -89,6 +97,7 @@ class Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
+        $this->packSamples = $packSamples;
     }
 
     /**
@@ -185,7 +194,13 @@ class Network
      */
     public function infer(Dataset $dataset) : NDArray
     {
-        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        if ($dataset->empty()) {
+            return NumPower::array([]);
+        }
+
+        $samples = $this->prepareSamples($dataset);
+
+        $input = NumPower::transpose(NumPower::array($samples), [1, 0]);
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
@@ -271,5 +286,22 @@ class Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Prepare samples depending on packing configuration.
+     * @param Dataset $dataset
+     * @return array
+     */
+    private function prepareSamples(Dataset $dataset): array
+    {
+        $samples = $dataset->samples();
+
+        if (!$this->packSamples) {
+            return $samples;
+        }
+
+        // Reindex a nested array to ensure all levels have sequential numeric keys
+        return array_map('array_values', array_values($samples));
     }
 }

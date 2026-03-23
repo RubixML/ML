@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Snapshots;
 
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Networks\Network;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
 
 /**

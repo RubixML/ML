@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\NeuralNet;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
@@ -27,7 +28,7 @@ class SnapshotTest extends TestCase
 
     public function testTake() : void
     {
-        $network = new Network(
+        $network = new FeedForward(
             input: new Placeholder1D(1),
             hidden: [
                 new Dense(10),
