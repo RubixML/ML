@@ -1,5 +1,2 @@
 includes:
     - phpstan.neon
-parameters:
-    reportUnmatchedIgnoredErrors: false
-    treatPhpDocTypesAsCertain: false
