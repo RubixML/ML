@@ -31,7 +31,8 @@ jobs:
       - name: Install OpenBLAS/LAPACK (macOS)
         if: matrix.operating-system == 'macos-latest'
         run: |
-          brew update
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          export HOMEBREW_NO_ANALYTICS=1
           brew install openblas lapack
 
       - name: Install NumPower
