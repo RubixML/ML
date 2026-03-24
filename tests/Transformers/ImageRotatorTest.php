@@ -38,12 +38,12 @@ class ImageRotatorTest extends TestCase
         $sample = $dataset->sample(0);
 
         // Check that the image resource/object is still valid and has the same dimensions
-        $this->assertTrue(is_resource($sample[0]) || $sample[0] instanceof \GdImage);
-        $this->assertEquals(imagesx($sample[0]), 32);
-        $this->assertEquals(imagesy($sample[0]), 32);
+        self::assertTrue(is_resource($sample[0]) || $sample[0] instanceof \GdImage);
+        self::assertEquals(32, imagesx($sample[0]));
+        self::assertEquals(32, imagesy($sample[0]));
 
         // Just verify that the transformation was applied by checking the mock was called
         // and that we still have a valid image resource
-        $this->assertTrue(true, 'Image rotation transformation completed successfully');
+        self::assertTrue(true, 'Image rotation transformation completed successfully');
     }
 }

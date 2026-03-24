@@ -48,13 +48,13 @@ interface Network
      * @param Dataset $dataset
      * @return NDArray
      */
-    public function infer(Dataset $dataset): NDArray;
+    public function infer(Dataset $dataset) : NDArray;
 
     /**
      * @param Labeled $dataset
      * @return float
      */
-    public function roundtrip(Labeled $dataset): float;
+    public function roundtrip(Labeled $dataset) : float;
 
     /**
      * Return the input layer.

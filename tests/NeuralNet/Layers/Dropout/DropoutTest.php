@@ -147,14 +147,14 @@ class DropoutTest extends TestCase
 
         // Roughly (1 - ratio) of units should be non-zero; allow wide tolerance
         $expectedKept = (1.0 - 0.5) * $total;
-        
+
         // In rare cases, all units could be dropped due to random chance
         // If this happens, we should still pass the test but note the issue
         if ($nonZero === 0) {
-            $this->markTestIncomplete('All units were dropped - this is rare but possible with random dropout');
+            self::markTestIncomplete('All units were dropped - this is rare but possible with random dropout');
             return;
         }
-        
+
         self::assertGreaterThan(0, $nonZero);
         self::assertLessThan($total, $nonZero);
         self::assertEqualsWithDelta($expectedKept, $nonZero, $total * 0.5);

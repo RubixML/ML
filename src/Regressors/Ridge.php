@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Regressors;
 
+use NDArray;
+use NumPower;
 use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Learner;
@@ -21,7 +23,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use NumPower as nd;
 
 use function is_null;
 
@@ -61,7 +62,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     protected ?Vector $coefficients = null;
 
-    protected ?nd $coefficientsNd = null;
+    protected ?NDArray $coefficientsNd = null;
 
     /**
      * @param float $l2Penalty
@@ -164,7 +165,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $biases = Matrix::ones($dataset->numSamples(), 1);
 
         $x = Matrix::build($dataset->samples())->augmentLeft($biases);
-        $y = nd::array($dataset->labels());
+        $y = NumPower::array($dataset->labels());
 
         /** @var int<0,max> $nHat */
         $nHat = $x->n() - 1;
@@ -173,17 +174,17 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         array_unshift($penalties, 0.0);
 
-        $penalties = nd::array(Matrix::diagonal($penalties)->asArray());
+        $penalties = NumPower::array(Matrix::diagonal($penalties)->asArray());
 
-        $xNp = nd::array($x->asArray());
-        $xT = nd::transpose($xNp, [1, 0]);
+        $xNp = NumPower::array($x->asArray());
+        $xT = NumPower::transpose($xNp, [1, 0]);
 
-        $xMul = nd::matmul($xT, $xNp);
-        $xMulAdd = nd::add($xMul, $penalties);
-        $xMulAddInv = nd::inv($xMulAdd);
-        $xtDotY = nd::dot($xT, $y);
+        $xMul = NumPower::matmul($xT, $xNp);
+        $xMulAdd = NumPower::add($xMul, $penalties);
+        $xMulAddInv = NumPower::inv($xMulAdd);
+        $xtDotY = NumPower::dot($xT, $y);
 
-        $this->coefficientsNd = nd::dot($xMulAddInv, $xtDotY);
+        $this->coefficientsNd = NumPower::dot($xMulAddInv, $xtDotY);
         $coefficients = $this->coefficientsNd->toArray();
 
         $this->bias = (float) array_shift($coefficients);
@@ -205,10 +206,10 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
 
-        $datasetNd = nd::array($dataset->samples());
-        $datasetDotCoefficients = nd::dot($datasetNd, $this->coefficientsNd);
+        $datasetNd = NumPower::array($dataset->samples());
+        $datasetDotCoefficients = NumPower::dot($datasetNd, $this->coefficientsNd);
 
-        return nd::add($datasetDotCoefficients, $this->bias)->toArray();
+        return NumPower::add($datasetDotCoefficients, $this->bias)->toArray();
     }
 
     /**
