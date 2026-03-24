@@ -293,7 +293,7 @@ class FeedForward implements Network
      * @param Dataset $dataset
      * @return array
      */
-    private function prepareSamples(Dataset $dataset): array
+    private function prepareSamples(Dataset $dataset) : array
     {
         $samples = $dataset->samples();
 

@@ -35,29 +35,6 @@ class SwishTest extends TestCase
 
     protected Swish $layer;
 
-    protected function setUp() : void
-    {
-        $this->fanIn = 3;
-
-        $this->input = NumPower::array([
-            [1.0, 2.5, -0.1],
-            [0.1, 0.1, 3.0],
-            [0.002, -6.0, -0.5],
-        ]);
-
-        $this->prevGrad = new Deferred(fn: function () : NDArray {
-            return NumPower::array([
-                [0.25, 0.7, 0.1],
-                [0.50, 0.2, 0.01],
-                [0.25, 0.1, 0.89],
-            ]);
-        });
-
-        $this->optimizer = new Stochastic(0.001);
-
-        $this->layer = new Swish(new Constant(1.0));
-    }
-
     /**
      * @return array<int, array<string, array<int, array<int, float>>>>
      */
@@ -95,13 +72,35 @@ class SwishTest extends TestCase
         ];
     }
 
+    protected function setUp() : void
+    {
+        $this->fanIn = 3;
+
+        $this->input = NumPower::array([
+            [1.0, 2.5, -0.1],
+            [0.1, 0.1, 3.0],
+            [0.002, -6.0, -0.5],
+        ]);
+
+        $this->prevGrad = new Deferred(fn: function () : NDArray {
+            return NumPower::array([
+                [0.25, 0.7, 0.1],
+                [0.50, 0.2, 0.01],
+                [0.25, 0.1, 0.89],
+            ]);
+        });
+
+        $this->optimizer = new Stochastic(0.001);
+
+        $this->layer = new Swish(new Constant(1.0));
+    }
+
     #[DataProvider('initializeForwardBackInferProvider')]
     public function testInitializeForwardBackInfer(
         array $forwardExpected,
         array $backExpected,
         array $inferExpected,
-    ) : void
-    {
+    ) : void {
         $this->layer->initialize($this->fanIn);
 
         self::assertEquals($this->fanIn, $this->layer->width());

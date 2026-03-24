@@ -9,7 +9,6 @@ use Rubix\ML\Exceptions\ClassRevisionMismatch;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function strlen;
-use function strpos;
 use function substr;
 use function hash;
 use function get_class;

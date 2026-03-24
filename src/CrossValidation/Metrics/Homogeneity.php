@@ -61,7 +61,7 @@ class Homogeneity implements Metric
      */
     public function score(array $predictions, array $labels) : float
     {
-        $table = (new ContingencyTable())->generate($predictions, $labels);
+        $table = new ContingencyTable()->generate($predictions, $labels);
 
         $score = 0.0;
 
