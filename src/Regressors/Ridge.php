@@ -184,8 +184,9 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $xMulAddInv = NumPower::inv($xMulAdd);
         $xtDotY = NumPower::dot($xT, $y);
 
-        $this->coefficientsNd = NumPower::dot($xMulAddInv, $xtDotY);
-        $coefficients = $this->coefficientsNd->toArray();
+        $coefficientsNd = NumPower::dot($xMulAddInv, $xtDotY);
+        $this->coefficientsNd = $coefficientsNd;
+        $coefficients = $coefficientsNd->toArray();
 
         $this->bias = (float) array_shift($coefficients);
         $this->coefficients = Vector::quick($coefficients);
@@ -200,7 +201,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->coefficients or is_null($this->bias)) {
+        if (!$this->coefficients or is_null($this->bias) or is_null($this->coefficientsNd)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
