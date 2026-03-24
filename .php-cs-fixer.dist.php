@@ -19,7 +19,7 @@ $config
     ->setRules(
         [
             '@PSR2' => true,
-            '@PHP84Migration' => true,
+            '@PHP8x4Migration' => true,
             'align_multiline_comment' => true,
             'array_syntax' => ['syntax' => 'short'],
             'backtick_to_shell_exec' => true,
