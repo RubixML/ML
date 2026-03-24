@@ -15,6 +15,7 @@ $finder = Finder::create()
 
 $config = new Config();
 $config
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setCacheFile(__DIR__ . '/runtime/.php-cs-fixer.cache')
     ->setRules(
         [
