@@ -87,7 +87,7 @@
         "analyze-ci": "phpstan analyse -c phpstan-ci.neon --memory-limit 1G",
         "benchmark": "phpbench run --report=aggregate",
         "check": [
-            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no --sequential"
+            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --using-cache=no --sequential --show-progress=dots"
         ],
         "fix": [
             "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
