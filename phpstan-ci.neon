@@ -1,0 +1,19 @@
+includes:
+    - phpstan.neon
+
+parameters:
+    reportUnmatchedIgnoredErrors: false
+
+    ignoreErrors:
+        # ----------------------------------------------------
+        # Removing of these errors require code refactoring
+        # ----------------------------------------------------
+        -
+            message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array<int\|string, int<1, max>> given\.$#'
+            identifier: argument.type
+            path: src/Classifiers/RandomForest.php
+
+        -
+            message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list<int>, array<mixed> given\.$#'
+            identifier: argument.type
+            path: src/Clusterers/KMeans.php

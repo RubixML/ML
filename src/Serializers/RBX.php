@@ -129,7 +129,7 @@ class RBX implements Serializer
      */
     public function deserialize(Encoding $encoding) : Persistable
     {
-        if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
+        if (!str_starts_with($encoding, self::IDENTIFIER_STRING)) {
             throw new RuntimeException('Unrecognized message format.');
         }
 
@@ -143,7 +143,7 @@ class RBX implements Serializer
 
         [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
 
-        if ($type === null || $hash === null) {
+        if ($type === null || $hash === null || $type === '' || !in_array($type, hash_algos(), true)) {
             throw new RuntimeException('Invalid checksum format.');
         }
 
@@ -161,7 +161,13 @@ class RBX implements Serializer
             throw new RuntimeException('Data is corrupted.');
         }
 
-        $hash = hash($header['data']['checksum']['type'], $payload);
+        $dataChecksumType = $header['data']['checksum']['type'] ?? null;
+
+        if (!is_string($dataChecksumType) || $dataChecksumType === '' || !in_array($dataChecksumType, hash_algos(), true)) {
+            throw new RuntimeException('Invalid data checksum format.');
+        }
+
+        $hash = hash($dataChecksumType, $payload);
 
         if ($header['data']['checksum']['hash'] !== $hash) {
             throw new RuntimeException('Data checksum verification failed.');

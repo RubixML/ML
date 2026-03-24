@@ -70,7 +70,7 @@ class AdaGrad implements Optimizer, Adaptive
     {
         $class = get_class($param->param());
 
-        if ($class === false) {
+        if (!$class) {
             throw new RuntimeException('Could not locate parameter class.');
         }
 

@@ -271,7 +271,7 @@ class FunctionsTest extends TestCase
      * @param bool $expected
      */
     #[DataProvider('iteratorContainsNanProvider')]
-    public function iteratorContainsNan(array $values, bool $expected) : void
+    public function testIteratorContainsNan(array $values, bool $expected) : void
     {
         $this->assertEquals($expected, iterator_contains_nan($values));
     }

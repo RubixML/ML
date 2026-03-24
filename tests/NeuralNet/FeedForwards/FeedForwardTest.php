@@ -128,4 +128,31 @@ class FeedForwardTest extends TestCase
 
         self::assertIsFloat($loss);
     }
+
+    #[Test]
+    #[TestDox('Infers successfully from a sparse-keyed dataset when packSamples is enabled')]
+    public function inferWithPackedSamples() : void
+    {
+        $dataset = Labeled::quick([
+            10 => [
+                2 => 1.0,
+                9 => 2.5,
+            ],
+            20 => [
+                1 => 0.1,
+                7 => 0.0,
+            ],
+            30 => [
+                8 => -6.0,
+                4 => 0.002,
+            ],
+        ], ['yes', 'no', 'maybe']);
+
+        $network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001), true);
+        $network->initialize();
+
+        $output = $network->infer($dataset);
+
+        self::assertEquals([3, 3], $output->shape());
+    }
 }

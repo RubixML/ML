@@ -13,6 +13,18 @@ parameters:
 			path: src/BootstrapAggregator.php
 
 		-
+			message: '#^Method Rubix\\ML\\NeuralNet\\Networks\\FeedForward\\FeedForward\:\:prepareSamples\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<list\<mixed\>\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
+
+		-
 			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:losses\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -317,12 +329,6 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: src/Datasets/Unlabeled.php
-
-		-
-			message: '#^Call to function is_array\(\) with non\-empty\-array\<string, string\|null\> will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Extractors/CSV.php
 
 		-
 			message: '#^Parameter \#1 \$keys of function array_combine expects array\<int\|string\>, list\<string\|null\> given\.$#'
@@ -1507,13 +1513,13 @@ parameters:
 			path: src/Graph/Nodes/Isolator.php
 
 		-
-			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float|int|string>, non-empty-array<int<0, max>, mixed> given\.$#'
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float\|int\|string>, non\-empty\-array<int<0, max>, mixed> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Transformers/KNNImputer.php
 
 		-
-			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float|int|string>, non-empty-array<int<0, max>, mixed> given\.$#'
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float\|int\|string>, non\-empty\-array<int<0, max>, mixed> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Transformers/HotDeckImputer.php
