@@ -9,7 +9,8 @@ $finder = Finder::create()
         __DIR__ . '/vendor/',
     ])
     ->in([
-        __DIR__ . '/src/',
+        //__DIR__ . '/src/',
+        __DIR__ . '/tests/',
     ])
     ->append([
         __FILE__,
