@@ -88,7 +88,7 @@
         "benchmark": "phpbench run --report=aggregate",
         "check": [
             "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
-            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no"
+            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no --sequential"
         ],
         "fix": [
             "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
