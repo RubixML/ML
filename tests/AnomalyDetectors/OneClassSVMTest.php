@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\SVM\Polynomial;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\OneClassSVM;
