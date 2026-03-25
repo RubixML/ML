@@ -19,6 +19,7 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Kernels\SVM\RBF;
 
 #[Group('AnomalyDetectors')]
 #[RequiresPhpExtension('svm')]
@@ -38,7 +39,7 @@ class OneClassSVMTest extends TestCase
     /**
      * The minimum validation score required to pass the test.
      */
-    protected const float MIN_SCORE = 0.3;
+    protected const float MIN_SCORE = 0.5;
 
     /**
      * Constant used to see the random number generator.
@@ -70,8 +71,8 @@ class OneClassSVMTest extends TestCase
         );
 
         $this->estimator = new OneClassSVM(
-            nu: 0.01,
-            kernel: new Polynomial(degree: 4, gamma: 1e-3),
+            nu: 0.03,
+            kernel: new RBF(),
             shrinking: true,
             tolerance: 1e-4
         );
@@ -103,8 +104,8 @@ class OneClassSVMTest extends TestCase
     public function testParams() : void
     {
         $expected = [
-            'nu' => 0.01,
-            'kernel' => new Polynomial(degree: 4, gamma: 1e-3),
+            'nu' => 0.03,
+            'kernel' => new RBF(),
             'shrinking' => true,
             'tolerance' => 0.0001,
             'cache size' => 100.0,
