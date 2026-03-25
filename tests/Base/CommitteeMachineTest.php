@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CommitteeMachine;
@@ -70,29 +71,33 @@ class CommitteeMachineTest extends TestCase
     }
 
     #[Test]
-    public function testAssertPreConditions() : void
+    #[TestDox('Assert pre conditions')]
+    public function checkPreConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
     #[Test]
-    public function testType() : void
+    #[TestDox('Type')]
+    public function type() : void
     {
-        $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
+        self::assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
     #[Test]
-    public function testCompatibility() : void
+    #[TestDox('Compatibility')]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
     #[Test]
-    public function testParams() : void
+    #[TestDox('Params')]
+    public function params() : void
     {
         $expected = [
             'experts' => [
@@ -107,7 +112,7 @@ class CommitteeMachineTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expected, $this->estimator->params());
+        self::assertEquals($expected, $this->estimator->params());
     }
 
     /**
@@ -115,7 +120,8 @@ class CommitteeMachineTest extends TestCase
      */
     #[DataProvider('provideBackends')]
     #[Test]
-    public function testTrainPredict(Backend $backend) : void
+    #[TestDox('Train predict')]
+    public function trainPredict(Backend $backend) : void
     {
         $this->estimator->setBackend($backend);
 
@@ -124,7 +130,7 @@ class CommitteeMachineTest extends TestCase
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         /** @var list<int> $predictions */
         $predictions = $this->estimator->predict($testing);
@@ -136,11 +142,12 @@ class CommitteeMachineTest extends TestCase
             labels: $labels
         );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     #[Test]
-    public function testTrainIncompatible() : void
+    #[TestDox('Train incompatible')]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -148,7 +155,8 @@ class CommitteeMachineTest extends TestCase
     }
 
     #[Test]
-    public function testPredictUntrained() : void
+    #[TestDox('Predict untrained')]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
