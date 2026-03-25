@@ -20,14 +20,14 @@ interface Parametric
     /**
      * Return the parameters of the layer.
      *
-     * @return Generator<\Rubix\ML\NeuralNet\Parameters\Parameter>
+     * @return Generator<Parameter>
      */
     public function parameters() : Generator;
 
     /**
      * Restore the parameters on the layer from an associative array.
      *
-     * @param \Rubix\ML\NeuralNet\Parameters\Parameter[] $parameters
+     * @param Parameter[] $parameters
      */
     public function restore(array $parameters) : void;
 }

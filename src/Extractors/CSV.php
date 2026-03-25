@@ -9,7 +9,6 @@ use Traversable;
 use function Rubix\ML\iterator_first;
 use function is_dir;
 use function is_file;
-use function is_array;
 use function is_readable;
 use function is_writable;
 use function fopen;

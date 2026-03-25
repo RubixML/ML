@@ -77,7 +77,8 @@ class Placeholder1D implements Input
 
             throw new InvalidArgumentException(
                 'The number of features and input nodes must be equal,'
-                . " {$this->inputs} expected but {$features} given.");
+                . " {$this->inputs} expected but {$features} given."
+            );
         }
 
         return $input;

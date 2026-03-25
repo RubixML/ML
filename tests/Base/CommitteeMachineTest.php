@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests;
+namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CommitteeMachine;
@@ -68,26 +70,34 @@ class CommitteeMachineTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    #[TestDox('Assert pre conditions')]
+    public function checkPreConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    public function testType() : void
+    #[Test]
+    #[TestDox('Type')]
+    public function type() : void
     {
-        $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
+        self::assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    #[TestDox('Compatibility')]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    #[TestDox('Params')]
+    public function params() : void
     {
         $expected = [
             'experts' => [
@@ -102,14 +112,16 @@ class CommitteeMachineTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expected, $this->estimator->params());
+        self::assertEquals($expected, $this->estimator->params());
     }
 
     /**
      * @param Backend $backend
      */
     #[DataProvider('provideBackends')]
-    public function testTrainPredict(Backend $backend) : void
+    #[Test]
+    #[TestDox('Train predict')]
+    public function trainPredict(Backend $backend) : void
     {
         $this->estimator->setBackend($backend);
 
@@ -118,7 +130,7 @@ class CommitteeMachineTest extends TestCase
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         /** @var list<int> $predictions */
         $predictions = $this->estimator->predict($testing);
@@ -130,17 +142,21 @@ class CommitteeMachineTest extends TestCase
             labels: $labels
         );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    #[TestDox('Train incompatible')]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    #[TestDox('Predict untrained')]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -11,7 +11,6 @@ use NumPower;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\Rule\Parameters;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\BatchNorm\BatchNorm;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
@@ -330,7 +329,7 @@ class BatchNormTest extends TestCase
         $varArr = [];
         $stdInvArr = [];
 
-        for ($i = 0; $i < $rows; $i++) {
+        for ($i = 0; $i < $rows; ++$i) {
             $row = $input->toArray()[$i];
             $meanArr[$i] = NumPower::mean($row);
             $varArr[$i] = NumPower::variance($row);
@@ -358,12 +357,14 @@ class BatchNormTest extends TestCase
     /**
      * @param array<int, array<int, float>> $inputRows
      * @param array<int, array<int, float>> $outRows
+     * @param bool $checkMean
      */
     private function assertRowwiseStats(array $inputRows, array $outRows, bool $checkMean) : void
     {
         foreach ($outRows as $i => $row) {
             $mean = array_sum($row) / count($row);
             $var = 0.0;
+
             foreach ($row as $v) {
                 $var += ($v - $mean) * ($v - $mean);
             }
@@ -372,6 +373,7 @@ class BatchNormTest extends TestCase
             $orig = $inputRows[$i];
             $origMean = array_sum($orig) / count($orig);
             $origVar = 0.0;
+
             foreach ($orig as $ov) {
                 $origVar += ($ov - $origMean) * ($ov - $origMean);
             }

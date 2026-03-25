@@ -10,7 +10,6 @@ use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
 use Rubix\ML\Deferred;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
 use Rubix\ML\NeuralNet\Initializers\Base\Initializer;
@@ -182,7 +181,6 @@ class Dense implements Hidden, Parametric
      * @param NDArray $input
      * @return NDArray
      * @internal
-     *
      */
     public function forward(NDArray $input) : NDArray
     {
@@ -210,7 +208,6 @@ class Dense implements Hidden, Parametric
      * @param NDArray $input
      * @return NDArray
      * @internal
-     *
      */
     public function infer(NDArray $input) : NDArray
     {

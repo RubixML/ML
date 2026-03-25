@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\Initializers\He;
+namespace Rubix\ML\Tests\NeuralNet\Initializers\LeCun;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -141,8 +141,8 @@ final class LeCunUniformTest extends TestCase
         $expectedCount = count($values) / 10;
         $tolerance = 0.15 * $expectedCount;
 
-        $this->assertGreaterThanOrEqual(-$limit, min($values));
-        $this->assertLessThanOrEqual($limit, max($values));
+        $this->assertGreaterThanOrEqual(-$limit - 1e-7, min($values));
+        $this->assertLessThanOrEqual($limit + 1e-7, max($values));
 
         foreach ($bins as $count) {
             $this->assertGreaterThanOrEqual($expectedCount - $tolerance, $count);

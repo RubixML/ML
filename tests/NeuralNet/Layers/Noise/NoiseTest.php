@@ -36,29 +36,6 @@ class NoiseTest extends TestCase
 
     protected Noise $layer;
 
-    protected function setUp() : void
-    {
-        $this->fanIn = 3;
-
-        $this->input = NumPower::array([
-            [1.0, 2.5, -0.1],
-            [0.1, 0.0, 3.0],
-            [0.002, -6.0, -0.5],
-        ]);
-
-        $this->prevGrad = new Deferred(fn: function () : NDArray {
-            return NumPower::array([
-                [0.25, 0.7, 0.1],
-                [0.50, 0.2, 0.01],
-                [0.25, 0.1, 0.89],
-            ]);
-        });
-
-        $this->optimizer = new Stochastic(0.001);
-
-        $this->layer = new Noise(0.1);
-    }
-
     /**
      * @return array<int, array{0: array<int, array<int, float>>}>
      */
@@ -89,6 +66,29 @@ class NoiseTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->fanIn = 3;
+
+        $this->input = NumPower::array([
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+            [0.002, -6.0, -0.5],
+        ]);
+
+        $this->prevGrad = new Deferred(fn: function () : NDArray {
+            return NumPower::array([
+                [0.25, 0.7, 0.1],
+                [0.50, 0.2, 0.01],
+                [0.25, 0.1, 0.89],
+            ]);
+        });
+
+        $this->optimizer = new Stochastic(0.001);
+
+        $this->layer = new Noise(0.1);
     }
 
     #[Test]
@@ -146,9 +146,11 @@ class NoiseTest extends TestCase
 
         // 2) At least one element differs (very high probability)
         $allEqual = true;
+
         foreach ($inputArray as $i => $row) {
             if ($row !== $forwardArray[$i]) {
                 $allEqual = false;
+
                 break;
             }
         }
@@ -156,6 +158,7 @@ class NoiseTest extends TestCase
 
         // 3) Empirical std dev of (forward - input) is ~ stdDev, within tolerance
         $diffs = [];
+
         foreach ($inputArray as $i => $row) {
             foreach ($row as $j => $v) {
                 $diffs[] = $forwardArray[$i][$j] - $v;
@@ -166,6 +169,7 @@ class NoiseTest extends TestCase
         $mean = array_sum($diffs) / $n;
 
         $var = 0.0;
+
         foreach ($diffs as $d) {
             $var += ($d - $mean) * ($d - $mean);
         }
