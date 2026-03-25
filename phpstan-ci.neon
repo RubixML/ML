@@ -9,6 +9,16 @@ parameters:
         # Removing of these errors require code refactoring
         # ----------------------------------------------------
         -
+            message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$counts \(array<string, list<array<int<0, max>>>>\) does not accept non\-empty\-array<array<array<int<0, max>>>>\.$#'
+            identifier: assign.propertyType
+            path: src/Classifiers/NaiveBayes.php
+
+        -
+            message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$probs \(array<string, list<array<float>>>\) does not accept non\-empty\-array<array<array<float>>>\.$#'
+            identifier: assign.propertyType
+            path: src/Classifiers/NaiveBayes.php
+
+        -
             message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array<int\|string, int<1, max>> given\.$#'
             identifier: argument.type
             path: src/Classifiers/RandomForest.php
