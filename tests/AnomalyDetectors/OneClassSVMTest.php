@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\OneClassSVM;
@@ -19,6 +18,7 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Kernels\SVM\RBF;
 
 #[Group('AnomalyDetectors')]
 #[RequiresPhpExtension('svm')]
@@ -70,8 +70,8 @@ class OneClassSVMTest extends TestCase
         );
 
         $this->estimator = new OneClassSVM(
-            nu: 0.01,
-            kernel: new Polynomial(degree: 4, gamma: 1e-3),
+            nu: 0.03,
+            kernel: new RBF(),
             shrinking: true,
             tolerance: 1e-4
         );
@@ -103,7 +103,7 @@ class OneClassSVMTest extends TestCase
     public function testParams() : void
     {
         $expected = [
-            'nu' => 0.3,
+            'nu' => 0.03,
             'kernel' => new RBF(),
             'shrinking' => true,
             'tolerance' => 0.0001,

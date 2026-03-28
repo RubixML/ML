@@ -79,8 +79,8 @@ class VMeasure implements Metric
      */
     public function score(array $predictions, array $labels) : float
     {
-        $homogeneity = (new Homogeneity())->score($predictions, $labels);
-        $completeness = (new Completeness())->score($predictions, $labels);
+        $homogeneity = new Homogeneity()->score($predictions, $labels);
+        $completeness = new Completeness()->score($predictions, $labels);
 
         return (1.0 + $this->beta) * $homogeneity * $completeness
             / (($this->beta * $homogeneity + $completeness) ?: EPSILON);

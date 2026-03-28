@@ -166,6 +166,7 @@ class BinaryTest extends TestCase
 
         // Build expected NDArray (1, batch) using the Binary classes mapping: hot=>0.0, cold=>1.0
         $expected = [];
+
         foreach ($this->labels as $label) {
             $expected[] = ($label === 'cold') ? 1.0 : 0.0;
         }

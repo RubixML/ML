@@ -8,18 +8,23 @@ $finder = Finder::create()
         __DIR__ . '/docs/',
         __DIR__ . '/vendor/',
     ])
-    ->in(__DIR__)
+    ->in([
+        __DIR__ . '/benchmarks/',
+        __DIR__ . '/src/',
+        __DIR__ . '/tests/',
+    ])
     ->append([
         __FILE__,
     ]);
 
 $config = new Config();
 $config
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setCacheFile(__DIR__ . '/runtime/.php-cs-fixer.cache')
     ->setRules(
         [
             '@PSR2' => true,
-            '@PHP84Migration' => true,
+            '@PHP8x4Migration' => true,
             'align_multiline_comment' => true,
             'array_syntax' => ['syntax' => 'short'],
             'backtick_to_shell_exec' => true,

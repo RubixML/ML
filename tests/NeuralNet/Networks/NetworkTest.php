@@ -6,22 +6,20 @@ namespace Rubix\ML\Tests\NeuralNet\Networks;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
-use Rubix\ML\NeuralNet\Layers\Dense\Dense;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
-use Rubix\ML\NeuralNet\Layers\Activation\Activation;
-use Rubix\ML\NeuralNet\Layers\Multiclass\Multiclass;
-use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
-use Rubix\ML\NeuralNet\Networks\Network;
-use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
-use PHPUnit\Framework\TestCase;
-use ReflectionMethod;
+use Rubix\ML\NeuralNet\Layers\Activation\Activation;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
+use Rubix\ML\NeuralNet\Layers\Dense\Dense;
+use Rubix\ML\NeuralNet\Layers\Multiclass\Multiclass;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
+use Rubix\ML\NeuralNet\Networks\FeedForward\FeedForward;
+use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 
 #[Group('NeuralNet')]
 #[CoversClass(Network::class)]
@@ -66,7 +64,7 @@ class NetworkTest extends TestCase
             costFn: new CrossEntropy()
         );
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             input: $this->input,
             hidden: $this->hidden,
             output: $this->output,
@@ -74,8 +72,6 @@ class NetworkTest extends TestCase
         );
     }
 
-    #[Test]
-    #[TestDox('Layers iterator yields all layers')]
     public function testLayers() : void
     {
         $count = 0;
@@ -87,51 +83,20 @@ class NetworkTest extends TestCase
         self::assertSame(7, $count);
     }
 
-    #[Test]
-    #[TestDox('Input layer is Placeholder1D')]
     public function testInput() : void
     {
         self::assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
-    #[Test]
-    #[TestDox('Hidden layers count')]
     public function testHidden() : void
     {
         self::assertCount(5, $this->network->hidden());
     }
 
-    #[Test]
-    #[TestDox('Num params')]
     public function testNumParams() : void
     {
         $this->network->initialize();
 
         self::assertEquals(103, $this->network->numParams());
-    }
-
-    #[Test]
-    #[TestDox('Normalize samples returns packed list-of-lists for NumPower')]
-    public function testNormalizeSamplesReturnsPackedListOfLists() : void
-    {
-        $samples = [
-            10 => [2 => 1.0, 5 => 2.0, 9 => 10],
-            20 => [2 => 3.0, 7 => 4.0, 1 => 1.0],
-        ];
-
-        $method = new ReflectionMethod(Network::class, 'normalizeSamples');
-        $method->setAccessible(true);
-
-        /** @var array $normalized */
-        $normalized = $method->invoke($this->network, $samples);
-
-        self::assertTrue(array_is_list($normalized));
-        self::assertCount(2, $normalized);
-
-        foreach ($normalized as $row) {
-            self::assertTrue(array_is_list($row));
-        }
-
-        self::assertSame([[1.0, 2.0, 10], [3.0, 4.0, 1.0]], $normalized);
     }
 }

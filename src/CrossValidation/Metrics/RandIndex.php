@@ -72,7 +72,7 @@ class RandIndex implements Metric
      */
     public function score(array $predictions, array $labels) : float
     {
-        $table = (new ContingencyTable())->generate($labels, $predictions);
+        $table = new ContingencyTable()->generate($labels, $predictions);
 
         $table = Matrix::build($table->toArray());
 

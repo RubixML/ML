@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -139,9 +140,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The underlying neural network instance.
      *
-     * @var Network|null
+     * @var FeedForward|null
      */
-    protected ?Network $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The unique class labels.
@@ -370,7 +371,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Multiclass($classes, $this->costFn),

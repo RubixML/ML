@@ -13,13 +13,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Deferred;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Initializers\Base\Initializer;
 use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
 use Rubix\ML\NeuralNet\Layers\Dense\Dense;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\He\HeUniform;
-use Rubix\ML\NeuralNet\Initializers\He\HeNormal;
 use Rubix\ML\NeuralNet\Parameters\Parameter as TrainableParameter;
 use PHPUnit\Framework\TestCase;
 
@@ -155,7 +153,7 @@ class DenseTest extends TestCase
 
         $this->layer->restore([
             'weights' => new TrainableParameter(NumPower::array($weights)),
-            'biases'  => new TrainableParameter(NumPower::array($biases)),
+            'biases' => new TrainableParameter(NumPower::array($biases)),
         ]);
 
         $forward = $this->layer->forward($this->input);
@@ -176,7 +174,7 @@ class DenseTest extends TestCase
 
         $this->layer->restore([
             'weights' => new TrainableParameter(NumPower::array($weightsArray)),
-            'biases'  => new TrainableParameter(NumPower::array([0.0, 0.0])),
+            'biases' => new TrainableParameter(NumPower::array([0.0, 0.0])),
         ]);
 
         $weights = $this->layer->weights();
@@ -256,7 +254,7 @@ class DenseTest extends TestCase
 
         $this->layer->restore([
             'weights' => new TrainableParameter(NumPower::array($weights)),
-            'biases'  => new TrainableParameter(NumPower::array($biases)),
+            'biases' => new TrainableParameter(NumPower::array($biases)),
         ]);
 
         $forward = $this->layer->forward($this->input);
@@ -278,11 +276,11 @@ class DenseTest extends TestCase
         $biasesArray = [0.0, 0.0];
 
         $weightsParam = new TrainableParameter(NumPower::array($weightsArray));
-        $biasesParam  = new TrainableParameter(NumPower::array($biasesArray));
+        $biasesParam = new TrainableParameter(NumPower::array($biasesArray));
 
         $this->layer->restore([
             'weights' => $weightsParam,
-            'biases'  => $biasesParam,
+            'biases' => $biasesParam,
         ]);
 
         $params = iterator_to_array($this->layer->parameters());

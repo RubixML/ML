@@ -13,25 +13,19 @@ parameters:
 			path: src/BootstrapAggregator.php
 
 		-
-			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:losses\(\) return type has no value type specified in iterable type array\.$#'
+			message: '#^Method Rubix\\ML\\NeuralNet\\Networks\\FeedForward\\FeedForward\:\:prepareSamples\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: src/Classifiers/AdaBoost.php
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
 
 		-
-			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:predict\(\) should return list\<string\> but returns list\<int\|string\>\.$#'
-			identifier: return.type
+			message: '#^Parameter \#1 \$array \(list\<list\<mixed\>\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
 			count: 1
-			path: src/Classifiers/AdaBoost.php
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
 
 		-
-			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:score\(\) should return list\<array\<float\>\> but returns array\<int\<0, max\>, array\<int\|string, float\>\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Classifiers/AdaBoost.php
-
-		-
-			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:steps\(\) return type has no value type specified in iterable type array\.$#'
+			message: '#^Method Rubix\\ML\\Classifiers\\AdaBoost\:\:losses\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Classifiers/AdaBoost.php
@@ -109,32 +103,8 @@ parameters:
 			path: src/Classifiers/NaiveBayes.php
 
 		-
-			message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$counts \(array\<string, list\<array\<int\<0, max\>\>\>\>\) does not accept non\-empty\-array\<array\<array\<int\<0, max\>\>\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Classifiers/NaiveBayes.php
-
-		-
-			message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$probs \(array\<string, list\<array\<float\>\>\>\) does not accept non\-empty\-array\<array\<array\<float\>\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Classifiers/NaiveBayes.php
-
-		-
-			message: '#^Method Rubix\\ML\\Classifiers\\RandomForest\:\:proba\(\) should return list\<array\<string, float\>\> but returns array\<int, non\-empty\-array\<float\>\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Classifiers/RandomForest.php
-
-		-
 			message: '#^PHPDoc tag @var with type array\<string, int\> is not subtype of native type array\<int\<1, max\>\>\.$#'
 			identifier: varTag.nativeType
-			count: 1
-			path: src/Classifiers/RandomForest.php
-
-		-
-			message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array\<int\<1, max\>\> given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Classifiers/RandomForest.php
 
@@ -163,58 +133,10 @@ parameters:
 			path: src/Clusterers/FuzzyCMeans.php
 
 		-
-			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Clusterers\\GaussianMixture\:\:jointLogLikelihood\(\) expects list\<float\|int\>, array\<float\|int\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$means \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<\-1, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$means \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<0, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$variances \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<\-1, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
-			message: '#^Property Rubix\\ML\\Clusterers\\GaussianMixture\:\:\$variances \(list\<list\<float\>\>\) does not accept non\-empty\-array\<int\<0, max\>, list\<float\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Clusterers/GaussianMixture.php
-
-		-
 			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list\<int\>, array given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Clusterers/KMeans.php
-
-		-
-			message: '#^Parameter \#1 \$current of method Rubix\\ML\\Clusterers\\MeanShift\:\:shift\(\) expects list\<array\<float\|int\>\>, array\<int\<0, max\>, list\<float\|int\>\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/MeanShift.php
-
-		-
-			message: '#^Parameter \#2 \$b of method Rubix\\ML\\Kernels\\Distance\\Distance\:\:compute\(\) expects list\<float\|int\|string\>, array\<float\|int\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Clusterers/MeanShift.php
-
-		-
-			message: '#^Parameter \#2 \$previous of method Rubix\\ML\\Clusterers\\MeanShift\:\:shift\(\) expects list\<array\<float\|int\>\>, array\<int\<0, max\>, list\<float\|int\>\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Clusterers/MeanShift.php
 
 		-
 			message: '#^Property Rubix\\ML\\Clusterers\\Seeders\\Preset\:\:\$centroids \(list\<list\<float\|int\|string\>\>\) does not accept non\-empty\-list\<array\<float\|int\|string\>\>\.$#'
@@ -367,12 +289,6 @@ parameters:
 			path: src/Datasets/Dataset.php
 
 		-
-			message: '#^Offset 0 on non\-empty\-list\<list\<mixed\>\> on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: src/Datasets/Dataset.php
-
-		-
 			message: '#^Property Rubix\\ML\\Datasets\\Dataset\:\:\$samples \(list\<list\<mixed\>\>\) does not accept array\<mixed\>\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -385,26 +301,8 @@ parameters:
 			path: src/Datasets/Generators/Agglomerate.php
 
 		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Datasets/Generators/Agglomerate.php
-
-		-
 			message: '#^Instanceof between Rubix\\ML\\Datasets\\Labeled and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/Datasets/Labeled.php
-
-		-
-			message: '#^PHPDoc tag @var with type array\<Rubix\\ML\\Datasets\\Labeled\> is not subtype of native type array\<non\-empty\-list\>\.$#'
-			identifier: varTag.nativeType
-			count: 1
-			path: src/Datasets/Labeled.php
-
-		-
-			message: '#^PHPDoc tag @var with type list\<Rubix\\ML\\Datasets\\Labeled\> is not subtype of native type array\<non\-empty\-list\>\.$#'
-			identifier: varTag.nativeType
 			count: 1
 			path: src/Datasets/Labeled.php
 
@@ -431,12 +329,6 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: src/Datasets/Unlabeled.php
-
-		-
-			message: '#^Call to function is_array\(\) with non\-empty\-array\<string, string\|null\> will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Extractors/CSV.php
 
 		-
 			message: '#^Parameter \#1 \$keys of function array_combine expects array\<int\|string\>, list\<string\|null\> given\.$#'
@@ -541,12 +433,6 @@ parameters:
 			path: src/Kernels/Distance/Diagonal.php
 
 		-
-			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\Network\:\:backpropagate\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/NeuralNet/Network.php
-
-		-
 			message: '#^Instanceof between Rubix\\ML\\Transformers\\Transformer and Rubix\\ML\\Transformers\\Transformer will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -623,18 +509,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Transformers/ImageResizer.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 2
-			path: src/Transformers/ImageResizer.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 2
-			path: src/Transformers/ImageVectorizer.php
 
 		-
 			message: '#^Parameter \#1 \.\.\.\$arg1 of function max expects non\-empty\-array, array\<mixed\> given\.$#'
@@ -1577,4 +1451,154 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Helpers/ParamsTest.php
+
+		-
+			message: '#^Possibly invalid array key type float\|int\|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/AnomalyDetectors/LocalOutlierFactor.php
+
+		-
+			message: '#^Possibly invalid array key type float\|int\|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Classifiers/AdaBoost.php
+
+		-
+			message: '#^Possibly invalid array key type float\|int\|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 3
+			path: src/Classifiers/KNearestNeighbors.php
+
+		-
+			message: '#^Invalid array key type float\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Classifiers/SVC.php
+
+		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 1
+			path: src/Classifiers/NaiveBayes.php
+
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Ball\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Ball.php
+
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Split\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Split.php
+
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Box\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Box.php
+
+		-
+			message: '#^Property Rubix\\ML\\Datasets\\Dataset\:\:\$samples on left side of \?\? is not nullable nor uninitialized\.$#'
+			identifier: nullCoalesce.initializedProperty
+			count: 1
+			path: src/Datasets/Dataset.php
+
+		-
+			message: '#^Property Rubix\\ML\\Graph\\Nodes\\Isolator\:\:\$subsets in isset\(\) is not nullable nor uninitialized\.$#'
+			identifier: isset.initializedProperty
+			count: 1
+			path: src/Graph/Nodes/Isolator.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float\|int\|string>, non\-empty\-array<int<0, max>, mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/KNNImputer.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::nearest\(\) expects list<float\|int\|string>, non\-empty\-array<int<0, max>, mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Transformers/HotDeckImputer.php
+
+		-
+			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\FeedForward::backpropagate\(\) expects list<float|int|string>, array<mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/NeuralNet/FeedForward.php
+
+		-
+			message: '#^Parameter \#1 \$labels of method Rubix\\ML\\NeuralNet\\Networks\\FeedForward\\FeedForward::backpropagate\(\) expects list<float|int|string>, array<mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/NeuralNet/Networks/FeedForward/FeedForward.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Graph\\Trees\\Spatial::range\(\) expects list<float|int|string>, array<int<0, max>, float|int> given\.$#'
+			identifier: argument.type
+			count: 6
+			path: src/Clusterers/MeanShift.php
+
+		-
+			message: '#^Parameter \#1 \$b of method Tensor\\Matrix::matmul\(\) expects Tensor\\Matrix, Tensor\\Matrix|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/AnomalyDetectors/Loda.php
+
+		-
+			message: '#^Parameter \#1 \$sample of method Rubix\\ML\\Clusterers\\GaussianMixture::jointLogLikelihood\(\) expects list<float|int>, array<float|int> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Clusterers/GaussianMixture.php
+
+		-
+			message: '#^Call to an undefined method Rubix\\ML\\NeuralNet\\ActivationFunctions\\Base\\Contracts\\ActivationFunction::differentiate\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/NeuralNet/Layers/Activation/Activation.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\VantagePoint::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/VantagePoint.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Split::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Split.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Isolator::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Isolator.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Box::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Box.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Nodes\\Ball::\$subsets because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Nodes/Ball.php
+
+		-
+			message: '#^Cannot unset property Rubix\\ML\\Graph\\Trees\\VantageTree::\$root because it might have hooks in a subclass\.$#'
+			identifier: unset.possiblyHookedProperty
+			count: 1
+			path: src/Graph/Trees/VantageTree.php
+
+		-
+			message: '#^Possibly invalid array key type float|int|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Datasets/Labeled.php
 

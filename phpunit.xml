@@ -12,7 +12,7 @@
   processIsolation="true"
   stopOnFailure="false"
   testdox="true"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+  xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
 >
   <source>
     <include>

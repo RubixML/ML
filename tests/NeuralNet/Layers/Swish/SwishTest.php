@@ -35,6 +35,43 @@ class SwishTest extends TestCase
 
     protected Swish $layer;
 
+    /**
+     * @return array<int, array<string, array<int, array<int, float>>>>
+     */
+    public static function initializeForwardBackInferProvider() : array
+    {
+        return [
+            [
+                'forwardExpected' => [
+                    [0.7310585, 2.3103545, -0.0475020],
+                    [0.0524979, 0.0524979, 2.8577223],
+                    [0.0010009, -0.0148357, -0.1887703],
+                ],
+                'backExpected' => [
+                    [0.2319176, 0.7695808, 0.0450083],
+                    [0.2749583, 0.1099833, 0.0108810],
+                    [0.1252494, -0.0012326, 0.2314345],
+                ],
+                'inferExpected' => [
+                    [0.7306671, 2.3094806, -0.0475070],
+                    [0.0524976, 0.0524976, 2.8576817],
+                    [0.0010010, -0.0147432, -0.1887089],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{0: float, 1: string}>
+     */
+    public static function toStringProvider() : array
+    {
+        return [
+            'value one' => [1.0, 'Swish (initializer: Constant (value: 1))'],
+            'value zero' => [0.0, 'Swish (initializer: Constant (value: 0))'],
+        ];
+    }
+
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -58,50 +95,12 @@ class SwishTest extends TestCase
         $this->layer = new Swish(new Constant(1.0));
     }
 
-    /**
-     * @return array<int, array<string, array<int, array<int, float>>>>
-     */
-    public static function initializeForwardBackInferProvider() : array
-    {
-        return [
-            [
-                'forwardExpected' => [
-                    [0.7310585, 2.3103545, -0.0475020],
-                    [0.0524979, 0.0524979, 2.8577223],
-                    [0.0010009, -0.0148357, -0.1887703],
-                ],
-                'backExpected' => [
-                    [0.2319176, 0.7695808, 0.0450083],
-                    [0.2749583, 0.1099833, 0.0108810],
-                    [0.1252493, -0.0012326, 0.2314345],
-                ],
-                'inferExpected' => [
-                    [0.7306671, 2.3094806, -0.0475070],
-                    [0.0524976, 0.0524976, 2.8576817],
-                    [0.0010010, -0.0147432, -0.1887089],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array{0: float, 1: string}>
-     */
-    public static function toStringProvider() : array
-    {
-        return [
-            'value one' => [1.0, 'Swish (initializer: Constant (value: 1))'],
-            'value zero' => [0.0, 'Swish (initializer: Constant (value: 0))'],
-        ];
-    }
-
     #[DataProvider('initializeForwardBackInferProvider')]
     public function testInitializeForwardBackInfer(
         array $forwardExpected,
         array $backExpected,
         array $inferExpected,
-    ) : void
-    {
+    ) : void {
         $this->layer->initialize($this->fanIn);
 
         self::assertEquals($this->fanIn, $this->layer->width());

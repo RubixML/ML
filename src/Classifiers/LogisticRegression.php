@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -108,9 +109,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * The underlying neural network instance.
      *
-     * @var Network|null
+     * @var FeedForward|null
      */
-    protected ?Network $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The unique class labels.
@@ -289,7 +290,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->network = new Network(
+        $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->l2Penalty, true, new Xavier1())],
             new Binary($classes, $this->costFn),

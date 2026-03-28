@@ -23,17 +23,6 @@ class Placeholder1DTest extends TestCase
 
     protected Placeholder1D $layer;
 
-    protected function setUp() : void
-    {
-        $this->input = NumPower::array([
-            [1.0, 2.5],
-            [0.1, 0.0],
-            [0.002, -6.0],
-        ]);
-
-        $this->layer = new Placeholder1D(3);
-    }
-
     /**
      * @return array<int, array{NDArray,array<int, array<int, float>>}>
      */
@@ -53,6 +42,17 @@ class Placeholder1DTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->input = NumPower::array([
+            [1.0, 2.5],
+            [0.1, 0.0],
+            [0.002, -6.0],
+        ]);
+
+        $this->layer = new Placeholder1D(3);
     }
 
     #[Test]

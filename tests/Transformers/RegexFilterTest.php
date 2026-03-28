@@ -34,7 +34,7 @@ class RegexFilterTest extends TestCase
     {
         $dataset = Unlabeled::quick([
             ['I was not proud of what I had learned, but I never doubted that it was worth $$$ knowing..'],
-            ['Too weird to live, support@rubixml.com too rare to die https://rubixml.com'],
+            ['Too weird to live, support@rubixml.org too rare to die https://rubixml.org'],
             ['A man who procrastinates in @his choosing will inevitably have his choice    made for him by #circumstance'],
             ['The quick quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of Cola cola'],
             ['Diese₂ äpfel Äpfel schmecken sehr gut'],
