@@ -428,7 +428,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         }
 
         // Convert the weight matrix to a plain PHP array because the current NDArray build
-        // does not expose a stable row-extraction helper (e.g. rowAsVector()).
+        // does not expose a stable row-extraction helper (e.g. rowAsVector())
         $weights = NumPower::abs($layer->weights())->toArray();
 
         // This model has a single output neuron, so the first row contains the per-feature weights.
