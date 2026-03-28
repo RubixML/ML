@@ -78,7 +78,8 @@ class MLPRegressorTest extends TestCase
             window: 5,
             holdOut: 0.1,
             costFn: new LeastSquares(),
-            metric: new RMSE()
+            metric: new RMSE(),
+            packSamples: true,
         );
 
         $this->metric = new RSquared();

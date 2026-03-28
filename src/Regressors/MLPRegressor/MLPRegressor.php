@@ -14,7 +14,6 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Snapshots\Snapshot;
-use Rubix\ML\NeuralNet\Networks\Network;
 use Rubix\ML\NeuralNet\Layers\Dense\Dense;
 use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
 use Rubix\ML\Traits\AutotrackRevisions;
@@ -22,9 +21,11 @@ use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous\Continuous;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
+use Rubix\ML\NeuralNet\Networks\FeedForward\FeedForward;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier\XavierUniform;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -106,7 +107,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var int
      */
-    protected $evalInterval;
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -139,9 +140,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The underlying neural network instance.
      *
-     * @var Network|null
+     * @var FeedForward|null
      */
-    protected ?Network $network = null;
+    protected ?FeedForward $network = null;
 
     /**
      * The validation scores at each epoch from the last training session.
@@ -158,7 +159,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?array $losses = null;
 
     /**
-     * @param Hidden[] $hiddenLayers
+     * Whether to pack the samples.
+     *
+     * @var bool
+     */
+    private bool $packSamples;
+
+    /**
+     * @param list<mixed> $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param int $epochs
@@ -168,7 +176,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
-     * @throws InvalidArgumentException
+     * @param bool $packSamples
      */
     public function __construct(
         array $hiddenLayers = [],
@@ -180,7 +188,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         int $window = 5,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
+        bool $packSamples = false
     ) {
         foreach ($hiddenLayers as $layer) {
             if (!$layer instanceof Hidden) {
@@ -233,6 +242,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
+        $this->packSamples = $packSamples;
     }
 
     /**
@@ -337,9 +347,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return Network|null
+     * @return FeedForward|null
      */
-    public function network() : ?Network
+    public function network() : ?FeedForward
     {
         return $this->network;
     }
@@ -347,7 +357,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -357,11 +367,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers[] = new Dense(1, 0.0, true, new XavierUniform());
 
-        $this->network = new Network(
-            new Placeholder1D($dataset->numFeatures()),
-            $hiddenLayers,
-            new Continuous($this->costFn),
-            $this->optimizer
+        $this->network = new FeedForward(
+            input: new Placeholder1D($dataset->numFeatures()),
+            hidden: $hiddenLayers,
+            output: new Continuous($this->costFn),
+            optimizer: $this->optimizer,
+            packSamples: $this->packSamples
         );
 
         $this->network->initialize();
@@ -372,7 +383,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      * @throws RuntimeException
      */
     public function partial(Dataset $dataset) : void

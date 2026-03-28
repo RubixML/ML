@@ -1602,3 +1602,8 @@ parameters:
 			count: 1
 			path: src/Datasets/Labeled.php
 
+		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list<float\|int\|string>, array<mixed> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Regressors/MLPRegressor/MLPRegressor.php

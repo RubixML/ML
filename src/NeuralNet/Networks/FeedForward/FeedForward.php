@@ -73,6 +73,13 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
+     * Whether to pack the samples.
+     *
+     * @var bool
+     */
+    private bool $packSamples;
+
+    /**
      * @param Input $input
      * @param Hidden[] $hidden
      * @param Output $output

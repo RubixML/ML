@@ -11,19 +11,23 @@ parameters:
         -
             message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$counts \(array<string, list<array<int<0, max>>>>\) does not accept non\-empty\-array<array<array<int<0, max>>>>\.$#'
             identifier: assign.propertyType
+            count: 1
             path: src/Classifiers/NaiveBayes.php
 
         -
             message: '#^Property Rubix\\ML\\Classifiers\\NaiveBayes\:\:\$probs \(array<string, list<array<float>>>\) does not accept non\-empty\-array<array<array<float>>>\.$#'
             identifier: assign.propertyType
+            count: 1
             path: src/Classifiers/NaiveBayes.php
 
         -
             message: '#^Parameter \#1 \.\.\.\$arg1 of function min expects non\-empty\-array, array<int\|string, int<1, max>> given\.$#'
             identifier: argument.type
+            count: 1
             path: src/Classifiers/RandomForest.php
 
         -
             message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list<int>, array<mixed> given\.$#'
             identifier: argument.type
+            count: 1
             path: src/Clusterers/KMeans.php
