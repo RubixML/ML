@@ -91,7 +91,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Assert pre conditions')]
-    public function assertPreConditions() : void
+    public function preConditions() : void
     {
         self::assertFalse($this->estimator->trained());
     }
