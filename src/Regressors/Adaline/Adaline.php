@@ -53,6 +53,7 @@ use function number_format;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
 {
@@ -263,7 +264,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return Network|null
+     * @return FeedForward|null
      */
     public function network() : ?FeedForward
     {
