@@ -278,6 +278,24 @@ class MLPRegressorTest extends TestCase
         }
     }
 
+    #[Test]
+    #[TestDox('Train incompatible')]
+    public function testTrainIncompatible() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
+    }
+
+    #[Test]
+    #[TestDox('Predict untrained')]
+    public function testPredictUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict(Unlabeled::quick());
+    }
+
     /**
      * @return array{0: Unlabeled}
      */
@@ -296,23 +314,5 @@ class MLPRegressorTest extends TestCase
         $this->estimator->partial($folds[2]);
 
         return [$testing];
-    }
-
-    #[Test]
-    #[TestDox('Train incompatible')]
-    public function testTrainIncompatible() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
-    }
-
-    #[Test]
-    #[TestDox('Predict untrained')]
-    public function testPredictUntrained() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->estimator->predict(Unlabeled::quick());
     }
 }
