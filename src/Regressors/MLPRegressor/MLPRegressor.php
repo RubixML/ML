@@ -3,8 +3,8 @@
 namespace Rubix\ML\Regressors\MLPRegressor;
 
 use Generator;
-use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
