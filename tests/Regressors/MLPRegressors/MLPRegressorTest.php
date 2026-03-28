@@ -91,14 +91,14 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Assert pre conditions')]
-    public function testAssertPreConditions() : void
+    public function assertPreConditions() : void
     {
         self::assertFalse($this->estimator->trained());
     }
 
     #[Test]
     #[TestDox('Bad batch size')]
-    public function testBadBatchSize() : void
+    public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -107,14 +107,14 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Type')]
-    public function testType() : void
+    public function type() : void
     {
         self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     #[Test]
     #[TestDox('Compatibility')]
-    public function testCompatibility() : void
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -125,7 +125,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Params')]
-    public function testParams() : void
+    public function params() : void
     {
         $expected = [
             'hidden layers' => [
@@ -152,7 +152,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Train partial predict')]
-    public function testTrainPartialPredict() : void
+    public function trainPartialPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -198,7 +198,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Predict count matches number of samples')]
-    public function testPredictCountMatchesNumberOfSamples() : void
+    public function predictCountMatchesNumberOfSamples() : void
     {
         [$testing] = $this->trainEstimatorAndGetTestingSet();
 
@@ -209,7 +209,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Predict returns numeric finite values')]
-    public function testPredictReturnsNumericFiniteValues() : void
+    public function predictReturnsNumericFiniteValues() : void
     {
         [$testing] = $this->trainEstimatorAndGetTestingSet();
 
@@ -226,7 +226,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Predict is repeatable for same model and dataset')]
-    public function testPredictIsRepeatableForSameModelAndDataset() : void
+    public function predictIsRepeatableForSameModelAndDataset() : void
     {
         [$testing] = $this->trainEstimatorAndGetTestingSet();
 
@@ -243,7 +243,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Predict does not mutate dataset samples or labels')]
-    public function testPredictDoesNotMutateDataset() : void
+    public function predictDoesNotMutateDataset() : void
     {
         [$testing] = $this->trainEstimatorAndGetTestingSet();
 
@@ -259,7 +259,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Serialization preserves predict output')]
-    public function testSerializationPreservesPredictOutput() : void
+    public function serializationPreservesPredictOutput() : void
     {
         [$testing] = $this->trainEstimatorAndGetTestingSet();
 
@@ -281,7 +281,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Train incompatible')]
-    public function testTrainIncompatible() : void
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -290,7 +290,7 @@ class MLPRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Predict untrained')]
-    public function testPredictUntrained() : void
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
