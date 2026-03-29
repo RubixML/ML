@@ -60,6 +60,7 @@ use function get_object_vars;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {

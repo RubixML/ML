@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/Ridge.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/Ridge/Ridge.php">[source]</a></span>
 
 # Ridge
 L2 regularized linear regression solved using a closed-form solution. The addition of regularization, controlled by the *alpha* hyper-parameter, makes Ridge less likely to overfit the training data than ordinary least squares (OLS).
@@ -14,7 +14,7 @@ L2 regularized linear regression solved using a closed-form solution. The additi
 
 ## Example
 ```php
-use Rubix\ML\Regressors\Ridge;
+use Rubix\ML\Regressors\Ridge\Ridge;
 
 $estimator = new Ridge(2.0);
 ```
