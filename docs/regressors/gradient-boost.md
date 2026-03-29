@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/GradientBoost.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/GradientBoost/GradientBoost.php">[source]</a></span>
 
 # Gradient Boost
 Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training boosters (Decision Trees) to correct the error residuals of a base learner.
@@ -28,8 +28,8 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 
 ## Example
 ```php
-use Rubix\ML\Regressors\GradientBoost;
-use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Regressors\GradientBoost\GradientBoost;
+use Rubix\ML\Regressors\RegressionTree\RegressionTree;
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 
 $estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 3, 10, 0.1, new SMAPE());
