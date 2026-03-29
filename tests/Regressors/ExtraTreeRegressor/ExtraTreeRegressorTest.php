@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\Regressors\Adaline;
+namespace Rubix\ML\Tests\Regressors\ExtraTreeRegressor;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -12,19 +12,16 @@ use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Generators\Hyperplane\Hyperplane;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Loggers\BlackHole;
-use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\HuberLoss;
-use Rubix\ML\Regressors\Adaline\Adaline;
+use Rubix\ML\Regressors\ExtraTreeRegressor;
+use Rubix\ML\Transformers\IntervalDiscretizer;
 
 #[Group('Regressors')]
-#[CoversClass(Adaline::class)]
-class AdalineTest extends TestCase
+#[CoversClass(ExtraTreeRegressor::class)]
+class ExtraTreeRegressorTest extends TestCase
 {
     /**
      * The number of samples in the training set.
@@ -48,7 +45,7 @@ class AdalineTest extends TestCase
 
     protected Hyperplane $generator;
 
-    protected Adaline $estimator;
+    protected ExtraTreeRegressor $estimator;
 
     protected RSquared $metric;
 
@@ -56,18 +53,15 @@ class AdalineTest extends TestCase
     {
         $this->generator = new Hyperplane(
             coefficients: [1.0, 5.5, -7, 0.01],
-            intercept: 0.0,
+            intercept: 35.0,
             noise: 1.0
         );
 
-        $this->estimator = new Adaline(
-            batchSize: 32,
-            optimizer: new Adam(rate: 0.001),
-            l2Penalty: 1e-4,
-            epochs: 100,
-            minChange: 1e-4,
-            window: 5,
-            costFn: new HuberLoss(1.0)
+        $this->estimator = new ExtraTreeRegressor(
+            maxHeight: 30,
+            maxLeafSize: 3,
+            minPurityIncrease: 1e-7,
+            maxFeatures: 4
         );
 
         $this->metric = new RSquared();
@@ -76,33 +70,34 @@ class AdalineTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Assert pre conditions')]
+    #[TestDox('Is not trained before training')]
     public function preConditions() : void
     {
         self::assertFalse($this->estimator->trained());
     }
 
     #[Test]
-    #[TestDox('Throws an exception for a bad batch size')]
-    public function badBatchSize() : void
+    #[TestDox('Throws when max height is invalid')]
+    public function badMaxDepth() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Adaline(-100);
+        new ExtraTreeRegressor(0);
     }
 
     #[Test]
-    #[TestDox('Reports the estimator type')]
+    #[TestDox('Returns estimator type')]
     public function type() : void
     {
         self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     #[Test]
-    #[TestDox('Reports compatibility')]
+    #[TestDox('Declares feature compatibility')]
     public function compatibility() : void
     {
         $expected = [
+            DataType::categorical(),
             DataType::continuous(),
         ];
 
@@ -110,39 +105,29 @@ class AdalineTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Reports parameters')]
+    #[TestDox('Returns hyperparameters')]
     public function params() : void
     {
         $expected = [
-            'batch size' => 32,
-            'optimizer' => new Adam(0.001),
-            'l2 penalty' => 1e-4,
-            'epochs' => 100,
-            'min change' => 1e-4,
-            'window' => 5,
-            'cost fn' => new HuberLoss(1.0),
+            'max height' => 30,
+            'max leaf size' => 3,
+            'min purity increase' => 1.0E-7,
+            'max features' => 4,
         ];
 
         self::assertEquals($expected, $this->estimator->params());
     }
 
     #[Test]
-    #[TestDox('Can train, predict, and provide feature importances')]
-    public function trainPredictImportances() : void
+    #[TestDox('Trains, predicts, and returns importances for continuous targets')]
+    public function trainPredictImportancesContinuous() : void
     {
-        $this->estimator->setLogger(new BlackHole());
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
 
         self::assertTrue($this->estimator->trained());
-
-        $losses = $this->estimator->losses();
-
-        self::assertIsArray($losses);
-        self::assertContainsOnlyFloat($losses);
 
         $importances = $this->estimator->featureImportances();
 
@@ -151,8 +136,9 @@ class AdalineTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        /** @var list<float> $labels */
+        /** @var list<float|int> $labels */
         $labels = $testing->labels();
+
         $score = $this->metric->score(
             predictions: $predictions,
             labels: $labels
@@ -162,16 +148,34 @@ class AdalineTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Throws an exception when training with incompatible data')]
-    public function trainIncompatible() : void
+    #[TestDox('Trains and predicts with discretized targets')]
+    public function trainPredictCategorical() : void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $training = $this->generator
+            ->generate(self::TRAIN_SIZE + self::TEST_SIZE)
+            ->apply(new IntervalDiscretizer(bins: 5));
 
-        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
+        $testing = $training->randomize()->take(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        $predictions = $this->estimator->predict($testing);
+
+        /** @var list<float|int> $labels */
+        $labels = $testing->labels();
+
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     #[Test]
-    #[TestDox('Throws an exception when predicting before training')]
+    #[TestDox('Throws when predicting before training')]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

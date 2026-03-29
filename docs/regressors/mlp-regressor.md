@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/MLPRegressor.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/MLPRegressor/MLPRegressor.php">[source]</a></span>
 
 # MLP Regressor
 A multilayer feed-forward neural network with a continuous output layer suitable for regression problems. The Multilayer Perceptron regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate user-defined hidden layers. The MLP also has network snapshotting and progress monitoring to ensure that the model achieves the highest validation score per a given training time budget.
@@ -26,12 +26,12 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 
 ## Example
 ```php
-use Rubix\ML\Regressors\MLPRegressor;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\Optimizers\RMSProp;
+use Rubix\ML\Regressors\MLPRegressor\MLPRegressor;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
+use Rubix\ML\NeuralNet\Layers\Dense\Dense;
+use Rubix\ML\NeuralNet\Layers\Activation\Activation;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
+use Rubix\ML\NeuralNet\Optimizers\RMSProp\RMSProp;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 
 $estimator = new MLPRegressor([

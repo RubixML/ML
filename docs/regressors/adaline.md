@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/Adaline.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/Adaline/Adaline.php">[source]</a></span>
 
 # Adaline
 *Adaptive Linear Neuron* is a single layer feed-forward neural network with a continuous linear output neuron suitable for regression tasks. Training is equivalent to solving L2 regularized linear regression ([Ridge](ridge.md)) online using Mini Batch Gradient Descent.
@@ -20,9 +20,9 @@
 
 ## Example
 ```php
-use Rubix\ML\Regressors\Adaline;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\Regressors\Adaline\Adaline;
+use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\HuberLoss;
 
 $estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 5, new HuberLoss(2.5));
 ```
