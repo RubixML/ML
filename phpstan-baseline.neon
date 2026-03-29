@@ -79,6 +79,12 @@ parameters:
 			path: src/Classifiers/LogitBoost.php
 
 		-
+			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Regressors/GradientBoost/GradientBoost.php
+
+		-
 			message: '#^Instanceof between Rubix\\ML\\NeuralNet\\Layers\\Hidden and Rubix\\ML\\NeuralNet\\Layers\\Hidden will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
