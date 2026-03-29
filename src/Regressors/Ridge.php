@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Regressors;
 
-use NDArray;
-use NumPower;
 use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Learner;
@@ -61,8 +59,6 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      * @var Vector|null
      */
     protected ?Vector $coefficients = null;
-
-    protected ?NDArray $coefficientsNd = null;
 
     /**
      * @param float $l2Penalty
@@ -165,7 +161,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $biases = Matrix::ones($dataset->numSamples(), 1);
 
         $x = Matrix::build($dataset->samples())->augmentLeft($biases);
-        $y = NumPower::array($dataset->labels());
+        $y = Vector::build($dataset->labels());
 
         /** @var int<0,max> $nHat */
         $nHat = $x->n() - 1;
@@ -174,19 +170,15 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         array_unshift($penalties, 0.0);
 
-        $penalties = NumPower::array(Matrix::diagonal($penalties)->asArray());
+        $penalties = Matrix::diagonal($penalties);
 
-        $xNp = NumPower::array($x->asArray());
-        $xT = NumPower::transpose($xNp, [1, 0]);
+        $xT = $x->transpose();
 
-        $xMul = NumPower::matmul($xT, $xNp);
-        $xMulAdd = NumPower::add($xMul, $penalties);
-        $xMulAddInv = NumPower::inv($xMulAdd);
-        $xtDotY = NumPower::dot($xT, $y);
-
-        $coefficientsNd = NumPower::dot($xMulAddInv, $xtDotY);
-        $this->coefficientsNd = $coefficientsNd;
-        $coefficients = $coefficientsNd->toArray();
+        $coefficients = $xT->matmul($x)
+            ->add($penalties)
+            ->inverse()
+            ->dot($xT->dot($y))
+            ->asArray();
 
         $this->bias = (float) array_shift($coefficients);
         $this->coefficients = Vector::quick($coefficients);
@@ -201,16 +193,16 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->coefficients or is_null($this->bias) or is_null($this->coefficientsNd)) {
+        if (!$this->coefficients or is_null($this->bias)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
 
-        $datasetNd = NumPower::array($dataset->samples());
-        $datasetDotCoefficients = NumPower::dot($datasetNd, $this->coefficientsNd);
-
-        return NumPower::add($datasetDotCoefficients, $this->bias)->toArray();
+        return Matrix::build($dataset->samples())
+            ->dot($this->coefficients)
+            ->add($this->bias)
+            ->asArray();
     }
 
     /**

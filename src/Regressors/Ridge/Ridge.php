@@ -4,6 +4,8 @@ namespace Rubix\ML\Regressors\Ridge;
 
 use NDArray;
 use NumPower;
+use Tensor\Matrix;
+use Tensor\Vector;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Labeled;
@@ -23,8 +25,9 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function is_array;
+use function is_float;
 use function is_null;
-use function array_fill;
 
 /**
  * Ridge
@@ -36,7 +39,6 @@ use function array_fill;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
@@ -62,13 +64,6 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      * @var NDArray|null
      */
     protected ?NDArray $coefficients = null;
-
-    /**
-     * The dimensionality of the training set.
-     *
-     * @var int<0,max>|null
-     */
-    protected ?int $featureCount = null;
 
     /**
      * @param float $l2Penalty
@@ -131,7 +126,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function trained() : bool
     {
-        return $this->coefficients !== null and $this->bias !== null;
+        return $this->coefficients and isset($this->bias);
     }
 
     /**
@@ -168,45 +163,30 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $samples = $dataset->samples();
+        $biases = Matrix::ones($dataset->numSamples(), 1);
 
-        $m = $dataset->numSamples();
-        $n = $dataset->numFeatures();
+        $x = Matrix::build($dataset->samples())->augmentLeft($biases);
+        $y = Vector::build($dataset->labels());
 
-        $xArr = [];
+        /** @var int<0,max> $nHat */
+        $nHat = $x->n() - 1;
 
-        foreach ($samples as $sample) {
-            $xArr[] = array_merge([1.0], $sample);
-        }
+        $penalties = array_fill(0, $nHat, $this->l2Penalty);
 
-        $x = NumPower::array($xArr);
-        $xT = NumPower::transpose($x, [1, 0]);
+        array_unshift($penalties, 0.0);
 
-        $y = NumPower::reshape(NumPower::array($dataset->labels()), [$m, 1]);
+        $penalties = Matrix::diagonal($penalties);
 
-        $p = $n + 1;
+        $xT = $x->transpose();
 
-        $penalties = array_fill(0, $p, array_fill(0, $p, 0.0));
+        $coefficients = $xT->matmul($x)
+            ->add($penalties)
+            ->inverse()
+            ->dot($xT->dot($y))
+            ->asArray();
 
-        for ($i = 1; $i < $p; ++$i) {
-            $penalties[$i][$i] = $this->l2Penalty;
-        }
-
-        $penalties = NumPower::array($penalties);
-
-        $xTx = NumPower::matmul($xT, $x);
-        $xTxReg = NumPower::add($xTx, $penalties);
-        $xTxInv = NumPower::inv($xTxReg);
-        $xTy = NumPower::matmul($xT, $y);
-
-        $beta = NumPower::matmul($xTxInv, $xTy);
-
-        /** @var list<float> $betaArr */
-        $betaArr = NumPower::reshape($beta, [$p])->toArray();
-
-        $this->bias = $betaArr[0];
-        $this->coefficients = NumPower::array(array_slice($betaArr, 1));
-        $this->featureCount = $n;
+        $this->bias = (float) array_shift($coefficients);
+        $this->coefficients = NumPower::array($coefficients);
     }
 
     /**
@@ -218,20 +198,37 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->coefficients or is_null($this->bias) or is_null($this->featureCount)) {
+        if (!$this->coefficients or is_null($this->bias)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+        $weights = $this->coefficients->toArray();
 
-        $samples = NumPower::array($dataset->samples());
-        $w = NumPower::reshape($this->coefficients, [$this->featureCount, 1]);
+        DatasetHasDimensionality::with($dataset, count($weights))->check();
 
-        $out = NumPower::matmul($samples, $w);
-        $out = NumPower::add($out, $this->bias);
+        $predictions = [];
 
-        /** @var list<int|float> */
-        return NumPower::reshape($out, [$dataset->numSamples()])->toArray();
+        foreach ($dataset->samples() as $sample) {
+            $x = NumPower::array($sample);
+            $dot = NumPower::dot($x, $this->coefficients);
+            $result = NumPower::add($dot, $this->bias);
+
+            if (is_float($result)) {
+                $predictions[] = $result;
+
+                continue;
+            }
+
+            $value = $result->toArray();
+
+            if (is_array($value)) {
+                $value = $value[0] ?? null;
+            }
+
+            $predictions[] = (float) $value;
+        }
+
+        return $predictions;
     }
 
     /**
@@ -246,7 +243,6 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             throw new RuntimeException('Learner has not been trained.');
         }
 
-        /** @var float[] */
         return NumPower::abs($this->coefficients)->toArray();
     }
 
