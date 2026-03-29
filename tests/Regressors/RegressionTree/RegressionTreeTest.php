@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\Regressors\ExtraTreeRegressor;
+namespace Rubix\ML\Tests\Regressors\RegressionTree;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -11,17 +11,17 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\DataType;
-use Rubix\ML\Datasets\Generators\Hyperplane\Hyperplane;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Hyperplane\Hyperplane;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Regressors\ExtraTreeRegressor\ExtraTreeRegressor;
+use Rubix\ML\Regressors\RegressionTree\RegressionTree;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 #[Group('Regressors')]
-#[CoversClass(ExtraTreeRegressor::class)]
-class ExtraTreeRegressorTest extends TestCase
+#[CoversClass(RegressionTree::class)]
+class RegressionTreeTest extends TestCase
 {
     /**
      * The number of samples in the training set.
@@ -45,7 +45,7 @@ class ExtraTreeRegressorTest extends TestCase
 
     protected Hyperplane $generator;
 
-    protected ExtraTreeRegressor $estimator;
+    protected RegressionTree $estimator;
 
     protected RSquared $metric;
 
@@ -57,11 +57,11 @@ class ExtraTreeRegressorTest extends TestCase
             noise: 1.0
         );
 
-        $this->estimator = new ExtraTreeRegressor(
+        $this->estimator = new RegressionTree(
             maxHeight: 30,
-            maxLeafSize: 3,
+            maxLeafSize: 5,
             minPurityIncrease: 1e-7,
-            maxFeatures: 4
+            maxFeatures: 3
         );
 
         $this->metric = new RSquared();
@@ -82,7 +82,7 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new ExtraTreeRegressor(0);
+        new RegressionTree(maxHeight: 0);
     }
 
     #[Test]
@@ -110,9 +110,10 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $expected = [
             'max height' => 30,
-            'max leaf size' => 3,
+            'max leaf size' => 5,
             'min purity increase' => 1.0E-7,
-            'max features' => 4,
+            'max features' => 3,
+            'max bins' => null,
         ];
 
         self::assertEquals($expected, $this->estimator->params());
@@ -134,11 +135,16 @@ class ExtraTreeRegressorTest extends TestCase
         self::assertCount(4, $importances);
         self::assertContainsOnlyFloat($importances);
 
+        $dot = $this->estimator->exportGraphviz();
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        self::assertStringStartsWith('digraph Tree {', (string) $dot);
+
         $predictions = $this->estimator->predict($testing);
 
         /** @var list<float|int> $labels */
         $labels = $testing->labels();
-
         $score = $this->metric->score(
             predictions: $predictions,
             labels: $labels
@@ -161,11 +167,16 @@ class ExtraTreeRegressorTest extends TestCase
 
         self::assertTrue($this->estimator->trained());
 
+        $dot = $this->estimator->exportGraphviz();
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        self::assertStringStartsWith('digraph Tree {', (string) $dot);
+
         $predictions = $this->estimator->predict($testing);
 
         /** @var list<float|int> $labels */
         $labels = $testing->labels();
-
         $score = $this->metric->score(
             predictions: $predictions,
             labels: $labels
