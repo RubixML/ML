@@ -4,8 +4,6 @@ namespace Rubix\ML\Regressors\Ridge;
 
 use NDArray;
 use NumPower;
-use Tensor\Matrix;
-use Tensor\Vector;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Labeled;
@@ -16,6 +14,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Regressors\Traits\LinearSystemSolver;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -28,6 +27,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use function is_array;
 use function is_float;
 use function is_null;
+use function Rubix\ML\array_pack;
 
 /**
  * Ridge
@@ -43,6 +43,7 @@ use function is_null;
 class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
     use AutotrackRevisions;
+    use LinearSystemSolver;
 
     /**
      * The strength of the L2 regularization penalty.
@@ -150,7 +151,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     }
 
     /**
-     * Train the learner with a dataset.
+     * Train the learner with a dataset using NumPower for the algebra path.
      *
      * @param Labeled $dataset
      */
@@ -163,27 +164,33 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $biases = Matrix::ones($dataset->numSamples(), 1);
+        $samples = $dataset->samples();
 
-        $x = Matrix::build($dataset->samples())->augmentLeft($biases);
-        $y = Vector::build($dataset->labels());
+        foreach ($samples as &$sample) {
+            array_unshift($sample, 1.0);
+        }
+        unset($sample);
+
+        $x = NumPower::array(array_pack($samples));
+        $y = NumPower::array($dataset->labels());
 
         /** @var int<0,max> $nHat */
-        $nHat = $x->n() - 1;
+        $nHat = $dataset->numFeatures();
 
         $penalties = array_fill(0, $nHat, $this->l2Penalty);
-
         array_unshift($penalties, 0.0);
 
-        $penalties = Matrix::diagonal($penalties);
+        $penalties = NumPower::diag($penalties);
 
-        $xT = $x->transpose();
+        $xT = NumPower::transpose($x, [1, 0]);
+        $a = NumPower::add(NumPower::matmul($xT, $x), $penalties);
+        $b = NumPower::dot($xT, $y);
 
-        $coefficients = $xT->matmul($x)
-            ->add($penalties)
-            ->inverse()
-            ->dot($xT->dot($y))
-            ->asArray();
+        if (NumPower::det($a) > 1.0e-5) {
+            $coefficients = NumPower::dot(NumPower::inv($a), $b)->toArray();
+        } else {
+            $coefficients = self::solveLinearSystemWithJitter($a->toArray(), $b->toArray());
+        }
 
         $this->bias = (float) array_shift($coefficients);
         $this->coefficients = NumPower::array($coefficients);

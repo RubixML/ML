@@ -6,6 +6,7 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
@@ -13,6 +14,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Regressors\Traits\LinearSystemSolver;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -38,6 +40,7 @@ use function is_null;
 class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
     use AutotrackRevisions;
+    use LinearSystemSolver;
 
     /**
      * The strength of the L2 regularization penalty.
@@ -147,7 +150,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -173,12 +176,17 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $penalties = Matrix::diagonal($penalties);
 
         $xT = $x->transpose();
+        $a = $xT->matmul($x)->add($penalties);
+        $b = $xT->dot($y);
 
-        $coefficients = $xT->matmul($x)
-            ->add($penalties)
-            ->inverse()
-            ->dot($xT->dot($y))
-            ->asArray();
+        if ($a->det() > 1.0e-5) {
+            $coefficients = $a
+                ->inverse()
+                ->dot($b)
+                ->asArray();
+        } else {
+            $coefficients = self::solveLinearSystemWithJitter($a->asArray(), $b->asArray());
+        }
 
         $this->bias = (float) array_shift($coefficients);
         $this->coefficients = Vector::quick($coefficients);

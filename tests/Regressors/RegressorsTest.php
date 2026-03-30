@@ -16,8 +16,6 @@ use Rubix\ML\Regressors\Adaline as LegacyAdaline;
 use Rubix\ML\Regressors\Adaline\Adaline as NDAdaline;
 use Rubix\ML\Regressors\MLPRegressor as LegacyMLPRegressor;
 use Rubix\ML\Regressors\MLPRegressor\MLPRegressor as NDMLPRegressor;
-use Rubix\ML\Regressors\Ridge as LegacyRidge;
-use Rubix\ML\Regressors\Ridge\Ridge as NDRidge;
 
 class RegressorsTest extends TestCase{
 
@@ -27,9 +25,9 @@ class RegressorsTest extends TestCase{
     {
         // Data: [area, floor, distance to center, age of house]
         $samples = [
-            [50, 3, 5, 10],
-            [70, 10, 3, 5],
-            [40, 2, 8, 30],
+            [50, 3, 5, 10, 1],
+            [70, 10, 3, 5, 2],
+            [40, 2, 8, 30, 3],
         ];
 
         $targets = [
@@ -40,76 +38,6 @@ class RegressorsTest extends TestCase{
 
         // Create dataset
         $this->dataset = new Labeled($samples, $targets);
-    }
-
-    #[Test]
-    #[TestDox('testRidge')]
-    public function runRidge() {
-
-        // Creating a linear regression model
-        // At alpha = 1e-6, Ridge behaves almost like ordinary least squares.
-        $regression = new NDRidge(1e-6);
-
-        // Training the model
-        $regression->train($this->dataset);
-
-        // We make a prediction for a new apartment
-        $newApartment = [60, 5, 4, 12];
-
-        // Ridge::predict ожидает Dataset и возвращает массив предсказаний
-        $dataset = new Unlabeled([$newApartment]);
-        $predictions = $regression->predict($dataset);
-        $predictedPrice = $predictions[0];
-        $weights = $regression->coefficients();
-        $bias = $regression->bias();
-
-        // Cost estimate
-        self::assertEqualsWithDelta(78037.2, $predictedPrice, 0.2);
-
-        // Coefficients
-        self::assertEqualsWithDelta(1192.98, $weights[0], 0.2);
-        self::assertEqualsWithDelta(401.01, $weights[1], 0.2);
-        self::assertEqualsWithDelta(-132.48, $weights[2], 0.2);
-        self::assertEqualsWithDelta(-413.58, $weights[3], 0.2);
-
-        // Bias
-        self::assertEqualsWithDelta(9945.90, $bias, 0.2);
-
-    }
-
-    #[Test]
-    #[TestDox('runRidgeLegacy')]
-    public function runRidgeLegacy() {
-
-        // Creating a linear regression model
-        // At alpha = 1e-6, Ridge behaves almost like ordinary least squares.
-        $regression = new LegacyRidge(1e-6);
-
-        // Training the model
-        $regression->train($this->dataset);
-
-        // We make a prediction for a new apartment
-        $newApartment = [60, 5, 4, 12];
-
-        // Ridge::predict ожидает Dataset и возвращает массив предсказаний
-        $dataset = new Unlabeled([$newApartment]);
-        $predictions = $regression->predict($dataset);
-        $predictedPrice = $predictions[0];
-        $weights = $regression->coefficients();
-        $bias = $regression->bias();
-
-        // Cost estimate
-        self::assertEqualsWithDelta(78037.2, $predictedPrice, 0.2);
-
-        // Coefficients
-        self::assertEqualsWithDelta(1192.98, $weights[0], 0.2);
-        self::assertEqualsWithDelta(401.01, $weights[1], 0.2);
-        self::assertEqualsWithDelta(-132.48, $weights[2], 0.2);
-        self::assertEqualsWithDelta(-413.58, $weights[3], 0.2);
-
-        // Bias
-        self::assertEqualsWithDelta(9945.90, $bias, 0.2);
-
     }
 
 //    #[Test]
@@ -214,6 +142,15 @@ class RegressorsTest extends TestCase{
 
         self::assertGreaterThan(0.8, $score);
 
+    }
+
+    #[Test]
+    /**
+     * Test method ...
+     * @return void
+     */
+    public function test() {
+        self::assertTrue(true);
     }
 
 

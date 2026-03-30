@@ -17,6 +17,7 @@ use Rubix\ML\NeuralNet\Optimizers\Base\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Traversable;
 use function array_reverse;
+use function Rubix\ML\array_pack;
 
 /**
  * Feed Forward
@@ -302,6 +303,6 @@ class FeedForward implements Network
         }
 
         // Reindex a nested array to ensure all levels have sequential numeric keys
-        return array_map('array_values', array_values($samples));
+        return array_pack($samples);
     }
 }

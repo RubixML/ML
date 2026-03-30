@@ -2,6 +2,7 @@
 
 namespace Rubix\ML
 {
+    use Rubix\ML\Datasets\Dataset;
     use Rubix\ML\Exceptions\InvalidArgumentException;
     use Rubix\ML\Exceptions\RuntimeException;
     use Generator;
@@ -245,5 +246,16 @@ namespace Rubix\ML
     function warn_deprecated(string $message) : void
     {
         trigger_error($message, E_USER_DEPRECATED);
+    }
+
+    /**
+     * Prepare samples depending on packing configuration.
+     * @param array $samples
+     * @return array
+     */
+    function array_pack(array $samples) : array
+    {
+        // Reindex a nested array to ensure all levels have sequential numeric keys
+        return array_map('array_values', array_values($samples));
     }
 }
