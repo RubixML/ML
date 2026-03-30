@@ -27,7 +27,37 @@ parameters:
             path: src/Classifiers/RandomForest.php
 
         -
+            message: '#^Property Rubix\\ML\\Classifiers\\ClassificationTree\:\:\$classes \(list<string>\) in isset\(\) is not nullable\.$#'
+            identifier: isset.property
+            count: 1
+            path: src/Classifiers/ClassificationTree.php
+
+        -
+            message: '#^Property Rubix\\ML\\Classifiers\\ExtraTreeClassifier\:\:\$classes \(array<string>\) in isset\(\) is not nullable\.$#'
+            identifier: isset.property
+            count: 1
+            path: src/Classifiers/ExtraTreeClassifier.php
+
+        -
+            message: '#^Property Rubix\\ML\\Regressors\\GradientBoost\:\:\$ensemble \(array<mixed>\) in isset\(\) is not nullable\.$#'
+            identifier: isset.property
+            count: 2
+            path: src/Regressors/GradientBoost.php
+
+        -
+            message: '#^Property Rubix\\ML\\Regressors\\GradientBoost\\GradientBoost\:\:\$ensemble \(array<mixed>\) in isset\(\) is not nullable\.$#'
+            identifier: isset.property
+            count: 2
+            path: src/Regressors/GradientBoost/GradientBoost.php
+
+        -
             message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list<int>, array<mixed> given\.$#'
+            identifier: argument.type
+            count: 1
+            path: src/Clusterers/KMeans.php
+
+        -
+            message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
             identifier: argument.type
             count: 1
             path: src/Clusterers/KMeans.php
