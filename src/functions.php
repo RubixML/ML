@@ -2,7 +2,6 @@
 
 namespace Rubix\ML
 {
-    use Rubix\ML\Datasets\Dataset;
     use Rubix\ML\Exceptions\InvalidArgumentException;
     use Rubix\ML\Exceptions\RuntimeException;
     use Generator;
@@ -251,7 +250,7 @@ namespace Rubix\ML
     /**
      * Prepare samples depending on packing configuration.
      * @param array $samples
-     * @return array
+     * @return array<int, array<int, mixed>>
      */
     function array_pack(array $samples) : array
     {

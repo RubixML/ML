@@ -50,6 +50,75 @@ class RidgeTest extends TestCase
 
     protected RSquared $metric;
 
+    public static function trainPredictProvider() : array
+    {
+        return [
+            'sample with 1 feature and smaller values' => [
+                [
+                    [0],
+                    [1],
+                    [2],
+                    [3],
+                ],
+                [3, 5, 7, 9],
+                [4],
+                11.0,
+                [2.0],
+                3.0,
+            ],
+            'sample with 2 features and smaller values' => [
+                [
+                    [0, 0],
+                    [1, 1],
+                    [2, 1],
+                    [1, 2],
+                ],
+                [3, 6, 7, 8],
+                [2, 2],
+                9.0,
+                [1.0, 2.0],
+                3.0,
+            ],
+            'sample with 3 features and smaller values' => [
+                [
+                    [0, 0, 0],
+                    [1, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 1],
+                ],
+                [4, 5, 6, 7],
+                [1, 1, 1],
+                10.0,
+                [1.0, 2.0, 3.0],
+                4.0,
+            ],
+            'sample with 4 features' => [
+                [
+                    [50, 3, 5, 10],
+                    [70, 10, 3, 5],
+                    [40, 2, 8, 30],
+                ],
+                [66000, 95000, 45000],
+                [60, 5, 4, 12],
+                78037.27,
+                [1192.98, 401.06, -132.47, -413.58],
+                9945.90,
+            ],
+            'sample with 4 features with shifted values' => [
+                [
+                    [52, 4, 6, 12],
+                    [71, 9, 4, 6],
+                    [38, 3, 7, 28],
+                ],
+                [66000, 95000, 45000],
+                [60, 5, 4, 12],
+                77709.93,
+                [1368.77, 442.49, -158.60, -77.24],
+                -5067.86,
+            ],
+        ];
+    }
+
     protected function setUp() : void
     {
         $this->generator = new Hyperplane(
@@ -159,74 +228,5 @@ class RidgeTest extends TestCase
             self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 0.2);
         }
         self::assertEqualsWithDelta($expectedBias, $regression->bias(), 0.2);
-    }
-
-    public static function trainPredictProvider() : array
-    {
-        return [
-            'sample with 1 feature and smaller values' => [
-                [
-                    [0],
-                    [1],
-                    [2],
-                    [3],
-                ],
-                [3, 5, 7, 9],
-                [4],
-                11.0,
-                [2.0],
-                3.0,
-            ],
-            'sample with 2 features and smaller values' => [
-                [
-                    [0, 0],
-                    [1, 1],
-                    [2, 1],
-                    [1, 2],
-                ],
-                [3, 6, 7, 8],
-                [2, 2],
-                9.0,
-                [1.0, 2.0],
-                3.0,
-            ],
-            'sample with 3 features and smaller values' => [
-                [
-                    [0, 0, 0],
-                    [1, 0, 0],
-                    [0, 1, 0],
-                    [0, 0, 1],
-                ],
-                [4, 5, 6, 7],
-                [1, 1, 1],
-                10.0,
-                [1.0, 2.0, 3.0],
-                4.0,
-            ],
-            'sample with 4 features' => [
-                [
-                    [50, 3, 5, 10],
-                    [70, 10, 3, 5],
-                    [40, 2, 8, 30],
-                ],
-                [66000, 95000, 45000],
-                [60, 5, 4, 12],
-                78037.27,
-                [1192.98, 401.06, -132.47, -413.58],
-                9945.90
-            ],
-            'sample with 4 features with shifted values' => [
-                [
-                    [52, 4, 6, 12],
-                    [71, 9, 4, 6],
-                    [38, 3, 7, 28],
-                ],
-                [66000, 95000, 45000],
-                [60, 5, 4, 12],
-                77709.93,
-                [1368.77, 442.49, -158.60, -77.24],
-                -5067.86
-            ],
-        ];
     }
 }
