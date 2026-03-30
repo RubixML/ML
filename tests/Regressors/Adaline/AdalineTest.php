@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Regressors\Adaline;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -21,6 +22,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\HuberLoss;
 use Rubix\ML\Regressors\Adaline\Adaline;
+use Rubix\ML\Tests\DataProvider\AdalineProvider;
 
 #[Group('Regressors')]
 #[CoversClass(Adaline::class)]
@@ -177,5 +179,37 @@ class AdalineTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Trains, predicts, and returns acceptable Adaline values')]
+    #[DataProviderExternal(AdalineProvider::class, 'trainPredictProvider')]
+    public function trainPredict(array $samples, array $labels, array $prediction) : void
+    {
+        $estimator = new Adaline(
+            batchSize: 32,
+            optimizer: new Adam(rate: 0.001),
+            l2Penalty: 1e-4,
+            epochs: 100,
+            minChange: 1e-4,
+            window: 5,
+            costFn: new HuberLoss(1.0)
+        );
+
+        $training = Labeled::quick($samples, $labels);
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+        $params = $estimator->params();
+
+        self::assertSame(32, $params['batch size']);
+        self::assertEquals(1e-4, $params['l2 penalty']);
+        self::assertSame(100, $params['epochs']);
+        self::assertEquals(1e-4, $params['min change']);
+        self::assertSame(5, $params['window']);
+
+        $predictions = $estimator->predict(Unlabeled::quick([$prediction]));
+
+        self::assertIsFloat($predictions[0]);
     }
 }

@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Regressors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
-use Rubix\ML\DataType;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Loggers\BlackHole;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\Adaline;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Datasets\Generators\Hyperplane;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\DataType;
+use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Regressors\Adaline;
+use Rubix\ML\Tests\DataProvider\AdalineProvider;
 
 #[Group('Regressors')]
 #[CoversClass(Adaline::class)]
@@ -159,5 +163,37 @@ class AdalineTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Trains, predicts, and returns acceptable Adaline values')]
+    #[DataProviderExternal(AdalineProvider::class, 'trainPredictProvider')]
+    public function trainPredict(array $samples, array $labels, array $prediction) : void
+    {
+        $estimator = new Adaline(
+            batchSize: 32,
+            optimizer: new Adam(rate: 0.001),
+            l2Penalty: 1e-4,
+            epochs: 100,
+            minChange: 1e-4,
+            window: 5,
+            costFn: new HuberLoss(1.0)
+        );
+
+        $training = Labeled::quick($samples, $labels);
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+        $params = $estimator->params();
+
+        self::assertSame(32, $params['batch size']);
+        self::assertEquals(1e-4, $params['l2 penalty']);
+        self::assertSame(100, $params['epochs']);
+        self::assertEquals(1e-4, $params['min change']);
+        self::assertSame(5, $params['window']);
+
+        $predictions = $estimator->predict(Unlabeled::quick([$prediction]));
+
+        self::assertIsFloat($predictions[0]);
     }
 }
