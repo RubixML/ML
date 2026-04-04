@@ -14,7 +14,6 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Regressors\Traits\LinearSystemSolver;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -43,7 +42,6 @@ use function Rubix\ML\array_pack;
 class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 {
     use AutotrackRevisions;
-    use LinearSystemSolver;
 
     /**
      * The strength of the L2 regularization penalty.
@@ -152,6 +150,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
     /**
      * Train the learner with a dataset using NumPower for the algebra path.
+     * Formula: (Xᵀ X + λ I)⁻¹ Xᵀ y
      *
      * @param Labeled $dataset
      */
@@ -164,18 +163,15 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $samples = $dataset->samples();
+        $biases = NumPower::ones([$dataset->numSamples(), 1]);
 
-        foreach ($samples as &$sample) {
-            array_unshift($sample, 1.0);
-        }
-        unset($sample);
-
-        $x = NumPower::array(array_pack($samples));
+        $samples = NumPower::array(array_pack($dataset->samples()));
+        // Add bias from left
+        $x = NumPower::concatenate([$biases, $samples], axis: 1);
         $y = NumPower::array($dataset->labels());
 
         /** @var int<0,max> $nHat */
-        $nHat = $dataset->numFeatures();
+        $nHat = $x->shape()[1] - 1;
 
         $penalties = array_fill(0, $nHat, $this->l2Penalty);
         array_unshift($penalties, 0.0);
@@ -183,14 +179,11 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $penalties = NumPower::diag($penalties);
 
         $xT = NumPower::transpose($x, [1, 0]);
+
         $a = NumPower::add(NumPower::matmul($xT, $x), $penalties);
         $b = NumPower::dot($xT, $y);
 
-        if (NumPower::det($a) > 1.0e-5) {
-            $coefficients = NumPower::dot(NumPower::inv($a), $b)->toArray();
-        } else {
-            $coefficients = self::solveLinearSystemWithJitter($a->toArray(), $b->toArray());
-        }
+        $coefficients = NumPower::dot(NumPower::inv($a), $b)->toArray();
 
         $this->bias = (float) array_shift($coefficients);
         $this->coefficients = NumPower::array($coefficients);

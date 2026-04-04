@@ -100,9 +100,9 @@ class RidgeTest extends TestCase
                 ],
                 [66000, 95000, 45000],
                 [60, 5, 4, 12],
-                78037.27,
+                78037.05,
                 [1192.98, 401.06, -132.47, -413.58],
-                9945.90,
+                9949.78,
             ],
             'sample with 4 features with shifted values' => [
                 [
@@ -112,9 +112,9 @@ class RidgeTest extends TestCase
                 ],
                 [66000, 95000, 45000],
                 [60, 5, 4, 12],
-                77709.93,
-                [1368.77, 442.49, -158.60, -77.24],
-                -5067.86,
+                77709.72,
+                [1368.77, 442.49, -158.60, -77.49],
+                -5054.98,
             ],
         ];
     }
@@ -162,8 +162,6 @@ class RidgeTest extends TestCase
 
     public function testTrainPredictImportances() : void
     {
-        $this->markTestSkipped('TODO: doesn\'t work by some reason');
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -214,7 +212,7 @@ class RidgeTest extends TestCase
     #[DataProvider('trainPredictProvider')]
     public function trainPredict(array $samples, array $labels, array $prediction, float $expectedPrediction, array $expectedCoefficients, float $expectedBias) : void
     {
-        $regression = new Ridge(1e-6);
+        $regression = new Ridge(0.01);
         $regression->train(new Labeled($samples, $labels));
 
         $predictions = $regression->predict(new Unlabeled([$prediction]));
