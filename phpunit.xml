@@ -80,9 +80,6 @@
     <testsuite name="Transformers">
       <directory>tests/Transformers</directory>
     </testsuite>
-    <testsuite name="All">
-      <directory>tests</directory>
-    </testsuite>
   </testsuites>
   <php>
     <env name="ENV" value="testing"/>
