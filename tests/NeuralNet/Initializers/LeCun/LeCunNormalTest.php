@@ -95,7 +95,7 @@ final class LeCunNormalTest extends TestCase
         $this->expectNotToPerformAssertions();
 
         //when
-        new LeCunNormal();
+        $class = new LeCunNormal();
     }
 
     #[Test]

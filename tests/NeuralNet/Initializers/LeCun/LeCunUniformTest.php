@@ -95,7 +95,7 @@ final class LeCunUniformTest extends TestCase
         $this->expectNotToPerformAssertions();
 
         //when
-        new LeCunUniform();
+        $class = new LeCunUniform();
     }
 
     #[Test]

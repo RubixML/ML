@@ -10,7 +10,7 @@
   displayDetailsOnTestsThatTriggerErrors="true"
   displayDetailsOnSkippedTests="true"
   processIsolation="true"
-  stopOnFailure="false"
+  stopOnFailure="true"
   testdox="true"
   xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
 >
