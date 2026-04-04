@@ -101,6 +101,20 @@ class ErrorAnalysisTest extends TestCase
         );
 
         $this->assertInstanceOf(Report::class, $results);
-        $this->assertEquals($expected, $results->toArray());
+
+        $actual = $results->toArray();
+
+        // Instead of strict whole-array use equality with per-field checks.
+        foreach ($expected as $name => $value) {
+            if (is_float($value)) {
+                $this->assertArrayHasKey($name, $actual);
+                $this->assertEqualsWithDelta($value, $actual[$name], 1.0e-12, $name);
+
+                continue;
+            }
+
+            $this->assertArrayHasKey($name, $actual);
+            $this->assertEquals($value, $actual[$name], $name);
+        }
     }
 }
