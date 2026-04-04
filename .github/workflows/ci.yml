@@ -81,7 +81,7 @@ jobs:
         run: composer analyze-ci
 
       - name: NeuralNet Initializer Tests
-        run: vendor/bin/phpunit tests/NeuralNet/Initializers --testdox --debug
+        run: vendor/bin/phpunit tests/NeuralNet --testdox --debug
 
 #      - name: Unit Tests
 #        run: composer test
