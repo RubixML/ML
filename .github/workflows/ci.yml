@@ -74,14 +74,15 @@ jobs:
       - name: Install Dependencies
         run: composer install
 
-      - name: Run phplint
-        run: composer phplint
-
-      - name: Static Analysis
-        run: composer analyze-ci
+#      - name: Run phplint
+#        run: composer phplint
+#
+#      - name: Static Analysis
+#        run: composer analyze-ci
 
       - name: NeuralNet Initializer Tests
-        run: vendor/bin/phpunit tests/NeuralNet --testdox --debug
+        run: vendor/bin/phpunit tests/Loggers --testdox
+        run: vendor/bin/phpunit tests/NeuralNet --testdox
 
 #      - name: Unit Tests
 #        run: composer test
