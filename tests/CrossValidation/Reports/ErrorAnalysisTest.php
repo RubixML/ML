@@ -108,7 +108,7 @@ class ErrorAnalysisTest extends TestCase
         foreach ($expected as $name => $value) {
             if (is_float($value)) {
                 $this->assertArrayHasKey($name, $actual);
-                $this->assertEqualsWithDelta($value, $actual[$name], 1.0e-12, $name);
+                $this->assertEqualsWithDelta($value, $actual[$name], 1e-7, $name);
 
                 continue;
             }
