@@ -95,7 +95,7 @@ final class XavierUniformTest extends TestCase
         $this->expectNotToPerformAssertions();
 
         //when
-        new XavierUniform();
+        $class = new XavierUniform();
     }
 
     #[Test]

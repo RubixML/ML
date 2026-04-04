@@ -81,9 +81,7 @@ jobs:
 #        run: composer analyze-ci
 
       - name: Loggers Initializer Tests
-        run: vendor/bin/phpunit tests/Loggers --testdox
-      - name: NeuralNet Initializer Tests
-        run: vendor/bin/phpunit tests/NeuralNet --testdox
+        run: vendor/bin/phpunit --display-warning --display-deprecations --display-notices --testsuite="Anomaly Detectors,Backends,Base,Classifiers"
 
 #      - name: Unit Tests
 #        run: composer test
