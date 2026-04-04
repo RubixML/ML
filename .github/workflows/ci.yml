@@ -80,8 +80,9 @@ jobs:
 #      - name: Static Analysis
 #        run: composer analyze-ci
 
-      - name: NeuralNet Initializer Tests
+      - name: Loggers Initializer Tests
         run: vendor/bin/phpunit tests/Loggers --testdox
+      - name: NeuralNet Initializer Tests
         run: vendor/bin/phpunit tests/NeuralNet --testdox
 
 #      - name: Unit Tests
