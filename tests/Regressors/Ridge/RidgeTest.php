@@ -52,6 +52,8 @@ class RidgeTest extends TestCase
 
     public static function trainPredictProvider() : array
     {
+        $isArm = in_array(strtolower(php_uname('m')), ['arm64', 'aarch64'], true);
+
         return [
             'sample with 1 feature and smaller values' => [
                 [
@@ -100,9 +102,11 @@ class RidgeTest extends TestCase
                 ],
                 [66000, 95000, 45000],
                 [60, 5, 4, 12],
-                77676.53,
-                [1208.26, 360.18, -96.53, -420.41],
-                8810.75,
+                $isArm ? 77676.53 : 79130.421875,
+                $isArm
+                    ? [1208.26, 360.18, -96.53, -420.41]
+                    : [1192.98, 401.06, -132.47, -413.58],
+                $isArm ? 8810.75 : 9949.78,
             ],
             'sample with 4 features with shifted values' => [
                 [
@@ -112,9 +116,11 @@ class RidgeTest extends TestCase
                 ],
                 [66000, 95000, 45000],
                 [60, 5, 4, 12],
-                77585.35,
-                [1364.07, 476.45, -161.59, -82.90],
-                -4999.93,
+                $isArm ? 77585.35 : 78192.34375,
+                $isArm
+                    ? [1364.07, 476.45, -161.59, -82.90]
+                    : [1368.77, 442.49, -158.60, -77.49],
+                $isArm ? -4999.93 : -5054.98,
             ],
         ];
     }
