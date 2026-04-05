@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Regressors\ExtraTreeRegressor;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -12,11 +13,13 @@ use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Generators\Hyperplane\Hyperplane;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Regressors\ExtraTreeRegressor\ExtraTreeRegressor;
+use Rubix\ML\Tests\DataProvider\ExtraTreeRegressorProvider;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 #[Group('Regressors')]
@@ -145,6 +148,27 @@ class ExtraTreeRegressorTest extends TestCase
         );
 
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Can train and predict from provider samples')]
+    #[DataProviderExternal(ExtraTreeRegressorProvider::class, 'trainPredictProvider')]
+    public function trainPredictAdditional(array $samples, array $labels, array $prediction) : void
+    {
+        $training = Labeled::quick($samples, $labels);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        $importances = $this->estimator->featureImportances();
+
+        self::assertCount(count($samples[0]), $importances);
+        self::assertContainsOnlyFloat($importances);
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([$prediction]));
+
+        self::assertIsFloat($predictions[0]);
     }
 
     #[Test]
