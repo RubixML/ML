@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
@@ -50,6 +49,13 @@ class RadiusNeighborsRegressorTest extends TestCase
     protected RadiusNeighborsRegressor $estimator;
 
     protected RSquared $metric;
+
+    public static function predictionChecks() : array
+    {
+        return [
+            'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE],
+        ];
+    }
 
     protected function setUp() : void
     {
@@ -132,13 +138,6 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         self::assertIsFloat($score);
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    public static function predictionChecks() : array
-    {
-        return [
-            'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE],
-        ];
     }
 
     public function testTrainIncompatible() : void

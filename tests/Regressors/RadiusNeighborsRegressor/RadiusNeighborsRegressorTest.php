@@ -51,6 +51,13 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     protected RSquared $metric;
 
+    public static function predictionChecks() : array
+    {
+        return [
+            'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE],
+        ];
+    }
+
     protected function setUp() : void
     {
         $this->generator = new HalfMoon(x: 4.0, y: -7.0, scale: 1.0, rotation: 90, noise: 0.25);
@@ -144,13 +151,6 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         self::assertIsFloat($score);
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    public static function predictionChecks() : array
-    {
-        return [
-            'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE],
-        ];
     }
 
     #[Test]
