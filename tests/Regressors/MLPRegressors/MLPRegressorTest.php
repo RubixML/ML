@@ -297,6 +297,34 @@ class MLPRegressorTest extends TestCase
         $this->estimator->predict(Unlabeled::quick());
     }
 
+    #[Test]
+    #[TestDox('Trained model exposes network, losses, and scores')]
+    public function trainedModelExposesNetworkLossesAndScores() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        self::assertTrue($this->estimator->trained());
+        self::assertNotNull($this->estimator->network());
+
+        $losses = $this->estimator->losses();
+        $scores = $this->estimator->scores();
+
+        self::assertIsArray($losses);
+        self::assertIsArray($scores);
+        self::assertNotEmpty($losses);
+        self::assertNotEmpty($scores);
+        self::assertContainsOnlyFloat($losses);
+        self::assertContainsOnlyFloat($scores);
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+        }
+    }
+
     /**
      * @return array{0: Unlabeled}
      */

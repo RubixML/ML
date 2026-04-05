@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Regressors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
@@ -188,10 +189,57 @@ class MLPRegressorTest extends TestCase
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
+    #[Test]
+    public function testTrainedModelExposesNetworkLossesAndScores() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        self::assertTrue($this->estimator->trained());
+        self::assertNotNull($this->estimator->network());
+
+        $losses = $this->estimator->losses();
+        $scores = $this->estimator->scores();
+
+        self::assertIsArray($losses);
+        self::assertIsArray($scores);
+        self::assertNotEmpty($losses);
+        self::assertNotEmpty($scores);
+        self::assertContainsOnlyFloat($losses);
+        self::assertContainsOnlyFloat($scores);
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+        }
+    }
+
     public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * @return array{0: Unlabeled}
+     */
+    private function trainEstimatorAndGetTestingSet() : array
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $folds = $dataset->fold(3);
+
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
+
+        return [$testing];
     }
 }
