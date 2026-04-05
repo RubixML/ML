@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Regressors\RegressionTree;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -17,6 +18,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Regressors\RegressionTree\RegressionTree;
+use Rubix\ML\Tests\DataProvider\RegressionTreeProvider;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 #[Group('Regressors')]
@@ -183,6 +185,28 @@ class RegressionTreeTest extends TestCase
         );
 
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Exposes trained state, feature importances, and prediction counts after fitting')]
+    #[DataProviderExternal(RegressionTreeProvider::class, 'trainedModelCases')]
+    public function trainedModelExposesAdditionalChecks(int $trainingSize, int $testingSize) : void
+    {
+        $training = $this->generator->generate($trainingSize);
+        $testing = $this->generator->generate($testingSize);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        $importances = $this->estimator->featureImportances();
+
+        self::assertCount(4, $importances);
+        self::assertContainsOnlyFloat($importances);
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testingSize, $predictions);
     }
 
     #[Test]
