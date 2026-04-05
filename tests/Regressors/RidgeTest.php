@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Regressors;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -50,10 +51,9 @@ class RidgeTest extends TestCase
 
     protected RSquared $metric;
 
-    public static function trainPredictProvider() : array
+    public static function trainPredictProvider() : Generator
     {
-        return [
-            'sample with 1 feature and smaller values' => [
+        yield 'sample with 1 feature and smaller values' => [
                 [
                     [0],
                     [1],
@@ -65,8 +65,9 @@ class RidgeTest extends TestCase
                 11.0,
                 [2.0],
                 3.0,
-            ],
-            'sample with 2 features and smaller values' => [
+        ];
+
+        yield 'sample with 2 features and smaller values' => [
                 [
                     [0, 0],
                     [1, 1],
@@ -78,8 +79,9 @@ class RidgeTest extends TestCase
                 9.0,
                 [1.0, 2.0],
                 3.0,
-            ],
-            'sample with 3 features and smaller values' => [
+        ];
+
+        yield 'sample with 3 features and smaller values' => [
                 [
                     [0, 0, 0],
                     [1, 0, 0],
@@ -91,8 +93,9 @@ class RidgeTest extends TestCase
                 10.0,
                 [1.0, 2.0, 3.0],
                 4.0,
-            ],
-            'sample with 4 features' => [
+        ];
+
+        yield 'sample with 4 features' => [
                 [
                     [50, 3, 5, 10],
                     [70, 10, 3, 5],
@@ -103,8 +106,9 @@ class RidgeTest extends TestCase
                 78037.05,
                 [1192.98, 401.06, -132.47, -413.58],
                 9949.78,
-            ],
-            'sample with 4 features with shifted values' => [
+        ];
+
+        yield 'sample with 4 features with shifted values' => [
                 [
                     [52, 4, 6, 12],
                     [71, 9, 4, 6],
@@ -115,7 +119,6 @@ class RidgeTest extends TestCase
                 77709.72,
                 [1368.77, 442.49, -158.60, -77.49],
                 -5054.98,
-            ],
         ];
     }
 

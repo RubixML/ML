@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Regressors\Ridge;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -50,12 +51,11 @@ class RidgeTest extends TestCase
 
     protected RSquared $metric;
 
-    public static function trainPredictProvider() : array
+    public static function trainPredictProvider() : Generator
     {
         $isArm = in_array(strtolower(php_uname('m')), ['arm64', 'aarch64'], true);
 
-        return [
-            'sample with 1 feature and smaller values' => [
+        yield 'sample with 1 feature and smaller values' => [
                 [
                     [0],
                     [1],
@@ -67,8 +67,9 @@ class RidgeTest extends TestCase
                 11.0,
                 [2.0],
                 3.0,
-            ],
-            'sample with 2 features and smaller values' => [
+        ];
+
+        yield 'sample with 2 features and smaller values' => [
                 [
                     [0, 0],
                     [1, 1],
@@ -80,8 +81,9 @@ class RidgeTest extends TestCase
                 9.0,
                 [1.0, 2.0],
                 3.0,
-            ],
-            'sample with 3 features and smaller values' => [
+        ];
+
+        yield 'sample with 3 features and smaller values' => [
                 [
                     [0, 0, 0],
                     [1, 0, 0],
@@ -93,8 +95,9 @@ class RidgeTest extends TestCase
                 10.0,
                 [1.0, 2.0, 3.0],
                 4.0,
-            ],
-            'sample with 4 features' => [
+        ];
+
+        yield 'sample with 4 features' => [
                 [
                     [50, 3, 5, 10],
                     [70, 10, 3, 5],
@@ -107,8 +110,9 @@ class RidgeTest extends TestCase
                     ? [1208.26, 360.18, -96.53, -420.41]
                     : [1172.0, 452.0, -70.0, -424.0],
                 $isArm ? 8810.75 : 10432.0,
-            ],
-            'sample with 4 features with shifted values' => [
+        ];
+
+        yield 'sample with 4 features with shifted values' => [
                 [
                     [52, 4, 6, 12],
                     [71, 9, 4, 6],
@@ -121,7 +125,6 @@ class RidgeTest extends TestCase
                     ? [1364.07, 476.45, -161.59, -82.90]
                     : [1366.0, 504.0, -156.0, -91.0],
                 $isArm ? -4999.93 : -4224.0,
-            ],
         ];
     }
 

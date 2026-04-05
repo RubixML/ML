@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\DataProvider;
 
+use Generator;
+
 final class AdalineProvider
 {
     /**
      * Return the shared training samples for Adaline sample-based tests.
      *
-     * @return array<string, array{0: list<list<int>>, 1: list<int>, 2: list<int>}>
+     * @return Generator<string, array{0: list<list<int>>, 1: list<int>, 2: list<int>}>
      */
-    public static function trainPredictProvider() : array
+    public static function trainPredictProvider() : Generator
     {
-        return [
-            '1 feature linear sample' => [
+        yield '1 feature linear sample' => [
                 [
                     [0],
                     [1],
@@ -23,8 +24,9 @@ final class AdalineProvider
                 ],
                 [3, 5, 7, 9],
                 [4],
-            ],
-            '2 feature linear sample' => [
+        ];
+
+        yield '2 feature linear sample' => [
                 [
                     [0, 0],
                     [1, 1],
@@ -33,8 +35,9 @@ final class AdalineProvider
                 ],
                 [3, 6, 7, 8],
                 [2, 2],
-            ],
-            '3 feature linear sample' => [
+        ];
+
+        yield '3 feature linear sample' => [
                 [
                     [0, 0, 0],
                     [1, 0, 0],
@@ -43,7 +46,6 @@ final class AdalineProvider
                 ],
                 [4, 5, 6, 7],
                 [1, 1, 1],
-            ],
         ];
     }
 }

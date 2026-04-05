@@ -2,24 +2,25 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\Regressors;
+namespace Rubix\ML\Tests\Regressors\KNNRegressor;
 
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\DataType;
-use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\KNNRegressor;
-use Rubix\ML\Kernels\Distance\Minkowski;
-use Rubix\ML\Datasets\Generators\HalfMoon;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Regressors\KNNRegressor\KNNRegressor;
 
 #[Group('Regressors')]
 #[CoversClass(KNNRegressor::class)]
@@ -67,33 +68,43 @@ class KNNRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    #[TestDox('asserts preconditions')]
+    public function assertsPreConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    public function testBadK() : void
+    #[Test]
+    #[TestDox('rejects invalid k values')]
+    public function rejectsInvalidK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new KNNRegressor(k: 0);
     }
 
-    public function testType() : void
+    #[Test]
+    #[TestDox('returns the regressor estimator type')]
+    public function returnsTheRegressorEstimatorType() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    #[TestDox('returns the expected compatibility types')]
+    public function returnsTheExpectedCompatibilityTypes() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    #[TestDox('returns the configured parameters')]
+    public function returnsTheConfiguredParameters() : void
     {
         $expected = [
             'k' => 10,
@@ -101,10 +112,12 @@ class KNNRegressorTest extends TestCase
             'kernel' => new Minkowski(3.0),
         ];
 
-        $this->assertEquals($expected, $this->estimator->params());
+        self::assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPartialPredict() : void
+    #[Test]
+    #[TestDox('trains partially and makes accurate predictions')]
+    public function trainsPartiallyAndMakesAccuratePredictions() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -115,7 +128,7 @@ class KNNRegressorTest extends TestCase
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
@@ -126,25 +139,31 @@ class KNNRegressorTest extends TestCase
             labels: $labels
         );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    #[TestDox('rejects incompatible training data')]
+    public function rejectsIncompatibleTrainingData() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    #[TestDox('rejects predictions from an untrained model')]
+    public function rejectsPredictionsFromAnUntrainedModel() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
     }
 
+    #[Test]
+    #[TestDox('becomes trained after partial fitting')]
     #[DataProvider('trainedStateCases')]
-    public function testBecomesTrainedAfterPartialFitting(int $trainSize, int $folds) : void
+    public function becomesTrainedAfterPartialFitting(int $trainSize, int $folds) : void
     {
         $training = $this->generator->generate($trainSize);
 
@@ -156,6 +175,6 @@ class KNNRegressorTest extends TestCase
             $this->estimator->partial($parts[$i]);
         }
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Regressors\RadiusNeighborsRegressor;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -51,11 +52,9 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     protected RSquared $metric;
 
-    public static function predictionChecks() : array
+    public static function predictionChecks() : Generator
     {
-        return [
-            'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE],
-        ];
+        yield 'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE];
     }
 
     protected function setUp() : void
