@@ -84,7 +84,7 @@ jobs:
 #        run: vendor/bin/phpunit --display-warning --display-deprecations --display-notices --testsuite="Anomaly Detectors,Backends,Base,Classifiers"
 #
       - name: Unit Tests
-        run: vendor/bin/phpunit --display-warning --display-deprecations --display-notices --testsuite="Anomaly Detectors,Backends,Base,Classifiers,Clusterers,Cross Validation,Datasets,Extractors,Graph"
+        run: vendor/bin/phpunit --display-warning --display-deprecations --display-notices --testsuite="Anomaly Detectors,Backends,Base,Classifiers,Clusterers,Cross Validation,Datasets,Extractors,Graph,Helpers,Kernels"
 
       - name: Check Coding Style
         run: composer check
