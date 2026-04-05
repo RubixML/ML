@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Regressors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Regressors\Ridge;
@@ -19,6 +22,7 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Tests\DataProvider\GradientBoostProvider;
 
 #[Group('Regressors')]
 #[CoversClass(GradientBoost::class)]
@@ -166,6 +170,42 @@ class GradientBoostTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[DataProviderExternal(GradientBoostProvider::class, 'trainPredictAdditionalProvider')]
+    public function testTrainPredictAdditionalChecks(int $trainSize, int $testSize) : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate($trainSize);
+        $testing = $this->generator->generate($testSize);
+
+        $this->estimator->train($training);
+
+        self::assertSame(3, $training->numFeatures());
+
+        $losses = $this->estimator->losses();
+
+        self::assertIsArray($losses);
+        self::assertNotEmpty($losses);
+        self::assertContainsOnlyFloat($losses);
+
+        $scores = $this->estimator->scores();
+
+        self::assertIsArray($scores);
+        self::assertNotEmpty($scores);
+        self::assertContainsOnlyFloat($scores);
+
+        $importances = $this->estimator->featureImportances();
+
+        self::assertCount(3, $importances);
+        self::assertContainsOnlyFloat($importances);
+        self::assertGreaterThan(0.0, array_sum($importances));
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testSize, $predictions);
+        self::assertContainsOnlyFloat($predictions);
     }
 
     public function testPredictUntrained() : void
