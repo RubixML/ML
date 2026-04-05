@@ -1619,14 +1619,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Regressors/MLPRegressor/MLPRegressor.php
-
-		-
-			message: '#^Parameter \#1 \$a of static method Rubix\\ML\\Regressors\\Ridge\:\:solveLinearSystem\(\) expects list<list<float\|int>>, list<array<int<0, max>, float\|int>> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Regressors/Traits/LinearSystemSolver.php
-		-
-			message: '#^Parameter \#1 \$a of static method Rubix\\ML\\Regressors\\Ridge\\Ridge\:\:solveLinearSystem\(\) expects list<list<float\|int>>, list<array<int<0, max>, float\|int>> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Regressors/Traits/LinearSystemSolver.php
