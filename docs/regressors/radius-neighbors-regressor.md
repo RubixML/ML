@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/RadiusNeighborsRegressor.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/RadiusNeighborsRegressor/RadiusNeighborsRegressor.php">[source]</a></span>
 
 # Radius Neighbors Regressor
 This is the regressor version of [Radius Neighbors](../classifiers/radius-neighbors.md) implementing a binary spatial tree under the hood for fast radius queries. The prediction is a weighted average of each label from the training set that is within a fixed user-defined radius.
@@ -18,7 +18,7 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 
 ## Example
 ```php
-use Rubix\ML\Regressors\RadiusNeighborsRegressor;
+use Rubix\ML\Regressors\RadiusNeighborsRegressor\RadiusNeighborsRegressor;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;
 

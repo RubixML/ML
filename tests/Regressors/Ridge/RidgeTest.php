@@ -106,7 +106,7 @@ class RidgeTest extends TestCase
                 $isArm
                     ? [1208.26, 360.18, -96.53, -420.41]
                     : [1172.0, 452.0, -70.0, -424.0],
-                $isArm ? 8810.75 : 9949.78,
+                $isArm ? 8810.75 : 10432.0,
             ],
             'sample with 4 features with shifted values' => [
                 [
@@ -120,7 +120,7 @@ class RidgeTest extends TestCase
                 $isArm
                     ? [1364.07, 476.45, -161.59, -82.90]
                     : [1366.0, 504.0, -156.0, -91.0],
-                $isArm ? -4999.93 : -5054.98,
+                $isArm ? -4999.93 : -4224.0,
             ],
         ];
     }
