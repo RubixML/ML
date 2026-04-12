@@ -56,7 +56,7 @@ class SVR implements Estimator, Learner
     /**
      * The memoized hyper-parameters of the model.
      *
-     * @var array
+     * @var mixed[]
      */
     protected array $params;
 
