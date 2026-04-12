@@ -643,7 +643,7 @@ parameters:
 			path: src/functions.php
 
 		-
-			message: '#^Parameter #1 \$array \(list<array<int, mixed>>\) of array_values is already a list, call has no effect\.$#'
+			message: '#^Parameter \#1 \$array \(list<array<int, mixed>>\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
 			count: 1
 			path: src/functions.php
