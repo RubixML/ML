@@ -249,8 +249,9 @@ namespace Rubix\ML
 
     /**
      * Prepare samples depending on packing configuration.
-     * @param array $samples
-     * @return array<int, array<int, mixed>>
+     *
+     * @param list<array<int, mixed>> $samples
+     * @return list<array<int, mixed>>
      */
     function array_pack(array $samples) : array
     {

@@ -9,9 +9,9 @@ use Generator;
 final class RidgeProvider
 {
     /**
-     * Return dataset sizes for additional RidgeProvider tests with legacy values.
+     * Return training and prediction cases for Ridge tests with legacy values.
      *
-     * @return Generator<string, array{0: int, 1: int}>
+     * @return Generator<string, array{0: list<list<int|float>>, 1: list<int|float>, 2: list<int|float>, 3: float, 4: list<int|float>, 5: float}>
      */
     public static function trainPredictProvider() : Generator
     {
@@ -85,9 +85,9 @@ final class RidgeProvider
     }
 
     /**
-     * Return dataset sizes for additional RidgeProvider tests with NumPower.
+     * Return training and prediction cases for Ridge tests with NumPower.
      *
-     * @return Generator<string, array{0: int, 1: int}>
+     * @return Generator<string, array{0: list<list<int|float>>, 1: list<int|float>, 2: list<int|float>, 3: float, 4: list<int|float>, 5: float}>
      */
     public static function trainPredictProviderForNumPower() : Generator
     {

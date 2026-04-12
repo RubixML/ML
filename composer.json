@@ -53,8 +53,7 @@
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^12.0",
-        "swoole/ide-helper": "^5.1",
-        "apphp/pretty-print": "^0.6.0"
+        "swoole/ide-helper": "^5.1"
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",
