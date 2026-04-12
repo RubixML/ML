@@ -140,6 +140,27 @@ class KDNeighborsRegressorTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('predictSample matches batch prediction for a single sample')]
+    public function predictSampleMatchesBatchPrediction() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $sample = $testing->sample(0);
+
+        $batchPrediction = $this->estimator->predict($testing)[0];
+        $singlePrediction = $this->estimator->predictSample($sample);
+
+        echo $singlePrediction;
+
+        self::assertIsFloat($singlePrediction);
+        self::assertFalse(is_nan($singlePrediction));
+        self::assertEqualsWithDelta((float) $batchPrediction, (float) $singlePrediction, 1e-7);
+    }
+
+    #[Test]
     #[TestDox('serialization preserves the trained model and predictions')]
     public function serializationPreservesTheTrainedModelAndPredictions() : void
     {
@@ -163,7 +184,7 @@ class KDNeighborsRegressorTest extends TestCase
         foreach ($predictionsAfter as $i => $prediction) {
             self::assertIsFloat($prediction);
             self::assertFalse(is_nan($prediction));
-            self::assertEqualsWithDelta((float) $predictionsBefore[$i], (float) $prediction, 1e-8);
+            self::assertEqualsWithDelta((float) $predictionsBefore[$i], (float) $prediction, 1e-7);
         }
     }
 

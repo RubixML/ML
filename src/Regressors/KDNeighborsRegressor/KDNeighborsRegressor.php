@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Regressors\KDNeighborsRegressor;
 
+use NumPower;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -194,15 +195,8 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
         [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
         if ($this->weighted) {
-            $weights = [];
-
-            foreach ($distances as $distance) {
-                $weights[] = 1.0 / (1.0 + $distance);
-            }
-
-//            $distances = NumPower::array($distances);
-//            $weights = NumPower::divide(1.0, NumPower::add($distances, 1.0))->toArray();
-
+            $distances = NumPower::array($distances);
+            $weights = NumPower::divide(1.0, NumPower::add($distances, 1.0))->toArray();
 
             return Stats::weightedMean($labels, $weights);
         }
