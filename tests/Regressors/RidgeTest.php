@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Regressors;
 
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -20,6 +21,7 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Tests\DataProvider\RidgeProvider;
 
 #[Group('Regressors')]
 #[CoversClass(Ridge::class)]
@@ -50,77 +52,6 @@ class RidgeTest extends TestCase
     protected Ridge $estimator;
 
     protected RSquared $metric;
-
-    public static function trainPredictProvider() : Generator
-    {
-        yield 'sample with 1 feature and smaller values' => [
-                [
-                    [0],
-                    [1],
-                    [2],
-                    [3],
-                ],
-                [3, 5, 7, 9],
-                [4],
-                11.0,
-                [2.0],
-                3.0,
-        ];
-
-        yield 'sample with 2 features and smaller values' => [
-                [
-                    [0, 0],
-                    [1, 1],
-                    [2, 1],
-                    [1, 2],
-                ],
-                [3, 6, 7, 8],
-                [2, 2],
-                9.0,
-                [1.0, 2.0],
-                3.0,
-        ];
-
-        yield 'sample with 3 features and smaller values' => [
-                [
-                    [0, 0, 0],
-                    [1, 0, 0],
-                    [0, 1, 0],
-                    [0, 0, 1],
-                ],
-                [4, 5, 6, 7],
-                [1, 1, 1],
-                10.0,
-                [1.0, 2.0, 3.0],
-                4.0,
-        ];
-
-        yield 'sample with 4 features' => [
-                [
-                    [50, 3, 5, 10],
-                    [70, 10, 3, 5],
-                    [40, 2, 8, 30],
-                ],
-                [66000, 95000, 45000],
-                [60, 5, 4, 12],
-                78037.05,
-                [1192.98, 401.06, -132.47, -413.58],
-                9949.78,
-        ];
-
-        yield 'sample with 4 features with shifted values' => [
-                [
-                    [52, 4, 6, 12],
-                    [71, 9, 4, 6],
-                    [38, 3, 7, 28],
-                ],
-                [66000, 95000, 45000],
-                [60, 5, 4, 12],
-                77709.72,
-                [1368.77, 442.49, -158.60, -77.49],
-                -5054.98,
-        ];
-    }
 
     protected function setUp() : void
     {
@@ -212,7 +143,7 @@ class RidgeTest extends TestCase
 
     #[Test]
     #[TestDox('Trains, predicts, and returns the expected legacy ridge values')]
-    #[DataProvider('trainPredictProvider')]
+    #[DataProviderExternal(RidgeProvider::class, 'trainPredictProvider')]
     public function trainPredict(array $samples, array $labels, array $prediction, float $expectedPrediction, array $expectedCoefficients, float $expectedBias) : void
     {
         $regression = new Ridge(0.01);
@@ -228,6 +159,7 @@ class RidgeTest extends TestCase
         foreach ($expectedCoefficients as $i => $expectedCoefficient) {
             self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 0.2);
         }
+
         self::assertEqualsWithDelta($expectedBias, $regression->bias(), 0.2);
     }
 }
