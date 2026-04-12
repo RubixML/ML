@@ -120,7 +120,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var int
      */
-    protected $evalInterval;
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an

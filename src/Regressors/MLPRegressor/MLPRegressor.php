@@ -524,9 +524,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->toArray(), 0);
-
-        return $activations;
+        return array_column($activations->toArray(), 0);
     }
 
     /**

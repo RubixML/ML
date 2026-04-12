@@ -402,9 +402,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->asArray(), 0);
-
-        return $activations;
+        return array_column($activations->asArray(), 0);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Regressors\SVR;
 
-use NumPower;
 use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -57,7 +56,7 @@ class SVR implements Estimator, Learner
     /**
      * The memoized hyper-parameters of the model.
      *
-     * @var mixed[]
+     * @var array
      */
     protected array $params;
 

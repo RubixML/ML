@@ -106,7 +106,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var int
      */
-    protected $evalInterval;
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -513,9 +513,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->asArray(), 0);
-
-        return $activations;
+        return array_column($activations->asArray(), 0);
     }
 
     /**
