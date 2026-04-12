@@ -153,8 +153,6 @@ class KDNeighborsRegressorTest extends TestCase
         $batchPrediction = $this->estimator->predict($testing)[0];
         $singlePrediction = $this->estimator->predictSample($sample);
 
-        echo $singlePrediction;
-
         self::assertIsFloat($singlePrediction);
         self::assertFalse(is_nan($singlePrediction));
         self::assertEqualsWithDelta((float) $batchPrediction, (float) $singlePrediction, 1e-7);
