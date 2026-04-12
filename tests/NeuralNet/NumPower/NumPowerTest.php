@@ -2,15 +2,54 @@
 
 namespace Rubix\ML\Tests\NeuralNet\NumPower;
 
+use Generator;
 use NumPower;
+use Tensor\Matrix;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use function Apphp\PrettyPrint\pp;
 
 #[Group('NumPower')]
 class NumPowerTest extends TestCase
 {
+    public static function determinantCases() : Generator
+    {
+        yield 'singular matrix' => [
+            [
+                [1.0, 2.0, 3.0],
+                [2.0, 4.0, 6.0],
+                [3.0, 6.0, 9.0],
+            ],
+        ];
+
+        yield '2x2 positive values' => [
+            [
+                [6.0, 4.0],
+                [2.0, 5.0],
+            ],
+        ];
+
+        yield '3x3 mixed values' => [
+            [
+                [4.0, 3.0, 2.0],
+                [3.0, 2.0, 1.0],
+                [2.0, 1.0, 3.0],
+            ],
+        ];
+
+        yield '4x4 upper triangular' => [
+            [
+                [3.0, 1.0, 2.0, 4.0],
+                [0.0, 5.0, 6.0, 7.0],
+                [0.0, 0.0, 8.0, 9.0],
+                [0.0, 0.0, 0.0, 10.0],
+            ],
+        ];
+    }
+
     #[Test]
     #[TestDox('NumPower transpose swaps axes')]
     public function testNumPowerTransposeSwapsAxes() : void
@@ -46,5 +85,16 @@ class NumPowerTest extends TestCase
         self::assertEqualsWithDelta(42.0, (float) $a[42][0], 1e-12);
         self::assertEqualsWithDelta(1042.0, (float) $a[42][1], 1e-12);
         self::assertEqualsWithDelta(2042.0, (float) $a[42][2], 1e-12);
+    }
+
+    #[Test]
+    #[TestDox('NumPower determinant matches Matrix determinant')]
+    #[DataProvider('determinantCases')]
+    public function testNumPowerDeterminantMatchesMatrixDeterminant(array $matrix) : void
+    {
+        $ndArray = NumPower::array($matrix);
+        $matrix = Matrix::build($matrix);
+
+        self::assertEqualsWithDelta($matrix->det(), NumPower::det($ndArray), 1e-3);
     }
 }
