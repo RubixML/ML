@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use function Apphp\PrettyPrint\pp;
 
 #[Group('NumPower')]
 class NumPowerTest extends TestCase
