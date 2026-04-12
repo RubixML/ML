@@ -9,6 +9,8 @@
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
     - Converted Network back from a class to an interface
+    - Added array_pack() function to replace array_map('array_values', $samples)
+    - Converted Regressor classes to use NDArray instead of Matrix
 
 - 2.5.0
     - Added Vantage Point Spatial tree
