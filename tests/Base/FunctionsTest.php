@@ -63,45 +63,6 @@ class FunctionsTest extends TestCase
         ];
     }
 
-    public function testArrayPack() : void
-    {
-        $samples = [
-            [
-                'a' => 1,
-                'b' => 2,
-                'nested' => ['x' => 3, 'y' => 4],
-            ],
-            [
-                10,
-                20,
-                ['k1' => 30, 'k2' => 40],
-            ],
-        ];
-
-        $expected = [
-            [1, 2, [3, 4]],
-            [10, 20, [30, 40]],
-        ];
-
-        $this->assertEquals($expected, array_pack($samples));
-    }
-
-    public function testArrayPackMaxDepthStopsRecursion() : void
-    {
-        $samples = [
-            [
-                'a' => 1,
-                'nested' => ['x' => 3, 'y' => 4],
-            ],
-        ];
-
-        $expected = [
-            [1, ['x' => 3, 'y' => 4]],
-        ];
-
-        $this->assertEquals($expected, array_pack($samples, 0, 0));
-    }
-
     public static function sigmoidProvider() : Generator
     {
         yield [2.0, 0.8807970779778823];
@@ -198,6 +159,45 @@ class FunctionsTest extends TestCase
             ['NaN', 'NAN'],
             false,
         ];
+    }
+
+    public function testArrayPack() : void
+    {
+        $samples = [
+            [
+                'a' => 1,
+                'b' => 2,
+                'nested' => ['x' => 3, 'y' => 4],
+            ],
+            [
+                10,
+                20,
+                ['k1' => 30, 'k2' => 40],
+            ],
+        ];
+
+        $expected = [
+            [1, 2, [3, 4]],
+            [10, 20, [30, 40]],
+        ];
+
+        $this->assertEquals($expected, array_pack($samples));
+    }
+
+    public function testArrayPackMaxDepthStopsRecursion() : void
+    {
+        $samples = [
+            [
+                'a' => 1,
+                'nested' => ['x' => 3, 'y' => 4],
+            ],
+        ];
+
+        $expected = [
+            [1, ['x' => 3, 'y' => 4]],
+        ];
+
+        $this->assertEquals($expected, array_pack($samples, 0, 0));
     }
 
     public function testArgmin() : void

@@ -257,7 +257,7 @@ namespace Rubix\ML
      * @param int $maxDepth
      * @return array<mixed>
      */
-    function array_pack(array $samples, int $depth = 0, int $maxDepth = 100): array
+    function array_pack(array $samples, int $depth = 0, int $maxDepth = 100) : array
     {
         if ($depth > $maxDepth) {
             // Stop processing deeper
