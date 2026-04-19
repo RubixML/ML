@@ -1,9 +1,10 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\ELU;
 
-use Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
 
 /**
  * @Groups({"ActivationFunctions"})
@@ -12,14 +13,14 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 class ELUBench
 {
     /**
-     * @var Matrix
+     * @var NDArray
      */
-    protected Matrix $z;
+    protected NDArray $z;
 
     /**
-     * @var Matrix
+     * @var NDArray
      */
-    protected Matrix $computed;
+    protected NDArray $computed;
 
     /**
      * @var ELU
@@ -28,9 +29,9 @@ class ELUBench
 
     public function setUp() : void
     {
-        $this->z = Matrix::uniform(500, 500);
+        $this->z = NumPower::uniform(size: [500, 500], low: -1.0, high: 1.0);
 
-        $this->computed = Matrix::uniform(500, 500);
+        $this->computed = NumPower::uniform(size: [500, 500], low: -1.0, high: 1.0);
 
         $this->activationFn = new ELU();
     }
