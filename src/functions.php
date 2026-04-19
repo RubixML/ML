@@ -252,10 +252,10 @@ namespace Rubix\ML
      *
      * @internal
      *
-     * @param list<array<int, mixed>> $samples
+     * @param array<mixed> $samples
      * @param int $depth
      * @param int $maxDepth
-     * @return list<array<int, mixed>>
+     * @return array<mixed>
      */
     function array_pack(array $samples, int $depth = 0, int $maxDepth = 100): array
     {
