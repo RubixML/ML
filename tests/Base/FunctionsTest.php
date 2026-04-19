@@ -18,6 +18,7 @@ use function Rubix\ML\sigmoid;
 use function Rubix\ML\comb;
 use function Rubix\ML\linspace;
 use function Rubix\ML\array_transpose;
+use function Rubix\ML\array_pack;
 use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
 use function Rubix\ML\iterator_filter;
@@ -26,6 +27,7 @@ use function Rubix\ML\iterator_contains_nan;
 #[Group('Functions')]
 #[CoversFunction('\Rubix\ML\argmax')]
 #[CoversFunction('\Rubix\ML\argmin')]
+#[CoversFunction('\Rubix\ML\array_pack')]
 #[CoversFunction('\Rubix\ML\array_transpose')]
 #[CoversFunction('\Rubix\ML\comb')]
 #[CoversFunction('\Rubix\ML\iterator_contains_nan')]
@@ -59,6 +61,45 @@ class FunctionsTest extends TestCase
             ['yes' => 0.8, 'no' => 0.2, 'maybe' => NAN],
             'yes',
         ];
+    }
+
+    public function testArrayPack() : void
+    {
+        $samples = [
+            [
+                'a' => 1,
+                'b' => 2,
+                'nested' => ['x' => 3, 'y' => 4],
+            ],
+            [
+                10,
+                20,
+                ['k1' => 30, 'k2' => 40],
+            ],
+        ];
+
+        $expected = [
+            [1, 2, [3, 4]],
+            [10, 20, [30, 40]],
+        ];
+
+        $this->assertEquals($expected, array_pack($samples));
+    }
+
+    public function testArrayPackMaxDepthStopsRecursion() : void
+    {
+        $samples = [
+            [
+                'a' => 1,
+                'nested' => ['x' => 3, 'y' => 4],
+            ],
+        ];
+
+        $expected = [
+            [1, ['x' => 3, 'y' => 4]],
+        ];
+
+        $this->assertEquals($expected, array_pack($samples, 0, 0));
     }
 
     public static function sigmoidProvider() : Generator
