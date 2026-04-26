@@ -40,7 +40,7 @@ class GELUBench
      * @Iterations(3)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function compute() : void
+    public function activate() : void
     {
         $this->activationFn->activate($this->z);
     }
