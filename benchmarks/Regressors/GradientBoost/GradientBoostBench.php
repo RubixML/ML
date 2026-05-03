@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\Regressors;
+namespace Rubix\ML\Benchmarks\Regressors\GradientBoost;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Regressors\GradientBoost;
-use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Regressors\GradientBoost\GradientBoost;
+use Rubix\ML\Datasets\Generators\Hyperplane\Hyperplane;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 /**
