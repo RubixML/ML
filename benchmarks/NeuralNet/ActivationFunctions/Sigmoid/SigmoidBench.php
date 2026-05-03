@@ -4,7 +4,6 @@ namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\Sigmoid;
 
 use NDArray;
 use NumPower;
-use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid\Sigmoid;
 
 /**
