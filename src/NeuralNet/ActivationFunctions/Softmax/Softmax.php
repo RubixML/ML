@@ -76,13 +76,12 @@ class Softmax implements ActivationFunction, OBufferDerivative
      */
     public function differentiate(NDArray $output) : NDArray
     {
-        // Get the softmax output as a 1D PHP array
-        $softmax = NumPower::flatten($output)->toArray();
-        $diag = NumPower::diag(NumPower::array($softmax));
-        $outer = NumPower::outer(NumPower::array($softmax), NumPower::array($softmax));
+        $softmax = NumPower::flatten($output);
 
-        // Jacobian: diag(s) - outer(s, s)
-        return NumPower::subtract($diag, $outer);
+        return NumPower::subtract(
+            NumPower::diag($softmax),
+            NumPower::outer($softmax, $softmax)
+        );
     }
 
     /**
