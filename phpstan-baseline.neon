@@ -325,6 +325,12 @@ parameters:
 			path: src/Datasets/Generators/Agglomerate.php
 
 		-
+			message: '#^Instanceof between Rubix\\ML\\Datasets\\Generators\\Generator and Rubix\\ML\\Datasets\\Generators\\Generator will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Datasets/Generators/Agglomerate/Agglomerate.php
+
+		-
 			message: '#^Instanceof between Rubix\\ML\\Datasets\\Labeled and Rubix\\ML\\Datasets\\Labeled will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
