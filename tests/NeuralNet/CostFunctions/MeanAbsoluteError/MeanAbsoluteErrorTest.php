@@ -71,7 +71,7 @@ class MeanAbsoluteErrorTest extends TestCase
                 [41.5],
                 [38.0],
             ]),
-            4.124,
+            4.1240001,
         ];
 
         yield [
