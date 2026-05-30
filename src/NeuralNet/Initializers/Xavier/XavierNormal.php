@@ -11,8 +11,8 @@ use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
 /**
  * Xavier Normal
  *
- * The Xavier 1 initializer draws from a truncated normal distribution with
- * mean 0 and standard deviation squal sqrt(2 / (fanIn + fanOut)). This initializer is
+ * The Xavier 1 initializer draws from a normal distribution with
+ * mean 0 and standard deviation equal sqrt(2 / (fanIn + fanOut)). This initializer is
  * best suited for layers that feed into an activation layer that outputs a
  * value between 0 and 1 such as Softmax or Sigmoid.
  *
@@ -36,7 +36,7 @@ class XavierNormal extends AbstractInitializer
 
         $stdDev = sqrt(2 / ($fanOut + $fanIn));
 
-        return NumPower::truncatedNormal([$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::normal([$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }
 
     /**

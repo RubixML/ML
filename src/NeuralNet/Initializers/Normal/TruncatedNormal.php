@@ -25,13 +25,6 @@ use Rubix\ML\NeuralNet\Initializers\Normal\Exceptions\InvalidStandardDeviationEx
 class TruncatedNormal extends AbstractInitializer
 {
     /**
-     * Standard deviation shrink factor for a normal distribution truncated to ±2σ.
-     *
-     * @var float
-     */
-    protected const float TRUNCATION_STD_RATIO = 0.8796256610342398;
-
-    /**
      * @param float $stdDev The standard deviation of the distribution to sample from
      * @throws InvalidArgumentException
      */
@@ -51,9 +44,7 @@ class TruncatedNormal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $adjustedStdDev = $this->stdDev / self::TRUNCATION_STD_RATIO;
-
-        return NumPower::truncatedNormal([$fanOut, $fanIn], loc: 0.0, scale: $adjustedStdDev);
+        return NumPower::truncatedNormal([$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
     }
 
     /**
