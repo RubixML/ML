@@ -36,9 +36,9 @@ class Agglomerate implements Generator
      * The normalized weights of each generator i.e. the probability that a
      * sample from a particular generator shows up in the dataset.
      *
-     * @var NDArray
+     * @var float[]
      */
-    protected NDArray $weights;
+    protected array $weights;
 
     /**
      * The dimensionality of the agglomerate.
@@ -108,7 +108,7 @@ class Agglomerate implements Generator
         }
 
         $this->generators = $generators;
-        $this->weights = $weights;
+        $this->weights = array_combine(array_keys($generators), $weights->toArray());
         $this->dimensions = $dimensions;
     }
 
@@ -119,7 +119,7 @@ class Agglomerate implements Generator
      */
     public function weights() : array
     {
-        return array_combine(array_keys($this->generators), $this->weights->toArray());
+        return $this->weights;
     }
 
     /**
@@ -144,12 +144,8 @@ class Agglomerate implements Generator
     {
         $samples = $labels = [];
 
-        $counts = NumPower::round(NumPower::multiply($this->weights, $n), 0)->toArray();
-        $i = 0;
-
         foreach ($this->generators as $label => $generator) {
-            $p = (int) ($counts[$i] ?? 0);
-            ++$i;
+            $p = (int) round($this->weights[$label] * $n);
 
             if ($p < 1) {
                 continue;
