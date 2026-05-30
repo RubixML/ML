@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets\Generators\Agglomerate;
 
-use NDArray;
 use NumPower;
 use Rubix\ML\Datasets\Generators\Generator;
 use Rubix\ML\Datasets\Labeled;

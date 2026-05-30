@@ -111,7 +111,7 @@ class Noise implements Hidden
         $shape = $input->shape();
 
         // Gaussian noise with mean 0 and standard deviation $this->stdDev
-        $noise = NumPower::normal(size: $shape, loc: 0.0, scale: $this->stdDev);
+        $noise = NumPower::normal($shape, loc: 0.0, scale: $this->stdDev);
 
         return NumPower::add($input, $noise);
     }

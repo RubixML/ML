@@ -35,7 +35,7 @@ class HeUniform extends AbstractInitializer
 
         $limit = sqrt(6 / $fanOut);
 
-        return NumPower::uniform(size: [$fanOut, $fanIn], low: -$limit, high: $limit);
+        return NumPower::uniform([$fanOut, $fanIn], low: -$limit, high: $limit);
     }
 
     /**

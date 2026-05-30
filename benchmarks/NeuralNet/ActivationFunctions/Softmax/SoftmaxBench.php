@@ -29,9 +29,9 @@ class SoftmaxBench
 
     public function setUp() : void
     {
-        $this->z = NumPower::uniform(size: [100, 100], low: -1.0, high: 1.0);
+        $this->z = NumPower::uniform([100, 100], low: -1.0, high: 1.0);
 
-        $this->computed = NumPower::uniform(size: [100, 100], low: -1.0, high: 1.0);
+        $this->computed = NumPower::uniform([100, 100], low: -1.0, high: 1.0);
 
         $this->activationFn = new Softmax();
     }

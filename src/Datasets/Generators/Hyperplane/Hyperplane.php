@@ -93,14 +93,14 @@ class Hyperplane implements Generator
     {
         $d = $this->dimensions();
 
-        $y = NumPower::uniform(size: [$n], low: -1.0, high: 1.0);
+        $y = NumPower::uniform([$n], low: -1.0, high: 1.0);
 
         $coefficientsRow = NumPower::reshape($this->coefficients, [1, $d]);
 
         $yCol = NumPower::reshape(NumPower::add($y, $this->intercept), [$n, 1]);
 
         $noise = NumPower::multiply(
-            NumPower::normal(size: [$n, $d], loc: 0.0, scale: 1.0),
+            NumPower::normal([$n, $d]),
             $this->noise
         );
 

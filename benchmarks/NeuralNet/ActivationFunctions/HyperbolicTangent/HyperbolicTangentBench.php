@@ -29,9 +29,9 @@ class HyperbolicTangentBench
 
     public function setUp() : void
     {
-        $this->z = NumPower::uniform(size: [500, 500], low: -1.0, high: 1.0);
+        $this->z = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->computed = NumPower::uniform(size: [500, 500], low: -1.0, high: 1.0);
+        $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
         $this->activationFn = new HyperbolicTangent();
     }

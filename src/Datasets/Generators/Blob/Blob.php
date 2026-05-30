@@ -143,7 +143,7 @@ class Blob implements Generator
 
         $samples = NumPower::add(
             NumPower::multiply(
-                NumPower::normal(size: [$n, $d], loc: 0.0, scale: 1.0),
+                NumPower::normal([$n, $d]),
                 $this->stdDev
             ),
             $this->center

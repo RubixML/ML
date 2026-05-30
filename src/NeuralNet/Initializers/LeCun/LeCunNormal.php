@@ -36,7 +36,7 @@ class LeCunNormal extends AbstractInitializer
 
         $stdDev = sqrt(1 / $fanOut);
 
-        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::truncatedNormal([$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }
 
     /**
