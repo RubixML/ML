@@ -43,11 +43,7 @@ class Uniform extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        return NumPower::uniform(
-            size: [$fanOut, $fanIn],
-            low: -$this->beta,
-            high: $this->beta
-        );
+        return NumPower::uniform([$fanOut, $fanIn], low: -$this->beta, high: $this->beta);
     }
 
     /**
