@@ -12,8 +12,8 @@ use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
  * He Normal
  *
  * The He initializer was designed for hidden layers that feed into rectified
- * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a truncated
- * normal distribution with mean 0 and standart deviation sqrt(2 / fanOut).
+ * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a normal
+ * distribution with mean 0 and standard deviation sqrt(2 / fanOut).
  *
  * References:
  * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
@@ -35,7 +35,7 @@ class HeNormal extends AbstractInitializer
 
         $stdDev = sqrt(2 / $fanOut);
 
-        return NumPower::truncatedNormal([$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::normal([$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }
 
     /**
