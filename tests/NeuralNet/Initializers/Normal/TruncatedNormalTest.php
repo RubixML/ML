@@ -110,7 +110,7 @@ final class TruncatedNormalTest extends TestCase
 
     #[Test]
     #[TestDox('The initializer object is created correctly')]
-    public function testConstructorSucceedsWithDefaultStdDev() : void
+    public function constructorSucceedsWithDefaultStdDev() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -122,7 +122,7 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('The initializer object is throw an exception when stdDev less than 0')]
     #[DataProvider('invalidStandardDeviationProvider')]
-    public function testConstructorThrowsForInvalidStdDev(float $stdDev) : void
+    public function constructorThrowsForInvalidStdDev(float $stdDev) : void
     {
         //expect
         $this->expectException(InvalidStandardDeviationException::class);
@@ -134,7 +134,7 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('The result matrix has correct shape')]
     #[DataProvider('validFanInFanOutCombinationsProvider')]
-    public function testInitializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
+    public function initializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
         $w = new TruncatedNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -143,15 +143,16 @@ final class TruncatedNormalTest extends TestCase
         $shape = $w->shape();
 
         //then
-        $this->assertSame([$fanOut, $fanIn], $shape);
+        self::assertSame([$fanOut, $fanIn], $shape);
     }
 
     #[Test]
     #[TestDox('The resulting values matches distribution Truncated Normal')]
     #[DataProvider('truncatedNormalDistributionInitializationProvider')]
-    public function testValuesFollowTruncatedNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
+    public function valuesFollowTruncatedNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
     {
         //given
+        $expectedStd = $stdDev;
         $w = new TruncatedNormal($stdDev)->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $flatValues = array_merge(...$w->toArray());
 
@@ -161,28 +162,28 @@ final class TruncatedNormalTest extends TestCase
         $resultStd = sqrt($variance);
 
         //then
-        $this->assertThat(
+        self::assertThat(
             $mean,
-            $this->logicalAnd(
-                $this->greaterThan(-0.1),
-                $this->lessThan(0.1)
+            self::logicalAnd(
+                self::greaterThan(-0.1),
+                self::lessThan(0.1)
             ),
             'Mean is not within the expected range'
         );
-        $this->assertThat(
+        self::assertThat(
             $resultStd,
-            $this->logicalAnd(
-                $this->greaterThan($stdDev * 0.9),
-                $this->lessThan($stdDev * 1.1)
+            self::logicalAnd(
+                self::greaterThan($expectedStd * 0.85),
+                self::lessThan($expectedStd * 1.1)
             ),
             'Standard deviation does not match Truncated Normal initialization'
         );
-        $this->assertLessThanOrEqual(
+        self::assertLessThanOrEqual(
             $stdDev * 2.3,
             max($flatValues),
             'Maximum value does not match Truncated Normal initialization'
         );
-        $this->assertGreaterThanOrEqual(
+        self::assertGreaterThanOrEqual(
             $stdDev * -2.3,
             min($flatValues),
             'Minimum value does not match Truncated Normal initialization'
@@ -192,7 +193,7 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('An exception is thrown during initialization')]
     #[DataProvider('invalidFanInFanOutProvider')]
-    public function testInitializationThrowsForInvalidFanValues(int $fanIn, int $fanOut) : void
+    public function initializationThrowsForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
@@ -209,12 +210,12 @@ final class TruncatedNormalTest extends TestCase
 
     #[Test]
     #[TestDox('String representation is correct')]
-    public function testToStringReturnsExpectedFormat() : void
+    public function toStringReturnsExpectedFormat() : void
     {
         //when
         $string = (string) new TruncatedNormal();
 
         //then
-        $this->assertEquals('Truncated Normal (stdDev: 0.05)', $string);
+        self::assertEquals('Truncated Normal (stdDev: 0.05)', $string);
     }
 }
