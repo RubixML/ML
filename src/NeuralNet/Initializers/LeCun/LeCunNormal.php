@@ -14,7 +14,7 @@ use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
  * Proposed by Yan Le Cun in a paper in 1998, this initializer was one of the
  * first published attempts to control the variance of activations between
  * layers through weight initialization. It remains a good default choice for
- * many hidden layer configurations. It draws from a truncated
+ * many hidden layer configurations. It draws from a
  * normal distribution with mean 0 and standard deviation sqrt(1 / fanOut).
  *
  * References:
@@ -36,7 +36,7 @@ class LeCunNormal extends AbstractInitializer
 
         $stdDev = sqrt(1 / $fanOut);
 
-        return NumPower::truncatedNormal([$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::normal([$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }
 
     /**
