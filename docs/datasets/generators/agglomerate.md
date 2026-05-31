@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/Agglomerate.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/Agglomerate/Agglomerate.php">[source]</a></span>
 
 # Agglomerate
 An Agglomerate is a collection of generators with each of them given a user-defined label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the target label is a discrete value.
@@ -15,10 +15,10 @@ An Agglomerate is a collection of generators with each of them given a user-defi
 
 ## Example
 ```php
-use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Agglomerate\Agglomerate;
+use Rubix\ML\Datasets\Generators\Blob\Blob;
 use Rubix\ML\Datasets\Generators\HalfMoon;
-use Rubix\ML\Datasets\Generators\Circle;
+use Rubix\ML\Datasets\Generators\Circle\Circle;
 
 $generator = new Agglomerate([
 	'foo' => new Blob([5, 2], 1.0),

@@ -73,12 +73,6 @@ parameters:
 			path: src/Classifiers/KNearestNeighbors.php
 
 		-
-			message: '#^Parameter \#1 \$array of function array_count_values expects array\<int\|string\>, list\<float\|int\|string\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Classifiers/KNearestNeighbors.php
-
-		-
 			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
