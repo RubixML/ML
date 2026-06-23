@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/KNNRegressor/KNNRegressor.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/KNNRegressor.php">[source]</a></span>
 
 # KNN Regressor
 K Nearest Neighbors (KNN) is a brute-force distance-based learner that locates the k nearest training samples from the training set and averages their labels to make a prediction. K Nearest Neighbors (KNN) is considered a *lazy* learner because it performs most of its computation at inference time.
@@ -19,7 +19,7 @@ K Nearest Neighbors (KNN) is a brute-force distance-based learner that locates t
 
 ## Example
 ```php
-use Rubix\ML\Regressors\KNNRegressor\KNNRegressor;
+use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
 $estimator = new KNNRegressor(5, false, new SafeEuclidean());

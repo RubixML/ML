@@ -16,7 +16,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\Regressors\ExtraTreeRegressor\ExtraTreeRegressor;
-use Rubix\ML\Regressors\RegressionTree\RegressionTree;
+use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
