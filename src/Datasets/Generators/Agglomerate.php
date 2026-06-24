@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
+use NumPower;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-
 use function count;
 
 /**
@@ -18,6 +18,7 @@ use function count;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Agglomerate implements Generator
 {
@@ -89,22 +90,22 @@ class Agglomerate implements Generator
                 }
             }
 
-            $total = array_sum($weights);
+            $weights = NumPower::array($weights);
+
+            $total = NumPower::sum($weights);
 
             if ($total == 0) {
                 throw new InvalidArgumentException('Total weight must'
                     . ' not be equal to 0.');
             }
 
-            foreach ($weights as &$weight) {
-                $weight /= $total;
-            }
+            $weights = NumPower::divide($weights, $total);
         } else {
-            $weights = array_fill(0, $k, 1.0 / $k);
+            $weights = NumPower::array(array_fill(0, $k, 1.0 / $k));
         }
 
         $this->generators = $generators;
-        $this->weights = array_combine(array_keys($generators), $weights);
+        $this->weights = array_combine(array_keys($generators), $weights->toArray());
         $this->dimensions = $dimensions;
     }
 
