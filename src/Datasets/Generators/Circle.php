@@ -2,13 +2,11 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Tensor\Matrix;
-use Tensor\Vector;
+use NDArray;
+use NumPower;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-
-use function Rubix\ML\array_transpose;
-
+use function array_map;
 use const Rubix\ML\TWO_PI;
 
 /**
@@ -19,15 +17,16 @@ use const Rubix\ML\TWO_PI;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Circle implements Generator
 {
     /**
      * The center vector of the circle.
      *
-     * @var Vector
+     * @var NDArray
      */
-    protected Vector $center;
+    protected NDArray $center;
 
     /**
      * The scaling factor of the circle.
@@ -66,7 +65,7 @@ class Circle implements Generator
                 . " greater than 0, $noise given.");
         }
 
-        $this->center = Vector::quick([$x, $y]);
+        $this->center = NumPower::array([$x, $y]);
         $this->scale = $scale;
         $this->noise = $noise;
     }
@@ -91,23 +90,33 @@ class Circle implements Generator
      */
     public function generate(int $n) : Labeled
     {
-        $r = Vector::rand($n)->multiply(TWO_PI);
+        $r = NumPower::multiply(NumPower::uniform([$n]), TWO_PI);
 
-        $x = $r->cos()->asArray();
-        $y = $r->sin()->asArray();
+        $angles = $r->toArray();
 
-        $coordinates = array_transpose([$x, $y]);
+        $coordinates = array_map(
+            static fn (float $angle) : array => [cos($angle), sin($angle)],
+            $angles
+        );
 
-        $noise = Matrix::gaussian($n, 2)
-            ->multiply($this->noise);
+        $noise = NumPower::multiply(
+            NumPower::normal([$n, 2]),
+            $this->noise
+        );
 
-        $samples = Matrix::quick($coordinates)
-            ->multiply($this->scale)
-            ->add($this->center)
-            ->add($noise)
-            ->asArray();
+        $samples = NumPower::add(
+            NumPower::add(
+                NumPower::multiply(
+                    NumPower::array($coordinates),
+                    $this->scale
+                ),
+                $this->center
+            ),
+            $noise
+        )->toArray();
 
-        $labels = $r->rad2deg()->asArray();
+        // Convert radians to degrees
+        $labels = NumPower::multiply($r, 180.0 / M_PI)->toArray();
 
         return Labeled::quick($samples, $labels);
     }

@@ -17,7 +17,7 @@ An Agglomerate is a collection of generators with each of them given a user-defi
 ```php
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Datasets\Generators\Circle\Circle;
+use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 
 $generator = new Agglomerate([

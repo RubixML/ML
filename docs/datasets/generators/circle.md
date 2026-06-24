@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/Circle/Circle.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/Circle.php">[source]</a></span>
 
 # Circle
 Creates a dataset of points forming a circle in 2 dimensions. The label of each sample is the random value used to generate the projection measured in degrees.
@@ -17,7 +17,7 @@ Creates a dataset of points forming a circle in 2 dimensions. The label of each 
 
 ## Example
 ```php
-use Rubix\ML\Datasets\Generators\Circle\Circle;
+use Rubix\ML\Datasets\Generators\Circle;
 
 $generator = new Circle(0.0, 0.0, 100, 0.1);
 ```
