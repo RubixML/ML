@@ -25,14 +25,15 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 | 10 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
+
 ```php
-use Rubix\ML\Regressors\MLPRegressor\MLPRegressor;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
-use Rubix\ML\NeuralNet\Layers\Dense\Dense;
-use Rubix\ML\NeuralNet\Layers\Activation\Activation;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
-use Rubix\ML\NeuralNet\Optimizers\RMSProp\RMSProp;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
+use Rubix\ML\NeuralNet\Layers\Activation\Activation;
+use Rubix\ML\NeuralNet\Layers\Dense\Dense;
+use Rubix\ML\NeuralNet\Optimizers\RMSProp\RMSProp;
+use Rubix\ML\Regressors\MLPRegressor;
 
 $estimator = new MLPRegressor([
 	new Dense(100),
