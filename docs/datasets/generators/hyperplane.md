@@ -15,7 +15,6 @@ Generates a labeled dataset whose samples form a hyperplane in n-dimensional vec
 | 3 | noise | 0.1 | float | The factor of gaussian noise to add to the data points. |
 
 ## Example
-
 ```php
 use Rubix\ML\Datasets\Generators\Hyperplane;
 

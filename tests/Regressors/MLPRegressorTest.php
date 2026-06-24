@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
-use Rubix\ML\Datasets\Generators\SwissRoll\SwissRoll;
+use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\DataType;

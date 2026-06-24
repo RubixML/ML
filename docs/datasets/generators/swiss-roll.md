@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/SwissRoll/SwissRoll.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Generators/SwissRoll.php">[source]</a></span>
 
 # Swiss Roll
 Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral. The labels are the seeds to the swiss roll transformation.
@@ -19,7 +19,7 @@ Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral.
 
 ## Example
 ```php
-use Rubix\ML\Datasets\Generators\SwissRoll\SwissRoll;
+use Rubix\ML\Datasets\Generators\SwissRoll;
 
 $generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
 ```

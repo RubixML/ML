@@ -2,13 +2,14 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Tensor\Matrix;
-use Tensor\Vector;
+use NumPower;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-
-use function Rubix\ML\array_transpose;
-
+use function cos;
+use function log;
+use function mt_rand;
+use function sin;
+use function sqrt;
 use const Rubix\ML\HALF_PI;
 
 /**
@@ -25,15 +26,16 @@ use const Rubix\ML\HALF_PI;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class SwissRoll implements Generator
 {
     /**
      * The center vector of the swiss roll.
      *
-     * @var Vector
+     * @var list<float>
      */
-    protected Vector $center;
+    protected array $center;
 
     /**
      * The scaling factor of the swiss roll.
@@ -88,7 +90,7 @@ class SwissRoll implements Generator
                 . " than 0, $noise given.");
         }
 
-        $this->center = Vector::quick([$x, $y, $z]);
+        $this->center = [$x, $y, $z];
         $this->scale = $scale;
         $this->depth = $depth;
         $this->noise = $noise;
@@ -114,28 +116,69 @@ class SwissRoll implements Generator
      */
     public function generate(int $n) : Labeled
     {
-        $t = Vector::rand($n)
-            ->multiply(2)
-            ->add(1)
-            ->multiply(M_PI + HALF_PI);
+        $range = M_PI + HALF_PI;
 
-        $x = $t->multiply($t->cos())->asArray();
-        $y = Vector::rand($n)->multiply($this->depth)->asArray();
-        $z = $t->multiply($t->sin())->asArray();
+        $t = [];
+        $y = [];
+        $coords = [];
 
-        $coordinates = array_transpose([$x, $y, $z]);
+        for ($i = 0; $i < $n; ++$i) {
+            $u = mt_rand() / mt_getrandmax();
+            $ti = (($u * 2.0) + 1.0) * $range;
+            $t[] = $ti;
 
-        $noise = Matrix::gaussian($n, 3)
-            ->multiply($this->noise);
+            $uy = mt_rand() / mt_getrandmax();
+            $y[] = $uy * $this->depth;
 
-        $samples = Matrix::quick($coordinates)
-            ->multiply($this->scale)
-            ->add($this->center)
-            ->add($noise)
-            ->asArray();
+            $coords[] = [
+                $ti * cos($ti),
+                $y[$i],
+                $ti * sin($ti),
+            ];
+        }
 
-        $labels = $t->asArray();
+        $noise = [];
 
-        return Labeled::quick($samples, $labels);
+        if ($this->noise > 0.0) {
+            for ($i = 0; $i < $n; ++$i) {
+                $row = [];
+
+                for ($j = 0; $j < 3; ++$j) {
+                    $u1 = mt_rand() / mt_getrandmax();
+                    $u2 = mt_rand() / mt_getrandmax();
+                    $u1 = $u1 > 0.0 ? $u1 : 1e-12;
+
+                    $z0 = sqrt(-2.0 * log($u1)) * cos(2.0 * M_PI * $u2);
+
+                    $row[] = $z0 * $this->noise;
+                }
+
+                $noise[] = $row;
+            }
+        } else {
+            for ($i = 0; $i < $n; ++$i) {
+                $noise[] = [0.0, 0.0, 0.0];
+            }
+        }
+
+        $center = [];
+
+        for ($i = 0; $i < $n; ++$i) {
+            $center[] = $this->center;
+        }
+
+        $coords = NumPower::array($coords);
+        $noise = NumPower::array($noise);
+        $center = NumPower::array($center);
+
+        $samples = NumPower::add(
+            NumPower::add(
+                NumPower::multiply($coords, $this->scale),
+                $center
+            ),
+            $noise
+        );
+
+        return Labeled::quick($samples->toArray(), $t);
     }
 }
