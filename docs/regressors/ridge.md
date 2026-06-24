@@ -13,7 +13,6 @@ L2 regularized linear regression solved using a closed-form solution. The additi
 | 1 | l2Penalty | 1.0 | float | The strength of the L2 regularization penalty. |
 
 ## Example
-
 ```php
 use Rubix\ML\Regressors\Ridge;
 

@@ -17,7 +17,6 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 | 3 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
 ## Example
-
 ```php
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;

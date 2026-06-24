@@ -6,18 +6,20 @@ namespace Rubix\ML\Tests\Regressors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use Rubix\ML\DataType;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Regressors\SVR;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Kernels\SVM\Linear;
-use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\DataType;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Kernels\SVM\Linear;
+use Rubix\ML\Regressors\SVR;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 
 #[Group('Regressors')]
 #[CoversClass(SVR::class)]
@@ -70,26 +72,34 @@ class SVRTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    #[TestDox('asserts preconditions')]
+    public function assertsPreConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    public function testType() : void
+    #[Test]
+    #[TestDox('returns the regressor estimator type')]
+    public function returnsTheRegressorEstimatorType() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    #[TestDox('returns the expected compatibility types')]
+    public function returnsTheExpectedCompatibilityTypes() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testTrainPredict() : void
+    #[Test]
+    #[TestDox('trains and makes accurate predictions')]
+    public function trainsAndMakesAccuratePredictions() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -99,7 +109,7 @@ class SVRTest extends TestCase
 
         $this->estimator->train($dataset);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
@@ -110,17 +120,21 @@ class SVRTest extends TestCase
             labels: $labels
         );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    #[TestDox('rejects incompatible training data')]
+    public function rejectsIncompatibleTrainingData() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']]));
     }
 
-    public function predictUntrained() : void
+    #[Test]
+    #[TestDox('rejects predictions from an untrained model')]
+    public function rejectsPredictionsFromAnUntrainedModel() : void
     {
         $this->expectException(RuntimeException::class);
 

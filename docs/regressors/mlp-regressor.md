@@ -25,7 +25,6 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 | 10 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
-
 ```php
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;

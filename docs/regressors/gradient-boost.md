@@ -27,7 +27,6 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 | 9 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
-
 ```php
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 use Rubix\ML\Regressors\GradientBoost;

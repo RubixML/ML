@@ -16,7 +16,6 @@
 | 4 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
 
 ## Example
-
 ```php
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 

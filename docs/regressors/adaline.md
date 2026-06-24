@@ -19,7 +19,6 @@
 | 7 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 
 ## Example
-
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\HuberLoss;
 use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
