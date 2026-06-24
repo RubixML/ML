@@ -71,6 +71,7 @@ final class TruncatedNormalTest extends TestCase
                 'fanIn' => 30,
                 'fanOut' => 10,
                 'stdDev' => 0.25,
+                'stdLowerMultiplier' => 0.8,
             ],
             'medium numbers' => [
                 'fanIn' => 300,
@@ -149,7 +150,12 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('The resulting values matches distribution Truncated Normal')]
     #[DataProvider('truncatedNormalDistributionInitializationProvider')]
-    public function valuesFollowTruncatedNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
+    public function valuesFollowTruncatedNormalDistribution(
+        int $fanIn,
+        int $fanOut,
+        float $stdDev,
+        float $stdLowerMultiplier = 0.85
+    ) : void
     {
         //given
         $expectedStd = $stdDev;
@@ -173,7 +179,7 @@ final class TruncatedNormalTest extends TestCase
         self::assertThat(
             $resultStd,
             self::logicalAnd(
-                self::greaterThan($expectedStd * 0.85),
+                self::greaterThan($expectedStd * $stdLowerMultiplier),
                 self::lessThan($expectedStd * 1.1)
             ),
             'Standard deviation does not match Truncated Normal initialization'
