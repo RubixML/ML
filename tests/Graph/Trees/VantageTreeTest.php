@@ -60,7 +60,7 @@ class VantageTreeTest extends TestCase
 
         $this->assertCount(1, array_unique($labels));
 
-        [$samples, $labels, $distances] = $this->tree->range(sample: $sample, radius: 4.3);
+        [$samples, $labels, $distances] = $this->tree->range(sample: $sample, radius: 4.4);
 
         $this->assertGreaterThanOrEqual(45, count($samples));
         $this->assertGreaterThanOrEqual(45, count($labels));

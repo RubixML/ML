@@ -155,8 +155,7 @@ final class TruncatedNormalTest extends TestCase
         int $fanOut,
         float $stdDev,
         float $stdLowerMultiplier = 0.85
-    ) : void
-    {
+    ) : void {
         //given
         $expectedStd = $stdDev;
         $w = new TruncatedNormal($stdDev)->initialize(fanIn: $fanIn, fanOut:  $fanOut);
