@@ -45,12 +45,6 @@ parameters:
             path: src/Regressors/GradientBoost.php
 
         -
-            message: '#^Property Rubix\\ML\\Regressors\\GradientBoost\\GradientBoost\:\:\$ensemble \(array<mixed>\) in isset\(\) is not nullable\.$#'
-            identifier: isset.property
-            count: 2
-            path: src/Regressors/GradientBoost/GradientBoost.php
-
-        -
             message: '#^Parameter \#2 \$labels of method Rubix\\ML\\Clusterers\\KMeans\:\:inertia\(\) expects list<int>, array<mixed> given\.$#'
             identifier: argument.type
             count: 1

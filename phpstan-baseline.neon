@@ -79,12 +79,6 @@ parameters:
 			path: src/Classifiers/LogitBoost.php
 
 		-
-			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Regressors/GradientBoost/GradientBoost.php
-
-		-
 			message: '#^Instanceof between Rubix\\ML\\NeuralNet\\Layers\\Hidden and Rubix\\ML\\NeuralNet\\Layers\\Hidden will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -503,12 +497,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/Regressors/KNNRegressor.php
-
-		-
-			message: '#^Instanceof between Rubix\\ML\\NeuralNet\\Layers\\Hidden and Rubix\\ML\\NeuralNet\\Layers\\Hidden will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/Regressors/MLPRegressor.php
 
 		-
 			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list\<float\|int\|string\>, array\<mixed\> given\.$#'
@@ -1613,12 +1601,6 @@ parameters:
 			identifier: offsetAccess.invalidOffset
 			count: 1
 			path: src/Datasets/Labeled.php
-
-		-
-			message: '#^Parameter \#2 \$labels of method Rubix\\ML\\CrossValidation\\Metrics\\Metric\:\:score\(\) expects list<float\|int\|string>, array<mixed> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Regressors/MLPRegressor/MLPRegressor.php
 
 		-
 			# Temporary fix for NumPower::array() 2nd parameter missing until it is fixed
