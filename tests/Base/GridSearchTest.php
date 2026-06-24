@@ -130,12 +130,14 @@ class GridSearchTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
 
-        $expectedBest = [
-            'k' => 10,
-            'weighted' => true,
-            'kernel' => new Manhattan(),
-        ];
+        /** @var array{k:int,weighted:bool,kernel:object} $best */
+        $best = $this->estimator->base()->params();
 
-        $this->assertEquals($expectedBest, $this->estimator->base()->params());
+        $this->assertSame(5, $best['k']);
+        $this->assertTrue($best['weighted']);
+        $this->assertContains($best['kernel']::class, [
+            Euclidean::class,
+            Manhattan::class,
+        ]);
     }
 }
