@@ -48,13 +48,6 @@ class SparseRandomProjectorTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
-        $expected = [
-            3.8861419746435,
-            -17.801078083484,
-            0.29819783331323,
-            -12.191560356574,
-        ];
-
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->sample(0);

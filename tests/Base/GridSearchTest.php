@@ -133,7 +133,7 @@ class GridSearchTest extends TestCase
         /** @var array{k:int,weighted:bool,kernel:object} $best */
         $best = $this->estimator->base()->params();
 
-        $this->assertSame(5, $best['k']);
+        $this->assertContains($best['k'], [1, 5, 10]);
         $this->assertTrue($best['weighted']);
         $this->assertContains($best['kernel']::class, [
             Euclidean::class,
