@@ -21,7 +21,9 @@
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\HuberLoss;use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;use Rubix\ML\Regressors\Adaline;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\HuberLoss;
+use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
+use Rubix\ML\Regressors\Adaline;
 
 $estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 5, new HuberLoss(2.5));
 ```

@@ -8,19 +8,20 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Datasets\Generators\SwissRoll\SwissRoll;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Regressors\Ridge;
-use Rubix\ML\Loggers\BlackHole;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\GradientBoost;
-use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\CrossValidation\Metrics\RMSE;
-use Rubix\ML\Datasets\Generators\SwissRoll;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\Regressors\GradientBoost;
+use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Regressors\Ridge\Ridge;
 use Rubix\ML\Tests\DataProvider\GradientBoostProvider;
 
 #[Group('Regressors')]
@@ -83,39 +84,49 @@ class GradientBoostTest extends TestCase
 
     protected function assertPreConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    public function testIncompatibleBooster() : void
+    #[Test]
+    #[TestDox('Throws when booster is incompatible')]
+    public function incompatibleBooster() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new GradientBoost(booster: new Ridge());
     }
 
-    public function testBadLearningRate() : void
+    #[Test]
+    #[TestDox('Throws when learning rate is invalid')]
+    public function badLearningRate() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new GradientBoost(booster: null, rate: -1e-3);
     }
 
-    public function testType() : void
+    #[Test]
+    #[TestDox('Returns estimator type')]
+    public function type() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    #[TestDox('Declares feature compatibility')]
+    public function compatibility() : void
     {
         $expected = [
             DataType::categorical(),
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    #[TestDox('Returns hyperparameters')]
+    public function params() : void
     {
         $expected = [
             'booster' => new RegressionTree(maxHeight: 3),
@@ -129,10 +140,12 @@ class GradientBoostTest extends TestCase
             'metric' => new RMSE(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->params());
+        self::assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPredictImportances() : void
+    #[Test]
+    #[TestDox('Trains, predicts, and returns importances')]
+    public function trainPredictImportances() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -141,22 +154,22 @@ class GradientBoostTest extends TestCase
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $losses = $this->estimator->losses();
 
-        $this->assertIsArray($losses);
-        $this->assertContainsOnlyFloat($losses);
+        self::assertIsArray($losses);
+        self::assertContainsOnlyFloat($losses);
 
         $scores = $this->estimator->scores();
 
-        $this->assertIsArray($scores);
-        $this->assertContainsOnlyFloat($scores);
+        self::assertIsArray($scores);
+        self::assertContainsOnlyFloat($scores);
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertCount(3, $importances);
-        $this->assertContainsOnlyFloat($importances);
+        self::assertCount(3, $importances);
+        self::assertContainsOnlyFloat($importances);
 
         $predictions = $this->estimator->predict($testing);
 
@@ -168,11 +181,13 @@ class GradientBoostTest extends TestCase
             labels: $labels
         );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    #[Test]
+    #[TestDox('Returns additional training artifacts and prediction details')]
     #[DataProviderExternal(GradientBoostProvider::class, 'trainPredictAdditionalProvider')]
-    public function testTrainPredictAdditionalChecks(int $trainSize, int $testSize) : void
+    public function trainPredictAdditionalChecks(int $trainSize, int $testSize) : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -207,7 +222,9 @@ class GradientBoostTest extends TestCase
         self::assertContainsOnlyFloat($predictions);
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    #[TestDox('Throws when predicting before training')]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
