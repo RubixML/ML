@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/ExtraTreeRegressor/ExtraTreeRegressor.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/ExtraTreeRegressor.php">[source]</a></span>
 
 # Extra Tree Regressor
 *Extremely Randomized* Regression Trees differ from standard [Regression Trees](regression-tree.md) in that they choose candidate splits at random rather than searching the entire feature column for the best value to split on. Extra Trees are also faster to build and their predictions have higher variance than a regular decision tree regressor.
@@ -16,8 +16,9 @@
 | 4 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
 
 ## Example
+
 ```php
-use Rubix\ML\Regressors\ExtraTreeRegressor\ExtraTreeRegressor;
+use Rubix\ML\Regressors\ExtraTreeRegressor;
 
 $estimator = new ExtraTreeRegressor(30, 5, 0.05, null);
 ```
