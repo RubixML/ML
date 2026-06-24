@@ -21,7 +21,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Regressors\Ridge\Ridge;
+use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Tests\DataProvider\GradientBoostProvider;
 
 #[Group('Regressors')]
