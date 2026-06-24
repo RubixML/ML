@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Benchmarks\Regressors;
 
-use Rubix\ML\Datasets\Generators\Hyperplane\Hyperplane;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 use Rubix\ML\NeuralNet\Layers\Activation\Activation;

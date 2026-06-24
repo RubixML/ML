@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Tensor\Matrix;
-use Tensor\Vector;
+use NDArray;
+use NumPower;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
@@ -19,15 +19,16 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Hyperplane implements Generator
 {
     /**
      * The n coefficients of the hyperplane where n is the dimensionality.
      *
-     * @var Vector
+     * @var NDArray
      */
-    protected Vector $coefficients;
+    protected NDArray $coefficients;
 
     /**
      * The y intercept term.
@@ -64,7 +65,7 @@ class Hyperplane implements Generator
                 . " greater than 0, $noise given.");
         }
 
-        $this->coefficients = Vector::quick($coefficients);
+        $this->coefficients = NumPower::array($coefficients);
         $this->intercept = $intercept;
         $this->noise = $noise;
     }
@@ -78,7 +79,7 @@ class Hyperplane implements Generator
      */
     public function dimensions() : int
     {
-        return $this->coefficients->n();
+        return $this->coefficients->shape()[0];
     }
 
     /**
@@ -91,19 +92,23 @@ class Hyperplane implements Generator
     {
         $d = $this->dimensions();
 
-        $y = Vector::uniform($n);
+        $y = NumPower::uniform([$n], low: -1.0, high: 1.0);
 
-        $noise = Matrix::gaussian($n, $d)
-            ->multiply($this->noise);
+        $coefficientsRow = NumPower::reshape($this->coefficients, [1, $d]);
 
-        $samples = $y->add($this->intercept)
-            ->asColumnMatrix()
-            ->repeat(0, $d - 1)
-            ->multiply($this->coefficients)
-            ->add($noise)
-            ->asArray();
+        $yCol = NumPower::reshape(NumPower::add($y, $this->intercept), [$n, 1]);
 
-        $labels = $y->asArray();
+        $noise = NumPower::multiply(
+            NumPower::normal([$n, $d]),
+            $this->noise
+        );
+
+        $samples = NumPower::add(
+            NumPower::matmul($yCol, $coefficientsRow),
+            $noise
+        )->toArray();
+
+        $labels = $y->toArray();
 
         return Labeled::quick($samples, $labels);
     }
