@@ -330,6 +330,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $this->logger->info("Training $this");
         }
 
+        // New samples start with provisional label 0 in this partial batch,
+        // so size bookkeeping must include them before any reassignments.
+        $this->sizes[0] += $dataset->numSamples();
+
         $labels = array_fill(0, $dataset->numSamples(), 0);
 
         $dataset = Labeled::quick($dataset->samples(), $labels);
