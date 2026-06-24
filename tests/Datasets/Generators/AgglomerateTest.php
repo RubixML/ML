@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Generators\Blob\Blob;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Labeled;
 
 #[Group('Generators')]

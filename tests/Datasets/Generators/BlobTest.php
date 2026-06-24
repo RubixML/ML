@@ -4,13 +4,16 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Datasets\Generators;
 
+use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Generator;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Datasets\Unlabeled;
 
 #[Group('Generators')]
 #[CoversClass(Blob::class)]
@@ -18,40 +21,56 @@ class BlobTest extends TestCase
 {
     protected const int DATASET_SIZE = 30;
 
+    protected const array CENTER = [0.0, 0.0, 0.0];
+
     protected Blob $generator;
 
     protected function setUp() : void
     {
-        $this->generator = new Blob(center: [0, 0, 0], stdDev: 1.0);
+        $this->generator = new Blob(
+            center: NumPower::array(self::CENTER)->toArray(),
+            stdDev: 1.0
+        );
     }
 
-    public function testSimulate() : void
+    #[Test]
+    #[TestDox('Simulates a blob generator from dataset')]
+    public function simulate() : void
     {
         $dataset = $this->generator->generate(100);
 
         $generator = Blob::simulate($dataset);
 
-        $this->assertInstanceOf(Blob::class, $generator);
-        $this->assertInstanceOf(Generator::class, $generator);
+        self::assertInstanceOf(Blob::class, $generator);
+        self::assertInstanceOf(Generator::class, $generator);
     }
 
-    public function testCenter() : void
+    #[Test]
+    #[TestDox('Returns center coordinates')]
+    public function center() : void
     {
-        $this->assertEquals([0, 0, 0], $this->generator->center());
+        self::assertEquals(
+            NumPower::array(self::CENTER)->toArray(),
+            $this->generator->center()
+        );
     }
 
-    public function testDimensions() : void
+    #[Test]
+    #[TestDox('Returns dimensions')]
+    public function dimensions() : void
     {
-        $this->assertEquals(3, $this->generator->dimensions());
+        self::assertEquals(3, $this->generator->dimensions());
     }
 
-    public function testGenerate() : void
+    #[Test]
+    #[TestDox('Generates an unlabeled dataset')]
+    public function generate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 
-        $this->assertInstanceOf(Unlabeled::class, $dataset);
-        $this->assertInstanceOf(Dataset::class, $dataset);
+        self::assertInstanceOf(Unlabeled::class, $dataset);
+        self::assertInstanceOf(Dataset::class, $dataset);
 
-        $this->assertCount(self::DATASET_SIZE, $dataset);
+        self::assertCount(self::DATASET_SIZE, $dataset);
     }
 }

@@ -14,10 +14,9 @@ An Agglomerate is a collection of generators with each of them given a user-defi
 | 2 | weights | Auto | array | A set of arbitrary weight values corresponding to a generator's proportion of the overall agglomeration. If no weights are given, each generator is assigned equal weight. |
 
 ## Example
-
 ```php
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Generators\Blob\Blob;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle\Circle;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 

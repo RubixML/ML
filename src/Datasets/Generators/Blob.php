@@ -2,14 +2,13 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
-use Tensor\Matrix;
-use Tensor\Vector;
-use Rubix\ML\DataType;
-use Rubix\ML\Helpers\Stats;
+use NDArray;
+use NumPower;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-
+use Rubix\ML\Helpers\Stats;
 use function count;
 use function sqrt;
 
@@ -30,14 +29,14 @@ class Blob implements Generator
     /**
      * The center vector of the blob.
      *
-     * @var Vector
+     * @var NDArray
      */
-    protected Vector $center;
+    protected NDArray $center;
 
     /**
      * The standard deviation of the blob.
      *
-     * @var Vector|int|float
+     * @var NDArray|float
      */
     protected $stdDev;
 
@@ -94,15 +93,17 @@ class Blob implements Generator
                 }
             }
 
-            $stdDev = Vector::quick($stdDev);
+            $stdDev = NumPower::array($stdDev);
         } else {
             if ($stdDev < 0) {
                 throw new InvalidArgumentException('Standard deviation'
                     . " must be greater than 0, $stdDev given.");
             }
+
+            $stdDev = (float) $stdDev;
         }
 
-        $this->center = Vector::quick($center);
+        $this->center = NumPower::array($center);
         $this->stdDev = $stdDev;
     }
 
@@ -113,7 +114,7 @@ class Blob implements Generator
      */
     public function center() : array
     {
-        return $this->center->asArray();
+        return $this->center->toArray();
     }
 
     /**
@@ -125,7 +126,7 @@ class Blob implements Generator
      */
     public function dimensions() : int
     {
-        return $this->center->n();
+        return $this->center->shape()[0];
     }
 
     /**
@@ -138,10 +139,13 @@ class Blob implements Generator
     {
         $d = $this->dimensions();
 
-        $samples = Matrix::gaussian($n, $d)
-            ->multiply($this->stdDev)
-            ->add($this->center)
-            ->asArray();
+        $samples = NumPower::add(
+            NumPower::multiply(
+                NumPower::normal([$n, $d]),
+                $this->stdDev
+            ),
+            $this->center
+        )->toArray();
 
         return Unlabeled::quick($samples);
     }
