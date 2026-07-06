@@ -1,33 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
-
-use function tanh;
-use function cosh;
+use NumPower;
+use NDArray;
 
 /**
- * GELU
+ * GeLU
  *
- * Gaussian Error Linear Units (GELUs) are rectifiers that are gated by the magnitude of their input rather
+ * Gaussian Error Linear Units (GeLUs) are rectifiers that are gated by the magnitude of their input rather
  * than the sign of their input as with ReLU variants. Their output can be interpreted as the expected value
  * of a neuron with random dropout regularization applied.
  *
- * [1] D. Hendrycks et al. (2018). Gaussian Error Linear Units (GELUs).
+ * References:
+ * [1] D. Hendrycks et al. (2018). Gaussian Error Linear Units (GeLUs).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Aleksei Nechaev <omfg.rus@gmail.com>
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class GELU implements ActivationFunction
+class GELU implements ActivationFunction, IBufferDerivative
 {
     /**
-     * The square root of two over pi.
+     * The square root of two over pi constant sqrt(2/π).
      *
      * @var float
      */
     protected const ALPHA = 0.7978845608;
+
+    /**
+     * @var float 0.5 * ALPHA
+     */
+    protected const HALF_ALPHA = 0.3989422804;
 
     /**
      * Gaussian error function approximation term.
@@ -37,78 +45,93 @@ class GELU implements ActivationFunction
     protected const BETA = 0.044715;
 
     /**
-     * Calculate the squared hyperbolic secant of a number.
-     *
-     * @param float $value
-     * @return float
+     * @var float 3 * BETA
      */
-    protected static function sech2(float $value) : float
+    protected const TRIPLE_BETA = 0.134145;
+
+    /**
+     * Apply the GeLU activation function to the input.
+     *
+     * f(x) = 0.5 * x * (1 + tanh(sqrt(2/π) * (x + 0.044715 * x^3)))
+     *
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
+     */
+    public function activate(NDArray $input) : NDArray
     {
-        $cosh = cosh($value);
+        $cubed = NumPower::pow($input, 3);
+        $innerTerm = NumPower::add($input, NumPower::multiply($cubed, self::BETA));
+        $tanhTerm = NumPower::tanh(NumPower::multiply($innerTerm, self::ALPHA));
+        $onePlusTanh = NumPower::add(1.0, $tanhTerm);
 
-        if ($cosh === 0.0) {
-            return 0.0;
-        }
-
-        $sech = 1.0 / $cosh;
-
-        return $sech ** 2;
+        return NumPower::multiply(
+            NumPower::multiply($input, $onePlusTanh),
+            0.5
+        );
     }
 
     /**
-     * Compute the output value.
+     * Calculate the derivative of the activation function.
      *
-     * @param Matrix $z
-     * @return Matrix
+     * The derivative of GeLU is:
+     * f'(x) = 0.5 * (1 + tanh(α * (x + β * x^3))) +
+     *         0.5 * x * sech^2(α * (x + β * x^3)) * α * (1 + 3β * x^2)
+     *
+     * Where:
+     * - α = sqrt(2/π) ≈ 0.7978845608
+     * - β = 0.044715
+     * - sech^2(z) = (1/cosh(z))^2
+     *
+     * @param NDArray $input Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function activate(Matrix $z) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
-        return $z->map([$this, 'compute']);
+        $cubed = NumPower::pow($input, 3);
+
+        $innerTerm = NumPower::multiply(
+            NumPower::add(
+                $input,
+                NumPower::multiply($cubed, self::BETA)
+            ),
+            self::ALPHA
+        );
+
+        $cosh = NumPower::cosh($innerTerm);
+        $sech2 = NumPower::pow(
+            NumPower::divide(1.0, $cosh),
+            2
+        );
+
+        $firstTerm = NumPower::multiply(
+            NumPower::add(1.0, NumPower::tanh($innerTerm)),
+            0.5
+        );
+
+        $secondTerm = NumPower::multiply(
+            NumPower::multiply(
+                NumPower::multiply(
+                    $input,
+                    self::HALF_ALPHA
+                ),
+                $sech2
+            ),
+            NumPower::add(
+                1.0,
+                NumPower::multiply(
+                    NumPower::pow($input, 2),
+                    self::TRIPLE_BETA
+                )
+            )
+        );
+
+        return NumPower::add($firstTerm, $secondTerm);
     }
 
     /**
-     * Calculate the derivative of the activation function at a given output.
+     * Return the string representation of the activation function.
      *
-     * @internal
-     *
-     * @param Matrix $z
-     * @param Matrix $computed
-     * @return Matrix
-     */
-    public function differentiate(Matrix $z, Matrix $computed) : Matrix
-    {
-        return $z->map([$this, '_differentiate']);
-    }
-
-    /**
-     * @param float $z
-     * @return float
-     */
-    public function compute(float $z) : float
-    {
-        return 0.5 * $z * (1.0 + tanh(self::ALPHA * ($z + self::BETA * $z ** 3)));
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $z
-     * @return float
-     */
-    public function _differentiate(float $z) : float
-    {
-        $zHat = $z ** 3;
-
-        $alpha = 0.0356774 * $zHat + self::ALPHA * $z;
-        $beta = 0.0535161 * $zHat + 0.398942 * $z;
-
-        return 0.5 * tanh($alpha) + $beta * self::sech2($alpha) + 0.5;
-    }
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

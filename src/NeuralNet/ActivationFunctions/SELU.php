@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
 
 /**
  * SELU
@@ -18,89 +21,88 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class SELU implements ActivationFunction
+class SELU implements ActivationFunction, IBufferDerivative
 {
     /**
      * The value at which leakage starts to saturate.
      *
      * @var float
      */
-    public const ALPHA = 1.6732632423543772848170429916717;
+    public const ALPHA = 1.6732632;
 
     /**
      * The scaling coefficient.
      *
      * @var float
      */
-    public const SCALE = 1.0507009873554804934193349852946;
+    public const LAMBDA = 1.0507009;
 
     /**
      * The scaling coefficient multiplied by alpha.
      *
      * @var float
      */
-    protected const BETA = self::SCALE * self::ALPHA;
+    protected const BETA = self::LAMBDA * self::ALPHA;
 
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = λ * x                 if x > 0
+     * f(x) = λ * α * (e^x - 1)     if x ≤ 0
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return $input->map([$this, '_activate']);
+        $positive = NumPower::multiply(
+            NumPower::maximum($input, 0),
+            self::LAMBDA
+        );
+
+        $negativeMask = NumPower::minimum($input, 0);
+        $negative = NumPower::multiply(
+            NumPower::expm1($negativeMask),
+            self::BETA
+        );
+
+        return NumPower::add($positive, $negative);
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Calculate the derivative of the SELU activation function.
      *
-     * @internal
+     * f'(x) = λ                if x > 0
+     * f'(x) = λ * α * e^x      if x ≤ 0
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
-        return $output->map([$this, '_differentiate']);
+        $positiveMask = NumPower::greater($input, 0);
+        $positivePart = NumPower::multiply($positiveMask, self::LAMBDA);
+
+        $negativeMask = NumPower::lessEqual($input, 0);
+        $negativePart = NumPower::multiply(
+            NumPower::multiply(
+                NumPower::exp(
+                    NumPower::multiply($negativeMask, $input)
+                ),
+                self::BETA
+            ),
+            $negativeMask
+        );
+
+        return NumPower::add($positivePart, $negativePart);
     }
 
     /**
-     * @internal
+     * Return the string representation of the activation function.
      *
-     * @param float $input
-     * @return float
-     */
-    public function _activate(float $input) : float
-    {
-        return $input > 0.0
-            ? self::SCALE * $input
-            : self::BETA * (exp($input) - 1.0);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $output
-     * @return float
-     */
-    public function _differentiate(float $output) : float
-    {
-        return $output > 0.0
-            ? self::SCALE
-            : self::SCALE * ($output + self::ALPHA);
-    }
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {
