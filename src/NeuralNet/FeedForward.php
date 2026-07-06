@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet;
 use NDArray;
 use NumPower;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Encoding;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -97,6 +98,8 @@ class FeedForward implements Network
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
         $this->packSamples = $packSamples;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

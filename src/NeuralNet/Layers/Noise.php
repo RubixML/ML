@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -52,6 +53,8 @@ class Noise implements Hidden
         }
 
         $this->stdDev = $stdDev;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

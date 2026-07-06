@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * HardSigmoid
@@ -50,6 +51,11 @@ class HardSigmoid implements ActivationFunction, IBufferDerivative
      * @var float
      */
     protected const UPPER_BOUND = 2.5;
+
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
 
     /**
      * Apply the HardSigmoid activation function to the input.

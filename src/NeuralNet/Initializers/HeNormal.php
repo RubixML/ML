@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * He Normal
@@ -25,6 +26,11 @@ use NDArray;
  */
 class HeNormal extends AbstractInitializer
 {
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
+
     /**
      * @inheritdoc
      */

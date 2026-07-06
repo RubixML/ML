@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -80,6 +81,8 @@ class Momentum implements Optimizer, Adaptive
         $this->rate = $rate;
         $this->decay = $decay;
         $this->lookahead = $lookahead;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

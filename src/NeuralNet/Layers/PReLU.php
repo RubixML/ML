@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -63,6 +64,8 @@ class PReLU implements Hidden, Parametric
     public function __construct(?Initializer $initializer = null)
     {
         $this->initializer = $initializer ?? new Constant(0.25);
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

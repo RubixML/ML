@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Traits\AssertsShapes;
 use const Rubix\ML\EPSILON;
 
@@ -27,6 +28,11 @@ use const Rubix\ML\EPSILON;
 class CrossEntropy implements ClassificationLoss
 {
     use AssertsShapes;
+
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
 
     /**
      * Compute the loss score.

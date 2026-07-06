@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * Hyperbolic Tangent
@@ -20,6 +21,11 @@ use NDArray;
  */
 class HyperbolicTangent implements ActivationFunction, OBufferDerivative
 {
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
+
     /**
      * Apply the Hyperbolic Tangent activation function to the input.
      *

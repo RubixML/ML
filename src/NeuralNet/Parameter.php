@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * Parameter
@@ -53,6 +54,8 @@ class Parameter
     {
         $this->id = self::$counter++;
         $this->param = $param;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

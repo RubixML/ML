@@ -4,6 +4,7 @@ namespace Rubix\ML\Regressors;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Learner;
@@ -76,6 +77,8 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         }
 
         $this->l2Penalty = $l2Penalty;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

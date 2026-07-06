@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
@@ -45,6 +46,8 @@ class Continuous implements Output
     public function __construct(?RegressionLoss $costFn = null)
     {
         $this->costFn = $costFn ?? new LeastSquares();
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

@@ -7,6 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidThresholdException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * Thresholded ReLU
@@ -47,6 +48,8 @@ class ThresholdedReLU implements ActivationFunction, IBufferDerivative
         }
 
         $this->threshold = $threshold;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

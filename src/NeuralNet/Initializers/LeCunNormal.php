@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * Le Cun Normal
@@ -26,6 +27,11 @@ use NDArray;
  */
 class LeCunNormal extends AbstractInitializer
 {
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
+
     /**
      * @inheritdoc
      */

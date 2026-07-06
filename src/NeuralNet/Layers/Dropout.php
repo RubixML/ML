@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -68,6 +69,8 @@ class Dropout implements Hidden
 
         $this->ratio = $ratio;
         $this->scale = 1.0 / (1.0 - $ratio);
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

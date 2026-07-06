@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -92,6 +93,8 @@ class Adam implements Optimizer, Adaptive
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->normDecay = $normDecay;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

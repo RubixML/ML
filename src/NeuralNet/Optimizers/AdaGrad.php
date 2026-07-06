@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -58,6 +59,8 @@ class AdaGrad implements Optimizer, Adaptive
         }
 
         $this->rate = $rate;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

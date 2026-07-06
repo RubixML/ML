@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Initializers\HeUniform;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Deferred;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameter;
@@ -114,6 +115,8 @@ class Dense implements Hidden, Parametric
         $this->bias = $bias;
         $this->weightInitializer = $weightInitializer ?? new HeUniform();
         $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

@@ -7,6 +7,7 @@ namespace Rubix\ML\NeuralNet\Initializers;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidBetaException;
 
 /**
@@ -33,6 +34,8 @@ class Uniform extends AbstractInitializer
                 message: "Beta cannot be less than or equal to 0, $beta given."
             );
         }
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

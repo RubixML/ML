@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
@@ -110,6 +111,8 @@ class Cyclical implements Optimizer
         $this->range = $upper - $lower;
         $this->losses = $losses;
         $this->decay = $decay;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

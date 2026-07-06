@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -56,6 +57,8 @@ class Activation implements Hidden
     public function __construct(ActivationFunction $activationFn)
     {
         $this->activationFn = $activationFn;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

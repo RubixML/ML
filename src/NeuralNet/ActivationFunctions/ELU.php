@@ -7,6 +7,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidAlphaException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * ELU
@@ -41,6 +42,8 @@ class ELU implements ActivationFunction, IOBufferDerivative
                 message: "Alpha must be greater than 0, {$this->alpha} given."
             );
         }
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

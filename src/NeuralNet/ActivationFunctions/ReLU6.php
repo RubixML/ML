@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * ReLU6
@@ -25,6 +26,11 @@ use NDArray;
  */
 class ReLU6 implements ActivationFunction, IBufferDerivative
 {
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
+
     /**
      * Compute the activation.
      *

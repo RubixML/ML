@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Traits\AssertsShapes;
 
 /**
@@ -22,6 +23,11 @@ use Rubix\ML\Traits\AssertsShapes;
 class LeastSquares implements RegressionLoss
 {
     use AssertsShapes;
+
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
 
     /**
      * Compute the loss score.

@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * GeLU
@@ -48,6 +49,11 @@ class GELU implements ActivationFunction, IBufferDerivative
      * @var float 3 * BETA
      */
     protected const TRIPLE_BETA = 0.134145;
+
+    public function __construct()
+    {
+        ExtensionIsLoaded::with('RubixNumPower')->check();
+    }
 
     /**
      * Apply the GeLU activation function to the input.

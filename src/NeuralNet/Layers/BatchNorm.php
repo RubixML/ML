@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -119,6 +120,8 @@ class BatchNorm implements Hidden, Parametric
         $this->decay = $decay;
         $this->betaInitializer = $betaInitializer ?? new Constant(0.0);
         $this->gammaInitializer = $gammaInitializer ?? new Constant(1.0);
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

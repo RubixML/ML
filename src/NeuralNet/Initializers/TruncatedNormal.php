@@ -7,6 +7,7 @@ namespace Rubix\ML\NeuralNet\Initializers;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidStandardDeviationException;
 
 /**
@@ -34,6 +35,8 @@ class TruncatedNormal extends AbstractInitializer
                 message: "Standard deviation must be greater than 0, $stdDev given."
             );
         }
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

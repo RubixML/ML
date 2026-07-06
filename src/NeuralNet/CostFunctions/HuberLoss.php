@@ -7,6 +7,7 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 use NDArray;
 use NumPower;
 use Rubix\ML\Exceptions\InvalidAlphaException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Traits\AssertsShapes;
 
 /**
@@ -54,6 +55,8 @@ class HuberLoss implements RegressionLoss
 
         $this->alpha = $alpha;
         $this->alpha2 = $alpha ** 2;
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

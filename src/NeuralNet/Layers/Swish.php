@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
@@ -81,6 +82,8 @@ class Swish implements Hidden, Parametric
     {
         $this->initializer = $initializer ?? new Constant(1.0);
         $this->sigmoid = new Sigmoid();
+
+        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**
