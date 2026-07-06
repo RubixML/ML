@@ -5,8 +5,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Initializers\HeUniform;
-use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Deferred;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameter;

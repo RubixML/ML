@@ -104,7 +104,7 @@ final class XavierNormalTest extends TestCase
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = new XavierNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new XavierNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -120,7 +120,7 @@ final class XavierNormalTest extends TestCase
     {
         //given
         $expectedStd = sqrt(2 / ($fanOut + $fanIn));
-        $w = new XavierNormal()->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new XavierNormal())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $flatValues = array_merge(...$w->toArray());
 
         //when
@@ -162,7 +162,7 @@ final class XavierNormalTest extends TestCase
         }
 
         //when
-        new XavierNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new XavierNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]

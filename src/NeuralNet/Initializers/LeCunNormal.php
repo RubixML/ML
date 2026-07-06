@@ -6,7 +6,6 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\Initializers\AbstractInitializer;
 
 /**
  * Le Cun Normal

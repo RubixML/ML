@@ -7,7 +7,6 @@ namespace Rubix\ML\NeuralNet\Initializers;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Initializers\AbstractInitializer;
 use Rubix\ML\Exceptions\InvalidStandardDeviationException;
 
 /**

@@ -6,7 +6,6 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Traits\AssertsShapes;
 
 /**

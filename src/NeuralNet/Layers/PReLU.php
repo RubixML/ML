@@ -8,8 +8,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Parameter;
 use Generator;

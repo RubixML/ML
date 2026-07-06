@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet;
 
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\Parameter;
 
 /**
  * Snapshot

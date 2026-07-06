@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;

@@ -137,7 +137,7 @@ final class NormalTest extends TestCase
     public function testInitializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = new Normal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -152,7 +152,7 @@ final class NormalTest extends TestCase
     public function testValuesFollowNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
     {
         //given
-        $w = new Normal($stdDev)->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new Normal($stdDev))->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $flatValues = array_merge(...$w->toArray());
 
         //when
@@ -194,7 +194,7 @@ final class NormalTest extends TestCase
         }
 
         //when
-        new Normal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]

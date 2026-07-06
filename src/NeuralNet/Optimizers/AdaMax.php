@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Parameter;
 
 use const Rubix\ML\EPSILON;

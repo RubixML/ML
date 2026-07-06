@@ -77,7 +77,7 @@ final class HeNormalTest extends TestCase
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $matrix = new HeNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $matrix = (new HeNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $matrix->shape();
@@ -93,7 +93,7 @@ final class HeNormalTest extends TestCase
     {
         //given
         $expectedStd = sqrt(2 / $fanOut);
-        $matrix = new HeNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $matrix = (new HeNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
         $flatValues = array_merge(...$matrix->toArray());
 
         //when
@@ -135,7 +135,7 @@ final class HeNormalTest extends TestCase
         }
 
         //when
-        new HeNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new HeNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]

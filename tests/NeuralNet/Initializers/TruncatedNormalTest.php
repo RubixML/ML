@@ -137,7 +137,7 @@ final class TruncatedNormalTest extends TestCase
     public function testInitializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = new TruncatedNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new TruncatedNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -152,7 +152,7 @@ final class TruncatedNormalTest extends TestCase
     public function testValuesFollowTruncatedNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
     {
         //given
-        $w = new TruncatedNormal($stdDev)->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new TruncatedNormal($stdDev))->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $flatValues = array_merge(...$w->toArray());
 
         //when
@@ -204,7 +204,7 @@ final class TruncatedNormalTest extends TestCase
         }
 
         //when
-        new TruncatedNormal()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new TruncatedNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]

@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
-use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**

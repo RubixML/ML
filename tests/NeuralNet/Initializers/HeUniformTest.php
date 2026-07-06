@@ -104,7 +104,7 @@ final class HeUniformTest extends TestCase
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = new HeUniform()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new HeUniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -122,7 +122,7 @@ final class HeUniformTest extends TestCase
         $limit = sqrt(6 / $fanOut);
 
         //when
-        $w = new HeUniform()->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new HeUniform())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $values = array_merge(...$w->toArray());
 
         $bins = array_fill(0, 10, 0);
@@ -167,7 +167,7 @@ final class HeUniformTest extends TestCase
         }
 
         //when
-        new HeUniform()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new HeUniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]

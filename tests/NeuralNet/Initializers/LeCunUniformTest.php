@@ -104,7 +104,7 @@ final class LeCunUniformTest extends TestCase
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = new LeCunUniform()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new LeCunUniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -122,7 +122,7 @@ final class LeCunUniformTest extends TestCase
         $limit = sqrt(3 / $fanOut);
 
         //when
-        $w = new LeCunUniform()->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new LeCunUniform())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $values = array_merge(...$w->toArray());
 
         //then
@@ -165,7 +165,7 @@ final class LeCunUniformTest extends TestCase
         }
 
         //when
-        new LeCunUniform()->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new LeCunUniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]
