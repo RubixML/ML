@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+// Define missing data types in NDArray for PHPStan
 foreach ([
     'float16',
     'float32',

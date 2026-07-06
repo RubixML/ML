@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Placeholder1D/Placeholder1D.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Placeholder1D.php">[source]</a></span>
 
 # Placeholder 1D
 
@@ -11,7 +11,7 @@ The Placeholder 1D input layer represents the future input values of a mini batc
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Layers\Placeholder1D\Placeholder1D;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 
 $layer = new Placeholder1D(10);
 ```

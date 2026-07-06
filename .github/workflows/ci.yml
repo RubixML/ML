@@ -78,7 +78,7 @@ jobs:
         run: composer phplint
 
       - name: Static Analysis
-        run: composer analyze
+        run: composer analyze-ci
 
       - name: Unit Tests
         #run: vendor/bin/phpunit --display-warning --display-deprecations --display-notices --testsuite="Anomaly Detectors,Backends,Base,Classifiers,Clusterers,Cross Validation,Datasets,Extractors,Graph,Helpers,Kernels,Loggers,NeuralNet,Persisters,Regressors,Serializers,Specifications,Strategies,Tokenizers,Transformers"

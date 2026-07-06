@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\LeakyReLU;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU\LeakyReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class LeakyReLUBench
+class SigmoidBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class LeakyReLUBench
     protected NDArray $computed;
 
     /**
-     * @var LeakyReLU
+     * @var Sigmoid
      */
-    protected LeakyReLU $activationFn;
+    protected Sigmoid $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class LeakyReLUBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new LeakyReLU();
+        $this->activationFn = new Sigmoid();
     }
 
     /**
@@ -53,6 +53,6 @@ class LeakyReLUBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->z);
+        $this->activationFn->differentiate($this->computed);
     }
 }

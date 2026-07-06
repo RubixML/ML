@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\Softsign;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softsign\Softsign;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class SoftsignBench
+class LeakyReLUBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class SoftsignBench
     protected NDArray $computed;
 
     /**
-     * @var Softsign
+     * @var LeakyReLU
      */
-    protected Softsign $activationFn;
+    protected LeakyReLU $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class SoftsignBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new Softsign();
+        $this->activationFn = new LeakyReLU();
     }
 
     /**
@@ -53,6 +53,6 @@ class SoftsignBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->computed);
+        $this->activationFn->differentiate($this->z);
     }
 }

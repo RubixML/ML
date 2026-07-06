@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\SELU;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\SELU\SELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 
 /**
  * @Groups({"ActivationFunctions"})

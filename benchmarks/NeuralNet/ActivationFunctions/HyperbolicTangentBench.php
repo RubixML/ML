@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\SoftPlus;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softplus\Softplus;
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class SoftPlusBench
+class HyperbolicTangentBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class SoftPlusBench
     protected NDArray $computed;
 
     /**
-     * @var Softplus
+     * @var HyperbolicTangent
      */
-    protected Softplus $activationFn;
+    protected HyperbolicTangent $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class SoftPlusBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new Softplus();
+        $this->activationFn = new HyperbolicTangent();
     }
 
     /**

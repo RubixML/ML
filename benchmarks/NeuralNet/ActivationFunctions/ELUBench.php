@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\Softmax;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softmax\Softmax;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class SoftmaxBench
+class ELUBench
 {
     /**
      * @var NDArray
@@ -23,17 +23,17 @@ class SoftmaxBench
     protected NDArray $computed;
 
     /**
-     * @var Softmax
+     * @var ELU
      */
-    protected Softmax $activationFn;
+    protected ELU $activationFn;
 
     public function setUp() : void
     {
-        $this->z = NumPower::uniform([100, 100], low: -1.0, high: 1.0);
+        $this->z = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->computed = NumPower::uniform([100, 100], low: -1.0, high: 1.0);
+        $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new Softmax();
+        $this->activationFn = new ELU();
     }
 
     /**
@@ -53,6 +53,6 @@ class SoftmaxBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->computed);
+        $this->activationFn->differentiate($this->z, $this->computed);
     }
 }

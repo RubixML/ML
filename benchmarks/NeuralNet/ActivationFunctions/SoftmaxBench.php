@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\SiLU;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\SiLU\SiLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class SiLUBench
+class SoftmaxBench
 {
     /**
      * @var NDArray
@@ -23,17 +23,17 @@ class SiLUBench
     protected NDArray $computed;
 
     /**
-     * @var SiLU
+     * @var Softmax
      */
-    protected SiLU $activationFn;
+    protected Softmax $activationFn;
 
     public function setUp() : void
     {
-        $this->z = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
+        $this->z = NumPower::uniform([100, 100], low: -1.0, high: 1.0);
 
-        $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
+        $this->computed = NumPower::uniform([100, 100], low: -1.0, high: 1.0);
 
-        $this->activationFn = new SiLU();
+        $this->activationFn = new Softmax();
     }
 
     /**
@@ -41,7 +41,7 @@ class SiLUBench
      * @Iterations(3)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function compute() : void
+    public function activate() : void
     {
         $this->activationFn->activate($this->z);
     }
@@ -53,6 +53,6 @@ class SiLUBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->z);
+        $this->activationFn->differentiate($this->computed);
     }
 }

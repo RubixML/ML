@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\HyperbolicTangent;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent\HyperbolicTangent;
+use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class HyperbolicTangentBench
+class ThresholdedReLUBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class HyperbolicTangentBench
     protected NDArray $computed;
 
     /**
-     * @var HyperbolicTangent
+     * @var ThresholdedReLU
      */
-    protected HyperbolicTangent $activationFn;
+    protected ThresholdedReLU $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class HyperbolicTangentBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new HyperbolicTangent();
+        $this->activationFn = new ThresholdedReLU();
     }
 
     /**

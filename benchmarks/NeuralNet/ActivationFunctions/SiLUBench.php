@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\Sigmoid;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class SigmoidBench
+class SiLUBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class SigmoidBench
     protected NDArray $computed;
 
     /**
-     * @var Sigmoid
+     * @var SiLU
      */
-    protected Sigmoid $activationFn;
+    protected SiLU $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class SigmoidBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new Sigmoid();
+        $this->activationFn = new SiLU();
     }
 
     /**
@@ -41,7 +41,7 @@ class SigmoidBench
      * @Iterations(3)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
-    public function activate() : void
+    public function compute() : void
     {
         $this->activationFn->activate($this->z);
     }
@@ -53,6 +53,6 @@ class SigmoidBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->computed);
+        $this->activationFn->differentiate($this->z);
     }
 }

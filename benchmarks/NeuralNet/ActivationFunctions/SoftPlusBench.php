@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\ELU;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\ELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softplus;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class ELUBench
+class SoftPlusBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class ELUBench
     protected NDArray $computed;
 
     /**
-     * @var ELU
+     * @var Softplus
      */
-    protected ELU $activationFn;
+    protected Softplus $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class ELUBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new ELU();
+        $this->activationFn = new Softplus();
     }
 
     /**
@@ -53,6 +53,6 @@ class ELUBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->z, $this->computed);
+        $this->activationFn->differentiate($this->computed);
     }
 }

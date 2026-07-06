@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\GELU;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\GELU\GELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class GELUBench
+class SoftsignBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class GELUBench
     protected NDArray $computed;
 
     /**
-     * @var GELU
+     * @var Softsign
      */
-    protected GELU $activationFn;
+    protected Softsign $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class GELUBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new GELU();
+        $this->activationFn = new Softsign();
     }
 
     /**
@@ -53,6 +53,6 @@ class GELUBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->z);
+        $this->activationFn->differentiate($this->computed);
     }
 }

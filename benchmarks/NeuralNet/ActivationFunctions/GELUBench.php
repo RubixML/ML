@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions\ThresholdedReLU;
+namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU\ThresholdedReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\GELU;
 
 /**
  * @Groups({"ActivationFunctions"})
  * @BeforeMethods({"setUp"})
  */
-class ThresholdedReLUBench
+class GELUBench
 {
     /**
      * @var NDArray
@@ -23,9 +23,9 @@ class ThresholdedReLUBench
     protected NDArray $computed;
 
     /**
-     * @var ThresholdedReLU
+     * @var GELU
      */
-    protected ThresholdedReLU $activationFn;
+    protected GELU $activationFn;
 
     public function setUp() : void
     {
@@ -33,7 +33,7 @@ class ThresholdedReLUBench
 
         $this->computed = NumPower::uniform([500, 500], low: -1.0, high: 1.0);
 
-        $this->activationFn = new ThresholdedReLU();
+        $this->activationFn = new GELU();
     }
 
     /**
@@ -53,6 +53,6 @@ class ThresholdedReLUBench
      */
     public function differentiate() : void
     {
-        $this->activationFn->differentiate($this->computed);
+        $this->activationFn->differentiate($this->z);
     }
 }
