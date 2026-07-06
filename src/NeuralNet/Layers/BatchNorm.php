@@ -2,15 +2,15 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\Deferred;
-use Tensor\ColumnVector;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Parameter;
 use Generator;
 
 use const Rubix\ML\EPSILON;
@@ -30,6 +30,7 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class BatchNorm implements Hidden, Parametric
 {
@@ -78,30 +79,30 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The running mean of each input dimension.
      *
-     * @var \Tensor\Vector|null
+     * @var NDArray|null
      */
-    protected ?\Tensor\Vector $mean = null;
+    protected ?NDArray $mean = null;
 
     /**
      * The running variance of each input dimension.
      *
-     * @var \Tensor\Vector|null
+     * @var NDArray|null
      */
-    protected ?\Tensor\Vector $variance = null;
+    protected ?NDArray $variance = null;
 
     /**
      * A cache of inverse standard deviations calculated during the forward pass.
      *
-     * @var \Tensor\Vector|null
+     * @var NDArray|null
      */
-    protected ?\Tensor\Vector $stdInv = null;
+    protected ?NDArray $stdInv = null;
 
     /**
      * A cache of normalized inputs to the layer.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $xHat = null;
+    protected ?NDArray $xHat = null;
 
     /**
      * @param float $decay
@@ -109,14 +110,10 @@ class BatchNorm implements Hidden, Parametric
      * @param Initializer|null $gammaInitializer
      * @throws InvalidArgumentException
      */
-    public function __construct(
-        float $decay = 0.1,
-        ?Initializer $betaInitializer = null,
-        ?Initializer $gammaInitializer = null
-    ) {
+    public function __construct(float $decay = 0.1, ?Initializer $betaInitializer = null, ?Initializer $gammaInitializer = null)
+    {
         if ($decay < 0.0 or $decay > 1.0) {
-            throw new InvalidArgumentException('Decay must be'
-                . " between 0 and 1, $decay given.");
+            throw new InvalidArgumentException("Decay must be between 0 and 1, $decay given.");
         }
 
         $this->decay = $decay;
@@ -154,8 +151,13 @@ class BatchNorm implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $beta = $this->betaInitializer->initialize(1, $fanOut)->columnAsVector(0);
-        $gamma = $this->gammaInitializer->initialize(1, $fanOut)->columnAsVector(0);
+        // Initialize beta and gamma as vectors of length fanOut
+        // We request a [fanOut, 1] NDArray and then flatten to 1-D
+        $betaMat = $this->betaInitializer->initialize(1, $fanOut);
+        $gammaMat = $this->gammaInitializer->initialize(1, $fanOut);
+
+        $beta = NumPower::flatten($betaMat);
+        $gamma = NumPower::flatten($gammaMat);
 
         $this->beta = new Parameter($beta);
         $this->gamma = new Parameter($gamma);
@@ -170,38 +172,60 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param NDArray $input
      * @throws RuntimeException
-     * @return Matrix
+     * @return NDArray
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $mean = $input->mean();
-        $variance = $input->variance($mean)->clipLower(EPSILON);
-        $stdInv = $variance->sqrt()->reciprocal();
+        [$n, $m] = $input->shape();
 
-        $xHat = $stdInv->multiply($input->subtract($mean));
+        // Column-wise mean across samples (axis 1), length n
+        $sum = NumPower::sum($input, axis: 1);
+        $mean = NumPower::divide($sum, $m);
 
+        // Center the input: broadcast mean to [n, m]
+        $centered = NumPower::subtract($input, NumPower::reshape($mean, [$n, 1]));
+
+        // Column-wise variance across samples (axis 1)
+        $centeredSq = NumPower::multiply($centered, $centered);
+        $varSum = NumPower::sum($centeredSq, axis: 1);
+        $variance = NumPower::divide($varSum, $m);
+        $variance = NumPower::clip($variance, EPSILON, PHP_FLOAT_MAX);
+
+        // Inverse std from clipped variance
+        $stdInv = NumPower::reciprocal(NumPower::sqrt($variance));
+
+        // Normalize: (x - mean) * stdInv
+        $xHat = NumPower::multiply($centered, NumPower::reshape($stdInv, [$n, 1]));
+
+        // Initialize running stats if needed
         if (!$this->mean or !$this->variance) {
             $this->mean = $mean;
             $this->variance = $variance;
         }
 
-        $this->mean = $this->mean->multiply(1.0 - $this->decay)
-            ->add($mean->multiply($this->decay));
+        // Update running mean/variance using exponential moving average (EMA)
+        // Convention: running = running*(1 - decay) + current*decay
+        $this->mean = NumPower::add(
+            NumPower::multiply($this->mean, 1.0 - $this->decay),
+            NumPower::multiply($mean, $this->decay)
+        );
 
-        $this->variance = $this->variance->multiply(1.0 - $this->decay)
-            ->add($variance->multiply($this->decay));
+        $this->variance = NumPower::add(
+            NumPower::multiply($this->variance, 1.0 - $this->decay),
+            NumPower::multiply($variance, $this->decay)
+        );
 
         $this->stdInv = $stdInv;
         $this->xHat = $xHat;
 
-        return $this->gamma->param()->multiply($xHat)
-            ->add($this->beta->param());
+        // gamma * xHat + beta (per-column scale/shift) using NDArray ops
+        return NumPower::add(NumPower::multiply($xHat, $this->gamma->param()), $this->beta->param());
     }
 
     /**
@@ -209,21 +233,32 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param NDArray $input
      * @throws RuntimeException
-     * @return Matrix
+     * @return NDArray
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
         if (!$this->mean or !$this->variance or !$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $xHat = $input->subtract($this->mean)
-            ->divide($this->variance->sqrt());
+        $n = $input->shape()[0];
 
-        return $this->gamma->param()->multiply($xHat)
-            ->add($this->beta->param());
+        // Use clipped variance for numerical stability during inference
+        $varianceClipped = NumPower::clip($this->variance, EPSILON, PHP_FLOAT_MAX);
+        $xHat = NumPower::divide(
+            NumPower::subtract($input, NumPower::reshape($this->mean, [$n, 1])),
+            NumPower::reshape(NumPower::sqrt($varianceClipped), [$n, 1])
+        );
+
+        return NumPower::add(
+            NumPower::multiply(
+                $xHat,
+                $this->gamma->param()
+            ),
+            $this->beta->param()
+        );
     }
 
     /**
@@ -243,15 +278,13 @@ class BatchNorm implements Hidden, Parametric
         }
 
         if (!$this->stdInv or !$this->xHat) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
         $dOut = $prevGradient();
-
-        $dBeta = $dOut->sum();
-        $dGamma = $dOut->multiply($this->xHat)->sum();
-
+        // Sum across samples (axis 1) for parameter gradients
+        $dBeta = NumPower::sum($dOut, axis: 1);
+        $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), axis: 1);
         $gamma = $this->gamma->param();
 
         $this->beta->update($dBeta, $optimizer);
@@ -273,24 +306,36 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $dOut
-     * @param ColumnVector $gamma
-     * @param ColumnVector $stdInv
-     * @param Matrix $xHat
-     * @return Matrix
+     * @param NDArray $dOut
+     * @param NDArray $gamma
+     * @param NDArray $stdInv
+     * @param NDArray $xHat
+     * @return NDArray
      */
-    public function gradient(Matrix $dOut, ColumnVector $gamma, ColumnVector $stdInv, Matrix $xHat) : Matrix
+    public function gradient(NDArray $dOut, NDArray $gamma, NDArray $stdInv, NDArray $xHat) : NDArray
     {
-        $dXHat = $dOut->multiply($gamma);
+        $dXHat = NumPower::multiply($dOut, $gamma);
+        $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), axis: 1);
+        $dXHatSigma = NumPower::sum($dXHat, axis: 1);
 
-        $xHatSigma = $dXHat->multiply($xHat)->sum();
+        $m = $dOut->shape()[1];
 
-        $dXHatSigma = $dXHat->sum();
+        // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
+        $dXHatTimesM = NumPower::multiply($dXHat, $m);
+        $n = $dOut->shape()[0];
+        $dXHatSigmaColumn = NumPower::reshape($dXHatSigma, [$n, 1]);
+        $xHatSigmaColumn = NumPower::reshape($xHatSigma, [$n, 1]);
+        $xHatTimesXHatSigma = NumPower::multiply($xHat, $xHatSigmaColumn);
 
-        return $dXHat->multiply($dOut->m())
-            ->subtract($dXHatSigma)
-            ->subtract($xHat->multiply($xHatSigma))
-            ->multiply($stdInv->divide($dOut->m()));
+        $numerator = NumPower::subtract(
+            NumPower::subtract($dXHatTimesM, $dXHatSigmaColumn),
+            $xHatTimesXHatSigma
+        );
+
+        $stdInvOverMColumn = NumPower::reshape(NumPower::divide($stdInv, $m), [$n, 1]);
+
+        return NumPower::multiply($numerator, $stdInvOverMColumn);
+
     }
 
     /**

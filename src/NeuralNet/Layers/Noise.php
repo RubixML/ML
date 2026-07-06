@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -22,6 +23,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Noise implements Hidden
 {
@@ -46,8 +48,7 @@ class Noise implements Hidden
     public function __construct(float $stdDev)
     {
         if ($stdDev < 0.0) {
-            throw new InvalidArgumentException('Standard deviation must'
-                . " be 0 or greater, $stdDev given.");
+            throw new InvalidArgumentException("Standard deviation must be 0 or greater, $stdDev given.");
         }
 
         $this->stdDev = $stdDev;
@@ -93,17 +94,25 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
-        $noise = Matrix::gaussian(...$input->shape())
-            ->multiply($this->stdDev);
+        if ($this->width === null) {
+            throw new RuntimeException('Layer has not been initialized.');
+        }
 
-        $output = $input->add($noise);
+        if ($this->stdDev === 0.0) {
+            return $input;
+        }
 
-        return $output;
+        $shape = $input->shape();
+
+        // Gaussian noise with mean 0 and standard deviation $this->stdDev
+        $noise = NumPower::normal(size: $shape, loc: 0.0, scale: $this->stdDev);
+
+        return NumPower::add($input, $noise);
     }
 
     /**
@@ -111,10 +120,10 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
         return $input;
     }

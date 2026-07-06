@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
 
 /**
  * Softsign
@@ -17,62 +20,45 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Softsign implements ActivationFunction
+class Softsign implements ActivationFunction, IBufferDerivative
 {
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = x / (1 + |x|)
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return $input->map([$this, '_activate']);
+        $absInput = NumPower::abs($input);
+        $denominator = NumPower::add(1.0, $absInput);
+
+        return NumPower::divide($input, $denominator);
     }
 
     /**
      * Calculate the derivative of the activation.
      *
-     * @internal
+     * f'(x) = 1 / (1 + |x|)²
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
-        return $input->map([$this, '_differentiate']);
-    }
+        $absInput = NumPower::abs($input);
+        $onePlusAbs = NumPower::add(1.0, $absInput);
+        $denominator = NumPower::multiply($onePlusAbs, $onePlusAbs);
 
-    /**
-     * @internal
-     *
-     * @param float $input
-     * @return float
-     */
-    public function _activate(float $input) : float
-    {
-        return $input / (1.0 + abs($input));
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $input
-     * @return float
-     */
-    public function _differentiate(float $input) : float
-    {
-        return 1.0 / (1.0 + abs($input)) ** 2;
+        return NumPower::divide(1.0, $denominator);
     }
 
     /**
      * Return the string representation of the object.
-     *
-     * @internal
      *
      * @return string
      */

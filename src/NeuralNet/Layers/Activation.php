@@ -2,11 +2,12 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 /**
  * Activation
@@ -17,6 +18,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Activation implements Hidden
 {
@@ -37,16 +39,16 @@ class Activation implements Hidden
     /**
      * The memorized input matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $input = null;
+    protected ?NDArray $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $output = null;
+    protected ?NDArray $output = null;
 
     /**
      * @param ActivationFunction $activationFn
@@ -96,10 +98,10 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
         $output = $this->activationFn->activate($input);
 
@@ -114,10 +116,10 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
         return $this->activationFn->activate($input);
     }
@@ -135,8 +137,7 @@ class Activation implements Hidden
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->input or !$this->output) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
         $input = $this->input;
@@ -155,15 +156,17 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param NDArray $input
+     * @param NDArray $output
      * @param Deferred $prevGradient
-     * @return Matrix
+     * @return NDArray
      */
-    public function gradient(Matrix $input, Matrix $output, Deferred $prevGradient) : Matrix
+    public function gradient(NDArray $input, NDArray $output, Deferred $prevGradient) : NDArray
     {
-        return $this->activationFn->differentiate($input, $output)
-            ->multiply($prevGradient());
+        return NumPower::multiply(
+            $this->activationFn->differentiate($input),
+            $prevGradient()
+        );
     }
 
     /**

@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Least Squares
@@ -13,41 +17,50 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class LeastSquares implements RegressionLoss
 {
+    use AssertsShapes;
+
     /**
      * Compute the loss score.
      *
-     * @internal
+     * L(y, ŷ) = Σ(y - ŷ)^2 / n
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param NDArray $output The output of the network
+     * @param NDArray $target The target values
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float
+    public function compute(NDArray $output, NDArray $target) : float
     {
-        return $output->subtract($target)->square()->mean()->mean();
+        $this->assertSameShape($output, $target);
+
+        $difference = NumPower::subtract($output, $target);
+        $squared = NumPower::pow($difference, 2);
+
+        // Compute mean of all elements
+        return NumPower::mean($squared);
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @internal
+     * ∂L/∂ŷ = y - ŷ
      *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @return Matrix
+     * @param NDArray $output The output of the network
+     * @param NDArray $target The target values
+     * @return NDArray
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix
+    public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        return $output->subtract($target);
+        $this->assertSameShape($output, $target);
+
+        return NumPower::subtract($output, $target);
     }
 
     /**
      * Return the string representation of the object.
-     *
-     * @internal
      *
      * @return string
      */

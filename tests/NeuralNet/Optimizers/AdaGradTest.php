@@ -4,15 +4,18 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
+use Generator;
+use NDArray;
+use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use Tensor\Tensor;
-use Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Generator;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
+use Rubix\ML\NeuralNet\Parameter;
 
 #[Group('Optimizers')]
 #[CoversClass(AdaGrad::class)]
@@ -20,15 +23,21 @@ class AdaGradTest extends TestCase
 {
     protected AdaGrad $optimizer;
 
+    public static function invalidConstructorProvider() : Generator
+    {
+        yield 'zero rate' => [0.0];
+        yield 'negative rate' => [-0.001];
+    }
+
     public static function stepProvider() : Generator
     {
         yield [
-            new Parameter(Matrix::quick([
+            new Parameter(NumPower::array([
                 [0.1, 0.6, -0.4],
                 [0.5, 0.6, -0.4],
                 [0.1, 0.1, -0.7],
             ])),
-            Matrix::quick([
+            NumPower::array([
                 [0.01, 0.05, -0.02],
                 [-0.01, 0.02, 0.03],
                 [0.04, -0.01, -0.5],
@@ -46,18 +55,40 @@ class AdaGradTest extends TestCase
         $this->optimizer = new AdaGrad(0.001);
     }
 
+    #[Test]
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
+    {
+        self::assertSame('AdaGrad (rate: 0.01)', (string) (new AdaGrad()));
+    }
+
+    /**
+     * @param float $rate
+     */
+    #[Test]
+    #[DataProvider('invalidConstructorProvider')]
+    #[TestDox('Throws exception when constructed with invalid arguments')]
+    public function testInvalidConstructorParams(float $rate) : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new AdaGrad(rate: $rate);
+    }
+
     /**
      * @param Parameter $param
-     * @param Tensor<int|float> $gradient
+     * @param NDArray $gradient
      * @param list<list<float>> $expected
      */
+    #[Test]
     #[DataProvider('stepProvider')]
-    public function testStep(Parameter $param, Tensor $gradient, array $expected) : void
+    #[TestDox('Can compute the step')]
+    public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
 
-        $this->assertEquals($expected, $step->asArray());
+        self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);
     }
 }

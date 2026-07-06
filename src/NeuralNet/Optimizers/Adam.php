@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Tensor\Tensor;
+use NDArray;
+use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -10,6 +11,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use function get_class;
 
 use const Rubix\ML\EPSILON;
+use const PHP_FLOAT_MAX;
 
 /**
  * Adam
@@ -27,6 +29,7 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Adam implements Optimizer, Adaptive
 {
@@ -54,10 +57,10 @@ class Adam implements Optimizer, Adaptive
     /**
      * The parameter cache of running velocity and squared gradients.
      *
-     * @var array<Tensor[]>
+     * @var array{0: NDArray, 1: NDArray}[]
      */
     protected array $cache = [
-        //
+        // id => [velocity, norm]
     ];
 
     /**
@@ -69,18 +72,21 @@ class Adam implements Optimizer, Adaptive
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must be'
-                . " greater than 0, $rate given.");
+            throw new InvalidArgumentException(
+                "Learning rate must be greater than 0, $rate given."
+            );
         }
 
         if ($momentumDecay <= 0.0 or $momentumDecay >= 1.0) {
-            throw new InvalidArgumentException('Momentum decay must be'
-                . " between 0 and 1, $momentumDecay given.");
+            throw new InvalidArgumentException(
+                "Momentum decay must be between 0 and 1, $momentumDecay given."
+            );
         }
 
         if ($normDecay <= 0.0 or $normDecay >= 1.0) {
-            throw new InvalidArgumentException('Norm decay must be'
-                . " between 0 and 1, $normDecay given.");
+            throw new InvalidArgumentException(
+                "Norm decay must be between 0 and 1, $normDecay given."
+            );
         }
 
         $this->rate = $rate;
@@ -104,39 +110,59 @@ class Adam implements Optimizer, Adaptive
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $zeros = $class::zeros(...$param->param()->shape());
+        /** @var NDArray $zeros */
+        $zeros = NumPower::zeros($param->param()->shape());
 
         $this->cache[$param->id()] = [clone $zeros, $zeros];
     }
 
     /**
-     * Calculate a gradient descent step for a given parameter.
+     * Take a step of gradient descent for a given parameter.
+     *
+     * Adam update (element-wise):
+     *   v_t = v_{t-1} + β1 · (g_t − v_{t-1})        // exponential moving average of gradients
+     *   n_t = n_{t-1} + β2 · (g_t^2 − n_{t-1})      // exponential moving average of squared gradients
+     *   Δθ_t = η · v_t / max(√n_t, ε)
+     *
+     * where:
+     *   - g_t is the current gradient,
+     *   - v_t is the running average of gradients ("velocity"), β1 = momentumDecay,
+     *   - n_t is the running average of squared gradients ("norm"), β2 = normDecay,
+     *   - η is the learning rate (rate), ε is a small constant to avoid division by zero (implemented by clipping √n_t to [ε, +∞)).
      *
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @param NDArray $gradient
+     * @return NDArray
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function step(Parameter $param, NDArray $gradient) : NDArray
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $vHat = $gradient->subtract($velocity)
-            ->multiply($this->momentumDecay);
+        $vHat = NumPower::multiply(
+            NumPower::subtract($gradient, $velocity),
+            $this->momentumDecay
+        );
 
-        $velocity = $velocity->add($vHat);
+        $velocity = NumPower::add($velocity, $vHat);
 
-        $nHat = $gradient->square()->subtract($norm)
-            ->multiply($this->normDecay);
+        $nHat = NumPower::multiply(
+            NumPower::subtract(NumPower::square($gradient), $norm),
+            $this->normDecay
+        );
 
-        $norm = $norm->add($nHat);
+        $norm = NumPower::add($norm, $nHat);
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
-        $norm = $norm->sqrt()->clipLower(EPSILON);
+        $denominator = NumPower::sqrt($norm);
+        $denominator = NumPower::clip($denominator, EPSILON, PHP_FLOAT_MAX);
 
-        return $velocity->multiply($this->rate)->divide($norm);
+        return NumPower::divide(
+            NumPower::multiply($velocity, $this->rate),
+            $denominator
+        );
     }
 
     /**

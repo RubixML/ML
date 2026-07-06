@@ -6,10 +6,14 @@ namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Tensor\Matrix;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\DataProvider;
+use NDArray;
+use NumPower;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +27,7 @@ class ActivationTest extends TestCase
      */
     protected int $fanIn;
 
-    protected Matrix $input;
+    protected NDArray $input;
 
     protected Deferred $prevGrad;
 
@@ -31,18 +35,65 @@ class ActivationTest extends TestCase
 
     protected Activation $layer;
 
+    /**
+     * @return array<int, array{NDArray,array}>
+     */
+    public static function forwardProvider() : array
+    {
+        return [
+            [
+                NumPower::array([
+                    [1.0, 2.5, -0.1],
+                    [0.1, 0.0, 3.0],
+                    [0.002, -6.0, -0.5],
+                ]),
+                [
+                    [1.0, 2.5, 0.0],
+                    [0.1, 0.0, 3.0],
+                    [0.002, 0.0, 0.0],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array{NDArray,NDArray,array}>
+     */
+    public static function backProvider() : array
+    {
+        return [
+            [
+                NumPower::array([
+                    [1.0, 2.5, -0.1],
+                    [0.1, 0.0, 3.0],
+                    [0.002, -6.0, -0.5],
+                ]),
+                NumPower::array([
+                    [0.25, 0.7, 0.1],
+                    [0.50, 0.2, 0.01],
+                    [0.25, 0.1, 0.89],
+                ]),
+                [
+                    [0.25, 0.7, 0.0],
+                    [0.5, 0.0, 0.01],
+                    [0.25, 0, 0.0],
+                ],
+            ],
+        ];
+    }
+
     protected function setUp() : void
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->input = NumPower::array([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(fn: function () {
-            return Matrix::quick([
+        $this->prevGrad = new Deferred(fn: function () : NDArray {
+            return NumPower::array([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
@@ -54,42 +105,77 @@ class ActivationTest extends TestCase
         $this->layer = new Activation(new ReLU());
     }
 
-    public function testInitializeForwardBackInfer() : void
+    #[Test]
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
+    {
+        self::assertEquals('Activation (activation fn: ReLU)', (string) $this->layer);
+    }
+
+    #[Test]
+    #[TestDox('Initializes width equal to fan-in')]
+    public function testInitializeSetsWidth() : void
     {
         $this->layer->initialize($this->fanIn);
 
-        $this->assertEquals($this->fanIn, $this->layer->width());
+        self::assertEquals($this->fanIn, $this->layer->width());
+    }
 
-        $expected = [
-            [1.0, 2.5, 0.0],
-            [0.1, 0.0, 3.0],
-            [0.002, 0.0, 0.0],
-        ];
+    #[Test]
+    #[TestDox('Computes forward activations')]
+    #[DataProvider('forwardProvider')]
+    public function testForward(NDArray $input, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn);
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($input);
+        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
+    }
 
-        $this->assertEquals($expected, $forward->asArray());
+    #[Test]
+    #[TestDox('Computes backpropagated gradients after forward pass')]
+    #[DataProvider('backProvider')]
+    public function testBack(NDArray $input, NDArray $prevGrad, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        // Forward pass to set internal input/output state
+        $this->layer->forward($input);
 
         $gradient = $this->layer
-            ->back(prevGradient: $this->prevGrad, optimizer:  $this->optimizer)
+            ->back(prevGradient: new Deferred(fn: fn () => $prevGrad), optimizer: $this->optimizer)
             ->compute();
 
-        $expected = [
-            [0.25, 0.7, 0.0],
-            [0.5, 0.0, 0.01],
-            [0.25, 0, 0.0],
-        ];
+        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
+    }
 
-        $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEquals($expected, $gradient->asArray());
+    #[Test]
+    #[TestDox('Computes inference activations')]
+    #[DataProvider('forwardProvider')]
+    public function testInfer(NDArray $input, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn);
 
-        $expected = [
-            [1.0, 2.5, 0.0],
-            [0.1, 0.0, 3.0],
-            [0.002, 0.0, 0.0],
-        ];
+        $infer = $this->layer->infer($input);
+        self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
+    }
 
-        $infer = $this->layer->infer($this->input);
-        $this->assertEquals($expected, $infer->asArray());
+    #[Test]
+    #[TestDox('Computes gradient correctly given input, output, and previous gradient')]
+    #[DataProvider('backProvider')]
+    public function testGradient(NDArray $input, NDArray $prevGrad, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        // Produce output to pass explicitly to gradient
+        $output = $this->layer->forward($input);
+
+        $gradient = $this->layer->gradient(
+            $input,
+            $output,
+            new Deferred(fn: fn () => $prevGrad)
+        );
+
+        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
     }
 }

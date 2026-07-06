@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
-
-use function exp;
+use NumPower;
+use NDArray;
 
 /**
  * SiLU
@@ -19,49 +20,56 @@ use function exp;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class SiLU implements ActivationFunction
+class SiLU implements ActivationFunction, IBufferDerivative
 {
+    /**
+     * The Sigmoid activation function.
+     *
+     * @var Sigmoid
+     */
+    protected Sigmoid $sigmoid;
+
+    /**
+     * Class constructor.
+     */
+    public function __construct()
+    {
+        $this->sigmoid = new Sigmoid();
+    }
+
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = x * sigmoid(x) = x / (1 + e^(-x))
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return $input->map([$this, '_compute']);
+        $sigmoid = $this->sigmoid->activate($input);
+
+        return NumPower::multiply($input, $sigmoid);
     }
 
     /**
      * Calculate the derivative of the activation.
      *
-     * @internal
+     * f'(x) = sigmoid(x) + x * sigmoid(x) * (1 - sigmoid(x))
+     *        = sigmoid(x) + x * sigmoid'(x)
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
-        $ones = Matrix::ones(...$output->shape());
+        $sigmoid = $this->sigmoid->activate($input);
+        $sigmoidDerivative = $this->sigmoid->differentiate($sigmoid);
+        $xTimesSigmoidDerivative = NumPower::multiply($input, $sigmoidDerivative);
 
-        return $output->divide($input)
-            ->multiply($ones->subtract($output))
-            ->add($output);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $input
-     * @return float
-     */
-    public function _compute(float $input) : float
-    {
-        return $input / (1.0 + exp(-$input));
+        return NumPower::add($sigmoid, $xTimesSigmoidDerivative);
     }
 
     /**
