@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\CostFunctions\RelativeEntropy;
+namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;

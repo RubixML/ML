@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Tests\NeuralNet\FeedForwards;
+namespace Rubix\ML\Tests\NeuralNet;
 
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;

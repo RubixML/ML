@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\CostFunctions\LeastSquares;
+namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;

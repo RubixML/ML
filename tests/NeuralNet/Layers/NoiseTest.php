@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet\Layers\Noise;
+namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use NDArray;
 use NumPower;

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\Parameters;
+namespace Rubix\ML\Tests\NeuralNet;
 
 use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;

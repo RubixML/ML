@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ReLU;
+namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
 use Generator;
 use NDArray;

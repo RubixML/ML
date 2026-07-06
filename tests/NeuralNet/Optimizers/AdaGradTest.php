@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\AdaGrad;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Generator;
 use NDArray;

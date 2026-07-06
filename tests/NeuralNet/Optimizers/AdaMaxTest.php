@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\AdaMax;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;

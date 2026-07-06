@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\Optimizers\RMSProp;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Generator;
 use NDArray;

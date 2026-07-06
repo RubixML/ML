@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet\Layers\Continuous;
+namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
