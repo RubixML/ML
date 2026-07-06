@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers\Base\Contracts;
 
 /**
  * Input
@@ -10,6 +10,7 @@ namespace Rubix\ML\NeuralNet\Layers;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Input extends Layer
 {

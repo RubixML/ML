@@ -1,12 +1,14 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers\Continuous;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -20,6 +22,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Continuous implements Output
 {
@@ -33,9 +36,9 @@ class Continuous implements Output
     /**
      * The memorized input matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $input = null;
+    protected ?NDArray $input = null;
 
     /**
      * @param RegressionLoss|null $costFn
@@ -66,8 +69,7 @@ class Continuous implements Output
     public function initialize(int $fanIn) : int
     {
         if ($fanIn !== 1) {
-            throw new InvalidArgumentException('Fan in must be'
-                . " equal to 1, $fanIn given.");
+            throw new InvalidArgumentException("Fan in must be equal to 1, $fanIn given.");
         }
 
         return 1;
@@ -76,10 +78,10 @@ class Continuous implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
         $this->input = $input;
 
@@ -89,10 +91,10 @@ class Continuous implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
         return $input;
     }
@@ -108,11 +110,10 @@ class Continuous implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input) {
-            throw new RuntimeException('Must perform forward pass'
-                . ' before backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
-        $expected = Matrix::quick([$labels]);
+        $expected = NumPower::array([$labels]);
 
         $input = $this->input;
 
@@ -128,14 +129,18 @@ class Continuous implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param Matrix $input
-     * @param Matrix $expected
-     * @return Matrix
+     * @param NDArray $input
+     * @param NDArray $expected
+     * @return NDArray
      */
-    public function gradient(Matrix $input, Matrix $expected) : Matrix
+    public function gradient(NDArray $input, NDArray $expected) : NDArray
     {
-        return $this->costFn->differentiate($input, $expected)
-            ->divide($input->n());
+        $n = $input->shape()[1];
+
+        return NumPower::divide(
+            $this->costFn->differentiate($input, $expected),
+            $n
+        );
     }
 
     /**

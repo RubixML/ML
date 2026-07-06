@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers\Base;
 
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
 
 /**
  * Adaptive
@@ -12,6 +12,7 @@ use Rubix\ML\NeuralNet\Parameter;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Adaptive extends Optimizer
 {

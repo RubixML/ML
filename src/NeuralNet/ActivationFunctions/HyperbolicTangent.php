@@ -1,8 +1,13 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions;
+declare(strict_types=1);
 
-use Tensor\Matrix;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
+
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\OBufferDerivative;
 
 /**
  * Hyperbolic Tangent
@@ -13,53 +18,42 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HyperbolicTangent implements ActivationFunction
+class HyperbolicTangent implements ActivationFunction, OBufferDerivative
 {
     /**
-     * Compute the activation.
+     * Apply the Hyperbolic Tangent activation function to the input.
      *
-     * @internal
+     * f(x) = tanh(x)
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return $input->map('tanh');
+        return NumPower::tanh($input);
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Calculate the derivative of the activation function.
      *
-     * @internal
+     * f'(x) = 1 - tanh^2(x)
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $x Output matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $x) : NDArray
     {
-        return $output->map([$this, '_differentiate']);
+        $squared = NumPower::pow($x, 2);
+
+        return NumPower::subtract(1.0, $squared);
     }
 
     /**
-     * @internal
+     * Return the string representation of the activation function.
      *
-     * @param float $output
-     * @return float
-     */
-    public function _differentiate(float $output) : float
-    {
-        return 1.0 - ($output ** 2);
-    }
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

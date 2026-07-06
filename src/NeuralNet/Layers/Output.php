@@ -1,8 +1,9 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers\Base\Contracts;
 
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Output
@@ -12,6 +13,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Output extends Layer
 {
@@ -20,7 +22,7 @@ interface Output extends Layer
      *
      * @param (string|int|float)[] $labels
      * @param Optimizer $optimizer
-     * @throws \Rubix\ML\Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return mixed[]
      */
     public function back(array $labels, Optimizer $optimizer) : array;

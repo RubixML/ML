@@ -1,18 +1,21 @@
 <?php
 
-namespace Rubix\ML\NeuralNet;
+namespace Rubix\ML\NeuralNet\Networks\FeedForward;
 
-use Tensor\Matrix;
-use Rubix\ML\Encoding;
+use NDArray;
+use NumPower;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Encoding;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Layer;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
+use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
+use Rubix\ML\NeuralNet\Optimizers\Base\Adaptive;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 use Traversable;
-
 use function array_reverse;
 
 /**
@@ -26,6 +29,7 @@ use function array_reverse;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class FeedForward implements Network
 {
@@ -39,7 +43,7 @@ class FeedForward implements Network
     /**
      * The hidden layers of the network.
      *
-     * @var list<Layers\Hidden>
+     * @var list<Hidden>
      */
     protected array $hidden = [
         //
@@ -48,7 +52,7 @@ class FeedForward implements Network
     /**
      * The pathing of the backward pass through the hidden layers.
      *
-     * @var list<Layers\Hidden>
+     * @var list<Hidden>
      */
     protected array $backPass = [
         //
@@ -69,12 +73,20 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
+     * Whether to pack the samples.
+     *
+     * @var bool
+     */
+    private bool $packSamples;
+
+    /**
      * @param Input $input
-     * @param Layers\Hidden[] $hidden
+     * @param Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
+     * @param bool $packSamples
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer, bool $packSamples = false)
     {
         $hidden = array_values($hidden);
 
@@ -85,6 +97,7 @@ class FeedForward implements Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
+        $this->packSamples = $packSamples;
     }
 
     /**
@@ -100,7 +113,7 @@ class FeedForward implements Network
     /**
      * Return an array of hidden layers indexed left to right.
      *
-     * @return list<Layers\Hidden>
+     * @return list<Hidden>
      */
     public function hidden() : array
     {
@@ -120,7 +133,7 @@ class FeedForward implements Network
     /**
      * Return all the layers in the network.
      *
-     * @return Traversable<Layers\Layer>
+     * @return Traversable<Layer>
      */
     public function layers() : Traversable
     {
@@ -177,17 +190,23 @@ class FeedForward implements Network
      * Run an inference pass and return the activations at the output layer.
      *
      * @param Dataset $dataset
-     * @return Matrix
+     * @return NDArray
      */
-    public function infer(Dataset $dataset) : Matrix
+    public function infer(Dataset $dataset) : NDArray
     {
-        $input = Matrix::quick($dataset->samples())->transpose();
+        if ($dataset->empty()) {
+            return NumPower::array([]);
+        }
+
+        $samples = $this->prepareSamples($dataset);
+
+        $input = NumPower::transpose(NumPower::array($samples), [1, 0]);
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
         }
 
-        return $input->transpose();
+        return NumPower::transpose($input, [1, 0]);
     }
 
     /**
@@ -199,7 +218,7 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $dataset) : float
     {
-        $input = Matrix::quick($dataset->samples())->transpose();
+        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
 
         $this->feed($input);
 
@@ -211,10 +230,10 @@ class FeedForward implements Network
     /**
      * Feed a batch through the network and return a matrix of activations at the output later.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function feed(Matrix $input) : Matrix
+    public function feed(NDArray $input) : NDArray
     {
         foreach ($this->layers() as $layer) {
             $input = $layer->forward($input);
@@ -267,5 +286,22 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Prepare samples depending on packing configuration.
+     * @param Dataset $dataset
+     * @return array
+     */
+    private function prepareSamples(Dataset $dataset) : array
+    {
+        $samples = $dataset->samples();
+
+        if (!$this->packSamples) {
+            return $samples;
+        }
+
+        // Reindex a nested array to ensure all levels have sequential numeric keys
+        return array_map('array_values', array_values($samples));
     }
 }

@@ -1,9 +1,12 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Initializers;
+declare(strict_types=1);
 
-use Tensor\Matrix;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+namespace Rubix\ML\NeuralNet\Initializers\Constant;
+
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
 
 /**
  * Constant
@@ -13,50 +16,34 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class Constant implements Initializer
+class Constant extends AbstractInitializer
 {
     /**
-     * The value to initialize the parameter to.
-     *
-     * @var float
+     * @param float $value The value to initialize the parameter to
      */
-    protected float $value;
-
-    /**
-     * @param float $value
-     * @throws InvalidArgumentException
-     */
-    public function __construct(float $value = 0.0)
+    public function __construct(protected float $value = 0.0)
     {
-        if (is_nan($value)) {
-            throw new InvalidArgumentException('Cannot initialize'
-                . ' weight values to NaN.');
-        }
-
-        $this->value = $value;
     }
 
     /**
-     * Initialize a weight matrix W in the dimensions fan in x fan out.
-     *
-     * @internal
-     *
-     * @param int<0,max> $fanIn
-     * @param int<0,max> $fanOut
-     * @return Matrix
+     * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix
+    public function initialize(int $fanIn, int $fanOut) : NDArray
     {
-        return Matrix::fill($this->value, $fanOut, $fanIn);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
+
+        return NumPower::full(
+            shape: [$fanOut, $fanIn],
+            fill_value: $this->value
+        );
     }
 
     /**
-     * Return the string representation of the object.
+     * Return the string representation of the initializer.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

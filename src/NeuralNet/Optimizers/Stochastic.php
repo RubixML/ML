@@ -1,19 +1,23 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers\Stochastic;
 
-use Tensor\Tensor;
-use Rubix\ML\NeuralNet\Parameter;
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Stochastic
  *
- * A constant learning rate gradient descent optimizer.
+ * SGD (Stochastic Gradient Descent) optimizer -
+ * a constant learning rate gradient descent optimizer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Stochastic implements Optimizer
 {
@@ -31,8 +35,9 @@ class Stochastic implements Optimizer
     public function __construct(float $rate = 0.01)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must'
-                . " be greater than 0, $rate given.");
+            throw new InvalidArgumentException(
+                "Learning rate must be greater than 0, $rate given."
+            );
         }
 
         $this->rate = $rate;
@@ -41,15 +46,22 @@ class Stochastic implements Optimizer
     /**
      * Take a step of gradient descent for a given parameter.
      *
+     * SGD update (element-wise):
+     *   Δθ_t = η · g_t
+     *
+     * where:
+     *   - g_t is the current gradient,
+     *   - η is the learning rate.
+     *
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @param NDArray $gradient
+     * @return NDArray
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function step(Parameter $param, NDArray $gradient) : NDArray
     {
-        return $gradient->multiply($this->rate);
+        return NumPower::multiply($gradient, $this->rate);
     }
 
     /**

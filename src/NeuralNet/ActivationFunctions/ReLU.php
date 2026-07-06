@@ -1,8 +1,13 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions;
+declare(strict_types=1);
 
-use Tensor\Matrix;
+namespace Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+
+use NumPower;
+use NDArray;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
 
 /**
  * ReLU
@@ -17,53 +22,40 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ReLU implements ActivationFunction
+class ReLU implements ActivationFunction, IBufferDerivative
 {
     /**
      * Compute the activation.
      *
-     * @internal
+     * f(x) = max(0, x)
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return $input->map([$this, '_activate']);
+        return NumPower::maximum($input, 0.0);
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Calculate the derivative of the activation function.
      *
-     * @internal
+     * f'(x) = 1 if x > 0, else 0
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input Input matrix
+     * @return NDArray Derivative matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(NDArray $input) : NDArray
     {
-        return $input->greater(0.0);
+        return NumPower::greater($input, 0.0);
     }
 
     /**
-     * @internal
+     * Return the string representation of the activation function.
      *
-     * @param float $input
-     * @return float
-     */
-    public function _activate(float $input) : float
-    {
-        return $input > 0.0 ? $input : 0.0;
-    }
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

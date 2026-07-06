@@ -1,15 +1,14 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers\AdaMax;
 
-use Tensor\Tensor;
-use Tensor\Vector;
-use Tensor\Matrix;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\NeuralNet\Parameter;
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
 
 use const Rubix\ML\EPSILON;
+use const PHP_FLOAT_MAX;
 
 /**
  * AdaMax
@@ -22,39 +21,10 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class AdaMax extends Adam
 {
-    /**
-     * Return the element-wise maximum of two tensors.
-     *
-     * @param Tensor $a
-     * @param Tensor $b
-     * @return Tensor
-     */
-    protected static function maximum(Tensor $a, Tensor $b) : Tensor
-    {
-        if ($a instanceof Matrix and $b instanceof Matrix) {
-            $c = [];
-
-            foreach ($a as $i => $valueA) {
-                $c[] = static::maximum($valueA, $b[$i])->asArray();
-            }
-
-            return Matrix::quick($c);
-        }
-
-        $bHat = $b->asArray();
-
-        $c = [];
-
-        foreach ($a as $i => $valueA) {
-            $c[] = (float) max($valueA, $bHat[$i]);
-        }
-
-        return Vector::quick($c);
-    }
-
     /**
      * @param float $rate
      * @param float $momentumDecay
@@ -62,40 +32,47 @@ class AdaMax extends Adam
      */
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
-        if (ExtensionIsLoaded::with('tensor')->passes()) {
-            ExtensionMinimumVersion::with('tensor', '3.0.0-beta')->check();
-        }
-
         parent::__construct($rate, $momentumDecay, $normDecay);
     }
 
     /**
-     * Calculate a gradient descent step for a given parameter.
+     * Take a step of gradient descent for a given parameter.
+     *
+     * AdaMax update (element-wise):
+     *   v_t = v_{t-1} + β1 · (g_t − v_{t-1})
+     *   u_t = max(β2 · u_{t-1}, |g_t|)
+     *   Δθ_t = η · v_t / max(u_t, ε)
      *
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @param NDArray $gradient
+     * @return NDArray
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function step(Parameter $param, NDArray $gradient) : NDArray
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $vHat = $gradient->subtract($velocity)
-            ->multiply($this->momentumDecay);
+        $vHat = NumPower::multiply(
+            NumPower::subtract($gradient, $velocity),
+            $this->momentumDecay
+        );
 
-        $velocity = $velocity->add($vHat);
+        $velocity = NumPower::add($velocity, $vHat);
 
-        $norm = $norm->multiply(1.0 - $this->normDecay);
-
-        $norm = static::maximum($norm, $gradient->abs());
+        // Infinity norm accumulator
+        $norm = NumPower::multiply($norm, 1.0 - $this->normDecay);
+        $absGrad = NumPower::abs($gradient);
+        $norm = NumPower::maximum($norm, $absGrad);
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
-        $norm = $norm->clipLower(EPSILON);
+        $norm = NumPower::clip($norm, EPSILON, PHP_FLOAT_MAX);
 
-        return $velocity->divide($norm)->multiply($this->rate);
+        return NumPower::multiply(
+            NumPower::divide($velocity, $norm),
+            $this->rate
+        );
     }
 
     /**
@@ -107,7 +84,7 @@ class AdaMax extends Adam
      */
     public function __toString() : string
     {
-        return "AdaMax (rate: {$this->rate}, momentum_decay: {$this->momentumDecay},"
-            . " norm_decay: {$this->normDecay})";
+        return "AdaMax (rate: {$this->rate}, momentum decay: {$this->momentumDecay},"
+            . " norm decay: {$this->normDecay})";
     }
 }

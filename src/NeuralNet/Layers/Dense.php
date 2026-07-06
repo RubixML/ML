@@ -1,15 +1,18 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers\Dense;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\Initializers\He\HeUniform;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
 use Rubix\ML\Deferred;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Initializers\He;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Initializers\Initializer;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
+use Rubix\ML\NeuralNet\Initializers\Base\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
@@ -25,6 +28,7 @@ use Generator;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Dense implements Hidden, Parametric
 {
@@ -80,9 +84,9 @@ class Dense implements Hidden, Parametric
     /**
      * The memorized inputs to the layer.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $input = null;
+    protected ?NDArray $input = null;
 
     /**
      * @param int $neurons
@@ -100,19 +104,17 @@ class Dense implements Hidden, Parametric
         ?Initializer $biasInitializer = null
     ) {
         if ($neurons < 1) {
-            throw new InvalidArgumentException('Number of neurons'
-                . " must be greater than 0, $neurons given.");
+            throw new InvalidArgumentException("Number of neurons must be greater than 0, $neurons given.");
         }
 
         if ($l2Penalty < 0.0) {
-            throw new InvalidArgumentException('L2 Penalty must be'
-                . " greater than 0, $l2Penalty given.");
+            throw new InvalidArgumentException("L2 Penalty must be greater than 0, $l2Penalty given.");
         }
 
         $this->neurons = $neurons;
         $this->l2Penalty = $l2Penalty;
         $this->bias = $bias;
-        $this->weightInitializer = $weightInitializer ?? new He();
+        $this->weightInitializer = $weightInitializer ?? new HeUniform();
         $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
     }
 
@@ -134,9 +136,9 @@ class Dense implements Hidden, Parametric
      * @internal
      *
      * @throws RuntimeException
-     * @return Matrix
+     * @return NDArray
      */
-    public function weights() : Matrix
+    public function weights() : NDArray
     {
         if (!$this->weights) {
             throw new RuntimeException('Layer is not initialized');
@@ -163,7 +165,9 @@ class Dense implements Hidden, Parametric
         $this->weights = new Parameter($weights);
 
         if ($this->bias) {
-            $biases = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
+            // Initialize biases as a vector of length fanOut
+            $biasMat = $this->biasInitializer->initialize(1, $fanOut);
+            $biases = NumPower::flatten($biasMat);
 
             $this->biases = new Parameter($biases);
         }
@@ -174,22 +178,23 @@ class Dense implements Hidden, Parametric
     /**
      * Compute a forward pass through the layer.
      *
+     * @param NDArray $input
+     * @return NDArray
      * @internal
-     *
-     * @param Matrix $input
-     * @throws RuntimeException
-     * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
         if (!$this->weights) {
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $output = $this->weights->param()->matmul($input);
+        $output = NumPower::matmul($this->weights->param(), $input);
 
         if ($this->biases) {
-            $output = $output->add($this->biases->param());
+            // Reshape bias vector [fanOut] to column [fanOut, 1] to match output [fanOut, n]
+            $bias = NumPower::reshape($this->biases->param(), [$this->neurons, 1]);
+            // Manual “broadcast”: [neurons, n] + [neurons, 1]
+            $output = NumPower::add($output, $bias);
         }
 
         $this->input = $input;
@@ -200,22 +205,23 @@ class Dense implements Hidden, Parametric
     /**
      * Compute an inference pass through the layer.
      *
+     * @param NDArray $input
+     * @return NDArray
      * @internal
-     *
-     * @param Matrix $input
-     * @throws RuntimeException
-     * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
         if (!$this->weights) {
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $output = $this->weights->param()->matmul($input);
+        $output = NumPower::matmul($this->weights->param(), $input);
 
         if ($this->biases) {
-            $output = $output->add($this->biases->param());
+            // Reshape bias vector [fanOut] to column [fanOut, 1] to match output [fanOut, n]
+            $bias = NumPower::reshape($this->biases->param(), [$this->neurons, 1]);
+            // Manual “broadcast”: [neurons, n] + [neurons, 1]
+            $output = NumPower::add($output, $bias);
         }
 
         return $output;
@@ -238,24 +244,31 @@ class Dense implements Hidden, Parametric
         }
 
         if (!$this->input) {
-            throw new RuntimeException('Must perform forward pass'
-                . ' before backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
+        /** @var NDArray $dOut */
         $dOut = $prevGradient();
 
-        $dW = $dOut->matmul($this->input->transpose());
+        $inputT = NumPower::transpose($this->input, [1, 0]);
+
+        $dW = NumPower::matmul($dOut, $inputT);
 
         $weights = $this->weights->param();
 
         if ($this->l2Penalty) {
-            $dW = $dW->add($weights->multiply($this->l2Penalty));
+            $dW = NumPower::add(
+                $dW,
+                NumPower::multiply($weights, $this->l2Penalty)
+            );
         }
 
         $this->weights->update($dW, $optimizer);
 
         if ($this->biases) {
-            $dB = $dOut->sum();
+            // Sum gradients over the batch dimension to obtain a bias gradient
+            // with the same shape as the bias vector [neurons]
+            $dB = NumPower::sum($dOut, axis: 1);
 
             $this->biases->update($dB, $optimizer);
         }
@@ -270,13 +283,15 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $weights
-     * @param Matrix $dOut
-     * @return Matrix
+     * @param NDArray $weights
+     * @param NDArray $dOut
+     * @return NDArray
      */
-    public function gradient(Matrix $weights, Matrix $dOut) : Matrix
+    public function gradient(NDArray $weights, NDArray $dOut) : NDArray
     {
-        return $weights->transpose()->matmul($dOut);
+        $weightsT = NumPower::transpose($weights, [1, 0]);
+
+        return NumPower::matmul($weightsT, $dOut);
     }
 
     /**

@@ -1,16 +1,21 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers\Swish;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Initializers\Initializer;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid\Sigmoid;
+use Rubix\ML\NeuralNet\Initializers\Base\Initializer;
+use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
+use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
 use Generator;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Swish
@@ -25,6 +30,7 @@ use Generator;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Swish implements Hidden, Parametric
 {
@@ -59,16 +65,16 @@ class Swish implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $input = null;
+    protected ?NDArray $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $output = null;
+    protected ?NDArray $output = null;
 
     /**
      * @param Initializer|null $initializer
@@ -109,7 +115,10 @@ class Swish implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $beta = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
+        // Initialize beta as a vector of length fanOut (one beta per neuron)
+        // Using shape [fanOut, 1] then flattening to [fanOut]
+        $betaMat = $this->initializer->initialize(1, $fanOut);
+        $beta = NumPower::flatten($betaMat);
 
         $this->width = $fanOut;
         $this->beta = new Parameter($beta);
@@ -122,17 +131,16 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
-        $output = $this->activate($input);
-
         $this->input = $input;
-        $this->output = $output;
 
-        return $output;
+        $this->output = $this->activate($input);
+
+        return $this->output;
     }
 
     /**
@@ -140,10 +148,10 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
         return $this->activate($input);
     }
@@ -165,15 +173,19 @@ class Swish implements Hidden, Parametric
         }
 
         if (!$this->input or !$this->output) {
-            throw new RuntimeException('Must perform forward pass'
-                . ' before backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
+        /** @var NDArray $dOut */
         $dOut = $prevGradient();
 
-        $dIn = $this->input;
+        // Gradient of the loss with respect to beta
+        // dL/dbeta = sum_over_batch(dL/dy * dy/dbeta)
+        // Here we use a simplified formulation: dL/dbeta ~ sum(dOut * input)
+        $dBetaFull = NumPower::multiply($dOut, $this->input);
 
-        $dBeta = $dOut->multiply($dIn)->sum();
+        // Sum over the batch axis (axis = 1) to obtain a gradient vector [width]
+        $dBeta = NumPower::sum($dBetaFull, axis: 1);
 
         $this->beta->update($dBeta, $optimizer);
 
@@ -190,15 +202,16 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @param Matrix $dOut
-     * @return Matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @param NDArray $dOut
+     * @return NDArray
      */
-    public function gradient($input, $output, $dOut) : Matrix
+    public function gradient(NDArray $input, NDArray $output, NDArray $dOut) : NDArray
     {
-        return $this->differentiate($input, $output)
-            ->multiply($dOut);
+        $derivative = $this->differentiate($input, $output);
+
+        return NumPower::multiply($derivative, $dOut);
     }
 
     /**
@@ -233,41 +246,49 @@ class Swish implements Hidden, Parametric
     /**
      * Compute the Swish activation function and return a matrix.
      *
-     * @param Matrix $input
+     * @param NDArray $input
      * @throws RuntimeException
-     * @return Matrix
+     * @return NDArray
      */
-    protected function activate(Matrix $input) : Matrix
+    protected function activate(NDArray $input) : NDArray
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $zHat = $input->multiply($this->beta->param());
+        // Reshape beta vector [width] to column [width, 1] for broadcasting
+        $betaCol = NumPower::reshape($this->beta->param(), [$this->width(), 1]);
 
-        return $this->sigmoid->activate($zHat)
-            ->multiply($input);
+        $zHat = NumPower::multiply($betaCol, $input);
+
+        $activated = $this->sigmoid->activate($zHat);
+
+        return NumPower::multiply($activated, $input);
     }
 
     /**
      * Calculate the derivative of the activation function at a given output.
+     * Formulation: derivative = (output / input) * (1 - output) + output
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param NDArray $input
+     * @param NDArray $output
      * @throws RuntimeException
-     * @return Matrix
+     * @return NDArray
      */
-    protected function differentiate(Matrix $input, Matrix $output) : Matrix
+    protected function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $ones = Matrix::ones(...$output->shape());
+        // Prevent division by zero if the input contains zero values
+        $denominator = NumPower::add($input, EPSILON);
+        $term1 = NumPower::divide($output, $denominator);
 
-        return $output->divide($input)
-            ->multiply($ones->subtract($output))
-            ->add($output);
+        $oneMinusOutput = NumPower::subtract(1.0, $output);
+        $product = NumPower::multiply($term1, $oneMinusOutput);
+
+        return NumPower::add($product, $output);
     }
 
     /**

@@ -1,9 +1,13 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\CostFunctions;
+declare(strict_types=1);
 
-use Tensor\Matrix;
+namespace Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
+use NDArray;
+use NumPower;
+use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\ClassificationLoss;
+use Rubix\ML\Traits\AssertsShapes;
 use const Rubix\ML\EPSILON;
 
 /**
@@ -19,49 +23,64 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class CrossEntropy implements ClassificationLoss
 {
+    use AssertsShapes;
+
     /**
      * Compute the loss score.
      *
-     * @internal
+     * L(y, ŷ) = -Σ(y * log(ŷ)) / n
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param NDArray $output The output of the network
+     * @param NDArray $target The target values
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float
+    public function compute(NDArray $output, NDArray $target) : float
     {
-        $entropy = $output->clipLower(EPSILON)->log();
+        $this->assertSameShape($output, $target);
 
-        return $target->negate()->multiply($entropy)->mean()->mean();
+        // Clip values to avoid log(0)
+        $output = NumPower::clip($output, EPSILON, 1.0);
+
+        $logOutput = NumPower::log($output);
+        $product = NumPower::multiply($target, $logOutput);
+        $negated = NumPower::multiply($product, -1.0);
+
+        return NumPower::mean($negated);
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @internal
+     * ∂L/∂ŷ = (ŷ - y) / (ŷ * (1 - ŷ))
      *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @return Matrix
+     * @param NDArray $output The output of the network
+     * @param NDArray $target The target values
+     * @return NDArray
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix
+    public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        $denominator = Matrix::ones(...$target->shape())
-            ->subtract($output)
-            ->multiply($output)
-            ->clipLower(EPSILON);
+        $this->assertSameShape($output, $target);
 
-        return $output->subtract($target)
-            ->divide($denominator);
+        // Numerator = ŷ - y (calculate before clipping to preserve zeros)
+        $numerator = NumPower::subtract($output, $target);
+
+        // Clip values to avoid division by zero
+        $output = NumPower::clip($output, EPSILON, 1.0 - EPSILON);
+
+        // Denominator = ŷ * (1 - ŷ)
+        $oneMinusOutput = NumPower::subtract(1.0, $output);
+        $denominator = NumPower::multiply($output, $oneMinusOutput);
+        $denominator = NumPower::clip($denominator, EPSILON, 1.0);
+
+        return NumPower::divide($numerator, $denominator);
     }
 
     /**
      * Return the string representation of the object.
-     *
-     * @internal
      *
      * @return string
      */

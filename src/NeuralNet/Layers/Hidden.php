@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers\Base\Contracts;
 
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
 
 /**
  * Hidden
@@ -11,6 +11,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Hidden extends Layer
 {
