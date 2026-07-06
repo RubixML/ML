@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/Momentum/Momentum.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/Momentum.php">[source]</a></span>
 
 # Momentum
 Momentum accelerates each update step by accumulating velocity from past updates and adding a factor of the previous velocity to the current step. Momentum can help speed up training and escape bad local minima when compared with [Stochastic](stochastic.md) Gradient Descent.
@@ -37,7 +37,7 @@ where:
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Optimizers\Momentum\Momentum;
+use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
 $optimizer = new Momentum(0.01, 0.1, true);
 ```

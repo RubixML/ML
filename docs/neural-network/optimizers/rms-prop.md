@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/RMSProp/RMSProp.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/RMSProp.php">[source]</a></span>
 
 # RMS Prop
 An adaptive gradient technique that divides the current gradient over a rolling window of magnitudes of recent gradients. Unlike [AdaGrad](adagrad.md), RMS Prop does not suffer from an infinitely decaying step size.
@@ -29,7 +29,7 @@ where:
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Optimizers\RMSProp\RMSProp;
+use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 
 $optimizer = new RMSProp(0.01, 0.1);
 ```

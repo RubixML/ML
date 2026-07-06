@@ -19,8 +19,8 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Loggers\BlackHole;
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\HuberLoss;
-use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\Tests\DataProvider\AdalineProvider;
 

@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/StepDecay/StepDecay.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/StepDecay.php">[source]</a></span>
 
 # Step Decay
 A learning rate decay optimizer that reduces the global learning rate by a factor whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* hyper-parameter.
@@ -30,7 +30,7 @@ where:
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Optimizers\StepDecay\StepDecay;
+use Rubix\ML\NeuralNet\Optimizers\StepDecay;
 
 $optimizer = new StepDecay(0.1, 50, 1e-3);
 ```
