@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers\Base;
+namespace Rubix\ML\NeuralNet\Optimizers;
 
 use NDArray;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Parameter;
 use Stringable;
 
 /**

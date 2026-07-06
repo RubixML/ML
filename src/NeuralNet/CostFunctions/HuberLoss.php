@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\RegressionLoss;
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss\Exceptions\InvalidAlphaException;
+use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
+use Rubix\ML\Exceptions\InvalidAlphaException;
 use Rubix\ML\Traits\AssertsShapes;
 
 /**

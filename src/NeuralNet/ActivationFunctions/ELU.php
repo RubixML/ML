@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IOBufferDerivative;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions\InvalidAlphaException;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\IOBufferDerivative;
+use Rubix\ML\Exceptions\InvalidAlphaException;
 
 /**
  * ELU

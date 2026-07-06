@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Activation;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
-use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 /**
  * Activation

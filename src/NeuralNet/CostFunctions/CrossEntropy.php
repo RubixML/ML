@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\ClassificationLoss;
+use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Traits\AssertsShapes;
 use const Rubix\ML\EPSILON;
 

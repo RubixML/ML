@@ -1,24 +1,25 @@
 <?php
 
-namespace Rubix\ML\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet\FeedForwards;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\Layers\Placeholder1D;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Output;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Multiclass;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 #[Group('NeuralNet')]
 #[CoversClass(FeedForward::class)]
@@ -27,27 +28,27 @@ class FeedForwardTest extends TestCase
     /**
      * @var Labeled
      */
-    protected $dataset;
+    protected Labeled $dataset;
 
     /**
      * @var FeedForward
      */
-    protected $network;
+    protected FeedForward $network;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Input
+     * @var Input
      */
-    protected $input;
+    protected Input $input;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     * @var Hidden[]
      */
-    protected $hidden;
+    protected array $hidden;
 
     /**
      * @var Output
      */
-    protected $output;
+    protected Output $output;
 
     #[Before]
     protected function setUp() : void
@@ -77,36 +78,35 @@ class FeedForwardTest extends TestCase
     #[TestDox('Builds a feed-forward network instance')]
     public function build() : void
     {
-        $this->assertInstanceOf(FeedForward::class, $this->network);
-        $this->assertInstanceOf(Network::class, $this->network);
+        self::assertInstanceOf(FeedForward::class, $this->network);
     }
 
     #[Test]
     #[TestDox('Returns all hidden and output layers')]
     public function layers() : void
     {
-        $this->assertCount(5, iterator_to_array($this->network->layers()));
+        self::assertCount(5, iterator_to_array($this->network->layers()));
     }
 
     #[Test]
     #[TestDox('Returns the input layer')]
     public function input() : void
     {
-        $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
+        self::assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
     #[Test]
     #[TestDox('Returns the hidden layers')]
     public function hidden() : void
     {
-        $this->assertCount(5, $this->network->hidden());
+        self::assertCount(5, $this->network->hidden());
     }
 
     #[Test]
     #[TestDox('Returns the output layer')]
     public function networkOutput() : void
     {
-        $this->assertInstanceOf(Output::class, $this->network->output());
+        self::assertInstanceOf(Output::class, $this->network->output());
     }
 
     #[Test]
@@ -115,7 +115,7 @@ class FeedForwardTest extends TestCase
     {
         $this->network->initialize();
 
-        $this->assertEquals(103, $this->network->numParams());
+        self::assertEquals(103, $this->network->numParams());
     }
 
     #[Test]
@@ -126,6 +126,33 @@ class FeedForwardTest extends TestCase
 
         $loss = $this->network->roundtrip($this->dataset);
 
-        $this->assertIsFloat($loss);
+        self::assertIsFloat($loss);
+    }
+
+    #[Test]
+    #[TestDox('Infers successfully from a sparse-keyed dataset when packSamples is enabled')]
+    public function inferWithPackedSamples() : void
+    {
+        $dataset = Labeled::quick([
+            10 => [
+                2 => 1.0,
+                9 => 2.5,
+            ],
+            20 => [
+                1 => 0.1,
+                7 => 0.0,
+            ],
+            30 => [
+                8 => -6.0,
+                4 => 0.002,
+            ],
+        ], ['yes', 'no', 'maybe']);
+
+        $network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001), true);
+        $network->initialize();
+
+        $output = $network->infer($dataset);
+
+        self::assertEquals([3, 3], $output->shape());
     }
 }

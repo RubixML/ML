@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\Initializers\Normal;
+namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Initializers\Base\AbstractInitializer;
-use Rubix\ML\NeuralNet\Initializers\Normal\Exceptions\InvalidStandardDeviationException;
+use Rubix\ML\NeuralNet\Initializers\AbstractInitializer;
+use Rubix\ML\Exceptions\InvalidStandardDeviationException;
 
 /**
  * Normal

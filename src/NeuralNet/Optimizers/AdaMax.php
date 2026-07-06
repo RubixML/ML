@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers\AdaMax;
+namespace Rubix\ML\NeuralNet\Optimizers;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\Optimizers\Adam\Adam;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Parameter;
 
 use const Rubix\ML\EPSILON;
 use const PHP_FLOAT_MAX;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
+namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\OBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\OBufferDerivative;
 
 /**
  * Softmax

@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Parameters;
+namespace Rubix\ML\NeuralNet;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 /**
  * Parameter

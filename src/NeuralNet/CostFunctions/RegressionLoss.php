@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\CostFunctions\Base\Contracts;
+namespace Rubix\ML\NeuralNet\CostFunctions;
+
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 
 interface RegressionLoss extends CostFunction
 {

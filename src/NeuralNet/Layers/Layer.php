@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Base\Contracts;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
 use Stringable;

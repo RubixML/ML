@@ -2,17 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet\Parameters;
 
+use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
-#[Group('NeuralNet')]
+#[Group('Parameters')]
 #[CoversClass(Parameter::class)]
 class ParameterTest extends TestCase
 {
@@ -22,7 +22,7 @@ class ParameterTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->param = new Parameter(Matrix::quick([
+        $this->param = new Parameter(NumPower::array([
             [5, 4],
             [-2, 6],
         ]));
@@ -32,7 +32,7 @@ class ParameterTest extends TestCase
 
     public function testUpdate() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = NumPower::array([
             [2, 1],
             [1, -2],
         ]);
@@ -44,6 +44,6 @@ class ParameterTest extends TestCase
 
         $this->param->update(gradient: $gradient, optimizer: $this->optimizer);
 
-        $this->assertEquals($expected, $this->param->param()->asArray());
+        self::assertEqualsWithDelta($expected, $this->param->param()->toArray(), 1e-7);
     }
 }

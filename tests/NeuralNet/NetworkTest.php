@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet\Networks;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Output;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Multiclass;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 #[Group('NeuralNet')]
 #[CoversClass(Network::class)]
@@ -80,23 +80,23 @@ class NetworkTest extends TestCase
             ++$count;
         }
 
-        $this->assertSame(7, $count);
+        self::assertSame(7, $count);
     }
 
     public function testInput() : void
     {
-        $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
+        self::assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
     public function testHidden() : void
     {
-        $this->assertCount(5, $this->network->hidden());
+        self::assertCount(5, $this->network->hidden());
     }
 
     public function testNumParams() : void
     {
         $this->network->initialize();
 
-        $this->assertEquals(103, $this->network->numParams());
+        self::assertEquals(103, $this->network->numParams());
     }
 }

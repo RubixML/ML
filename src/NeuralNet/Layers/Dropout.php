@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Dropout;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
-use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Placeholder1D;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Input;
+use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts;
+namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NDArray;
 

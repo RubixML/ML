@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
+namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\ActivationFunction;
-use Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts\IBufferDerivative;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\IBufferDerivative;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 
 /**
  * SiLU

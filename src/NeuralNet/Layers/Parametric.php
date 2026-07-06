@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Base\Contracts;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use Generator;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Parameter;
 
 /**
  * Parametric

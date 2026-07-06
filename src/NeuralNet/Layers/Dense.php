@@ -1,18 +1,18 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Dense;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\Initializers\He\HeUniform;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Hidden;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
+use Rubix\ML\NeuralNet\Initializers\HeUniform;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Deferred;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
-use Rubix\ML\NeuralNet\Initializers\Base\Initializer;
+use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;

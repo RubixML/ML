@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions\Base\Contracts;
+namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 /**
  * Derivative

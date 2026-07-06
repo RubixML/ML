@@ -3,7 +3,7 @@
 namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softplus;
 
 /**
  * @Groups({"ActivationFunctions"})

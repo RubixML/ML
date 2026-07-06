@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Snapshots;
+namespace Rubix\ML\NeuralNet;
 
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Parametric;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Networks\Base\Contracts\Network;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Parameter;
 
 /**
  * Snapshot

@@ -2,12 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\Tests\NeuralNet\Layers;
+namespace Rubix\ML\Tests\NeuralNet\Layers\Multiclass;
 
+use NDArray;
+use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Tensor\Matrix;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
@@ -18,9 +23,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Multiclass::class)]
 class MulticlassTest extends TestCase
 {
-    protected const int RANDOM_SEED = 0;
-
-    protected Matrix $input;
+    protected NDArray $input;
 
     /**
      * @var string[]
@@ -31,9 +34,56 @@ class MulticlassTest extends TestCase
 
     protected Multiclass $layer;
 
+    /**
+     * @return array<string, array{0: int}>
+     */
+    public static function initializeProvider() : array
+    {
+        return [
+            'fanInEqualsClasses' => [3],
+        ];
+    }
+
+    /**
+     * @return array<string, array{0: array<int, array<int, float>>}>
+     */
+    public static function forwardProvider() : array
+    {
+        return [
+            'expectedForward' => [[
+                [0.1719820, 0.7707700, 0.0572478],
+                [0.0498033, 0.0450639, 0.9051327],
+                [0.6219707, 0.0015385, 0.3764905],
+            ]],
+        ];
+    }
+
+    /**
+     * @return array<string, array{0: array<int, array<int, float>>}>
+     */
+    public static function backProvider() : array
+    {
+        return [
+            'expectedGradient' => [[
+                [-0.0920019, 0.0856411, 0.0063608],
+                [0.0055337, -0.1061040, 0.1005703],
+                [0.0691078, 0.00017093, -0.0692788],
+            ]],
+        ];
+    }
+
+    /**
+     * @return array<string, array{0: array<int, array<int, float>>}>
+     */
+    public static function inferProvider() : array
+    {
+        // Same expectations as forward
+        return self::forwardProvider();
+    }
+
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->input = NumPower::array([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
@@ -47,53 +97,121 @@ class MulticlassTest extends TestCase
             classes: ['hot', 'cold', 'ice cold'],
             costFn: new CrossEntropy()
         );
-
-        srand(self::RANDOM_SEED);
     }
 
-    public function testInitializeForwardBackInfer() : void
+    #[Test]
+    #[TestDox('Constructor rejects invalid number of classes')]
+    public function testConstructorRejectsInvalidClasses() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Multiclass(classes: ['only-one-class']);
+    }
+
+    #[Test]
+    #[TestDox('Method width() returns number of classes')]
+    public function testWidthReturnsNumberOfClasses() : void
+    {
+        self::assertSame(3, $this->layer->width());
+    }
+
+    #[Test]
+    #[TestDox('Initializes and returns correct fan out')]
+    #[DataProvider('initializeProvider')]
+    public function testInitializeReturnsFanOut(int $fanIn) : void
+    {
+        $fanOut = $this->layer->initialize($fanIn);
+
+        self::assertSame($fanIn, $fanOut);
+        self::assertSame(3, $this->layer->width());
+    }
+
+    #[Test]
+    #[TestDox('Computes forward softmax probabilities')]
+    #[DataProvider('forwardProvider')]
+    public function testForward(array $expected) : void
     {
         $this->layer->initialize(3);
 
-        $this->assertEquals(3, $this->layer->width());
+        self::assertEquals(3, $this->layer->width());
 
         $forward = $this->layer->forward($this->input);
 
-        $expected = [
-            [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
-            [0.22902938185541574, 0.07584391881396309, 0.930019228325398],
-            [0.2076492379866508, 0.0001879982788470176, 0.028084147227870816],
-        ];
+        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
+    }
 
-        $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
+    #[Test]
+    #[TestDox('Backpropagates and returns output gradient')]
+    #[DataProvider('backProvider')]
+    public function testBack(array $expected) : void
+    {
+        $this->layer->initialize(3);
+
+        // Set internal caches
+        $this->layer->forward($this->input);
 
         [$computation, $loss] = $this->layer->back(
             labels: $this->labels,
             optimizer: $this->optimizer
         );
 
-        $this->assertInstanceOf(Deferred::class, $computation);
-        $this->assertIsFloat($loss);
+        self::assertInstanceOf(Deferred::class, $computation);
+        self::assertIsFloat($loss);
 
         $gradient = $computation->compute();
 
-        $expected = [
-            [-0.14555953994735552, 0.3079893609690633, 0.013965541482243765],
-            [0.07634312728513858, -0.3080520270620123, 0.31000640944179936],
-            [0.06921641266221694, 6.266609294900586E-5, -0.3239719509240431],
-        ];
+        self::assertInstanceOf(NDArray::class, $gradient);
+        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
+    }
 
-        $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
+    #[Test]
+    #[TestDox('Computes gradient for previous layer directly')]
+    #[DataProvider('backProvider')]
+    public function testGradient(array $expectedGradient) : void
+    {
+        $this->layer->initialize(3);
+
+        // Forward pass to obtain output probabilities
+        $output = $this->layer->forward($this->input);
+
+        // Rebuild expected one-hot matrix the same way as Multiclass::back()
+        $expected = [];
+
+        foreach ($this->labels as $label) {
+            $dist = [];
+
+            foreach (['hot', 'cold', 'ice cold'] as $class) {
+                $dist[] = $class === $label ? 1.0 : 0.0;
+            }
+
+            $expected[] = $dist;
+        }
+
+        $expectedNd = NumPower::array($expected);
+
+        $gradient = $this->layer->gradient($this->input, $output, $expectedNd);
+
+        self::assertEqualsWithDelta($expectedGradient, $gradient->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Computes infer softmax probabilities')]
+    #[DataProvider('inferProvider')]
+    public function testInfer(array $expected) : void
+    {
+        $this->layer->initialize(3);
 
         $infer = $this->layer->infer($this->input);
 
-        $expected = [
-            [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
-            [0.22902938185541574, 0.07584391881396309, 0.930019228325398],
-            [0.2076492379866508, 0.0001879982788470176, 0.028084147227870816],
-        ];
+        self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
+    }
 
-        $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
+    #[Test]
+    #[TestDox('It returns correct string representation')]
+    public function testToStringReturnsCorrectValue() : void
+    {
+        $expected = 'Multiclass (cost function: Cross Entropy)';
+
+        self::assertSame($expected, (string) $this->layer);
     }
 }

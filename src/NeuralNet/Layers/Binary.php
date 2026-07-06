@@ -1,15 +1,15 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Binary;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\NeuralNet\Layers\Base\Contracts\Output;
+use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy\CrossEntropy;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid\Sigmoid;
-use Rubix\ML\NeuralNet\CostFunctions\Base\Contracts\ClassificationLoss;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 

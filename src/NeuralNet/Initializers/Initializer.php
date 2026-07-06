@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\Initializers\Base;
+namespace Rubix\ML\NeuralNet\Initializers;
 
 use NDArray;
 use Stringable;
-use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanInException;
-use Rubix\ML\NeuralNet\Initializers\Base\Exceptions\InvalidFanOutException;
+use Rubix\ML\Exceptions\InvalidFanInException;
+use Rubix\ML\Exceptions\InvalidFanOutException;
 
 /**
  * Initializer

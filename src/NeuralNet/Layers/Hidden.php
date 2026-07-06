@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Layers\Base\Contracts;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Base\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 /**
  * Hidden

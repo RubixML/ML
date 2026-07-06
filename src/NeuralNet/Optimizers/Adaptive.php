@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers\Base;
+namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Parameter;
 
 /**
  * Adaptive

@@ -2,115 +2,139 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions\ELU;
 
+use Generator;
+use NDArray;
+use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Exceptions\InvalidArgumentException;
-use Generator;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\Exceptions\InvalidAlphaException;
 
 #[Group('ActivationFunctions')]
 #[CoversClass(ELU::class)]
 class ELUTest extends TestCase
 {
+    /**
+     * @var ELU
+     */
     protected ELU $activationFn;
 
+    /**
+     * @return Generator<array>
+     */
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            NumPower::array([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [1.0, -0.3934693402873666, 0.0, 20.0, -0.9999546000702375],
+                [1.0, -0.3934693, 0.0, 20.0, -0.9999545],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            NumPower::array([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [-0.11307956328284252, 0.31, -0.3873736058155839],
-                [0.99, 0.08, -0.029554466451491845],
-                [0.05, -0.4054794520298056, 0.54],
+                [-0.1130795, 0.3100000, -0.3873736],
+                [0.9900000, 0.0799999, -0.0295544],
+                [0.0500000, -0.4054794, 0.5400000],
             ],
         ];
     }
 
+    /**
+     * @return Generator<array>
+     */
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            NumPower::array([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
-            Matrix::quick([
-                [1.0, -0.3934693402873666, 0.0, 20.0, -0.9999546000702375],
-            ]),
             [
-                [1.0, 0.6065306597126334, 1.0, 1.0, 4.539992976249074E-5],
+                [1.0, 0.6065306, 1.0, 1.0, 0.0000454],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            NumPower::array([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
             ]),
-            Matrix::quick([
-                [-0.11307956328284252, 0.31, -0.3873736058155839],
-                [0.99, 0.08, -0.029554466451491845],
-                [0.05, -0.4054794520298056, 0.54],
-            ]),
             [
-                [0.8869204367171575, 1.0, 0.6126263941844161],
-                [1.0, 1.0, 0.9704455335485082],
-                [1.0, 0.5945205479701944, 1.0],
+                [0.8869204, 1.0, 0.6126263],
+                [1.0, 1.0, 0.9704455],
+                [1.0, 0.5945205, 1.0],
             ],
         ];
     }
 
+    /**
+     * Set up the test case.
+     */
     protected function setUp() : void
     {
+        parent::setUp();
+
         $this->activationFn = new ELU(1.0);
     }
 
-    public function testBadAlpha() : void
+    #[Test]
+    #[TestDox('Can be constructed with valid alpha parameter')]
+    public function testConstructorWithValidAlpha() : void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $activationFn = new ELU(2.0);
+
+        static::assertInstanceOf(ELU::class, $activationFn);
+        static::assertEquals('ELU (alpha: 2)', (string) $activationFn);
+    }
+
+    #[Test]
+    #[TestDox('Throws exception when constructed with invalid alpha parameter')]
+    public function testConstructorWithInvalidAlpha() : void
+    {
+        $this->expectException(InvalidAlphaException::class);
 
         new ELU(-346);
     }
 
-    /**
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    #[DataProvider('computeProvider')]
-    public function testActivate(Matrix $input, array $expected) : void
+    #[Test]
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
     {
-        $activations = $this->activationFn->activate($input)->asArray();
-
-        $this->assertEquals($expected, $activations);
+        static::assertEquals('ELU (alpha: 1)', (string) $this->activationFn);
     }
 
-    /**
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(Matrix $input, Matrix $activations, array $expected) : void
+    #[Test]
+    #[TestDox('Correctly activates the input')]
+    #[DataProvider('computeProvider')]
+    public function testActivate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+        $activations = $this->activationFn->activate($input)->toArray();
 
-        $this->assertEquals($expected, $derivatives);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Correctly differentiates the input using buffered output')]
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(NDArray $input, array $expected) : void
+    {
+        $output = $this->activationFn->activate($input);
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
+
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 }

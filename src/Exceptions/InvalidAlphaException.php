@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rubix\ML\NeuralNet\ActivationFunctions\ELU\Exceptions;
+namespace Rubix\ML\Exceptions;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
