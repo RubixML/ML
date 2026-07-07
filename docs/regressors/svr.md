@@ -33,8 +33,8 @@ public load(string $path) : void
 
 ## Example
 ```php
-use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Kernels\SVM\RBF;
+use Rubix\ML\Regressors\SVR;
 
 $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.0);
 ```
