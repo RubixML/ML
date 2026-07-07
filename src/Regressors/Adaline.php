@@ -2,41 +2,41 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\Online;
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use Generator;
+use NumPower;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Params;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\Layers\Placeholder1D;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier2;
-use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
-use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
-
-use function is_nan;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Learner;
+use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\Initializers\XavierUniform;
+use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Online;
+use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\DatasetIsLabeled;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Verbose;
 use function count;
 use function get_object_vars;
+use function is_nan;
 use function number_format;
 
 /**
@@ -52,6 +52,7 @@ use function number_format;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
 {
@@ -262,9 +263,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return Network|null
+     * @return FeedForward|null
      */
-    public function network() : ?Network
+    public function network() : ?FeedForward
     {
         return $this->network;
     }
@@ -272,7 +273,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -280,7 +281,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new Xavier2())],
+            [new Dense(1, $this->l2Penalty, true, new XavierUniform())],
             new Continuous($this->costFn),
             $this->optimizer
         );
@@ -293,7 +294,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -402,9 +403,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->asArray(), 0);
-
-        return $activations;
+        return array_column($activations->toArray(), 0);
     }
 
     /**
@@ -425,10 +424,12 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             throw new RuntimeException('Weight layer is missing.');
         }
 
-        return $layer->weights()
-            ->rowAsVector(0)
-            ->abs()
-            ->asArray();
+        // Convert the weight matrix to a plain PHP array because the current NDArray build
+        // does not expose a stable row-extraction helper (e.g. rowAsVector())
+        $weights = NumPower::abs($layer->weights())->toArray();
+
+        // This model has a single output neuron, so the first row contains the per-feature weights.
+        return $weights[0] ?? [];
     }
 
     /**

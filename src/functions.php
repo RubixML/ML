@@ -246,4 +246,28 @@ namespace Rubix\ML
     {
         trigger_error($message, E_USER_DEPRECATED);
     }
+
+    /**
+     * Pack an array of samples.
+     *
+     * @internal
+     *
+     * @param array<mixed> $samples
+     * @param int $depth
+     * @param int $maxDepth
+     * @return array<mixed>
+     */
+    function array_pack(array $samples, int $depth = 0, int $maxDepth = 100) : array
+    {
+        if ($depth > $maxDepth) {
+            // Stop processing deeper
+            return $samples;
+        }
+
+        return array_map(function ($item) use ($depth, $maxDepth) {
+            return is_array($item)
+                ? array_pack(array_values($item), $depth + 1, $maxDepth)
+                : $item;
+        }, array_values($samples));
+    }
 }

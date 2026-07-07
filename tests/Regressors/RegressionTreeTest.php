@@ -5,12 +5,15 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Regressors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Tests\DataProvider\RegressionTreeProvider;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -167,6 +170,26 @@ class RegressionTreeTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[DataProviderExternal(RegressionTreeProvider::class, 'trainedModelCases')]
+    public function testTrainedModelExposesAdditionalChecks(int $trainingSize, int $testingSize) : void
+    {
+        $training = $this->generator->generate($trainingSize);
+        $testing = $this->generator->generate($testingSize);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        $importances = $this->estimator->featureImportances();
+
+        self::assertCount(4, $importances);
+        self::assertContainsOnlyFloat($importances);
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testingSize, $predictions);
     }
 
     public function testPredictUntrained() : void

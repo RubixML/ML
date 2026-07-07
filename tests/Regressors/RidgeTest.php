@@ -5,17 +5,21 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Regressors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Regressors\Ridge;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Regressors\Ridge;
+use Rubix\ML\Tests\DataProvider\RidgeProvider;
 
 #[Group('Regressors')]
 #[CoversClass(Ridge::class)]
@@ -62,54 +66,62 @@ class RidgeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    #[TestDox('Is not trained before training')]
+    public function preConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    public function testBadL2Penalty() : void
+    #[Test]
+    #[TestDox('Throws when L2 penalty is invalid')]
+    public function badL2Penalty() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new Ridge(-1e-4);
     }
 
-    public function testType() : void
+    #[Test]
+    #[TestDox('Returns estimator type')]
+    public function type() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    #[TestDox('Declares feature compatibility')]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testTrainPredictImportances() : void
+    #[Test]
+    #[TestDox('Trains, predicts, and returns importances')]
+    public function trainPredictImportances() : void
     {
-        $this->markTestSkipped('TODO: doesn\'t work by some reason');
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $coefficients = $this->estimator->coefficients();
 
-        $this->assertIsArray($coefficients);
-        $this->assertCount(4, $coefficients);
+        self::assertIsArray($coefficients);
+        self::assertCount(4, $coefficients);
 
-        $this->assertIsFloat($this->estimator->bias());
+        self::assertIsFloat($this->estimator->bias());
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertCount(4, $importances);
-        $this->assertContainsOnlyFloat($importances);
+        self::assertCount(4, $importances);
+        self::assertContainsOnlyFloat($importances);
 
         $predictions = $this->estimator->predict($testing);
 
@@ -120,20 +132,46 @@ class RidgeTest extends TestCase
             labels: $labels
         );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    #[TestDox('Throws when training set is incompatible')]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    #[TestDox('Throws when predicting before training')]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Trains, predicts, and returns the expected NumPower ridge values')]
+    #[DataProviderExternal(RidgeProvider::class, 'trainPredictProviderForNumPower')]
+    public function trainPredict(array $samples, array $labels, array $prediction, float $expectedPrediction, array $expectedCoefficients, float $expectedBias) : void
+    {
+        $regression = new Ridge(0.01);
+        $regression->train(new Labeled($samples, $labels));
+
+        $predictions = $regression->predict(new Unlabeled([$prediction]));
+        $coefficients = $regression->coefficients();
+
+        self::assertEqualsWithDelta($expectedPrediction, $predictions[0], 0.2);
+        self::assertIsArray($coefficients);
+        self::assertCount(count($expectedCoefficients), $coefficients);
+
+        foreach ($expectedCoefficients as $i => $expectedCoefficient) {
+            self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 0.2);
+        }
+
+        self::assertEqualsWithDelta($expectedBias, $regression->bias(), 0.2);
     }
 }

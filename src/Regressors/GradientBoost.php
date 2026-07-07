@@ -2,43 +2,42 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\RanksFeatures;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Stats;
-use Rubix\ML\Helpers\Params;
+use Generator;
+use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\CrossValidation\Metrics\RMSE;
-use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
-use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
-
-use function count;
-use function is_nan;
-use function get_class;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Learner;
+use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\DatasetIsLabeled;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Verbose;
+use function abs;
+use function array_fill;
 use function array_map;
 use function array_reduce;
 use function array_slice;
-use function array_fill;
-use function in_array;
-use function round;
-use function max;
-use function abs;
+use function count;
+use function get_class;
 use function get_object_vars;
+use function in_array;
+use function is_nan;
+use function max;
+use function round;
 
 /**
  * Gradient Boost
@@ -58,6 +57,7 @@ use function get_object_vars;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
@@ -120,7 +120,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var int
      */
-    protected $evalInterval;
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an
@@ -511,7 +511,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!isset($this->ensemble, $this->featureCount, $this->mu)) {
+        if (!$this->ensemble || !$this->featureCount || !$this->mu) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -536,7 +536,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function featureImportances() : array
     {
-        if (!isset($this->ensemble, $this->featureCount)) {
+        if (!$this->ensemble || !$this->featureCount) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
