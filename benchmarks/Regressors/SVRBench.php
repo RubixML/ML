@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Benchmarks\Regressors;
 
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\SVR;
-use Rubix\ML\Datasets\Generators\Hyperplane;
 
 /**
  * @Groups({"Regressors"})
