@@ -58,6 +58,7 @@ $config
             ],
             'native_function_casing' => true,
             'native_type_declaration_casing' => true,
+            'new_expression_parentheses' => false,
             'new_with_parentheses' => true,
             'no_alternative_syntax' => true,
             'no_blank_lines_after_class_opening' => true,
