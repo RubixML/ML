@@ -21,7 +21,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
+use Rubix\ML\NeuralNet\Initializers\XavierNormal;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -288,7 +288,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(count($classes), $this->l2Penalty, true, new Xavier1())],
+            [new Dense(count($classes), $this->l2Penalty, true, new XavierNormal())],
             new Multiclass($classes, $this->costFn),
             $this->optimizer
         );

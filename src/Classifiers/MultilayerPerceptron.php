@@ -25,7 +25,7 @@ use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
+use Rubix\ML\NeuralNet\Initializers\XavierNormal;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
@@ -369,7 +369,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
+        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new XavierNormal());
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
