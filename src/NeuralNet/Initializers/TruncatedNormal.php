@@ -43,7 +43,7 @@ class TruncatedNormal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
+        return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
     }
 
     /**
