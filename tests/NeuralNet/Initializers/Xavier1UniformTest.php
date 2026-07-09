@@ -176,6 +176,6 @@ final class Xavier1UniformTest extends TestCase
         $string = (string) new Xavier1Uniform();
 
         //then
-        $this->assertEquals('Xavier Uniform', $string);
+        $this->assertEquals('Xavier-1 Uniform', $string);
     }
 }

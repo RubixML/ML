@@ -45,6 +45,6 @@ class Xavier1Uniform extends AbstractInitializer
      */
     public function __toString() : string
     {
-        return 'Xavier Uniform';
+        return 'Xavier-1 Uniform';
     }
 }
