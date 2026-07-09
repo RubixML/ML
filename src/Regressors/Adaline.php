@@ -15,7 +15,7 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Learner;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
+use Rubix\ML\NeuralNet\Initializers\Xavier2Uniform;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
@@ -281,7 +281,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new Xavier1Uniform())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier2Uniform())],
             new Continuous($this->costFn),
             $this->optimizer
         );
