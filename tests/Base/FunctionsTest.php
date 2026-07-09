@@ -17,6 +17,7 @@ use function Rubix\ML\logsumexp;
 use function Rubix\ML\sigmoid;
 use function Rubix\ML\comb;
 use function Rubix\ML\linspace;
+use function Rubix\ML\array_pack;
 use function Rubix\ML\array_transpose;
 use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
@@ -26,6 +27,7 @@ use function Rubix\ML\iterator_contains_nan;
 #[Group('Functions')]
 #[CoversFunction('\Rubix\ML\argmax')]
 #[CoversFunction('\Rubix\ML\argmin')]
+#[CoversFunction('\Rubix\ML\array_pack')]
 #[CoversFunction('\Rubix\ML\array_transpose')]
 #[CoversFunction('\Rubix\ML\comb')]
 #[CoversFunction('\Rubix\ML\iterator_contains_nan')]
@@ -58,6 +60,33 @@ class FunctionsTest extends TestCase
         yield [
             ['yes' => 0.8, 'no' => 0.2, 'maybe' => NAN],
             'yes',
+        ];
+    }
+
+    public static function arrayPackProvider() : Generator
+    {
+        yield [
+            [
+                'row_a' => ['x' => 1.0, 'y' => 2.0],
+                'row_b' => ['x' => 3.0, 'y' => 4.0],
+                'row_c' => [5.0, 'y' => 7.0],
+            ],
+            [
+                [1.0, 2.0],
+                [3.0, 4.0],
+                [5.0, 7.0],
+            ],
+        ];
+
+        yield [
+            [
+                [10.0, 20.0],
+                [30.0, 40.0],
+            ],
+            [
+                [10.0, 20.0],
+                [30.0, 40.0],
+            ],
         ];
     }
 
@@ -231,6 +260,16 @@ class FunctionsTest extends TestCase
     public function arrayTranspose(array $table, array $expected) : void
     {
         $this->assertEquals($expected, array_transpose($table));
+    }
+
+    /**
+     * @param array<array<int|float>> $samples
+     * @param array<array<int|float>> $expected
+     */
+    #[DataProvider('arrayPackProvider')]
+    public function arrayPack(array $samples, array $expected) : void
+    {
+        $this->assertEquals($expected, array_pack($samples));
     }
 
     public function testIteratorFirst() : void

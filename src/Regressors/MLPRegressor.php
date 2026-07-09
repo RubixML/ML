@@ -158,13 +158,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?array $losses = null;
 
     /**
-     * Whether to pack the samples.
-     *
-     * @var bool
-     */
-    private bool $packSamples;
-
-    /**
      * @param list<mixed> $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
@@ -175,7 +168,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
-     * @param bool $packSamples
      */
     public function __construct(
         array $hiddenLayers = [],
@@ -187,8 +179,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         int $window = 5,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
-        ?Metric $metric = null,
-        bool $packSamples = false
+        ?Metric $metric = null
     ) {
         foreach ($hiddenLayers as $layer) {
             if (!$layer instanceof Hidden) {
@@ -241,7 +232,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
-        $this->packSamples = $packSamples;
     }
 
     /**
@@ -370,8 +360,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             input: new Placeholder1D($dataset->numFeatures()),
             hidden: $hiddenLayers,
             output: new Continuous($this->costFn),
-            optimizer: $this->optimizer,
-            packSamples: $this->packSamples
+            optimizer: $this->optimizer
         );
 
         $this->network->initialize();
