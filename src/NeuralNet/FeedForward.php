@@ -16,6 +16,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Traversable;
 use function array_reverse;
+use function Rubix\ML\array_pack;
 
 /**
  * Feed Forward
@@ -72,20 +73,12 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
-     * Whether to pack the samples.
-     *
-     * @var bool
-     */
-    private bool $packSamples;
-
-    /**
      * @param Input $input
      * @param Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
-     * @param bool $packSamples
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer, bool $packSamples = false)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
         $hidden = array_values($hidden);
 
@@ -96,7 +89,6 @@ class FeedForward implements Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
-        $this->packSamples = $packSamples;
     }
 
     /**
@@ -197,7 +189,7 @@ class FeedForward implements Network
             return NumPower::array([]);
         }
 
-        $samples = $this->prepareSamples($dataset);
+        $samples = array_pack($dataset->samples());
 
         $input = NumPower::transpose(NumPower::array($samples), [1, 0]);
 
@@ -286,21 +278,5 @@ class FeedForward implements Network
 
         return new Encoding($dot);
     }
-
-    /**
-     * Prepare samples depending on packing configuration.
-     * @param Dataset $dataset
-     * @return array
-     */
-    private function prepareSamples(Dataset $dataset) : array
-    {
-        $samples = $dataset->samples();
-
-        if (!$this->packSamples) {
-            return $samples;
-        }
-
-        // Reindex a nested array to ensure all levels have sequential numeric keys
-        return array_map('array_values', array_values($samples));
-    }
 }
+
