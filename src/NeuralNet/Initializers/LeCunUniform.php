@@ -35,7 +35,7 @@ class LeCunUniform extends AbstractInitializer
 
         $limit = sqrt(3 / $fanOut);
 
-        return NumPower::uniform(size: [$fanOut, $fanIn], low: -$limit, high: $limit);
+        return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
     }
 
     /**

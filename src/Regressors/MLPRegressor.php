@@ -18,7 +18,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Initializers\XavierUniform;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -364,7 +364,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(1, 0.0, true, new XavierUniform());
+        $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1Uniform());
 
         $this->network = new FeedForward(
             input: new Placeholder1D($dataset->numFeatures()),
