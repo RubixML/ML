@@ -511,7 +511,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->ensemble || !$this->featureCount || !$this->mu) {
+        if (!isset($this->ensemble, $this->featureCount, $this->mu)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -536,7 +536,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function featureImportances() : array
     {
-        if (!$this->ensemble || !$this->featureCount) {
+        if (!isset($this->ensemble, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
