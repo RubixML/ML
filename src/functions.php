@@ -280,9 +280,7 @@ namespace Rubix\ML
                 $item = array_values($item);
             }
 
-            return is_array($item)
-                ? array_pack($item, $depth + 1, $maxDepth)
-                : $item;
+            return array_pack($item, $depth + 1, $maxDepth);
         }, $samples);
     }
 }
