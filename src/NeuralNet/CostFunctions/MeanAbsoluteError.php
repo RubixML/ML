@@ -7,6 +7,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 use NDArray;
 use NumPower;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AssertsShapes;
 
 /**
@@ -27,7 +29,10 @@ class MeanAbsoluteError implements RegressionLoss
 
     public function __construct()
     {
-        ExtensionIsLoaded::with('RubixNumPower')->check();
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**

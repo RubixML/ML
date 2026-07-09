@@ -8,6 +8,8 @@ use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidStandardDeviationException;
 
 /**
@@ -35,7 +37,10 @@ class Normal extends AbstractInitializer
             );
         }
 
-        ExtensionIsLoaded::with('RubixNumPower')->check();
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**

@@ -6,6 +6,8 @@ use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -90,11 +92,14 @@ class Adam implements Optimizer, Adaptive
             );
         }
 
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->normDecay = $normDecay;
-
-        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

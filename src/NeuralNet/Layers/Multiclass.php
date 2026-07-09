@@ -6,6 +6,8 @@ use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
@@ -80,11 +82,14 @@ class Multiclass implements Output
                 . ' given.');
         }
 
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+
         $this->classes = $classes;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->softmax = new Softmax();
-
-        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

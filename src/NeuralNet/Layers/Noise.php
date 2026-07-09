@@ -6,6 +6,8 @@ use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -52,9 +54,12 @@ class Noise implements Hidden
             throw new InvalidArgumentException("Standard deviation must be 0 or greater, $stdDev given.");
         }
 
-        $this->stdDev = $stdDev;
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
-        ExtensionIsLoaded::with('RubixNumPower')->check();
+        $this->stdDev = $stdDev;
     }
 
     /**

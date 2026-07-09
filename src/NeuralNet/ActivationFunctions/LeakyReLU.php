@@ -8,6 +8,8 @@ use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidLeakageException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Leaky ReLU
@@ -48,9 +50,12 @@ class LeakyReLU implements ActivationFunction, IBufferDerivative
             );
         }
 
-        $this->leakage = $leakage;
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
-        ExtensionIsLoaded::with('RubixNumPower')->check();
+        $this->leakage = $leakage;
     }
 
     /**

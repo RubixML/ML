@@ -7,6 +7,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use NumPower;
 use NDArray;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * HardSiLU
@@ -36,7 +38,10 @@ class HardSiLU implements ActivationFunction, IBufferDerivative
      */
     public function __construct()
     {
-        ExtensionIsLoaded::with('RubixNumPower')->check();
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $this->hardSigmoid = new HardSigmoid();
     }

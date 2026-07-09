@@ -6,6 +6,8 @@ use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -67,10 +69,13 @@ class Dropout implements Hidden
             throw new InvalidArgumentException("Ratio must be between 0 and 1, $ratio given.");
         }
 
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+
         $this->ratio = $ratio;
         $this->scale = 1.0 / (1.0 - $ratio);
-
-        ExtensionIsLoaded::with('RubixNumPower')->check();
     }
 
     /**

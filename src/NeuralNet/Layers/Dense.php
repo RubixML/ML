@@ -6,6 +6,8 @@ use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Initializers\HeUniform;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Deferred;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameter;
@@ -116,7 +118,10 @@ class Dense implements Hidden, Parametric
         $this->weightInitializer = $weightInitializer ?? new HeUniform();
         $this->biasInitializer = $biasInitializer ?? new Constant(0.0);
 
-        ExtensionIsLoaded::with('RubixNumPower')->check();
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**
