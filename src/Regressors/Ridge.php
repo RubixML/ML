@@ -159,6 +159,13 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             new DatasetIsLabeled($dataset),
             new DatasetIsNotEmpty($dataset),
             new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
+
+        // Run this in a separate pass so DatasetIsLabeled() can narrow the type first.
+        // This keeps the validation flow domain-level (InvalidArgumentException) instead
+        // of allowing a constructor-level TypeError when an Unlabeled dataset is passed.
+        /** @var Labeled $dataset */
+        SpecificationChain::with([
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
