@@ -254,33 +254,25 @@ namespace Rubix\ML
      * @internal
      *
      * @param array<mixed> $samples
-     * @param int $depth
-     * @param int $maxDepth
      * @return array<mixed>
      */
-    function array_pack(array $samples, int $depth = 0, int $maxDepth = 100) : array
+    function array_pack(array $samples) : array
     {
-        if ($depth > $maxDepth) {
-            // Stop processing deeper
-            return $samples;
-        }
-
         // Ensure all levels have sequential numeric keys
         if (!array_is_list($samples)) {
             $samples = array_values($samples);
         }
 
-        return array_map(function ($item) use ($depth, $maxDepth) {
-            if (!is_array($item)) {
-                return $item;
+        return array_map(function ($item) {
+            if (is_array($item)) {
+                if (!array_is_list($item)) {
+                    $item = array_values($item);
+                }
+
+                return array_pack($item);
             }
 
-            // Ensure all levels have sequential numeric keys
-            if (!array_is_list($item)) {
-                $item = array_values($item);
-            }
-
-            return array_pack($item, $depth + 1, $maxDepth);
+            return $item;
         }, $samples);
     }
 }
