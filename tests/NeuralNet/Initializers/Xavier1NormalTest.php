@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\NeuralNet\Initializers;
 
@@ -9,14 +9,14 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use Rubix\ML\NeuralNet\Initializers\HeNormal;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Normal;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidFanInException;
 use Rubix\ML\Exceptions\InvalidFanOutException;
 
 #[Group('Initializers')]
-#[CoversClass(HeNormal::class)]
-final class HeNormalTest extends TestCase
+#[CoversClass(Xavier1Normal::class)]
+final class Xavier1NormalTest extends TestCase
 {
     /**
      * Provides valid fanIn and fanOut combinations for testing matrix shape.
@@ -26,23 +26,41 @@ final class HeNormalTest extends TestCase
     public static function validShapeDimensionsProvider() : array
     {
         return [
-            'equal fanIn and fanOut' => ['fanIn' => 1, 'fanOut' => 1],
-            'fanIn greater than fanOut' => ['fanIn' => 4, 'fanOut' => 3],
-            'fanIn less than fanOut' => ['fanIn' => 3, 'fanOut' => 4],
+            'fanIn and fanOut being equal' => [
+                'fanIn' => 1,
+                'fanOut' => 1,
+            ],
+            'fanIn greater than fanOut' => [
+                'fanIn' => 4,
+                'fanOut' => 3,
+            ],
+            'fanIn less than fanOut' => [
+                'fanIn' => 3,
+                'fanOut' => 4,
+            ],
         ];
     }
 
     /**
-     * Provides large dimensions to validate mean and standard deviation for He normal distribution.
+     * Provides large dimensions to validate mean and standard deviation for Xavier normal distribution.
      *
      * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function heNormalDistributionValidationProvider() : array
+    public static function xavier1NormalDistributionValidationProvider() : array
     {
         return [
-            'small numbers' => ['fanIn' => 30, 'fanOut' => 10],
-            'medium numbers' => ['fanIn' => 300, 'fanOut' => 100],
-            'large numbers' => ['fanIn' => 3000, 'fanOut' => 1000],
+            'small numbers' => [
+                'fanIn' => 30,
+                'fanOut' => 10,
+            ],
+            'medium numbers' => [
+                'fanIn' => 300,
+                'fanOut' => 100,
+            ],
+            'big numbers' => [
+                'fanIn' => 3000,
+                'fanOut' => 1000,
+            ],
         ];
     }
 
@@ -54,47 +72,58 @@ final class HeNormalTest extends TestCase
     public static function invalidFanValuesProvider() : array
     {
         return [
-            'fanIn less than 1' => ['fanIn' => 0, 'fanOut' => 1],
-            'fanOut less than 1' => ['fanIn' => 1, 'fanOut' => 0],
-            'both fanIn and fanOut invalid' => ['fanIn' => 0, 'fanOut' => 0],
+            'fanIn less than 1' => [
+                'fanIn' => 0,
+                'fanOut' => 1,
+            ],
+            'fanOut less than 1' => [
+                'fanIn' => 1,
+                'fanOut' => 0,
+            ],
+            'fanIn and fanOut less than 1' => [
+                'fanIn' => 0,
+                'fanOut' => 0,
+            ],
         ];
     }
 
     #[Test]
-    #[TestDox('It constructs the HeNormal initializer without errors')]
+    #[TestDox('The initializer object is created correctly')]
     public function testConstructor() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
 
         //when
-        new HeNormal();
+        new Xavier1Normal();
     }
 
     #[Test]
-    #[TestDox('It creates a matrix of correct shape based on fanIn and fanOut')]
+    #[TestDox('The result matrix has correct shape')]
     #[DataProvider('validShapeDimensionsProvider')]
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $matrix = (new HeNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
-        $shape = $matrix->shape();
+        $shape = $w->shape();
 
         //then
         $this->assertSame([$fanOut, $fanIn], $shape);
     }
 
     #[Test]
-    #[TestDox('It generates values with mean ~0 and std ~sqrt(2 / fanOut)')]
-    #[DataProvider('heNormalDistributionValidationProvider')]
-    public function testDistributionStatisticsMatchHeNormal(int $fanIn, int $fanOut) : void
+    #[TestDox('The resulting values matches distribution Xavier (normal distribution)')]
+    #[DataProvider('xavier1NormalDistributionValidationProvider')]
+    public function testDistributionStatisticsMatchXavier1Normal(int $fanIn, int $fanOut) : void
     {
         //given
-        $expectedStd = sqrt(2 / $fanOut);
-        $matrix = (new HeNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
-        $flatValues = array_merge(...$matrix->toArray());
+        // truncatedNormal truncates near ±2σ, so sample std ≈ 0.88 * scale (not scale itself)
+        $scale = sqrt(2 / ($fanOut + $fanIn));
+        $expectedStd = $scale * 0.88;
+        $w = (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $flatValues = array_merge(...$w->toArray());
 
         //when
         $mean = array_sum($flatValues) / count($flatValues);
@@ -108,7 +137,7 @@ final class HeNormalTest extends TestCase
                 $this->greaterThan(-0.1),
                 $this->lessThan(0.1)
             ),
-            'Mean is not within expected range'
+            'Mean is not within the expected range'
         );
         $this->assertThat(
             $std,
@@ -116,12 +145,12 @@ final class HeNormalTest extends TestCase
                 $this->greaterThan($expectedStd * 0.85),
                 $this->lessThan($expectedStd * 1.1)
             ),
-            'Standard deviation is not within acceptable He initialization range'
+            'Standard deviation does not match Xavier-1 Normal initialization'
         );
     }
 
     #[Test]
-    #[TestDox('It throws an exception when fanIn or fanOut is less than 1')]
+    #[TestDox('An exception is thrown during initialization')]
     #[DataProvider('invalidFanValuesProvider')]
     public function testExceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
@@ -135,17 +164,17 @@ final class HeNormalTest extends TestCase
         }
 
         //when
-        (new HeNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]
-    #[TestDox('It returns correct string representation')]
+    #[TestDox('String representation is correct')]
     public function testToStringReturnsCorrectValue() : void
     {
         //when
-        $string = (string) new HeNormal();
+        $string = (string) new Xavier1Normal();
 
         //then
-        $this->assertEquals('He Normal', $string);
+        $this->assertEquals('Xavier-1 Normal', $string);
     }
 }

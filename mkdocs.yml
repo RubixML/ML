@@ -186,8 +186,10 @@ nav:
         - LeCun: neural-network/initializers/lecun.md
         - Normal: neural-network/initializers/normal.md
         - Uniform: neural-network/initializers/uniform.md
-        - Xavier 1: neural-network/initializers/xavier-1-uniform.md
-        - Xavier 2: neural-network/initializers/xavier-2.md
+        - Xavier 1 Uniform: neural-network/initializers/xavier-1-uniform.md
+        - Xavier 1 Normal: neural-network/initializers/xavier-1-normal.md
+        - Xavier 2 Uniform: neural-network/initializers/xavier-2-uniform.md
+        - Xavier 2 Normal: neural-network/initializers/xavier-2-normal.md
       - Optimizers:
         - AdaGrad: neural-network/optimizers/adagrad.md
         - Adam: neural-network/optimizers/adam.md
