@@ -265,10 +265,6 @@ namespace Rubix\ML
 
         return array_map(function ($item) {
             if (is_array($item)) {
-                if (!array_is_list($item)) {
-                    $item = array_values($item);
-                }
-
                 return array_pack($item);
             }
 
