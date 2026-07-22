@@ -9,14 +9,14 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use Rubix\ML\NeuralNet\Initializers\XavierUniform;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidFanInException;
 use Rubix\ML\Exceptions\InvalidFanOutException;
 
 #[Group('Initializers')]
-#[CoversClass(XavierUniform::class)]
-final class XavierUniformTest extends TestCase
+#[CoversClass(Xavier1Uniform::class)]
+final class Xavier1UniformTest extends TestCase
 {
     /**
      * Provides valid fanIn and fanOut combinations for testing matrix shape.
@@ -46,7 +46,7 @@ final class XavierUniformTest extends TestCase
      *
      * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function xavierUniformDistributionValidationProvider() : array
+    public static function xavier1UniformDistributionValidationProvider() : array
     {
         return [
             'small numbers' => [
@@ -95,7 +95,7 @@ final class XavierUniformTest extends TestCase
         $this->expectNotToPerformAssertions();
 
         //when
-        new XavierUniform();
+        new Xavier1Uniform();
     }
 
     #[Test]
@@ -104,7 +104,7 @@ final class XavierUniformTest extends TestCase
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new XavierUniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -115,14 +115,14 @@ final class XavierUniformTest extends TestCase
 
     #[Test]
     #[TestDox('The resulting values matches distribution Xavier (uniform distribution)')]
-    #[DataProvider('xavierUniformDistributionValidationProvider')]
-    public function testDistributionStatisticsMatchXavierUniform(int $fanIn, int $fanOut) : void
+    #[DataProvider('xavier1UniformDistributionValidationProvider')]
+    public function testDistributionStatisticsMatchXavier1Uniform(int $fanIn, int $fanOut) : void
     {
         //given
         $limit = sqrt(6 / ($fanOut + $fanIn));
 
         //when
-        $w = (new XavierUniform())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $values = array_merge(...$w->toArray());
 
         //then
@@ -165,7 +165,7 @@ final class XavierUniformTest extends TestCase
         }
 
         //when
-        (new XavierUniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]
@@ -173,9 +173,9 @@ final class XavierUniformTest extends TestCase
     public function testToStringReturnsCorrectValue() : void
     {
         //when
-        $string = (string) new XavierUniform();
+        $string = (string) new Xavier1Uniform();
 
         //then
-        $this->assertEquals('Xavier Uniform', $string);
+        $this->assertEquals('Xavier-1 Uniform', $string);
     }
 }

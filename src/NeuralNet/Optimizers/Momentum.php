@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;

@@ -8,10 +8,10 @@ use NumPower;
 use NDArray;
 
 /**
- * Xavier Normal
+ * Xavier 1 Uniform
  *
- * The Xavier 1 initializer draws from a truncated normal distribution with
- * mean 0 and standard deviation squal sqrt(2 / (fanIn + fanOut)). This initializer is
+ * The Xavier 1 Uniform initializer draws from a uniform distribution [-limit, limit]
+ * where *limit* is squal to sqrt(6 / (fanIn + fanOut)). This initializer is
  * best suited for layers that feed into an activation layer that outputs a
  * value between 0 and 1 such as Softmax or Sigmoid.
  *
@@ -24,7 +24,7 @@ use NDArray;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class XavierNormal extends AbstractInitializer
+class Xavier1Uniform extends AbstractInitializer
 {
     /**
      * @inheritdoc
@@ -33,9 +33,9 @@ class XavierNormal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $stdDev = sqrt(2 / ($fanOut + $fanIn));
+        $limit = sqrt(6 / ($fanOut + $fanIn));
 
-        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
     }
 
     /**
@@ -45,6 +45,6 @@ class XavierNormal extends AbstractInitializer
      */
     public function __toString() : string
     {
-        return 'Xavier Normal';
+        return 'Xavier-1 Uniform';
     }
 }

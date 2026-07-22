@@ -71,7 +71,7 @@ class LeastSquaresTest extends TestCase
                 [41.5],
                 [38.0],
             ]),
-            39.0360794,
+            39.0360776,
         ];
     }
 

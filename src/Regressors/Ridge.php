@@ -4,27 +4,28 @@ namespace Rubix\ML\Regressors;
 
 use NDArray;
 use NumPower;
-use Tensor\Matrix;
-use Tensor\Vector;
-use Rubix\ML\Learner;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Params;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
-use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Learner;
+use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\DatasetIsLabeled;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AutotrackRevisions;
+use function is_array;
+use function is_float;
 use function is_null;
+use function Rubix\ML\array_pack;
 
 /**
  * Ridge
@@ -58,11 +59,9 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     /**
      * The computed coefficients of the regression line.
      *
-     * @var Vector|null
+     * @var NDArray|null
      */
-    protected ?Vector $coefficients = null;
-
-    protected ?NDArray $coefficientsNd = null;
+    protected ?NDArray $coefficients = null;
 
     /**
      * @param float $l2Penalty
@@ -135,7 +134,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function coefficients() : ?array
     {
-        return $this->coefficients ? $this->coefficients->asArray() : null;
+        return $this->coefficients ? $this->coefficients->toArray() : null;
     }
 
     /**
@@ -149,9 +148,10 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     }
 
     /**
-     * Train the learner with a dataset.
+     * Train the learner with a dataset using NumPower for the algebra path.
+     * Formula: (Xᵀ X + λ I)⁻¹ Xᵀ y
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -159,37 +159,40 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             new DatasetIsLabeled($dataset),
             new DatasetIsNotEmpty($dataset),
             new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
+
+        // Run this in a separate pass so DatasetIsLabeled() can narrow the type first.
+        // This keeps the validation flow domain-level (InvalidArgumentException) instead
+        // of allowing a constructor-level TypeError when an Unlabeled dataset is passed.
+        /** @var Labeled $dataset */
+        SpecificationChain::with([
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $biases = Matrix::ones($dataset->numSamples(), 1);
+        $biases = NumPower::ones([$dataset->numSamples(), 1]);
 
-        $x = Matrix::build($dataset->samples())->augmentLeft($biases);
+        $samples = NumPower::array(array_pack($dataset->samples()));
+        // Add bias from left
+        $x = NumPower::concatenate([$biases, $samples], axis: 1);
         $y = NumPower::array($dataset->labels());
 
         /** @var int<0,max> $nHat */
-        $nHat = $x->n() - 1;
+        $nHat = $x->shape()[1] - 1;
 
         $penalties = array_fill(0, $nHat, $this->l2Penalty);
-
         array_unshift($penalties, 0.0);
 
-        $penalties = NumPower::array(Matrix::diagonal($penalties)->asArray());
+        $penalties = NumPower::diag($penalties);
 
-        $xNp = NumPower::array($x->asArray());
-        $xT = NumPower::transpose($xNp, [1, 0]);
+        $xT = NumPower::transpose($x, [1, 0]);
 
-        $xMul = NumPower::matmul($xT, $xNp);
-        $xMulAdd = NumPower::add($xMul, $penalties);
-        $xMulAddInv = NumPower::inv($xMulAdd);
-        $xtDotY = NumPower::dot($xT, $y);
+        $a = NumPower::add(NumPower::matmul($xT, $x), $penalties);
+        $b = NumPower::dot($xT, $y);
 
-        $coefficientsNd = NumPower::dot($xMulAddInv, $xtDotY);
-        $this->coefficientsNd = $coefficientsNd;
-        $coefficients = $coefficientsNd->toArray();
+        $coefficients = NumPower::dot(NumPower::inv($a), $b)->toArray();
 
         $this->bias = (float) array_shift($coefficients);
-        $this->coefficients = Vector::quick($coefficients);
+        $this->coefficients = NumPower::array($coefficients);
     }
 
     /**
@@ -201,16 +204,37 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->coefficients or is_null($this->bias) or is_null($this->coefficientsNd)) {
+        if (!$this->coefficients or is_null($this->bias)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
+        $weights = $this->coefficients->toArray();
 
-        $datasetNd = NumPower::array($dataset->samples());
-        $datasetDotCoefficients = NumPower::dot($datasetNd, $this->coefficientsNd);
+        DatasetHasDimensionality::with($dataset, count($weights))->check();
 
-        return NumPower::add($datasetDotCoefficients, $this->bias)->toArray();
+        $predictions = [];
+
+        foreach ($dataset->samples() as $sample) {
+            $x = NumPower::array($sample);
+            $dot = NumPower::dot($x, $this->coefficients);
+            $result = NumPower::add($dot, $this->bias);
+
+            if (is_float($result)) {
+                $predictions[] = $result;
+
+                continue;
+            }
+
+            $value = $result->toArray();
+
+            if (is_array($value)) {
+                $value = $value[0] ?? null;
+            }
+
+            $predictions[] = (float) $value;
+        }
+
+        return $predictions;
     }
 
     /**
@@ -225,7 +249,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             throw new RuntimeException('Learner has not been trained.');
         }
 
-        return $this->coefficients->abs()->asArray();
+        return NumPower::abs($this->coefficients)->toArray();
     }
 
     /**

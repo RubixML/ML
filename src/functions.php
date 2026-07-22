@@ -7,6 +7,7 @@ namespace Rubix\ML
     use Generator;
 
     use function count;
+    use function array_is_list;
     use function is_nan;
     use function is_float;
     use function is_iterable;
@@ -245,5 +246,29 @@ namespace Rubix\ML
     function warn_deprecated(string $message) : void
     {
         trigger_error($message, E_USER_DEPRECATED);
+    }
+
+    /**
+     * Pack an array of samples.
+     *
+     * @internal
+     *
+     * @param array<mixed> $samples
+     * @return array<mixed>
+     */
+    function array_pack(array $samples) : array
+    {
+        // Ensure all levels have sequential numeric keys
+        if (!array_is_list($samples)) {
+            $samples = array_values($samples);
+        }
+
+        return array_map(function ($item) {
+            if (is_array($item)) {
+                return array_pack($item);
+            }
+
+            return $item;
+        }, $samples);
     }
 }

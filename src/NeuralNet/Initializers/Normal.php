@@ -42,7 +42,7 @@ class Normal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        return NumPower::normal(size: [$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
+        return NumPower::normal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
     }
 
     /**

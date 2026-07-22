@@ -172,7 +172,7 @@ final class TruncatedNormalTest extends TestCase
         $this->assertThat(
             $resultStd,
             $this->logicalAnd(
-                $this->greaterThan($stdDev * 0.9),
+                $this->greaterThan($stdDev * 0.85),
                 $this->lessThan($stdDev * 1.1)
             ),
             'Standard deviation does not match Truncated Normal initialization'

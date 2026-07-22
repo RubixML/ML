@@ -8,12 +8,12 @@ use NumPower;
 use NDArray;
 
 /**
- * Xavier Uniform
+ * Xavier 1 Uniform
  *
- * The Xavier 1 initializer draws from a uniform distribution [-limit, limit]
- * where *limit* is squal to sqrt(6 / (fanIn + fanOut)). This initializer is
- * best suited for layers that feed into an activation layer that outputs a
- * value between 0 and 1 such as Softmax or Sigmoid.
+ * The Xavier 2 Uniform initializer draws from a uniform distribution [-limit, limit]
+ * where *limit* is equal to (6 / ($fanIn + $fanOut)) ** 0.25. This initializer
+ * is best suited for layers that feed into an activation layer that outputs
+ * values between -1 and 1 such as Hyperbolic Tangent and Softsign.
  *
  * References:
  * [1] X. Glorot et al. (2010). Understanding the Difficulty of Training Deep
@@ -22,9 +22,9 @@ use NDArray;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Aleksei Nechaev <omfg.rus@gmail.com>
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class XavierUniform extends AbstractInitializer
+class Xavier2Uniform extends AbstractInitializer
 {
     /**
      * @inheritdoc
@@ -33,9 +33,10 @@ class XavierUniform extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $limit = sqrt(6 / ($fanOut + $fanIn));
+        // Xavier-2 uses fourth-root scaling instead of standard square-root Xavier 1 scaling.
+        $limit = (6.0 / ($fanOut + $fanIn)) ** 0.25;
 
-        return NumPower::uniform(size: [$fanOut, $fanIn], low: -$limit, high: $limit);
+        return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
     }
 
     /**
@@ -45,6 +46,6 @@ class XavierUniform extends AbstractInitializer
      */
     public function __toString() : string
     {
-        return 'Xavier Uniform';
+        return 'Xavier-2 Uniform';
     }
 }

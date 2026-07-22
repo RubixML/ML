@@ -9,14 +9,14 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use Rubix\ML\NeuralNet\Initializers\LeCunNormal;
+use Rubix\ML\NeuralNet\Initializers\Xavier2Uniform;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidFanInException;
 use Rubix\ML\Exceptions\InvalidFanOutException;
 
 #[Group('Initializers')]
-#[CoversClass(LeCunNormal::class)]
-final class LeCunNormalTest extends TestCase
+#[CoversClass(Xavier2Uniform::class)]
+final class Xavier2UniformTest extends TestCase
 {
     /**
      * Provides valid fanIn and fanOut combinations for testing matrix shape.
@@ -42,24 +42,24 @@ final class LeCunNormalTest extends TestCase
     }
 
     /**
-     * Provides large dimensions to validate mean and standard deviation for Le Cun normal distribution.
+     * Provides large dimensions to validate Xavier uniform distribution.
      *
      * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function leCunNormalDistributionValidationProvider() : array
+    public static function xavier2UniformDistributionValidationProvider() : array
     {
         return [
             'small numbers' => [
-                'fanIn' => 30,
-                'fanOut' => 10,
-            ],
-            'medium numbers' => [
-                'fanIn' => 300,
+                'fanIn' => 50,
                 'fanOut' => 100,
             ],
+            'medium numbers' => [
+                'fanIn' => 100,
+                'fanOut' => 200,
+            ],
             'big numbers' => [
-                'fanIn' => 3000,
-                'fanOut' => 1000,
+                'fanIn' => 200,
+                'fanOut' => 300,
             ],
         ];
     }
@@ -78,7 +78,7 @@ final class LeCunNormalTest extends TestCase
             ],
             'fanOut less than 1' => [
                 'fanIn' => 1,
-                'fanOut' => 1,
+                'fanOut' => 0,
             ],
             'fanIn and fanOut less than 1' => [
                 'fanIn' => 0,
@@ -95,7 +95,7 @@ final class LeCunNormalTest extends TestCase
         $this->expectNotToPerformAssertions();
 
         //when
-        new LeCunNormal();
+        new Xavier2Uniform();
     }
 
     #[Test]
@@ -104,7 +104,7 @@ final class LeCunNormalTest extends TestCase
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Xavier2Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -114,37 +114,41 @@ final class LeCunNormalTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('The resulting values matches distribution Le Cun (normal distribution)')]
-    #[DataProvider('leCunNormalDistributionValidationProvider')]
-    public function testDistributionStatisticsMatchLeCunNormal(int $fanIn, int $fanOut) : void
+    #[TestDox('The resulting values matches distribution Xavier (uniform distribution)')]
+    #[DataProvider('xavier2UniformDistributionValidationProvider')]
+    public function testDistributionStatisticsMatchXavier2Uniform(int $fanIn, int $fanOut) : void
     {
         //given
-        $expectedStd = sqrt(1 / $fanOut);
-        $w = (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
-        $flatValues = array_merge(...$w->toArray());
+        $limit = (6.0 / ($fanOut + $fanIn)) ** 0.25;
 
         //when
-        $mean = array_sum($flatValues) / count($flatValues);
-        $variance = array_sum(array_map(fn ($x) => ($x - $mean) ** 2, $flatValues)) / count($flatValues);
-        $std = sqrt($variance);
+        $w = (new Xavier2Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $values = array_merge(...$w->toArray());
 
         //then
-        $this->assertThat(
-            $mean,
-            $this->logicalAnd(
-                $this->greaterThan(-0.1),
-                $this->lessThan(0.1)
-            ),
-            'Mean is not within the expected range'
-        );
-        $this->assertThat(
-            $std,
-            $this->logicalAnd(
-                $this->greaterThan($expectedStd * 0.85),
-                $this->lessThan($expectedStd * 1.1)
-            ),
-            'Standard deviation does not match Le Cun initialization'
-        );
+        $bins = array_fill(0, 10, 0);
+
+        foreach ($values as $value) {
+            $normalizedValue = ($value + $limit) / (2 * $limit);
+            $bin = (int) ($normalizedValue * 10);
+
+            if ($bin >= 10) {
+                $bin = 9;
+            }
+
+            ++$bins[$bin];
+        }
+
+        $expectedCount = count($values) / 10;
+        $tolerance = 0.15 * $expectedCount;
+
+        $this->assertGreaterThanOrEqual(-$limit, min($values));
+        $this->assertLessThanOrEqual($limit, max($values));
+
+        foreach ($bins as $count) {
+            $this->assertGreaterThanOrEqual($expectedCount - $tolerance, $count);
+            $this->assertLessThanOrEqual($expectedCount + $tolerance, $count);
+        }
     }
 
     #[Test]
@@ -162,17 +166,17 @@ final class LeCunNormalTest extends TestCase
         }
 
         //when
-        (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Xavier2Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]
-    #[TestDox('String representation is correct')]
+    #[TestDox('It returns correct string representation')]
     public function testToStringReturnsCorrectValue() : void
     {
         //when
-        $string = (string) new LeCunNormal();
+        $string = (string) new Xavier2Uniform();
 
         //then
-        $this->assertEquals('Le Cun Normal', $string);
+        $this->assertEquals('Xavier-2 Uniform', $string);
     }
 }

@@ -8,22 +8,23 @@ use NumPower;
 use NDArray;
 
 /**
- * He Normal
+ * Xavier 1 Normal
  *
- * The He initializer was designed for hidden layers that feed into rectified
- * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a truncated
- * normal distribution with mean 0 and standart deviation sqrt(2 / fanOut).
+ * The Xavier 1 Normal initializer draws from a truncated normal distribution with
+ * mean 0 and standard deviation equal to sqrt(2 / (fanIn + fanOut)). This
+ * initializer is best suited for layers that feed into an activation layer that
+ * outputs a value between 0 and 1 such as Softmax or Sigmoid.
  *
  * References:
- * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
- * Performance on ImageNet Classification.
+ * [1] X. Glorot et al. (2010). Understanding the Difficulty of Training Deep
+ * Feedforward Neural Networks.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class HeNormal extends AbstractInitializer
+class Xavier1Normal extends AbstractInitializer
 {
     /**
      * @inheritdoc
@@ -32,7 +33,7 @@ class HeNormal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $stdDev = sqrt(2 / $fanOut);
+        $stdDev = sqrt(2 / ($fanOut + $fanIn));
 
         return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }
@@ -44,6 +45,6 @@ class HeNormal extends AbstractInitializer
      */
     public function __toString() : string
     {
-        return 'He Normal';
+        return 'Xavier-1 Normal';
     }
 }
