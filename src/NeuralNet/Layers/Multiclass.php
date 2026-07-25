@@ -123,11 +123,7 @@ class Multiclass implements Output
      */
     public function forward(NDArray $input) : NDArray
     {
-        // Dense feeds [classes, batch]; Softmax normalizes row-wise over classes.
-        $output = NumPower::transpose(
-            $this->softmax->activate(NumPower::transpose($input, [1, 0])),
-            [1, 0]
-        );
+        $output = $this->softmax->activate($input);
 
         $this->input = $input;
         $this->output = $output;
@@ -144,10 +140,7 @@ class Multiclass implements Output
      */
     public function infer(NDArray $input) : NDArray
     {
-        return NumPower::transpose(
-            $this->softmax->activate(NumPower::transpose($input, [1, 0])),
-            [1, 0]
-        );
+        return $this->softmax->activate($input);
     }
 
     /**

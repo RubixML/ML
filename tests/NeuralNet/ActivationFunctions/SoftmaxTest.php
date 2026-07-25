@@ -14,7 +14,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
-use Tensor\Matrix;
 
 #[Group('ActivationFunctions')]
 #[CoversClass(Softmax::class)]
@@ -30,46 +29,58 @@ class SoftmaxTest extends TestCase
      */
     public static function computeProvider() : Generator
     {
+        // Inputs use network layout [classes, batch].
         yield [
             NumPower::array([
-                [2.0, 1.0, -0.5, 0.0],
+                [2.0],
+                [1.0],
+                [-0.5],
+                [0.0],
             ]),
             [
-                [0.6307955, 0.2320567, 0.0517788, 0.0853688],
+                [0.6307955],
+                [0.2320567],
+                [0.0517788],
+                [0.0853688],
             ],
         ];
 
         yield [
             NumPower::array([
-                [-0.12, 0.31, -0.49],
-                [0.99, 0.08, -0.03],
-                [0.05, -0.52, 0.54],
+                [-0.12, 0.99, 0.05],
+                [0.31, 0.08, -0.52],
+                [-0.49, -0.03, 0.54],
             ]),
             [
-                [0.3097901, 0.4762272, 0.2139826],
-                [0.5671766, 0.2283023, 0.2045210],
-                [0.3127109, 0.1768459, 0.5104430],
-            ],
-        ];
-
-        // Test with zeros
-        yield [
-            NumPower::array([
-                [0.0, 0.0, 0.0, 0.0],
-            ]),
-            [
-                [0.25, 0.25, 0.25, 0.25],
+                [0.3097901, 0.5671766, 0.3127109],
+                [0.4762272, 0.2283023, 0.1768459],
+                [0.2139826, 0.2045210, 0.5104430],
             ],
         ];
 
         yield [
             NumPower::array([
-                [1, 2],
-                [3, 4],
+                [0.0],
+                [0.0],
+                [0.0],
+                [0.0],
             ]),
             [
-                [0.2689414, 0.7310585],
-                [0.2689414, 0.7310585],
+                [0.25],
+                [0.25],
+                [0.25],
+                [0.25],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [1, 3],
+                [2, 4],
+            ]),
+            [
+                [0.2689414, 0.2689414],
+                [0.7310585, 0.7310585],
             ],
         ];
     }
@@ -79,10 +90,10 @@ class SoftmaxTest extends TestCase
      */
     public static function differentiateProvider() : Generator
     {
-        // Test with simple values
         yield [
             NumPower::array([
-                [0.6, 0.4],
+                [0.6],
+                [0.4],
             ]),
             [
                 [0.24, -0.24],
@@ -90,10 +101,11 @@ class SoftmaxTest extends TestCase
             ],
         ];
 
-        // Test with more complex values
         yield [
             NumPower::array([
-                [0.3, 0.5, 0.2],
+                [0.3],
+                [0.5],
+                [0.2],
             ]),
             [
                 [0.21, -0.15, -0.06],
@@ -102,10 +114,10 @@ class SoftmaxTest extends TestCase
             ],
         ];
 
-        // Test 2x2 matrix
         yield [
             NumPower::array([
-                [0.2689414, 0.7310585],
+                [0.2689414],
+                [0.7310585],
             ]),
             [
                 [0.1966119, -0.19661192],
@@ -119,24 +131,29 @@ class SoftmaxTest extends TestCase
      */
     public static function sumToOneProvider() : Generator
     {
-        // Test with various input values
         yield [
             NumPower::array([
-                [10.0, -5.0, 3.0, 2.0],
+                [10.0],
+                [-5.0],
+                [3.0],
+                [2.0],
             ]),
         ];
 
         yield [
             NumPower::array([
-                [-10.0, -20.0, -30.0],
+                [-10.0],
+                [-20.0],
+                [-30.0],
             ]),
         ];
 
         yield [
             NumPower::array([
-                [0.1, 0.2, 0.3, 0.4],
-                [5.0, 4.0, 3.0, 2.0],
-                [-1.0, -2.0, -3.0, -4.0],
+                [0.1, 5.0, -1.0],
+                [0.2, 4.0, -2.0],
+                [0.3, 3.0, -3.0],
+                [0.4, 2.0, -4.0],
             ]),
         ];
     }
@@ -183,15 +200,17 @@ class SoftmaxTest extends TestCase
     #[DataProvider('sumToOneProvider')]
     public function testSumToOne(NDArray $input) : void
     {
-        $activations = $this->activationFn->activate($input);
+        $activations = $this->activationFn->activate($input)->toArray();
 
-        // Convert to array for easier processing
-        $activationsArray = $activations->toArray();
+        $columns = count($activations[0]);
 
-        // Check that each row sums to 1
-        foreach ($activationsArray as $row) {
-            $sum = array_sum($row);
-            // Use a slightly larger delta to account for rounding errors
+        for ($column = 0; $column < $columns; ++$column) {
+            $sum = 0.0;
+
+            foreach ($activations as $row) {
+                $sum += $row[$column];
+            }
+
             static::assertEqualsWithDelta(1.0, $sum, 1e-7);
         }
     }

@@ -13,6 +13,8 @@ use NDArray;
  * The Softmax function is a generalization of the Sigmoid function that squashes
  * each activation between 0 and 1, and all activations add up to 1.
  *
+ * Expects network layout `[classes, batch]` and normalizes each sample column.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -26,25 +28,32 @@ class Softmax implements ActivationFunction, OBufferDerivative
      * The Softmax function is defined as:
      * f(x_i) = exp(x_i) / sum(exp(x_j)) for all j
      *
-     * Numerically stable form subtracts the row-wise max before exponentiation.
+     * Numerically stable form subtracts the per-sample max before exponentiation.
      *
      * @param NDArray $input
      * @return NDArray
      */
     public function activate(NDArray $input) : NDArray
     {
-        $rows = $input->shape()[0];
+        $columns = $input->shape()[1];
+        $values = $input->toArray();
 
-        // NumPower::max() has no axis argument, so compute row maxima in PHP.
+        // NumPower::max() has no axis argument, so compute column maxima in PHP.
         $maxima = [];
 
-        foreach ($input->toArray() as $row) {
-            $maxima[] = max($row);
+        for ($column = 0; $column < $columns; ++$column) {
+            $maximum = -INF;
+
+            foreach ($values as $row) {
+                $maximum = max($maximum, $row[$column]);
+            }
+
+            $maxima[] = $maximum;
         }
 
-        $max = NumPower::reshape(NumPower::array($maxima), [$rows, 1]);
+        $max = NumPower::reshape(NumPower::array($maxima), [1, $columns]);
         $exponentials = NumPower::exp(NumPower::subtract($input, $max));
-        $totals = NumPower::reshape(NumPower::sum($exponentials, axis: 1), [$rows, 1]);
+        $totals = NumPower::reshape(NumPower::sum($exponentials, axis: 0), [1, $columns]);
 
         return NumPower::divide($exponentials, $totals);
     }
