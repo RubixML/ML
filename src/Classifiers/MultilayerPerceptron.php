@@ -545,7 +545,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $probabilities = [];
 
-        foreach ($activations->asArray() as $dist) {
+        foreach ($activations->toArray() as $dist) {
             $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 
