@@ -51,9 +51,9 @@ class MulticlassTest extends TestCase
     {
         return [
             'expectedForward' => [[
-                [0.1719820, 0.7707700, 0.0572478],
-                [0.0498033, 0.0450639, 0.9051327],
-                [0.6219707, 0.0015385, 0.3764905],
+                [0.5633214, 0.2290293, 0.2076492],
+                [0.9239680, 0.0758439, 0.0001879],
+                [0.0418966, 0.9300192, 0.0280841],
             ]],
         ];
     }
@@ -65,9 +65,9 @@ class MulticlassTest extends TestCase
     {
         return [
             'expectedGradient' => [[
-                [-0.0920019, 0.0856411, 0.0063608],
-                [0.0055337, -0.1061040, 0.1005703],
-                [0.0691078, 0.00017093, -0.0692788],
+                [-0.0485198, 0.0254477, 0.0230721],
+                [0.1026631, -0.1026840, 0.0000208],
+                [0.0046551, 0.1033354, -0.1079906],
             ]],
         ];
     }
@@ -83,10 +83,11 @@ class MulticlassTest extends TestCase
 
     protected function setUp() : void
     {
+        // Column layout [classes, batch] matching Dense / FeedForward.
         $this->input = NumPower::array([
-            [1.0, 2.5, -0.1],
-            [0.1, 0.0, 3.0],
-            [0.002, -6.0, -0.5],
+            [1.0, 0.1, 0.002],
+            [2.5, 0.0, -6.0],
+            [-0.1, 3.0, -0.5],
         ]);
 
         $this->labels = ['hot', 'cold', 'ice cold'];
