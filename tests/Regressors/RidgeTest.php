@@ -10,8 +10,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use NumPower;
-use ReflectionClass;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Labeled;
@@ -466,6 +464,11 @@ class RidgeTest extends TestCase
     }
 
     /**
+     * Make random linear problem
+     *
+     * @param int $samples
+     * @param int $features
+     * @param int $seed
      * @return array{0: list<list<float>>, 1: list<float>}
      */
     private function makeRandomLinearProblem(int $samples, int $features, int $seed) : array
