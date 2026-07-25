@@ -279,4 +279,3 @@ class FeedForward implements Network
         return new Encoding($dot);
     }
 }
-
