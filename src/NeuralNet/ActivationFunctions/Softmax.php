@@ -26,37 +26,27 @@ class Softmax implements ActivationFunction, OBufferDerivative
      * The Softmax function is defined as:
      * f(x_i) = exp(x_i) / sum(exp(x_j)) for all j
      *
-     * The Softmax function is a generalization of the Sigmoid function that squashes
-     * each activation between 0 and 1, and all activations add up to 1.
-     *
-     * > **Note:** This function can be rewritten in a more efficient way,
-     * using NumPower::exp(), NumPower::sum(), and NumPower::divide().
-     * Currently blocked by implementation of 2nd parameter "axis" for NumPower::sum()
+     * Numerically stable form subtracts the row-wise max before exponentiation.
      *
      * @param NDArray $input
      * @return NDArray
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Convert to PHP array for stable processing
-        $inputArray = $input->toArray();
-        $result = [];
+        $rows = $input->shape()[0];
 
-        // Process each row separately to ensure row-wise normalization
-        foreach ($inputArray as $row) {
-            $expRow = array_map('exp', $row);
-            $sum = array_sum($expRow);
-            $softmaxRow = [];
+        // NumPower::max() has no axis argument, so compute row maxima in PHP.
+        $maxima = [];
 
-            foreach ($expRow as $value) {
-                // Round to 7 decimal places to match test expectations
-                $softmaxRow[] = round($value / $sum, 7);
-            }
-
-            $result[] = $softmaxRow;
+        foreach ($input->toArray() as $row) {
+            $maxima[] = max($row);
         }
 
-        return NumPower::array($result);
+        $max = NumPower::reshape(NumPower::array($maxima), [$rows, 1]);
+        $exponentials = NumPower::exp(NumPower::subtract($input, $max));
+        $totals = NumPower::reshape(NumPower::sum($exponentials, axis: 1), [$rows, 1]);
+
+        return NumPower::divide($exponentials, $totals);
     }
 
     /**
