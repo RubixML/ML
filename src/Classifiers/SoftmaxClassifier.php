@@ -424,7 +424,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $probabilities = [];
 
-        foreach ($activations->asArray() as $dist) {
+        foreach ($activations->toArray() as $dist) {
             $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 

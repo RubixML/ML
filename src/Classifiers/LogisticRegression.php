@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Generator;
+use NumPower;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -33,7 +35,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
 
 use function is_nan;
 use function count;
@@ -429,7 +430,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->asArray(), 0);
+        $activations = array_column($activations->toArray(), 0);
 
         $probabilities = [];
 
@@ -461,10 +462,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Weight layer not found.');
         }
 
-        return $layer->weights()
-            ->rowAsVector(0)
-            ->abs()
-            ->asArray();
+        $weights = NumPower::abs($layer->weights())->toArray();
+
+        return $weights[0] ?? [];
     }
 
     /**

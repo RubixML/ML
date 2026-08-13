@@ -158,16 +158,17 @@ class Multiclass implements Output
                 . ' before backpropagating.');
         }
 
+        // Build one-hot targets as [classes, batch] to match Dense output layout.
         $expected = [];
 
-        foreach ($labels as $label) {
-            $dist = [];
+        foreach ($this->classes as $class) {
+            $row = [];
 
-            foreach ($this->classes as $class) {
-                $dist[] = $class == $label ? 1.0 : 0.0;
+            foreach ($labels as $label) {
+                $row[] = $class == $label ? 1.0 : 0.0;
             }
 
-            $expected[] = $dist;
+            $expected[] = $row;
         }
 
         $expected = NumPower::array($expected);

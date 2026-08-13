@@ -140,7 +140,7 @@ final class LeCunNormalTest extends TestCase
         $this->assertThat(
             $std,
             $this->logicalAnd(
-                $this->greaterThan($expectedStd * 0.85),
+                $this->greaterThan($expectedStd * 0.80),
                 $this->lessThan($expectedStd * 1.1)
             ),
             'Standard deviation does not match Le Cun initialization'

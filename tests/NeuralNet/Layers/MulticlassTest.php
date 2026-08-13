@@ -51,9 +51,9 @@ class MulticlassTest extends TestCase
     {
         return [
             'expectedForward' => [[
-                [0.1719820, 0.7707700, 0.0572478],
-                [0.0498033, 0.0450639, 0.9051327],
-                [0.6219707, 0.0015385, 0.3764905],
+                [0.1719820, 0.0498033, 0.6219707],
+                [0.7707700, 0.0450639, 0.0015386],
+                [0.0572478, 0.9051328, 0.3764906],
             ]],
         ];
     }
@@ -65,9 +65,9 @@ class MulticlassTest extends TestCase
     {
         return [
             'expectedGradient' => [[
-                [-0.0920019, 0.0856411, 0.0063608],
-                [0.0055337, -0.1061040, 0.1005703],
-                [0.0691078, 0.00017093, -0.0692788],
+                [-0.0920019, 0.0055337, 0.0691078],
+                [0.0856411, -0.1061040, 0.0001709],
+                [0.0063608, 0.1005703, -0.0692788],
             ]],
         ];
     }
@@ -83,10 +83,11 @@ class MulticlassTest extends TestCase
 
     protected function setUp() : void
     {
+        // Column layout [classes, batch] matching Dense / FeedForward.
         $this->input = NumPower::array([
-            [1.0, 2.5, -0.1],
-            [0.1, 0.0, 3.0],
-            [0.002, -6.0, -0.5],
+            [1.0, 0.1, 0.002],
+            [2.5, 0.0, -6.0],
+            [-0.1, 3.0, -0.5],
         ]);
 
         $this->labels = ['hot', 'cold', 'ice cold'];
@@ -177,14 +178,14 @@ class MulticlassTest extends TestCase
         // Rebuild expected one-hot matrix the same way as Multiclass::back()
         $expected = [];
 
-        foreach ($this->labels as $label) {
-            $dist = [];
+        foreach (['hot', 'cold', 'ice cold'] as $class) {
+            $row = [];
 
-            foreach (['hot', 'cold', 'ice cold'] as $class) {
-                $dist[] = $class === $label ? 1.0 : 0.0;
+            foreach ($this->labels as $label) {
+                $row[] = $class === $label ? 1.0 : 0.0;
             }
 
-            $expected[] = $dist;
+            $expected[] = $row;
         }
 
         $expectedNd = NumPower::array($expected);

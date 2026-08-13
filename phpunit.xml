@@ -3,6 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   backupGlobals="false"
   bootstrap="vendor/autoload.php"
+  cacheDirectory="runtime"
   colors="true"
   displayDetailsOnTestsThatTriggerDeprecations="true"
   displayDetailsOnTestsThatTriggerNotices="true"
