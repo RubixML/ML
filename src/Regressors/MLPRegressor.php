@@ -2,46 +2,45 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\Online;
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use Generator;
+use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Params;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\CrossValidation\Metrics\RMSE;
-use Rubix\ML\NeuralNet\Layers\Placeholder1D;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier2;
-use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
-use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
-
-use function is_nan;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Learner;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
+use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Snapshot;
+use Rubix\ML\Online;
+use Rubix\ML\Persistable;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\DatasetIsLabeled;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Verbose;
 use function count;
 use function get_object_vars;
+use function is_nan;
 use function number_format;
 
 /**
@@ -59,6 +58,7 @@ use function number_format;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 {
@@ -106,7 +106,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var int
      */
-    protected $evalInterval;
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -158,7 +158,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?array $losses = null;
 
     /**
-     * @param Hidden[] $hiddenLayers
+     * @param list<mixed> $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param int $epochs
@@ -168,7 +168,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
-     * @throws InvalidArgumentException
      */
     public function __construct(
         array $hiddenLayers = [],
@@ -337,9 +336,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return Network|null
+     * @return FeedForward|null
      */
-    public function network() : ?Network
+    public function network() : ?FeedForward
     {
         return $this->network;
     }
@@ -347,7 +346,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -355,13 +354,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier2());
+        $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1Uniform());
 
         $this->network = new FeedForward(
-            new Placeholder1D($dataset->numFeatures()),
-            $hiddenLayers,
-            new Continuous($this->costFn),
-            $this->optimizer
+            input: new Placeholder1D($dataset->numFeatures()),
+            hidden: $hiddenLayers,
+            output: new Continuous($this->costFn),
+            optimizer: $this->optimizer
         );
 
         $this->network->initialize();
@@ -372,7 +371,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      * @throws RuntimeException
      */
     public function partial(Dataset $dataset) : void
@@ -513,9 +512,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->asArray(), 0);
-
-        return $activations;
+        return array_column($activations->toArray(), 0);
     }
 
     /**

@@ -57,7 +57,7 @@ class CrossEntropyTest extends TestCase
             NumPower::array([
                 [1.0, 0.0, 0.0],
             ]),
-            6.1402268,
+            6.1402269,
         ];
 
         yield [

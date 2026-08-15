@@ -11,12 +11,12 @@ use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 
 /**
- * Xavier Normal
+ * Xavier 1 Normal
  *
- * The Xavier 1 initializer draws from a truncated normal distribution with
- * mean 0 and standard deviation squal sqrt(2 / (fanIn + fanOut)). This initializer is
- * best suited for layers that feed into an activation layer that outputs a
- * value between 0 and 1 such as Softmax or Sigmoid.
+ * The Xavier 1 Normal initializer draws from a truncated normal distribution with
+ * mean 0 and standard deviation equal to sqrt(2 / (fanIn + fanOut)). This
+ * initializer is best suited for layers that feed into an activation layer that
+ * outputs a value between 0 and 1 such as Softmax or Sigmoid.
  *
  * References:
  * [1] X. Glorot et al. (2010). Understanding the Difficulty of Training Deep
@@ -27,7 +27,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class XavierNormal extends AbstractInitializer
+class Xavier1Normal extends AbstractInitializer
 {
     public function __construct()
     {
@@ -46,7 +46,7 @@ class XavierNormal extends AbstractInitializer
 
         $stdDev = sqrt(2 / ($fanOut + $fanIn));
 
-        return NumPower::truncatedNormal(size: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }
 
     /**
@@ -56,6 +56,6 @@ class XavierNormal extends AbstractInitializer
      */
     public function __toString() : string
     {
-        return 'Xavier Normal';
+        return 'Xavier-1 Normal';
     }
 }

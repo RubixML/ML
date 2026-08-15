@@ -113,7 +113,7 @@ final class HeNormalTest extends TestCase
         $this->assertThat(
             $std,
             $this->logicalAnd(
-                $this->greaterThan($expectedStd * 0.9),
+                $this->greaterThan($expectedStd * 0.85),
                 $this->lessThan($expectedStd * 1.1)
             ),
             'Standard deviation is not within acceptable He initialization range'

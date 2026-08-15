@@ -26,13 +26,13 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 
 ## Example
 ```php
-use Rubix\ML\Regressors\MLPRegressor;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Optimizers\RMSProp;
+use Rubix\ML\Regressors\MLPRegressor;
 
 $estimator = new MLPRegressor([
 	new Dense(100),

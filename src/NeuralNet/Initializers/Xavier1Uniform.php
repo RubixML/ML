@@ -11,9 +11,9 @@ use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 
 /**
- * Xavier Uniform
+ * Xavier 1 Uniform
  *
- * The Xavier 1 initializer draws from a uniform distribution [-limit, limit]
+ * The Xavier 1 Uniform initializer draws from a uniform distribution [-limit, limit]
  * where *limit* is squal to sqrt(6 / (fanIn + fanOut)). This initializer is
  * best suited for layers that feed into an activation layer that outputs a
  * value between 0 and 1 such as Softmax or Sigmoid.
@@ -27,7 +27,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class XavierUniform extends AbstractInitializer
+class Xavier1Uniform extends AbstractInitializer
 {
     public function __construct()
     {
@@ -46,7 +46,7 @@ class XavierUniform extends AbstractInitializer
 
         $limit = sqrt(6 / ($fanOut + $fanIn));
 
-        return NumPower::uniform(size: [$fanOut, $fanIn], low: -$limit, high: $limit);
+        return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
     }
 
     /**
@@ -56,6 +56,6 @@ class XavierUniform extends AbstractInitializer
      */
     public function __toString() : string
     {
-        return 'Xavier Uniform';
+        return 'Xavier-1 Uniform';
     }
 }

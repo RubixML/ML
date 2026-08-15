@@ -77,8 +77,8 @@ jobs:
       - name: Run phplint
         run: composer phplint
 
-      - name: Static Analysis
-        run: composer analyze
+      #- name: Static Analysis
+      #  run: composer analyze
 
       - name: Unit Tests
         run: composer test

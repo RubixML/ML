@@ -16,6 +16,8 @@ use Rubix\ML\Specifications\SpecificationChain;
  * The Softmax function is a generalization of the Sigmoid function that squashes
  * each activation between 0 and 1, and all activations add up to 1.
  *
+ * Expects network layout `[classes, batch]` and normalizes each sample column.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -37,37 +39,34 @@ class Softmax implements ActivationFunction, OBufferDerivative
      * The Softmax function is defined as:
      * f(x_i) = exp(x_i) / sum(exp(x_j)) for all j
      *
-     * The Softmax function is a generalization of the Sigmoid function that squashes
-     * each activation between 0 and 1, and all activations add up to 1.
-     *
-     * > **Note:** This function can be rewritten in a more efficient way,
-     * using NumPower::exp(), NumPower::sum(), and NumPower::divide().
-     * Currently blocked by implementation of 2nd parameter "axis" for NumPower::sum()
+     * Numerically stable form subtracts the per-sample max before exponentiation.
      *
      * @param NDArray $input
      * @return NDArray
      */
     public function activate(NDArray $input) : NDArray
     {
-        // Convert to PHP array for stable processing
-        $inputArray = $input->toArray();
-        $result = [];
+        $columns = $input->shape()[1];
+        $values = $input->toArray();
 
-        // Process each row separately to ensure row-wise normalization
-        foreach ($inputArray as $row) {
-            $expRow = array_map('exp', $row);
-            $sum = array_sum($expRow);
-            $softmaxRow = [];
+        // NumPower::max() has no axis argument, so compute column maxima in PHP.
+        $maxima = [];
 
-            foreach ($expRow as $value) {
-                // Round to 7 decimal places to match test expectations
-                $softmaxRow[] = round($value / $sum, 7);
+        for ($column = 0; $column < $columns; ++$column) {
+            $maximum = -INF;
+
+            foreach ($values as $row) {
+                $maximum = max($maximum, $row[$column]);
             }
 
-            $result[] = $softmaxRow;
+            $maxima[] = $maximum;
         }
 
-        return NumPower::array($result);
+        $max = NumPower::reshape(NumPower::array($maxima), [1, $columns]);
+        $exponentials = NumPower::exp(NumPower::subtract($input, $max));
+        $totals = NumPower::reshape(NumPower::sum($exponentials, axis: 0), [1, $columns]);
+
+        return NumPower::divide($exponentials, $totals);
     }
 
     /**

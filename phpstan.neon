@@ -3,6 +3,8 @@ includes:
 parameters:
     level: 8
     phpVersion: 80400
+    bootstrapFiles:
+        - phpstan-bootstrap.php
     fileExtensions:
         - php
     tmpDir: ./runtime/.phpstan/

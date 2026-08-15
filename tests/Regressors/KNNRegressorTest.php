@@ -4,8 +4,11 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Regressors;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
@@ -47,6 +50,11 @@ class KNNRegressorTest extends TestCase
     protected KNNRegressor $estimator;
 
     protected RSquared $metric;
+
+    public static function trainedStateCases() : Generator
+    {
+        yield 'three-fold partial fit' => [self::TRAIN_SIZE, 3];
+    }
 
     protected function setUp() : void
     {
@@ -133,5 +141,21 @@ class KNNRegressorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[DataProvider('trainedStateCases')]
+    public function testBecomesTrainedAfterPartialFitting(int $trainSize, int $folds) : void
+    {
+        $training = $this->generator->generate($trainSize);
+
+        $parts = $training->fold($folds);
+
+        $this->estimator->train($parts[0]);
+
+        for ($i = 1; $i < $folds; ++$i) {
+            $this->estimator->partial($parts[$i]);
+        }
+
+        $this->assertTrue($this->estimator->trained());
     }
 }

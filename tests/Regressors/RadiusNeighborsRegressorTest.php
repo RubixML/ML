@@ -4,19 +4,23 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Regressors;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use Rubix\ML\DataType;
-use Rubix\ML\EstimatorType;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Datasets\Generators\HalfMoon;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
-use Rubix\ML\Regressors\RadiusNeighborsRegressor;
+use Rubix\ML\DataType;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 
 #[Group('Regressors')]
 #[CoversClass(RadiusNeighborsRegressor::class)]
@@ -48,6 +52,11 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     protected RSquared $metric;
 
+    public static function predictionChecks() : Generator
+    {
+        yield 'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE];
+    }
+
     protected function setUp() : void
     {
         $this->generator = new HalfMoon(x: 4.0, y: -7.0, scale: 1.0, rotation: 90, noise: 0.25);
@@ -59,40 +68,50 @@ class RadiusNeighborsRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
+    #[Test]
+    #[TestDox('Estimator is untrained before fitting')]
     public function testAssertPreConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    public function testBadRadius() : void
+    #[Test]
+    #[TestDox('Radius must be greater than zero')]
+    public function badRadius() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new RadiusNeighborsRegressor(radius: 0.0);
     }
 
-    public function testType() : void
+    #[Test]
+    #[TestDox('Estimator type is regressor')]
+    public function type() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    #[TestDox('Compatibility only includes continuous data')]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testTrainPredict() : void
+    #[Test]
+    #[TestDox('It trains and predicts with the expected score')]
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
@@ -103,17 +122,48 @@ class RadiusNeighborsRegressorTest extends TestCase
             labels: $labels
         );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    #[TestDox('Predictions match the test set and remain finite')]
+    #[DataProvider('predictionChecks')]
+    public function trainPredictChecks(int $trainSize, int $testSize) : void
+    {
+        $training = $this->generator->generate($trainSize);
+        $testing = $this->generator->generate($testSize);
+
+        $this->estimator->train($training);
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testSize, $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsFloat($prediction);
+            self::assertFalse(is_nan($prediction));
+        }
+
+        /** @var list<int|float> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(predictions: $predictions, labels: $labels);
+
+        self::assertIsFloat($score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Training rejects incompatible labels')]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    #[TestDox('Predicting before training throws an exception')]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

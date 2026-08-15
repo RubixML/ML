@@ -162,7 +162,7 @@ class LogisticRegressionTest extends TestCase
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
 
-        $this->assertEquals('58a6bb3c', $this->estimator->revision());
+        $this->assertEquals('f2e08c1a', $this->estimator->revision());
     }
 
     public function testTrainIncompatible() : void

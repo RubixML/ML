@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Benchmarks\Regressors;
 
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
 /**
  * @Groups({"Regressors"})

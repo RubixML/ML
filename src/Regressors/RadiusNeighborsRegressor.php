@@ -2,25 +2,26 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Stats;
-use Rubix\ML\Helpers\Params;
+use NumPower;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
-use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Learner;
+use Rubix\ML\Persistable;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\DatasetIsLabeled;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AutotrackRevisions;
 
 /**
  * Radius Neighbors Regressor
@@ -35,6 +36,7 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 {
@@ -207,11 +209,8 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
         }
 
         if ($this->weighted) {
-            $weights = [];
-
-            foreach ($distances as $distance) {
-                $weights[] = 1.0 / (1.0 + $distance);
-            }
+            $distances = NumPower::array($distances);
+            $weights = NumPower::divide(1.0, NumPower::add($distances, 1.0))->toArray();
 
             return Stats::weightedMean($labels, $weights);
         }

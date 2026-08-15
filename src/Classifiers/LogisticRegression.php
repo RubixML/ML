@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\NeuralNet\FeedForward;
+use Generator;
+use NumPower;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -19,10 +20,11 @@ use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -33,7 +35,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
 
 use function is_nan;
 use function count;
@@ -292,7 +293,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new Xavier1())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier1Uniform())],
             new Binary($classes, $this->costFn),
             $this->optimizer
         );
@@ -429,7 +430,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->asArray(), 0);
+        $activations = array_column($activations->toArray(), 0);
 
         $probabilities = [];
 
@@ -461,10 +462,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Weight layer not found.');
         }
 
-        return $layer->weights()
-            ->rowAsVector(0)
-            ->abs()
-            ->asArray();
+        $weights = NumPower::abs($layer->weights())->toArray();
+
+        return $weights[0] ?? [];
     }
 
     /**

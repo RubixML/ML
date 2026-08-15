@@ -84,6 +84,9 @@
         "check": [
             "php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --using-cache=no --sequential --show-progress=dots --stop-on-violation"
         ],
+        "diff": [
+            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --diff"
+        ],
         "fix": [
             "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
         ],

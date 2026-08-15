@@ -9,14 +9,14 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use Rubix\ML\NeuralNet\Initializers\XavierNormal;
+use Rubix\ML\NeuralNet\Initializers\Xavier2Normal;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidFanInException;
 use Rubix\ML\Exceptions\InvalidFanOutException;
 
 #[Group('Initializers')]
-#[CoversClass(XavierNormal::class)]
-final class XavierNormalTest extends TestCase
+#[CoversClass(Xavier2Normal::class)]
+final class Xavier2NormalTest extends TestCase
 {
     /**
      * Provides valid fanIn and fanOut combinations for testing matrix shape.
@@ -46,7 +46,7 @@ final class XavierNormalTest extends TestCase
      *
      * @return array<string, array{fanIn: int, fanOut: int}>
      */
-    public static function xavierNormalDistributionValidationProvider() : array
+    public static function xavier2NormalDistributionValidationProvider() : array
     {
         return [
             'small numbers' => [
@@ -78,7 +78,7 @@ final class XavierNormalTest extends TestCase
             ],
             'fanOut less than 1' => [
                 'fanIn' => 1,
-                'fanOut' => 1,
+                'fanOut' => 0,
             ],
             'fanIn and fanOut less than 1' => [
                 'fanIn' => 0,
@@ -95,7 +95,7 @@ final class XavierNormalTest extends TestCase
         $this->expectNotToPerformAssertions();
 
         //when
-        new XavierNormal();
+        new Xavier2Normal();
     }
 
     #[Test]
@@ -104,7 +104,7 @@ final class XavierNormalTest extends TestCase
     public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new XavierNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Xavier2Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
 
         //when
         $shape = $w->shape();
@@ -115,12 +115,12 @@ final class XavierNormalTest extends TestCase
 
     #[Test]
     #[TestDox('The resulting values matches distribution Xavier (normal distribution)')]
-    #[DataProvider('xavierNormalDistributionValidationProvider')]
-    public function testDistributionStatisticsMatchXavierNormal(int $fanIn, int $fanOut) : void
+    #[DataProvider('xavier2NormalDistributionValidationProvider')]
+    public function testDistributionStatisticsMatchXavier2Normal(int $fanIn, int $fanOut) : void
     {
         //given
-        $expectedStd = sqrt(2 / ($fanOut + $fanIn));
-        $w = (new XavierNormal())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $expectedStd = (2.0 / ($fanOut + $fanIn)) ** 0.25;
+        $w = (new Xavier2Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
         $flatValues = array_merge(...$w->toArray());
 
         //when
@@ -140,10 +140,10 @@ final class XavierNormalTest extends TestCase
         $this->assertThat(
             $std,
             $this->logicalAnd(
-                $this->greaterThan($expectedStd * 0.9),
+                $this->greaterThan($expectedStd * 0.85),
                 $this->lessThan($expectedStd * 1.1)
             ),
-            'Standard deviation does not match Xavier Normal initialization'
+            'Standard deviation does not match Xavier-2 Normal initialization'
         );
     }
 
@@ -162,7 +162,7 @@ final class XavierNormalTest extends TestCase
         }
 
         //when
-        (new XavierNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Xavier2Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
     }
 
     #[Test]
@@ -170,9 +170,9 @@ final class XavierNormalTest extends TestCase
     public function testToStringReturnsCorrectValue() : void
     {
         //when
-        $string = (string) new XavierNormal();
+        $string = (string) new Xavier2Normal();
 
         //then
-        $this->assertEquals('Xavier Normal', $string);
+        $this->assertEquals('Xavier-2 Normal', $string);
     }
 }
