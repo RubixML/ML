@@ -139,7 +139,7 @@ final class Xavier1UniformTest extends TestCase
         }
 
         $expectedCount = count($values) / 10;
-        $tolerance = 0.2 * $expectedCount;
+        $tolerance = 0.15 * $expectedCount;
 
         $this->assertGreaterThanOrEqual(-$limit, min($values));
         $this->assertLessThanOrEqual($limit, max($values));
