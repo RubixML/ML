@@ -1,5 +1,11 @@
-- 2.5.3
+# Changelog
+
+- 2.5.4
     - Fix KDTree edge pruning + optimize traversal
+    - Fix AdaBoost early stopping algorithm
+
+- 2.5.3
+    - Update PHP stemmer library
 
 - 2.5.2
     - Fix bug in One-class SVM inferencing
