@@ -379,7 +379,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 break;
             }
 
-            if ($loss > $bestLoss) {
+            if ($loss < $bestLoss) {
                 $bestLoss = $loss;
 
                 $numWorseEpochs = 0;

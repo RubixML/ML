@@ -1,3 +1,5 @@
+# Changelog
+
 - 3.0.0
     - Dropped support for PHP 7.4
     - Renamed TF-IDF dampening parameter to sublinear
@@ -9,6 +11,18 @@
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
     - Converted Network back from a class to an interface
+
+- 2.5.4
+    - Fix AdaBoost early stopping algorithm
+
+- 2.5.3
+    - Update PHP stemmer library
+
+- 2.5.2
+    - Fix bug in One-class SVM inferencing
+
+- 2.5.1
+    - Fix bug in SVM (SVC and SVR) inferencing
 
 - 2.5.0
     - Added Vantage Point Spatial tree
