@@ -1,3 +1,9 @@
+# Changelog
+
+- 2.5.3
+    - Fix magnitude bug in Huber Loss gradient
+    - Fix weighted KNN Regressor predictions
+
 - 2.5.2
     - Fix bug in One-class SVM inferencing
 

@@ -80,7 +80,8 @@ class HuberLoss implements RegressionLoss
         return $alpha->square()
             ->add($this->alpha2)
             ->pow(-0.5)
-            ->multiply($alpha);
+            ->multiply($alpha)
+            ->multiply($this->alpha);
     }
 
     /**
