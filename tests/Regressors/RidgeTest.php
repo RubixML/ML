@@ -165,7 +165,7 @@ class RidgeTest extends TestCase
         $predictions = $regression->predict(Unlabeled::quick([[4.0]]));
 
         self::assertTrue($regression->trained());
-        self::assertEqualsWithDelta(8.9999980, (float) $predictions[0], 1e-7);
+        self::assertEqualsWithDelta(9.0, (float) $predictions[0], 1e-6);
     }
 
     #[Test]

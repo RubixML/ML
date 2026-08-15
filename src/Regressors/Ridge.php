@@ -4,6 +4,8 @@ namespace Rubix\ML\Regressors;
 
 use NDArray;
 use NumPower;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Learner;
