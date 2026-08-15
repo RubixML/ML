@@ -4,15 +4,15 @@ namespace Rubix\ML\Regressors;
 
 use NDArray;
 use NumPower;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -75,6 +75,11 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         }
 
         $this->l2Penalty = $l2Penalty;
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**

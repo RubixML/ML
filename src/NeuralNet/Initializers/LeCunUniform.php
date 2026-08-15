@@ -6,6 +6,9 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Le Cun Uniform
@@ -26,6 +29,14 @@ use NDArray;
  */
 class LeCunUniform extends AbstractInitializer
 {
+    public function __construct()
+    {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+    }
+
     /**
      * @inheritdoc
      */

@@ -5,6 +5,9 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
@@ -78,6 +81,11 @@ class Binary implements Output
         if (count($classes) !== 2) {
             throw new InvalidArgumentException('Number of classes must be 2, ' . count($classes) . ' given.');
         }
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $classes = [
             $classes[0] => 0.0,

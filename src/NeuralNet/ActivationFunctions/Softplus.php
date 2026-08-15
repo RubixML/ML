@@ -6,6 +6,9 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Soft Plus
@@ -23,6 +26,14 @@ use NDArray;
  */
 class Softplus implements ActivationFunction, IBufferDerivative
 {
+    public function __construct()
+    {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+    }
+
     /**
      * Compute the activation.
      *

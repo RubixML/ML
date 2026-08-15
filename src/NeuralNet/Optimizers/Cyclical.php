@@ -5,6 +5,9 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
@@ -104,6 +107,11 @@ class Cyclical implements Optimizer
                 "Decay must be between 0 and 1, $decay given."
             );
         }
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $this->lower = $lower;
         $this->upper = $upper;

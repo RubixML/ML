@@ -5,6 +5,9 @@ namespace Rubix\ML\NeuralNet;
 use NDArray;
 use NumPower;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Encoding;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -80,6 +83,11 @@ class FeedForward implements Network
      */
     public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+
         $hidden = array_values($hidden);
 
         $backPass = array_reverse($hidden);

@@ -5,6 +5,9 @@ namespace Rubix\ML\NeuralNet;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Parameter
@@ -51,6 +54,11 @@ class Parameter
      */
     public function __construct(NDArray $param)
     {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+
         $this->id = self::$counter++;
         $this->param = $param;
     }

@@ -5,6 +5,9 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use NDArray;
 use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 use const Rubix\ML\EPSILON;
 use const PHP_FLOAT_MAX;
@@ -32,6 +35,11 @@ class AdaMax extends Adam
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
         parent::__construct($rate, $momentumDecay, $normDecay);
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**

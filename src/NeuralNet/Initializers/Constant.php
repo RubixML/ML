@@ -6,6 +6,9 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Constant
@@ -24,6 +27,10 @@ class Constant extends AbstractInitializer
      */
     public function __construct(protected float $value = 0.0)
     {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**

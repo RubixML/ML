@@ -5,6 +5,9 @@ namespace Rubix\ML\NeuralNet\Layers;
 use NDArray;
 use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -115,6 +118,11 @@ class BatchNorm implements Hidden, Parametric
         if ($decay < 0.0 or $decay > 1.0) {
             throw new InvalidArgumentException("Decay must be between 0 and 1, $decay given.");
         }
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $this->decay = $decay;
         $this->betaInitializer = $betaInitializer ?? new Constant(0.0);

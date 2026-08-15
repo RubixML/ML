@@ -7,6 +7,9 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidLeakageException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Leaky ReLU
@@ -46,6 +49,11 @@ class LeakyReLU implements ActivationFunction, IBufferDerivative
                 message: "Leakage must be between 0 and 1, $leakage given."
             );
         }
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $this->leakage = $leakage;
     }

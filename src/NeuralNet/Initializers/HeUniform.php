@@ -6,6 +6,9 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * He Uniform
@@ -25,6 +28,14 @@ use NDArray;
  */
 class HeUniform extends AbstractInitializer
 {
+    public function __construct()
+    {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+    }
+
     /**
      * @inheritdoc
      */
