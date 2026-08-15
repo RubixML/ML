@@ -166,10 +166,10 @@ class TSNETest extends TestCase
     }
 
     /**
+     * @param TSNE $embedder
      * @param Matrix $p
      * @param Matrix $y
      * @param Matrix $distances
-     * @param TSNE $embedder
      * @return Matrix
      */
     private function invokeGradient(TSNE $embedder, Matrix $p, Matrix $y, Matrix $distances) : Matrix
