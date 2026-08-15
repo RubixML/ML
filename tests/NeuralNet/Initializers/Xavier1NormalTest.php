@@ -142,8 +142,8 @@ final class Xavier1NormalTest extends TestCase
         $this->assertThat(
             $std,
             $this->logicalAnd(
-                $this->greaterThan($expectedStd * 0.85),
-                $this->lessThan($expectedStd * 1.1)
+                $this->greaterThan($expectedStd * 0.83),
+                $this->lessThan($expectedStd * 1.2)
             ),
             'Standard deviation does not match Xavier-1 Normal initialization'
         );

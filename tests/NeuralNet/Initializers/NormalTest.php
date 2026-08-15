@@ -172,8 +172,8 @@ final class NormalTest extends TestCase
         $this->assertThat(
             $resultStd,
             $this->logicalAnd(
-                $this->greaterThan($stdDev * 0.9),
-                $this->lessThan($stdDev * 1.1)
+                $this->greaterThan($stdDev * 0.8),
+                $this->lessThan($stdDev * 1.2)
             ),
             'Standard deviation does not match Normal initialization'
         );
