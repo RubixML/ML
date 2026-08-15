@@ -522,13 +522,16 @@ class TSNE implements Transformer, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $q = $distances->divide($this->dofs)
+        $kernel = $distances->square()
+            ->divide($this->dofs)
             ->add(1.0)
             ->pow((1.0 + $this->dofs) / -2.0);
 
-        $q = $q->divide($q->sum()->multiply(2.0)->clipLower(EPSILON));
+        $q = $kernel->divide(
+            max($kernel->sum()->sum() - $kernel->diagonalAsVector()->sum(), EPSILON)
+        );
 
-        $pqd = $p->subtract($q)->multiply($distances);
+        $pqd = $p->subtract($q)->multiply($kernel);
 
         $gradient = [];
 

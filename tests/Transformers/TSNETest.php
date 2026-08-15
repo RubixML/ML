@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use ReflectionMethod;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Loggers\BlackHole;
@@ -10,6 +11,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Tensor\Matrix;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -94,6 +96,44 @@ class TSNETest extends TestCase
     /**
      * @test
      */
+    public function gradient() : void
+    {
+        $p = Matrix::quick([
+            [0.0, 0.3, 0.2],
+            [0.3, 0.0, 0.3],
+            [0.2, 0.3, 0.0],
+        ]);
+
+        $y = Matrix::quick([
+            [1.0],
+            [2.0],
+            [3.0],
+        ]);
+
+        $distances = Matrix::quick([
+            [0.0, 1.0, 2.0],
+            [1.0, 0.0, 1.0],
+            [2.0, 1.0, 0.0],
+        ]);
+
+        $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
+
+        $expected = [
+            [-0.37],
+            [0.0],
+            [0.37],
+        ];
+
+        foreach ($gradient->asArray() as $i => $row) {
+            foreach ($row as $j => $value) {
+                $this->assertEqualsWithDelta($expected[$i][$j], $value, 1e-8);
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
         $dataset = $this->generator->generate(self::TEST_SIZE);
@@ -107,5 +147,21 @@ class TSNETest extends TestCase
 
         $this->assertIsArray($losses);
         $this->assertContainsOnly('float', $losses);
+    }
+
+    /**
+     * @param Matrix $p
+     * @param Matrix $y
+     * @param Matrix $distances
+     * @param TSNE $embedder
+     * @return Matrix
+     */
+    private function invokeGradient(TSNE $embedder, Matrix $p, Matrix $y, Matrix $distances) : Matrix
+    {
+        $method = new ReflectionMethod(TSNE::class, 'gradient');
+
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($embedder, [$p, $y, $distances]);
     }
 }
