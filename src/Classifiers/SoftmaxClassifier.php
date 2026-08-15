@@ -13,14 +13,15 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -263,9 +264,9 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return FeedForward|null
+     * @return Network|null
      */
-    public function network() : ?FeedForward
+    public function network() : ?Network
     {
         return $this->network;
     }
@@ -287,7 +288,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(count($classes), $this->l2Penalty, true, new Xavier1())],
+            [new Dense(count($classes), $this->l2Penalty, true, new Xavier1Uniform())],
             new Multiclass($classes, $this->costFn),
             $this->optimizer
         );
@@ -423,7 +424,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $probabilities = [];
 
-        foreach ($activations->asArray() as $dist) {
+        foreach ($activations->toArray() as $dist) {
             $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 

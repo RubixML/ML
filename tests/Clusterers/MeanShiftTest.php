@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Clusterers;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
@@ -21,113 +20,88 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Clusterers
- * @covers \Rubix\ML\Clusterers\MeanShift
- */
+#[Group('Clusterers')]
+#[CoversClass(MeanShift::class)]
 class MeanShiftTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var MeanShift
-     */
-    protected $estimator;
+    protected MeanShift $estimator;
 
-    /**
-     * @var VMeasure
-     */
-    protected $metric;
+    protected VMeasure $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 50.0),
-            'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 30.0),
-        ], [0.5, 0.2, 0.3]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'red' => new Blob(
+                    center: [255, 32, 0],
+                    stdDev: 50.0
+                ),
+                'green' => new Blob(
+                    center: [0, 128, 0],
+                    stdDev: 10.0
+                ),
+                'blue' => new Blob(
+                    center: [0, 32, 255],
+                    stdDev: 30.0
+                ),
+            ],
+            weights: [0.5, 0.2, 0.3]
+        );
 
-        $this->estimator = new MeanShift(66, 0.1, 100, 1e-4, new BallTree(), new Random());
+        $this->estimator = new MeanShift(
+            radius: 66,
+            ratio: 0.1,
+            epochs: 100,
+            minShift: 1e-4,
+            tree: new BallTree(),
+            seeder: new Random()
+        );
 
         $this->metric = new VMeasure();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(MeanShift::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
-    public function badRadius() : void
+    public function testBadRadius() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MeanShift(0.0);
+        new MeanShift(radius: 0.0);
     }
 
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -136,10 +110,7 @@ class MeanShiftTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'radius' => 66.0,
@@ -153,22 +124,16 @@ class MeanShiftTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function estimateRadius() : void
+    public function testEstimateRadius() : void
     {
         $subset = $this->generator->generate(intdiv(self::TRAIN_SIZE, 4));
 
-        $radius = MeanShift::estimateRadius($subset, 30.0);
+        $radius = MeanShift::estimateRadius(dataset: $subset);
 
         $this->assertIsFloat($radius);
     }
 
-    /**
-     * @test
-     */
-    public function trainPredict() : void
+    public function testTrainPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -182,34 +147,31 @@ class MeanShiftTest extends TestCase
         $centroids = $this->estimator->centroids();
 
         $this->assertIsArray($centroids);
-        $this->assertContainsOnly('array', $centroids);
+        $this->assertContainsOnlyArray($centroids);
 
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $testing->labels()
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function trainIncompatible() : void
+    public function testTrainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick([['bad']]));
+        $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

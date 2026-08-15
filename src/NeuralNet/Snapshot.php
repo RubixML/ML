@@ -15,6 +15,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Snapshot
 {
@@ -33,7 +34,10 @@ class Snapshot
     protected array $parameters;
 
     /**
+     * Take a snapshot of the network.
+     *
      * @param Network $network
+     * @return Snapshot
      */
     public static function take(Network $network) : self
     {
@@ -56,6 +60,8 @@ class Snapshot
     }
 
     /**
+     * Class constructor.
+     *
      * @param Parametric[] $layers
      * @param list<Parameter[]> $parameters
      * @throws InvalidArgumentException
@@ -63,8 +69,7 @@ class Snapshot
     public function __construct(array $layers, array $parameters)
     {
         if (count($layers) !== count($parameters)) {
-            throw new InvalidArgumentException('Number of layers'
-                . ' and parameter groups must be equal');
+            throw new InvalidArgumentException('Number of layers and parameter groups must be equal.');
         }
 
         $this->layers = $layers;

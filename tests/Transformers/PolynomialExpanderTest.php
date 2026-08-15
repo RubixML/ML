@@ -1,46 +1,29 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\PolynomialExpander;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\PolynomialExpander
- */
+#[Group('Transformers')]
+#[CoversClass(PolynomialExpander::class)]
 class PolynomialExpanderTest extends TestCase
 {
-    /**
-     * @var PolynomialExpander
-     */
-    protected $transformer;
+    protected PolynomialExpander $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->transformer = new PolynomialExpander(2);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testTransform() : void
     {
-        $this->assertInstanceOf(PolynomialExpander::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function transform() : void
-    {
-        $dataset = new Unlabeled([
+        $dataset = new Unlabeled(samples: [
             [1, 2, 3, 4],
             [40, 20, 30, 10],
             [100, 300, 200, 400],

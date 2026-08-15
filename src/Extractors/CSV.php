@@ -9,7 +9,6 @@ use Traversable;
 use function Rubix\ML\iterator_first;
 use function is_dir;
 use function is_file;
-use function is_array;
 use function is_readable;
 use function is_writable;
 use function fopen;
@@ -132,19 +131,20 @@ class CSV implements Extractor, Exporter
      * Export an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $overwrite
      * @throws RuntimeException
      */
-    public function export(iterable $iterator) : void
+    public function export(iterable $iterator, bool $overwrite = false) : void
     {
         if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("Path {$this->path} is not writable.");
+            throw new RuntimeException("File {$this->path} is not writable.");
         }
 
         if (!is_file($this->path) and !is_writable(dirname($this->path))) {
-            throw new RuntimeException("Path {$this->path} is not writable.");
+            throw new RuntimeException('Folder ' . dirname($this->path) . ' is not writable.');
         }
 
-        $handle = fopen($this->path, 'w');
+        $handle = fopen($this->path, $overwrite ? 'w' : 'a');
 
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
@@ -220,10 +220,6 @@ class CSV implements Extractor, Exporter
 
             if (isset($header)) {
                 $record = array_combine($header, $record);
-
-                if (!is_array($record)) {
-                    throw new RuntimeException("Malformed record on line $line.");
-                }
             }
 
             yield $record;

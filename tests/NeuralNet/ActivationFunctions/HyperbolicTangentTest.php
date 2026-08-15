@@ -1,131 +1,119 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
-use PHPUnit\Framework\TestCase;
 use Generator;
+use NumPower;
+use NDArray;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 
-/**
- * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent
- */
+#[Group('ActivationFunctions')]
+#[CoversClass(HyperbolicTangent::class)]
 class HyperbolicTangentTest extends TestCase
 {
     /**
      * @var HyperbolicTangent
      */
-    protected $activationFn;
+    protected HyperbolicTangent $activationFn;
 
     /**
-     * @before
+     * @return Generator<array>
+     */
+    public static function computeProvider() : Generator
+    {
+        yield [
+            NumPower::array([
+                [9.0, 2.5, 2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            [
+                [0.9999999, 0.9866142, 0.9640275, 0.7615941, -0.4621171, 0.0, 1.0, -1.0],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            [
+                [-0.1194273, 0.3004370, -0.4542164],
+                [0.7573622, 0.0798297, -0.0299910],
+                [0.0499583, -0.4776999, 0.4929879],
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<array>
+     */
+    public static function differentiateProvider() : Generator
+    {
+        yield [
+            NumPower::array([
+                [0.9640275, 0.7615941, -0.4621171, 0.0, 1.0, -1.0],
+            ]),
+            [
+                [0.0706509, 0.4199743, 0.7864477, 1.0, 0.0, 0.0],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [-0.1194273, 0.3004370, -0.4542164],
+                [0.7573623, 0.0797883, -0.0299912],
+                [0.0499583, -0.4778087, 0.4930591],
+            ]),
+            [
+                [0.9857371, 0.9097375, 0.7936874],
+                [0.4264023, 0.9936338, 0.9991005],
+                [0.9975042, 0.7716988, 0.7568927],
+            ],
+        ];
+    }
+
+    /**
+     * Set up the test case.
      */
     protected function setUp() : void
     {
+        parent::setUp();
+
         $this->activationFn = new HyperbolicTangent();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    #[Test]
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
     {
-        $this->assertInstanceOf(HyperbolicTangent::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
+        static::assertEquals('Hyperbolic Tangent', (string) $this->activationFn);
     }
 
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    public function activate(Matrix $input, array $expected) : void
+    #[Test]
+    #[TestDox('Correctly activates the input')]
+    #[DataProvider('computeProvider')]
+    public function testActivate(NDArray $input, array $expected) : void
     {
-        $activations = $this->activationFn->activate($input)->asArray();
+        $activations = $this->activationFn->activate($input)->toArray();
 
-        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function computeProvider() : Generator
+    #[Test]
+    #[TestDox('Correctly differentiates the output')]
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(NDArray $output, array $expected) : void
     {
-        yield [
-            Matrix::quick([
-                [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            [
-                [0.7615941559557649, -0.46211715726000974, 0.0, 1.0, -0.9999999958776927],
-            ],
-        ];
+        $derivatives = $this->activationFn->differentiate($output)->toArray();
 
-        yield [
-            Matrix::quick([
-                [-0.12, 0.31, -0.49],
-                [0.99, 0.08, -0.03],
-                [0.05, -0.52, 0.54],
-            ]),
-            [
-                [-0.11942729853438588, 0.3004370971476541, -0.4542164326822591],
-                [0.7573623242165263, 0.07982976911113136, -0.029991003238820143],
-                [0.04995837495787998, -0.477700012168498, 0.49298796667532435],
-            ],
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
-    }
-
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function differentiateProvider() : Generator
-    {
-        yield [
-            Matrix::quick([
-                [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            Matrix::quick([
-                [0.7615941559557649, -0.46211715726000974, 0.0, 1.0, -0.9999999958776927],
-            ]),
-            [
-                [0.41997434161402614, 0.7864477329659274, 1.0, 0.0, 8.244614546626394E-9],
-            ],
-        ];
-
-        yield [
-            Matrix::quick([
-                [-0.12, 0.31, -0.49],
-                [0.99, 0.08, -0.03],
-                [0.05, -0.52, 0.54],
-            ]),
-            Matrix::quick([
-                [-0.11942729853438588, 0.3004370971476541, -0.4542164326822591],
-                [0.7573623242165263, 0.07982976911113136, -0.029991003238820143],
-                [0.04995837495787998, -0.477700012168498, 0.49298796667532435],
-            ]),
-            [
-                [0.9857371203647787, 0.9097375506574911, 0.7936874322814028],
-                [0.4264023098573413, 0.9936272079636634, 0.9991005397247291],
-                [0.9975041607715679, 0.7718026983742169, 0.7569628647133293],
-            ],
-        ];
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 }

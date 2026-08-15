@@ -15,7 +15,7 @@ class TSNEBench
     protected const TESTING_SIZE = 1000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled;
+     * @var \Rubix\ML\Datasets\Labeled
      */
     protected $testing;
 

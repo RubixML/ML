@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Exceptions\InvalidStandardDeviationException;
 
 /**
  * Normal
@@ -14,54 +21,45 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class Normal implements Initializer
+class Normal extends AbstractInitializer
 {
     /**
-     * The standard deviation of the distribution to sample from.
-     *
-     * @var float
-     */
-    protected float $stdDev;
-
-    /**
-     * @param float $stdDev
+     * @param float $stdDev The standard deviation of the distribution to sample from
      * @throws InvalidArgumentException
      */
-    public function __construct(float $stdDev = 0.05)
+    public function __construct(protected float $stdDev = 0.05)
     {
-        if ($stdDev <= 0.0) {
-            throw new InvalidArgumentException('Standard deviation must'
-                . " be greater than 0, $stdDev given.");
+        if ($this->stdDev <= 0.0) {
+            throw new InvalidStandardDeviationException(
+                message: "Standard deviation must be greater than 0, $stdDev given."
+            );
         }
 
-        $this->stdDev = $stdDev;
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**
-     * Initialize a weight matrix W in the dimensions fan in x fan out.
-     *
-     * @internal
-     *
-     * @param int<0,max> $fanIn
-     * @param int<0,max> $fanOut
-     * @return Matrix
+     * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix
+    public function initialize(int $fanIn, int $fanOut) : NDArray
     {
-        return Matrix::gaussian($fanOut, $fanIn)
-            ->multiply($this->stdDev);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
+
+        return NumPower::normal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
     }
 
     /**
-     * Return the string representation of the object.
+     * Return the string representation of the initializer.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {
-        return "Normal (std_dev: {$this->stdDev})";
+        return "Normal (stdDev: {$this->stdDev})";
     }
 }

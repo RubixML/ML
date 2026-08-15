@@ -1,8 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Hyperbolic Tangent
@@ -13,53 +19,50 @@ use Tensor\Matrix;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HyperbolicTangent implements ActivationFunction
+class HyperbolicTangent implements ActivationFunction, OBufferDerivative
 {
-    /**
-     * Compute the activation.
-     *
-     * @internal
-     *
-     * @param Matrix $input
-     * @return Matrix
-     */
-    public function activate(Matrix $input) : Matrix
+    public function __construct()
     {
-        return $input->map('tanh');
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**
-     * Calculate the derivative of the activation.
+     * Apply the Hyperbolic Tangent activation function to the input.
      *
-     * @internal
+     * f(x) = tanh(x)
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @return Matrix
+     * @param NDArray $input The input values
+     * @return NDArray The activated values
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function activate(NDArray $input) : NDArray
     {
-        return $output->map([$this, '_differentiate']);
+        return NumPower::tanh($input);
     }
 
     /**
-     * @internal
+     * Calculate the derivative of the activation function.
      *
-     * @param float $output
-     * @return float
+     * f'(x) = 1 - tanh^2(x)
+     *
+     * @param NDArray $x Output matrix
+     * @return NDArray Derivative matrix
      */
-    public function _differentiate(float $output) : float
+    public function differentiate(NDArray $x) : NDArray
     {
-        return 1.0 - ($output ** 2);
+        $squared = NumPower::pow($x, 2);
+
+        return NumPower::subtract(1.0, $squared);
     }
 
     /**
-     * Return the string representation of the object.
+     * Return the string representation of the activation function.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

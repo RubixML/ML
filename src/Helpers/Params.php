@@ -153,7 +153,7 @@ class Params
      * @param mixed $value
      * @return string
      */
-    public static function toString($value) : string
+    public static function toString(mixed $value) : string
     {
         switch (gettype($value)) {
             case 'object':

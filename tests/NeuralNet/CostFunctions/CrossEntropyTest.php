@@ -1,178 +1,198 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
-use Tensor\Matrix;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use NumPower;
+use NDArray;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group CostFunctions
- * @covers \Rubix\ML\NeuralNet\CostFunctions\CrossEntropy
- */
+#[Group('CostFunctions')]
+#[CoversClass(CrossEntropy::class)]
 class CrossEntropyTest extends TestCase
 {
-    /**
-     * @var CrossEntropy
-     */
-    protected $costFn;
+    protected CrossEntropy $costFn;
 
-    /**
-     * @before
-     */
+    public static function computeProvider() : Generator
+    {
+        yield [
+            NumPower::array([]),
+            NumPower::array([]),
+            NAN,
+        ];
+
+        yield [
+            NumPower::array([
+                [0.99, 0.01, 0.0],
+            ]),
+            NumPower::array([
+                [1.0, 0.0, 0.0],
+            ]),
+            0.0033501,
+        ];
+
+        yield [
+            NumPower::array([
+                [0.2, 0.4, 0.4],
+            ]),
+            NumPower::array([
+                [0.0, 1.0, 0.0],
+            ]),
+            0.3054302,
+        ];
+
+        yield [
+            NumPower::array([
+                [0.0, 0.1, 0.9],
+            ]),
+            NumPower::array([
+                [1.0, 0.0, 0.0],
+            ]),
+            6.1402269,
+        ];
+
+        yield [
+            NumPower::array([
+                [0.2, 0.1, 0.7],
+                [0.0, 0.9, 0.1],
+                [0.1, 0.3, 0.6],
+            ]),
+            NumPower::array([
+                [0.0, 0.0, 1.0],
+                [0.0, 1.0, 0.0],
+                [0.0, 0.0, 1.0],
+            ]),
+            0.1080956,
+        ];
+    }
+
+    public static function differentiateProvider() : Generator
+    {
+        yield [
+            NumPower::array([
+                [0.99, 0.01, 0.0],
+            ]),
+            NumPower::array([
+                [1.0, 0.0, 0.0],
+            ]),
+            [
+                [-1.0101009, 1.0101009, 0.0],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [0.2, 0.4, 0.4],
+            ]),
+            NumPower::array([
+                [0.0, 1.0, 0.0],
+            ]),
+            [
+                [1.2499999, -2.5, 1.6666666],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [0.0, 0.1, 0.9],
+            ]),
+            NumPower::array([
+                [1.0, 0.0, 0.0],
+            ]),
+            [
+                [-100000000.0, 1.1111111, 9.9999981],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [0.2, 0.1, 0.7],
+                [0.0, 0.9, 0.1],
+                [0.1, 0.3, 0.6],
+            ]),
+            NumPower::array([
+                [0.0, 0.0, 1.0],
+                [0.0, 1.0, 0.0],
+                [0.0, 0.0, 1.0],
+            ]),
+            [
+                [1.2499999, 1.1111111, -1.4285714],
+                [0.0, -1.1111111, 1.1111111],
+                [1.1111111, 1.4285714, -1.6666666],
+            ],
+        ];
+    }
+
     protected function setUp() : void
     {
         $this->costFn = new CrossEntropy();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    #[Test]
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
     {
-        $this->assertInstanceOf(CrossEntropy::class, $this->costFn);
-        $this->assertInstanceOf(CostFunction::class, $this->costFn);
+        static::assertEquals('Cross Entropy', (string) $this->costFn);
     }
 
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param float $expected
-     */
-    public function compute(Matrix $output, Matrix $target, float $expected) : void
+    #[Test]
+    #[TestDox('Throws exception when output and target shapes do not match in compute')]
+    public function testComputeThrowsExceptionOnShapeMismatch() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Output and target must have the same shape.');
+
+        $output = NumPower::array([[1.0, 2.0, 3.0]]);
+        $target = NumPower::array([[1.0, 2.0]]);
+
+        $this->costFn->compute($output, $target);
+    }
+
+    #[Test]
+    #[TestDox('Throws exception when output and target shapes do not match in differentiate')]
+    public function testDifferentiateThrowsExceptionOnShapeMismatch() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Output and target must have the same shape.');
+
+        $output = NumPower::array([[1.0, 2.0, 3.0]]);
+        $target = NumPower::array([[1.0, 2.0]]);
+
+        $this->costFn->differentiate($output, $target);
+    }
+
+    #[Test]
+    #[TestDox('Compute loss score')]
+    #[DataProvider('computeProvider')]
+    public function testCompute(NDArray $output, NDArray $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
-        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
+        if (is_nan($expected)) {
+            self::assertNan($loss);
+        } else {
+            self::assertEqualsWithDelta($expected, $loss, 1e-7);
+        }
     }
 
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function computeProvider() : Generator
+    #[Test]
+    #[TestDox('Calculate gradient of cost function')]
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(NDArray $output, NDArray $target, array $expected) : void
     {
-        yield [
-            Matrix::quick([
-                [0.99, 0.01, 0.0],
-            ]),
-            Matrix::quick([
-                [1.0, 0.0, 0.0],
-            ]),
-            0.00335011195116715,
-        ];
+        $gradient = $this->costFn->differentiate($output, $target);
 
-        yield [
-            Matrix::quick([
-                [0.2, 0.4, 0.4],
-            ]),
-            Matrix::quick([
-                [0.0, 1.0, 0.0],
-            ]),
-            0.3054302439580517,
-        ];
+        $gradientArray = $gradient->toArray();
 
-        yield [
-            Matrix::quick([
-                [0.0, 0.1, 0.9],
-            ]),
-            Matrix::quick([
-                [1.0, 0.0, 0.0],
-            ]),
-            6.140226914650789,
-        ];
-
-        yield [
-            Matrix::quick([
-                [0.2, 0.1, 0.7],
-                [0.0, 0.9, 0.1],
-                [0.1, 0.3, 0.6],
-            ]),
-            Matrix::quick([
-                [0.0, 0.0, 1.0],
-                [0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0],
-            ]),
-            0.10809567592917217,
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param list<list<float>> $expected
-     */
-    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
-    {
-        $gradient = $this->costFn->differentiate($output, $target)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
-    }
-
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function differentiateProvider() : Generator
-    {
-        yield [
-            Matrix::quick([
-                [0.99, 0.01, 0.0],
-            ]),
-            Matrix::quick([
-                [1.0, 0.0, 0.0],
-            ]),
-            [
-                [-1.01010101010101, 1.01010101010101, 0.0],
-            ],
-        ];
-
-        yield [
-            Matrix::quick([
-                [0.2, 0.4, 0.4],
-            ]),
-            Matrix::quick([
-                [0.0, 1.0, 0.0],
-            ]),
-            [
-                [1.2499999999999998, -2.5, 1.6666666666666667],
-            ],
-        ];
-
-        yield [
-            Matrix::quick([
-                [0.0, 0.1, 0.9],
-            ]),
-            Matrix::quick([
-                [1.0, 0.0, 0.0],
-            ]),
-            [
-                [-100000000.0, 1.111111111111111, 10.000000000000002],
-            ],
-        ];
-
-        yield [
-            Matrix::quick([
-                [0.2, 0.1, 0.7],
-                [0.0, 0.9, 0.1],
-                [0.1, 0.3, 0.6],
-            ]),
-            Matrix::quick([
-                [0.0, 0.0, 1.0],
-                [0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0],
-            ]),
-            [
-                [1.2499999999999998, 1.111111111111111, -1.4285714285714286],
-                [0.0, -1.1111111111111112, 1.111111111111111],
-                [1.111111111111111, 1.4285714285714286, -1.6666666666666667],
-            ],
-        ];
+        self::assertEqualsWithDelta($expected, $gradientArray, 1e-7);
     }
 }

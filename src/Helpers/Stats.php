@@ -106,9 +106,10 @@ class Stats
      * @param mixed[] $values
      * @param float $q
      * @throws InvalidArgumentException
-     * @return float
+     * @throws InvalidArgumentException
+     * @return int|float
      */
-    public static function quantile(array $values, float $q) : float
+    public static function quantile(array $values, float $q) : int|float
     {
         return current(self::quantiles($values, [$q])) ?: NAN;
     }
@@ -168,7 +169,7 @@ class Stats
             throw new InvalidArgumentException('Variance is undefined for empty set.');
         }
 
-        $mean = $mean ?? self::mean($values);
+        $mean ??= self::mean($values);
 
         $ssd = 0.0;
 
@@ -194,7 +195,7 @@ class Stats
                 . ' is undefined for empty set.');
         }
 
-        $median = $median ?? self::median($values);
+        $median ??= self::median($values);
 
         $deviations = [];
 
@@ -219,7 +220,7 @@ class Stats
             throw new InvalidArgumentException('Skewness is undefined for empty set.');
         }
 
-        $mean = $mean ?? self::mean($values);
+        $mean ??= self::mean($values);
 
         $numerator = self::centralMoment($values, 3, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 1.5;
@@ -241,7 +242,7 @@ class Stats
             throw new InvalidArgumentException('Kurtosis is undefined for empty set.');
         }
 
-        $mean = $mean ?? self::mean($values);
+        $mean ??= self::mean($values);
 
         $numerator = self::centralMoment($values, 4, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 2;
@@ -268,7 +269,7 @@ class Stats
             throw new InvalidArgumentException('Moment cannot be less than 1.');
         }
 
-        $mean = $mean ?? self::mean($values);
+        $mean ??= self::mean($values);
 
         $sigma = 0.0;
 

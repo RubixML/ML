@@ -2,8 +2,12 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Tensor\Tensor;
+use NDArray;
+use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
@@ -16,6 +20,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class StepDecay implements Optimizer
 {
@@ -45,7 +50,7 @@ class StepDecay implements Optimizer
      *
      * @var int
      */
-    protected int $t = 0;
+    protected int $steps = 0;
 
     /**
      * @param float $rate
@@ -56,19 +61,27 @@ class StepDecay implements Optimizer
     public function __construct(float $rate = 0.01, int $losses = 100, float $decay = 1e-3)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must be'
-                . " greater than 0, $rate given.");
+            throw new InvalidArgumentException(
+                "Learning rate must be greater than 0, $rate given."
+            );
         }
 
         if ($losses < 1) {
-            throw new InvalidArgumentException('The number of steps per'
-                . " floor must be greater than 0, $losses given.");
+            throw new InvalidArgumentException(
+                "The number of steps per floor must be greater than 0, $losses given."
+            );
         }
 
         if ($decay < 0.0) {
-            throw new InvalidArgumentException('Decay rate must be'
-                . " positive, $decay given.");
+            throw new InvalidArgumentException(
+                "Decay rate must be positive, $decay given."
+            );
         }
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $this->rate = $rate;
         $this->losses = $losses;
@@ -78,21 +91,33 @@ class StepDecay implements Optimizer
     /**
      * Take a step of gradient descent for a given parameter.
      *
+     * Step Decay update (element-wise):
+     *   floor = ⌊t / k⌋
+     *   η_t = η₀ / (1 + floor · λ)
+     *   Δθ_t = η_t · g_t
+     *
+     * where:
+     *   - t is the current step number,
+     *   - k is the number of steps per floor,
+     *   - η₀ is the initial learning rate,
+     *   - λ is the decay factor,
+     *   - g_t is the current gradient.
+     *
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @param NDArray $gradient
+     * @return NDArray
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function step(Parameter $param, NDArray $gradient) : NDArray
     {
-        $floor = floor($this->t / $this->losses);
+        $floor = floor($this->steps / $this->losses);
 
         $rate = $this->rate * (1.0 / (1.0 + $floor * $this->decay));
 
-        ++$this->t;
+        ++$this->steps;
 
-        return $gradient->multiply($rate);
+        return NumPower::multiply($gradient, $rate);
     }
 
     /**

@@ -2,18 +2,24 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Tensor\Matrix;
-use Rubix\ML\Encoding;
+use NDArray;
+use NumPower;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Encoding;
+use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Traversable;
-
 use function array_reverse;
+use function Rubix\ML\array_pack;
 
 /**
  * Feed Forward
@@ -26,6 +32,7 @@ use function array_reverse;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class FeedForward implements Network
 {
@@ -39,7 +46,7 @@ class FeedForward implements Network
     /**
      * The hidden layers of the network.
      *
-     * @var list<Layers\Hidden>
+     * @var list<Hidden>
      */
     protected array $hidden = [
         //
@@ -48,7 +55,7 @@ class FeedForward implements Network
     /**
      * The pathing of the backward pass through the hidden layers.
      *
-     * @var list<Layers\Hidden>
+     * @var list<Hidden>
      */
     protected array $backPass = [
         //
@@ -70,12 +77,17 @@ class FeedForward implements Network
 
     /**
      * @param Input $input
-     * @param Layers\Hidden[] $hidden
+     * @param Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
      */
     public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+
         $hidden = array_values($hidden);
 
         $backPass = array_reverse($hidden);
@@ -100,7 +112,7 @@ class FeedForward implements Network
     /**
      * Return an array of hidden layers indexed left to right.
      *
-     * @return list<Layers\Hidden>
+     * @return list<Hidden>
      */
     public function hidden() : array
     {
@@ -120,7 +132,7 @@ class FeedForward implements Network
     /**
      * Return all the layers in the network.
      *
-     * @return Traversable<Layers\Layer>
+     * @return Traversable<Layer>
      */
     public function layers() : Traversable
     {
@@ -177,17 +189,23 @@ class FeedForward implements Network
      * Run an inference pass and return the activations at the output layer.
      *
      * @param Dataset $dataset
-     * @return Matrix
+     * @return NDArray
      */
-    public function infer(Dataset $dataset) : Matrix
+    public function infer(Dataset $dataset) : NDArray
     {
-        $input = Matrix::quick($dataset->samples())->transpose();
+        if ($dataset->empty()) {
+            return NumPower::array([]);
+        }
+
+        $samples = array_pack($dataset->samples());
+
+        $input = NumPower::transpose(NumPower::array($samples), [1, 0]);
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
         }
 
-        return $input->transpose();
+        return NumPower::transpose($input, [1, 0]);
     }
 
     /**
@@ -199,7 +217,7 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $dataset) : float
     {
-        $input = Matrix::quick($dataset->samples())->transpose();
+        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
 
         $this->feed($input);
 
@@ -211,10 +229,10 @@ class FeedForward implements Network
     /**
      * Feed a batch through the network and return a matrix of activations at the output later.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function feed(Matrix $input) : Matrix
+    public function feed(NDArray $input) : NDArray
     {
         foreach ($this->layers() as $layer) {
             $input = $layer->forward($input);

@@ -16,7 +16,7 @@ composer require rubix/ml
 ```
 
 ### Requirements
-- [PHP](https://php.net/manual/en/install.php) 7.4 or above
+- [PHP](https://php.net/manual/en/install.php) 8.0 or above
 
 #### Recommended
 - [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
@@ -64,3 +64,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 The code is licensed [MIT](LICENSE) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+

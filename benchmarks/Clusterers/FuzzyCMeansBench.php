@@ -17,12 +17,12 @@ class FuzzyCMeansBench
     protected const TESTING_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled;
+     * @var \Rubix\ML\Datasets\Labeled
      */
     protected $training;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled;
+     * @var \Rubix\ML\Datasets\Labeled
      */
     protected $testing;
 
