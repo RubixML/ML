@@ -129,7 +129,23 @@ class TSNETest extends TestCase
                 $this->assertEqualsWithDelta($expected[$i][$j], $value, 1e-8);
             }
         }
-    }
+
+        // Also cover dofs > 1 (e.g. 3D embedding => dofs=2)
+        $embedder = new TSNE(3);
+
+        $y3d = Matrix::quick([
+            [1.0, 0.0, 0.0],
+            [2.0, 0.0, 0.0],
+            [3.0, 0.0, 0.0],
+        ]);
+
+        $gradient3d = $this->invokeGradient($embedder, $p, $y3d, $distances)->asArray();
+
+        $this->assertEqualsWithDelta(-0.424792, $gradient3d[0][0], 1e-6);
+        $this->assertEqualsWithDelta(0.0, $gradient3d[1][0], 1e-8);
+        $this->assertEqualsWithDelta(0.424792, $gradient3d[2][0], 1e-6);
+        $this->assertEqualsWithDelta(0.0, $gradient3d[0][1], 1e-8);
+        $this->assertEqualsWithDelta(0.0, $gradient3d[0][2], 1e-8);
 
     /**
      * @test
