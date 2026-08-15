@@ -132,7 +132,7 @@ class KDNeighborsRegressorTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'k' => 4,
+            'k' => 5,
             'weighted' => true,
             'tree' => new KDTree(),
         ];
