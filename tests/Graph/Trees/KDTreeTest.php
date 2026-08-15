@@ -6,6 +6,7 @@ use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BinaryTree;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -83,11 +84,11 @@ class KDTreeTest extends TestCase
 
         [$samples, $labels, $distances] = $this->tree->range($sample, 5.0);
 
-        $this->assertCount(50, $samples);
-        $this->assertCount(50, $labels);
-        $this->assertCount(50, $distances);
+        $this->assertCount(51, $samples);
+        $this->assertCount(51, $labels);
+        $this->assertCount(51, $distances);
 
-        $this->assertCount(1, array_unique($labels));
+        $this->assertCount(2, array_unique($labels));
     }
 
     /**
@@ -104,5 +105,64 @@ class KDTreeTest extends TestCase
         $this->tree->grow($dataset);
 
         $this->assertEquals(2, $this->tree->height());
+    }
+
+    /**
+     * @test
+     */
+    public function nearestMatchesBruteForce() : void
+    {
+        $samples = [
+            [7.2, 5.7],
+            [8.7, 6.7],
+            [9.2, 5.9],
+            [1.8, 7.9],
+            [0.2, 5.4],
+            [0.6, 9.3],
+            [0.6, 0.8],
+            [2.1, 7.1],
+            [4.3, 4.5],
+        ];
+
+        $labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
+
+        $tree = new KDTree(5, new Euclidean());
+
+        $tree->grow(Labeled::quick($samples, $labels));
+
+        [$neighbors, $neighborLabels, $distances] = $tree->nearest([6.8, 1.3], 1);
+
+        $this->assertEquals([[4.3, 4.5]], $neighbors);
+        $this->assertEquals(['i'], $neighborLabels);
+        $this->assertEqualsWithDelta(4.06078810084939, $distances[0], 1e-6);
+    }
+
+    /**
+     * @test
+     */
+    public function rangeMatchesBruteForce() : void
+    {
+        $samples = [];
+
+        for ($x = 0; $x <= 10; $x += 2) {
+            for ($y = 0; $y <= 10; $y += 2) {
+                $samples[] = [(float) $x, (float) $y];
+            }
+        }
+
+        $labels = array_map('strval', range(0, 35));
+
+        $tree = new KDTree(5, new Euclidean());
+
+        $tree->grow(Labeled::quick($samples, $labels));
+
+        [$neighbors, $neighborLabels, $distances] = $tree->range([5.0, 15.0], 5.1);
+
+        $this->assertCount(2, $neighbors);
+        $this->assertCount(2, $neighborLabels);
+        $this->assertCount(2, $distances);
+
+        $this->assertEqualsWithDelta(5.09901951359278, $distances[0], 1e-6);
+        $this->assertEqualsWithDelta(5.09901951359278, $distances[1], 1e-6);
     }
 }

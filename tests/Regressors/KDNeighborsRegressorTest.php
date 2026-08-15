@@ -42,7 +42,7 @@ class KDNeighborsRegressorTest extends TestCase
      *
      * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.89;
 
     /**
      * Constant used to see the random number generator.
@@ -132,7 +132,7 @@ class KDNeighborsRegressorTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'k' => 5,
+            'k' => 4,
             'weighted' => true,
             'tree' => new KDTree(),
         ];

@@ -1,3 +1,6 @@
+- 2.5.3
+    - Fix KDTree edge pruning + optimize traversal
+
 - 2.5.2
     - Fix bug in One-class SVM inferencing
 
