@@ -527,9 +527,9 @@ class TSNE implements Transformer, Verbose
             ->add(1.0)
             ->pow((1.0 + $this->dofs) / -2.0);
 
-        $q = $kernel->divide(
-            max($kernel->sum()->sum() - $kernel->diagonalAsVector()->sum(), EPSILON)
-        );
+        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
+
+        $q = $kernel->divide(max($norm, EPSILON));
 
         $pqd = $p->subtract($q)->multiply($kernel);
 
