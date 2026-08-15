@@ -460,7 +460,7 @@ class TSNE implements Transformer, Verbose
 
                 foreach ($row as $k => $distance) {
                     if ($i !== $k) {
-                        $affinity = exp(-$distance * $beta);
+                        $affinity = exp(-$distance ** 2 * $beta);
 
                         $candidate[] = $affinity;
                         $pSigma += $affinity;
@@ -476,8 +476,10 @@ class TSNE implements Transformer, Verbose
                 foreach ($candidate as $k => &$affinity) {
                     $affinity /= $pSigma;
 
-                    $distSigma += $row[$k] * $affinity;
+                    $distSigma += $row[$k] ** 2 * $affinity;
                 }
+
+                unset($affinity);
 
                 $entropy = log($pSigma) + $beta * $distSigma;
 
@@ -522,16 +524,19 @@ class TSNE implements Transformer, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $kernel = $distances->square()
+        $base = $distances->square()
             ->divide($this->dofs)
-            ->add(1.0)
-            ->pow((1.0 + $this->dofs) / -2.0);
+            ->add(1.0);
+
+        $kernel = $base->pow((1.0 + $this->dofs) / -2.0);
+
+        $weights = $base->pow(-1.0);
 
         $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
 
         $q = $kernel->divide(max($norm, EPSILON));
 
-        $pqd = $p->subtract($q)->multiply($kernel);
+        $pqd = $p->subtract($q)->multiply($weights);
 
         $gradient = [];
 

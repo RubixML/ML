@@ -129,23 +129,71 @@ class TSNETest extends TestCase
                 $this->assertEqualsWithDelta($expected[$i][$j], $value, 1e-8);
             }
         }
+    }
 
-        // Also cover dofs > 1 (e.g. 3D embedding => dofs=2)
-        $embedder = new TSNE(3);
+    /**
+     * @test
+     */
+    public function gradientWeight() : void
+    {
+        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
 
-        $y3d = Matrix::quick([
+        $p = Matrix::quick([
+            [0.0, 0.3, 0.2],
+            [0.3, 0.0, 0.3],
+            [0.2, 0.3, 0.0],
+        ]);
+
+        $y = Matrix::quick([
+            [0.0, 0.0, 0.0],
             [1.0, 0.0, 0.0],
-            [2.0, 0.0, 0.0],
             [3.0, 0.0, 0.0],
         ]);
 
-        $gradient3d = $this->invokeGradient($embedder, $p, $y3d, $distances)->asArray();
+        $distances = Matrix::quick([
+            [0.0, 1.0, 3.0],
+            [1.0, 0.0, 2.0],
+            [3.0, 2.0, 0.0],
+        ]);
 
-        $this->assertEqualsWithDelta(-0.424792, $gradient3d[0][0], 1e-6);
-        $this->assertEqualsWithDelta(0.0, $gradient3d[1][0], 1e-8);
-        $this->assertEqualsWithDelta(0.424792, $gradient3d[2][0], 1e-6);
-        $this->assertEqualsWithDelta(0.0, $gradient3d[0][1], 1e-8);
-        $this->assertEqualsWithDelta(0.0, $gradient3d[0][2], 1e-8);
+        $gradient = $this->invokeGradient($embedder, $p, $y, $distances);
+
+        $expected = [
+            [-0.18091856296078745, 0.0, 0.0],
+            [-0.4321223317436502, 0.0, 0.0],
+            [0.6130408947044377, 0.0, 0.0],
+        ];
+
+        foreach ($gradient->asArray() as $i => $row) {
+            foreach ($row as $j => $value) {
+                $this->assertEqualsWithDelta($expected[$i][$j], $value, 1e-8);
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function affinities() : void
+    {
+        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
+
+        $distances = [
+            [0.0, 1.0, 2.0, 3.0],
+            [1.0, 0.0, 1.0, 2.0],
+            [2.0, 1.0, 0.0, 1.0],
+            [3.0, 2.0, 1.0, 0.0],
+        ];
+
+        $affinities = $this->invokeAffinities($embedder, $distances);
+
+        $row = $affinities[0];
+
+        $left = log($row[1] / $row[2]) * ($distances[0][3] ** 2 - $distances[0][2] ** 2);
+        $right = log($row[2] / $row[3]) * ($distances[0][2] ** 2 - $distances[0][1] ** 2);
+
+        $this->assertEqualsWithDelta($left, $right, 1e-8);
+    }
 
     /**
      * @test
@@ -179,5 +227,19 @@ class TSNETest extends TestCase
         $method->setAccessible(true);
 
         return $method->invokeArgs($embedder, [$p, $y, $distances]);
+    }
+
+    /**
+     * @param TSNE $embedder
+     * @param array<float[]> $distances
+     * @return array<float[]>
+     */
+    private function invokeAffinities(TSNE $embedder, array $distances) : array
+    {
+        $method = new ReflectionMethod(TSNE::class, 'affinities');
+
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($embedder, [$distances]);
     }
 }
