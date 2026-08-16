@@ -62,7 +62,7 @@ class ErrorAnalysis implements ReportGenerator
 
             $l1[] = abs($error);
             $l2[] = $se = $error ** 2;
-            $are[] = abs($error / ($prediction ?: EPSILON));
+            $are[] = abs($error / ($label ?: EPSILON));
             $sle[] = log((1.0 + $label) / ((1.0 + $prediction) ?: EPSILON)) ** 2;
 
             $sse += $se;

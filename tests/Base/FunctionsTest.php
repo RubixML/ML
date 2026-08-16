@@ -23,6 +23,8 @@ use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
 use function Rubix\ML\iterator_filter;
 use function Rubix\ML\iterator_contains_nan;
+use function Rubix\ML\warn_deprecated;
+use function is_infinite;
 
 #[Group('Functions')]
 #[CoversFunction('\Rubix\ML\argmax')]
@@ -90,7 +92,40 @@ class FunctionsTest extends TestCase
         ];
     }
 
-    public static function sigmoidProvider() : Generator
+    /**
+     * @test
+     */
+    public function logsumexp() : void
+    {
+        $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
+
+        $this->assertEquals(2.8194175400311074, $value);
+
+        $extreme = logsumexp([-1000.0, -1001.0]);
+
+        $this->assertEquals(-999.6867383124818, $extreme);
+
+        $this->assertFalse(is_infinite($extreme));
+
+        $this->assertEquals(-INF, logsumexp([-INF, -INF]));
+    }
+
+    /**
+     * @test
+     * @dataProvider sigmoidProvider
+     *
+     * @param float $value
+     * @param float $expected
+     */
+    public function sigmoid(float $value, float $expected) : void
+    {
+        $this->assertEquals($expected, sigmoid($value));
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function sigmoidProvider() : Generator
     {
         yield [2.0, 0.8807970779778823];
 
@@ -224,7 +259,7 @@ class FunctionsTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('sigmoidProvider')]
-    public function sigmoid(float $value, float $expected) : void
+    public function sigmoidTest(float $value, float $expected) : void
     {
         $this->assertEquals($expected, sigmoid($value));
     }

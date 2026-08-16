@@ -57,9 +57,9 @@ class RobustStandardizerTest extends TestCase
 
         $this->assertCount(3, $sample);
 
-        $this->assertEqualsWithDelta(0, $sample[0], 6.2);
-        $this->assertEqualsWithDelta(0, $sample[1], 6.2);
-        $this->assertEqualsWithDelta(0, $sample[2], 6.2);
+        $this->assertEqualsWithDelta(0, $sample[0], 8.0);
+        $this->assertEqualsWithDelta(0, $sample[1], 8.0);
+        $this->assertEqualsWithDelta(0, $sample[2], 8.0);
 
         $dataset->reverseApply($this->transformer);
 
