@@ -43,7 +43,7 @@ class SoftPlus implements ActivationFunction
      */
     public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        return $output->map([$this, '_differentiate']);
+        return $input->map([$this, '_differentiate']);
     }
 
     /**
@@ -60,12 +60,12 @@ class SoftPlus implements ActivationFunction
     /**
      * @internal
      *
-     * @param float $output
+     * @param float $input
      * @return float
      */
-    public function _differentiate(float $output) : float
+    public function _differentiate(float $input) : float
     {
-        return 1.0 / (1.0 + exp(-$output));
+        return 1.0 / (1.0 + exp(-$input));
     }
 
     /**

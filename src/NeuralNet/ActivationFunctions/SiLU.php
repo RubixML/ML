@@ -46,11 +46,20 @@ class SiLU implements ActivationFunction
      */
     public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        $ones = Matrix::ones(...$output->shape());
+        return $input->map([$this, '_differentiate']);
+    }
 
-        return $output->divide($input)
-            ->multiply($ones->subtract($output))
-            ->add($output);
+    /**
+     * @internal
+     *
+     * @param float $input
+     * @return float
+     */
+    public function _differentiate(float $input) : float
+    {
+        $sigmoid = 1.0 / (1.0 + exp(-$input));
+
+        return $sigmoid + $input * $sigmoid * (1.0 - $sigmoid);
     }
 
     /**
