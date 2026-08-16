@@ -299,10 +299,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
         $this->centroids = $seeds;
 
-        $sizes = array_fill(0, $this->k, 0);
-        $sizes[0] = $dataset->numSamples();
-
-        $this->sizes = $sizes;
+        $this->sizes = array_fill(0, $this->k, 0);
 
         $this->partial($dataset);
     }
@@ -330,7 +327,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $this->logger->info("Training $this");
         }
 
-        $labels = array_fill(0, $dataset->numSamples(), 0);
+        $labels = array_map([$this, 'predictSample'], $dataset->samples());
+
+        foreach ($labels as $cluster) {
+            ++$this->sizes[$cluster];
+        }
 
         $dataset = Labeled::quick($dataset->samples(), $labels);
 

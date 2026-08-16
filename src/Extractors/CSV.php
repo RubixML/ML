@@ -16,6 +16,7 @@ use function fgetcsv;
 use function fputcsv;
 use function fclose;
 use function array_combine;
+use function count;
 use function strlen;
 
 /**
@@ -214,11 +215,17 @@ class CSV implements Extractor, Exporter
         while (!feof($handle)) {
             $record = fgetcsv($handle, 0, $this->delimiter, $this->enclosure, $this->escape);
 
-            if (empty($record)) {
+            if (empty($record) or $record === [null]) {
+                ++$line;
+
                 continue;
             }
 
             if (isset($header)) {
+                if (count($record) !== count($header)) {
+                    throw new RuntimeException("Malformed record on line $line.");
+                }
+
                 $record = array_combine($header, $record);
             }
 

@@ -25,6 +25,12 @@ class MCCTest extends TestCase
     public static function scoreProvider() : Generator
     {
         yield [
+            ['A', 'B'],
+            ['A', 'C'],
+            0.3333333333333333,
+        ];
+
+        yield [
             ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
             0.16666666666666666,

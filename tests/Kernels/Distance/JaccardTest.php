@@ -33,6 +33,11 @@ class JaccardTest extends TestCase
             [1000, -2000, 3000], [1000, -2000, 3000],
             0.0,
         ];
+
+        yield [
+            [0, 0, 0], [0, 0, 0],
+            0.0,
+        ];
     }
 
     protected function setUp() : void
