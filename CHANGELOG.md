@@ -2,6 +2,7 @@
 
 - 2.5.5
     - Add numerical stability to logsumexp function
+    - Fix Mean Shift delta hyper-parameter
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
