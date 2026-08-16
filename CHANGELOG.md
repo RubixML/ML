@@ -6,6 +6,7 @@
     - Fix MAPE calculation in Error Analysis report
     - Fix SiLU derivative at zero
     - Remove spurious +1 in Relative Entropy gradient
+    - SoftPlus derivative expressed in terms of input
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
