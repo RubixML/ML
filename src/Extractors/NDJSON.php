@@ -121,6 +121,8 @@ class NDJSON implements Extractor, Exporter
             $data = rtrim(fgets($handle) ?: '');
 
             if (empty($data)) {
+                ++$line;
+
                 continue;
             }
 
