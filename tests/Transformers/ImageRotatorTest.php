@@ -39,6 +39,28 @@ class ImageRotatorTest extends TestCase
     /**
      * @test
      */
+    public function transformWithDefaultJitter() : void
+    {
+        $transformer = new ImageRotator(0.0);
+
+        $dataset = Unlabeled::quick([
+            [imagecreatefrompng('./tests/test.png'), 'whatever', 69],
+        ]);
+
+        $dataset->apply($transformer);
+
+        $sample = $dataset->sample(0);
+
+        $image = $sample[0];
+
+        $this->assertEquals(32, imagesx($image));
+        $this->assertEquals(32, imagesy($image));
+        $this->assertSame('whatever', $sample[1]);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
         $dataset = Unlabeled::quick([
