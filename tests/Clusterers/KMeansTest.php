@@ -22,6 +22,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+use function array_sum;
+use function min;
+
 /**
  * @group Clusterers
  * @covers \Rubix\ML\Clusterers\KMeans
@@ -186,6 +189,11 @@ class KMeansTest extends TestCase
         $this->assertCount(3, $sizes);
         $this->assertContainsOnly('int', $sizes);
 
+        $total = $folds[0]->numSamples() + $folds[1]->numSamples() + $folds[2]->numSamples();
+
+        $this->assertSame($total, array_sum($sizes));
+        $this->assertGreaterThanOrEqual(0, min($sizes));
+
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
@@ -196,6 +204,87 @@ class KMeansTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function onlineLearning() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $sizes = $this->estimator->sizes();
+
+        $this->assertSame(self::TRAIN_SIZE, array_sum($sizes));
+        $this->assertGreaterThanOrEqual(0, min($sizes));
+
+        $batch = $this->generator->generate(100);
+
+        $this->estimator->partial($batch);
+
+        $sizes = $this->estimator->sizes();
+
+        $this->assertCount(3, $sizes);
+        $this->assertContainsOnly('int', $sizes);
+        $this->assertSame(self::TRAIN_SIZE + $batch->numSamples(), array_sum($sizes));
+        $this->assertGreaterThanOrEqual(0, min($sizes));
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function onlineLearningKeepsSizesValid() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $total = self::TRAIN_SIZE;
+
+        for ($round = 0; $round < 3; ++$round) {
+            $batch = $this->generator->generate(50);
+
+            $total += $batch->numSamples();
+
+            $this->estimator->partial($batch);
+
+            $sizes = $this->estimator->sizes();
+
+            $this->assertCount(3, $sizes);
+            $this->assertContainsOnly('int', $sizes);
+            $this->assertSame($total, array_sum($sizes));
+            $this->assertGreaterThanOrEqual(0, min($sizes));
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function partialWithoutTrain() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->partial($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $sizes = $this->estimator->sizes();
+
+        $this->assertCount(3, $sizes);
+        $this->assertContainsOnly('int', $sizes);
+        $this->assertSame(self::TRAIN_SIZE, array_sum($sizes));
+        $this->assertGreaterThanOrEqual(0, min($sizes));
     }
 
     /**
