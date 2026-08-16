@@ -181,7 +181,7 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $mean = $input->mean();
-        $variance = $input->variance($mean)->clipLower(EPSILON);
+        $variance = $input->subtractColumnVector($mean)->square()->mean()->clipLower(EPSILON);
         $stdInv = $variance->sqrt()->reciprocal();
 
         $xHat = $stdInv->multiply($input->subtract($mean));
@@ -287,10 +287,10 @@ class BatchNorm implements Hidden, Parametric
 
         $dXHatSigma = $dXHat->sum();
 
-        return $dXHat->multiply($dOut->m())
+        return $dXHat->multiply($dOut->n())
             ->subtract($dXHatSigma)
             ->subtract($xHat->multiply($xHatSigma))
-            ->multiply($stdInv->divide($dOut->m()));
+            ->multiply($stdInv->divide($dOut->n()));
     }
 
     /**
