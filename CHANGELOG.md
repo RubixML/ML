@@ -3,6 +3,7 @@
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
     - Fix zero quantile calculation
+    - Fix Jaccard zero distance on same vectors
 
 - 2.5.3
     - Update PHP stemmer library
