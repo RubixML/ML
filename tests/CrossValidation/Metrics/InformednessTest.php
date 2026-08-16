@@ -93,6 +93,12 @@ class InformednessTest extends TestCase
     public function scoreProvider() : Generator
     {
         yield [
+            ['A', 'B'],
+            ['A', 'C'],
+            0.16666666666666666,
+        ];
+
+        yield [
             ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
             0.16666666666666652,
