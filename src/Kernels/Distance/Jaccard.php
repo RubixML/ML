@@ -4,8 +4,6 @@ namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\DataType;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Jaccard
  *
@@ -53,7 +51,11 @@ class Jaccard implements Distance
             $max += max($valueA, $valueB);
         }
 
-        return 1.0 - ($min / ($max ?: EPSILON));
+        if ($max == 0.0) {
+            return 0.0;
+        }
+
+        return 1.0 - ($min / $max);
     }
 
     /**

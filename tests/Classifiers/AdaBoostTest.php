@@ -80,7 +80,7 @@ class AdaBoostTest extends TestCase
             'blue' => new Blob([0, 32, 255], 30.0),
         ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new AdaBoost(new ClassificationTree(1), 1.0, 0.5, 100, 1e-4, 5);
+        $this->estimator = new AdaBoost(new ClassificationTree(1), 1.0, 0.5, 100, 1e-4, 2);
 
         $this->metric = new FBeta();
 
@@ -147,7 +147,7 @@ class AdaBoostTest extends TestCase
             'ratio' => 0.5,
             'epochs' => 100,
             'min change' => 0.0001,
-            'window' => 5,
+            'window' => 2,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

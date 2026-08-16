@@ -135,11 +135,15 @@ class ImageRotator implements Transformer
     {
         $maxDegrees = $this->jitter * 180.0;
 
-        $phi = getrandmax() / $maxDegrees;
+        if ($maxDegrees === 0.0) {
+            $jitter = 0.0;
+        } else {
+            $phi = getrandmax() / $maxDegrees;
 
-        $mHat = intval($maxDegrees * $phi);
+            $mHat = intval($maxDegrees * $phi);
 
-        $jitter = rand(-$mHat, $mHat) / $phi;
+            $jitter = rand(-$mHat, $mHat) / $phi;
+        }
 
         $angle = $this->offset + $jitter;
 
