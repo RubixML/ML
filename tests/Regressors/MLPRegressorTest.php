@@ -16,6 +16,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Swish;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
@@ -89,7 +90,7 @@ class MLPRegressorTest extends TestCase
             new Dense(32),
             new Activation(new SiLU()),
             new Dense(16),
-            new Activation(new SiLU()),
+            new Swish(),
             new Dense(8),
             new Activation(new SiLU()),
         ], 32, new Adam(0.01), 1e-4, 100, 1e-4, 5, 0.1, new LeastSquares(), new RMSE());
@@ -159,7 +160,7 @@ class MLPRegressorTest extends TestCase
                 new Dense(32),
                 new Activation(new SiLU()),
                 new Dense(16),
-                new Activation(new SiLU()),
+                new Swish(),
                 new Dense(8),
                 new Activation(new SiLU()),
             ],

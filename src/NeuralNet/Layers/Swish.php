@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
+use Tensor\ColumnVector;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -171,18 +172,23 @@ class Swish implements Hidden, Parametric
 
         $dOut = $prevGradient();
 
-        $dIn = $this->input;
+        $input = $this->input;
 
-        $dBeta = $dOut->multiply($dIn)->sum();
+        $beta = $this->beta->param();
+
+        $z = $input->multiply($beta);
+
+        $sigma = $this->sigmoid->activate($z);
+
+        $dBeta = $dOut->multiply($input->multiply($input))
+            ->multiply($this->sigmoid->differentiate($z, $sigma))
+            ->sum();
 
         $this->beta->update($dBeta, $optimizer);
 
-        $input = $this->input;
-        $output = $this->output;
-
         $this->input = $this->output = null;
 
-        return new Deferred([$this, 'gradient'], [$input, $output, $dOut]);
+        return new Deferred([$this, 'gradient'], [$input, $dOut, $sigma, $beta]);
     }
 
     /**
@@ -191,14 +197,14 @@ class Swish implements Hidden, Parametric
      * @internal
      *
      * @param Matrix $input
-     * @param Matrix $output
      * @param Matrix $dOut
+     * @param Matrix $sigma
+     * @param ColumnVector $beta
      * @return Matrix
      */
-    public function gradient($input, $output, $dOut) : Matrix
+    public function gradient(Matrix $input, Matrix $dOut, Matrix $sigma, ColumnVector $beta) : Matrix
     {
-        return $this->differentiate($input, $output)
-            ->multiply($dOut);
+        return $this->differentiate($input, $sigma, $beta)->multiply($dOut);
     }
 
     /**
@@ -250,24 +256,21 @@ class Swish implements Hidden, Parametric
     }
 
     /**
-     * Calculate the derivative of the activation function at a given output.
+     * Calculate the derivative of the activation function at a given input.
      *
      * @param Matrix $input
-     * @param Matrix $output
-     * @throws RuntimeException
+     * @param Matrix $sigma
+     * @param ColumnVector $beta
      * @return Matrix
      */
-    protected function differentiate(Matrix $input, Matrix $output) : Matrix
+    protected function differentiate(Matrix $input, Matrix $sigma, ColumnVector $beta) : Matrix
     {
-        if (!$this->beta) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
+        $ones = Matrix::ones(...$sigma->shape());
 
-        $ones = Matrix::ones(...$output->shape());
-
-        return $output->divide($input)
-            ->multiply($ones->subtract($output))
-            ->add($output);
+        return $sigma->add(
+            $input->multiply($sigma->multiply($ones->subtract($sigma)))
+                ->multiply($beta)
+        );
     }
 
     /**
