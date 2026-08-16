@@ -6,6 +6,7 @@
     - Fix Jaccard zero distance on same vectors
     - Fix Image Rotator zero jitter
     - Fix CSV extractor crashing on blank body lines
+    - Fix K-means size calculation on partial train
 
 - 2.5.3
     - Update PHP stemmer library
