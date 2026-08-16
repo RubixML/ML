@@ -15,6 +15,7 @@ use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\Seeders\Random;
+use Rubix\ML\Clusterers\Seeders\Preset;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -194,6 +195,29 @@ class MeanShiftTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function trainWithOutlyingPresetCentroids() : void
+    {
+        $presets = [];
+
+        for ($i = 0; $i < 20; ++$i) {
+            $presets[] = [100 + $i * 100, 100 + $i * 100];
+        }
+
+        $estimator = new MeanShift(1.0, 1.0, 10, 1e-4, new BallTree(), new Preset($presets));
+
+        $training = Unlabeled::quick([
+            [0, 0], [1, 0], [0, 1], [1, 1],
+        ]);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertSame($presets, $estimator->centroids());
     }
 
     /**

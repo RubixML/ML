@@ -137,7 +137,7 @@ echo $results;
     "mean absolute error": 0.8,
     "median absolute error": 1,
     "mean squared error": 1,
-    "mean absolute percentage error": 14.02077497665733,
+    "mean absolute percentage error": 8.930194805194805,
     "rms error": 1,
     "mean squared log error": 0.019107097505647368,
     "r squared": 0.9958930551562692,
