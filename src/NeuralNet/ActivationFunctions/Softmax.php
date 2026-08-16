@@ -28,7 +28,9 @@ class Softmax extends Sigmoid
      */
     public function activate(Matrix $input) : Matrix
     {
-        $zHat = $input->exp()->transpose();
+        $zHat = $input->transpose();
+
+        $zHat = $zHat->subtractColumnVector($zHat->max())->exp();
 
         $total = $zHat->sum()->clipLower(EPSILON);
 

@@ -7,6 +7,7 @@
     - Fix SiLU derivative at zero
     - Remove spurious +1 in Relative Entropy gradient
     - SoftPlus derivative expressed in terms of input
+    - Softmax added numerical stability
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
