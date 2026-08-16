@@ -5,6 +5,10 @@
     - Fix Mean Shift delta hyper-parameter
     - Fix MAPE calculation in Error Analysis report
     - Fix Swish layer beta parameter gradient
+    - Fix SiLU derivative at zero
+    - Remove spurious +1 in Relative Entropy gradient
+    - SoftPlus derivative expressed in terms of input
+    - Softmax added numerical stability
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
