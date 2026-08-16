@@ -38,6 +38,10 @@ class StatsTest extends TestCase
         yield [self::TEST_VALUES, 0.99, 14.82];
 
         yield [[5.0], 0.5, 5.0];
+
+        yield [[0.0], 0.5, 0.0];
+
+        yield [self::TEST_VALUES, 0.0, 1.5];
     }
 
     public static function centralMomentProvider() : Generator

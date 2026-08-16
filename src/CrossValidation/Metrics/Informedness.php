@@ -99,6 +99,12 @@ class Informedness implements Metric
             } else {
                 ++$falsePos[$prediction];
                 ++$falseNeg[$label];
+
+                foreach ($classes as $class) {
+                    if ($class != $prediction and $class != $label) {
+                        ++$trueNeg[$class];
+                    }
+                }
             }
         }
 

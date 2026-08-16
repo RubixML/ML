@@ -23,7 +23,41 @@ class ImageRotatorTest extends TestCase
         $this->transformer = new ImageRotator(offset: 0.0, jitter: 1.0);
     }
 
-    public function testTransform1() : void
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(ImageRotator::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
+    public function transformWithDefaultJitter() : void
+    {
+        $transformer = new ImageRotator(0.0);
+
+        $dataset = Unlabeled::quick([
+            [imagecreatefrompng('./tests/test.png'), 'whatever', 69],
+        ]);
+
+        $dataset->apply($transformer);
+
+        $sample = $dataset->sample(0);
+
+        $image = $sample[0];
+
+        $this->assertEquals(32, imagesx($image));
+        $this->assertEquals(32, imagesy($image));
+        $this->assertSame('whatever', $sample[1]);
+    }
+
+    /**
+     * @test
+     */
+    public function transform() : void
     {
         $dataset = Unlabeled::quick([
             [imagecreatefrompng('./tests/test.png'), 'whatever', 69],

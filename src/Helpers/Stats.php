@@ -111,7 +111,7 @@ class Stats
      */
     public static function quantile(array $values, float $q) : int|float
     {
-        return current(self::quantiles($values, [$q])) ?: NAN;
+        return self::quantiles($values, [$q])[0];
     }
 
     /**
