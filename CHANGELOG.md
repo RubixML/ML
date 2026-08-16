@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.5
+    - Add numerical stability to logsumexp function
+
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
     - Fix zero quantile calculation
