@@ -1,8 +1,12 @@
 # Changelog
 
-- 2.5.3
+- 2.5.4
+    - Fix AdaBoost early stopping algorithm
     - Fix magnitude bug in Huber Loss gradient
     - Fix weighted KNN Regressor predictions
+
+- 2.5.3
+    - Update PHP stemmer library
 
 - 2.5.2
     - Fix bug in One-class SVM inferencing
