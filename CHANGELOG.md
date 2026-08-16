@@ -5,6 +5,7 @@
     - Fix Mean Shift delta hyper-parameter
     - Fix MAPE calculation in Error Analysis report
     - Fix SiLU derivative at zero
+    - Remove spurious +1 in Relative Entropy gradient
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
