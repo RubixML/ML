@@ -33,9 +33,14 @@ class CrossEntropy implements ClassificationLoss
      */
     public function compute(Matrix $output, Matrix $target) : float
     {
-        $entropy = $output->clipLower(EPSILON)->log();
+        $output = $output->clip(EPSILON, 1.0 - EPSILON);
 
-        return $target->negate()->multiply($entropy)->mean()->mean();
+        $ones = Matrix::ones(...$output->shape());
+
+        $entropy = $output->log()->multiply($target)
+            ->add($ones->subtract($output)->log()->multiply($ones->subtract($target)));
+
+        return $entropy->negate()->mean()->mean();
     }
 
     /**

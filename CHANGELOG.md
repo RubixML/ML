@@ -4,6 +4,7 @@
     - Add numerical stability to logsumexp function
     - Fix Mean Shift delta hyper-parameter
     - Fix MAPE calculation in Error Analysis report
+    - Fix Cross Entropy loss missing (1−t)·log(1−p) term
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm

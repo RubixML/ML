@@ -63,7 +63,7 @@ class CrossEntropyTest extends TestCase
             Matrix::quick([
                 [1.0, 0.0, 0.0],
             ]),
-            0.00335011195116715,
+            0.006700227235667666,
         ];
 
         yield [
@@ -73,7 +73,7 @@ class CrossEntropyTest extends TestCase
             Matrix::quick([
                 [0.0, 1.0, 0.0],
             ]),
-            0.3054302439580517,
+            0.5500866356514519,
         ];
 
         yield [
@@ -83,7 +83,7 @@ class CrossEntropyTest extends TestCase
             Matrix::quick([
                 [1.0, 0.0, 0.0],
             ]),
-            6.140226914650789,
+            6.94287545086808,
         ];
 
         yield [
@@ -97,7 +97,7 @@ class CrossEntropyTest extends TestCase
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
             ]),
-            0.10809567592917217,
+            0.20764012617655228,
         ];
     }
 
