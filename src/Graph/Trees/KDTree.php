@@ -7,10 +7,9 @@ use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;
-use Rubix\ML\Kernels\Distance\Cosine;
+use Rubix\ML\Kernels\Distance\BoxPrunable;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\SparseCosine;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use SplObjectStorage;
 
@@ -74,6 +73,11 @@ class KDTree implements BinaryTree, Spatial
         if ($kernel and !in_array(DataType::continuous(), $kernel->compatibility())) {
             throw new InvalidArgumentException('Distance kernel must be'
                 . ' compatible with continuous features.');
+        }
+
+        if ($kernel and !$kernel instanceof BoxPrunable) {
+            throw new InvalidArgumentException('Distance kernel must implement the'
+                . ' BoxPrunable interface.');
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -344,10 +348,6 @@ class KDTree implements BinaryTree, Spatial
      */
     private function minDistance(array $sample, Hypercube $node) : float
     {
-        if ($this->kernel instanceof Cosine or $this->kernel instanceof SparseCosine) {
-            return 0.0;
-        }
-
         [$min, $max] = iterator_to_array($node->sides());
 
         $clamped = [];

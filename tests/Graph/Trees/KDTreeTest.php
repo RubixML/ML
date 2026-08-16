@@ -9,8 +9,18 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Kernels\Distance\Canberra;
+use Rubix\ML\Kernels\Distance\Cosine;
+use Rubix\ML\Kernels\Distance\Diagonal;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Gower;
+use Rubix\ML\Kernels\Distance\Jaccard;
+use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
+use Rubix\ML\Kernels\Distance\SparseCosine;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Trees')]
@@ -143,5 +153,45 @@ class KDTreeTest extends TestCase
 
         $this->assertEqualsWithDelta(5.09901951359278, $distances[0], 1e-6);
         $this->assertEqualsWithDelta(5.09901951359278, $distances[1], 1e-6);
+    }
+
+    public function testRejectCosineKernel() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KDTree(kernel: new Cosine());
+    }
+
+    public function testRejectSparseCosineKernel() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KDTree(kernel: new SparseCosine());
+    }
+
+    public function testRejectJaccardKernel() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KDTree(kernel: new Jaccard());
+    }
+
+    public function testCompatibleKernels() : void
+    {
+        $kernels = [
+            new Euclidean(),
+            new Manhattan(),
+            new Minkowski(),
+            new SafeEuclidean(),
+            new Diagonal(),
+            new Canberra(),
+            new Gower(),
+        ];
+
+        foreach ($kernels as $kernel) {
+            new KDTree(kernel: $kernel);
+        }
+
+        $this->assertTrue(true);
     }
 }

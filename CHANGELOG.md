@@ -11,9 +11,9 @@
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
     - Converted Network back from a class to an interface
+    - Fix KDTree edge pruning + optimize traversal
 
 - 2.5.4
-    - Fix KDTree edge pruning + optimize traversal
     - Fix AdaBoost early stopping algorithm
 
 - 2.5.3
