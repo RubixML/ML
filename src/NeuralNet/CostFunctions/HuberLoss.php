@@ -75,12 +75,12 @@ class HuberLoss implements RegressionLoss
      */
     public function differentiate(Matrix $output, Matrix $target) : Matrix
     {
-        $alpha = $output->subtract($target);
+        $beta = $output->subtract($target);
 
-        return $alpha->square()
+        return $beta->square()
             ->add($this->alpha2)
             ->pow(-0.5)
-            ->multiply($alpha)
+            ->multiply($beta)
             ->multiply($this->alpha);
     }
 
