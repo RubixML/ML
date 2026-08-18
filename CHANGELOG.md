@@ -11,6 +11,8 @@
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
+    - Fix magnitude bug in Huber Loss gradient
+    - Fix weighted KNN Regressor predictions
     - Fix zero quantile calculation
     - Fix Jaccard zero distance on same vectors
     - Fix Image Rotator zero jitter
