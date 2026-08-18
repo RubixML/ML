@@ -19,6 +19,7 @@
     - Fix CSV extractor crashing on blank body lines
     - Fix K-means size calculation on partial train
     - Fix true-nagatives undercounting in MCC, Informedness, and Multiclass Breakdown
+    - Fix TSNE gradient computation
 
 - 2.5.3
     - Update PHP stemmer library
