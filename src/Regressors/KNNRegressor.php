@@ -213,11 +213,11 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
         if ($this->weighted) {
             $weights = [];
 
-            foreach ($distances as $distance) {
-                $weights[] = 1.0 / (1.0 + $distance);
+            foreach ($distances as $i => $distance) {
+                $weights[$i] = 1.0 / (1.0 + $distance);
             }
 
-            return Stats::weightedMean(array_values($labels), $weights);
+            return Stats::weightedMean($labels, $weights);
         }
 
         return Stats::mean($labels);
