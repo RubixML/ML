@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.6
+    - Fix Batch Norm normalize over batch size not features
+
 - 2.5.5
     - Add numerical stability to logsumexp function
     - Fix Mean Shift delta hyper-parameter
@@ -12,12 +15,15 @@
 
 - 2.5.4
     - Fix AdaBoost early stopping algorithm
+    - Fix magnitude bug in Huber Loss gradient
+    - Fix weighted KNN Regressor predictions
     - Fix zero quantile calculation
     - Fix Jaccard zero distance on same vectors
     - Fix Image Rotator zero jitter
     - Fix CSV extractor crashing on blank body lines
     - Fix K-means size calculation on partial train
     - Fix true-nagatives undercounting in MCC, Informedness, and Multiclass Breakdown
+    - Fix TSNE gradient computation
 
 - 2.5.3
     - Update PHP stemmer library

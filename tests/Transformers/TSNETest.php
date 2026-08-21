@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use ReflectionMethod;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Loggers\BlackHole;
@@ -10,6 +11,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Tensor\Matrix;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -94,6 +96,108 @@ class TSNETest extends TestCase
     /**
      * @test
      */
+    public function gradient() : void
+    {
+        $p = Matrix::quick([
+            [0.0, 0.3, 0.2],
+            [0.3, 0.0, 0.3],
+            [0.2, 0.3, 0.0],
+        ]);
+
+        $y = Matrix::quick([
+            [1.0],
+            [2.0],
+            [3.0],
+        ]);
+
+        $distances = Matrix::quick([
+            [0.0, 1.0, 2.0],
+            [1.0, 0.0, 1.0],
+            [2.0, 1.0, 0.0],
+        ]);
+
+        $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
+
+        $expected = [
+            [-0.37],
+            [0.0],
+            [0.37],
+        ];
+
+        foreach ($gradient->asArray() as $i => $row) {
+            foreach ($row as $j => $value) {
+                $this->assertEqualsWithDelta($expected[$i][$j], $value, 1e-8);
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function gradientWeight() : void
+    {
+        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+
+        $p = Matrix::quick([
+            [0.0, 0.3, 0.2],
+            [0.3, 0.0, 0.3],
+            [0.2, 0.3, 0.0],
+        ]);
+
+        $y = Matrix::quick([
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [3.0, 0.0, 0.0],
+        ]);
+
+        $distances = Matrix::quick([
+            [0.0, 1.0, 3.0],
+            [1.0, 0.0, 2.0],
+            [3.0, 2.0, 0.0],
+        ]);
+
+        $gradient = $this->invokeGradient($embedder, $p, $y, $distances);
+
+        $expected = [
+            [-0.18091856296078745, 0.0, 0.0],
+            [-0.4321223317436502, 0.0, 0.0],
+            [0.6130408947044377, 0.0, 0.0],
+        ];
+
+        foreach ($gradient->asArray() as $i => $row) {
+            foreach ($row as $j => $value) {
+                $this->assertEqualsWithDelta($expected[$i][$j], $value, 1e-8);
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function affinities() : void
+    {
+        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
+
+        $distances = [
+            [0.0, 1.0, 2.0, 3.0],
+            [1.0, 0.0, 1.0, 2.0],
+            [2.0, 1.0, 0.0, 1.0],
+            [3.0, 2.0, 1.0, 0.0],
+        ];
+
+        $affinities = $this->invokeAffinities($embedder, $distances);
+
+        $row = $affinities[0];
+
+        $left = log($row[1] / $row[2]) * ($distances[0][3] ** 2 - $distances[0][2] ** 2);
+        $right = log($row[2] / $row[3]) * ($distances[0][2] ** 2 - $distances[0][1] ** 2);
+
+        $this->assertEqualsWithDelta($left, $right, 1e-8);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
         $dataset = $this->generator->generate(self::TEST_SIZE);
@@ -107,5 +211,35 @@ class TSNETest extends TestCase
 
         $this->assertIsArray($losses);
         $this->assertContainsOnly('float', $losses);
+    }
+
+    /**
+     * @param TSNE $embedder
+     * @param Matrix $p
+     * @param Matrix $y
+     * @param Matrix $distances
+     * @return Matrix
+     */
+    private function invokeGradient(TSNE $embedder, Matrix $p, Matrix $y, Matrix $distances) : Matrix
+    {
+        $method = new ReflectionMethod(TSNE::class, 'gradient');
+
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($embedder, [$p, $y, $distances]);
+    }
+
+    /**
+     * @param TSNE $embedder
+     * @param array<float[]> $distances
+     * @return array<float[]>
+     */
+    private function invokeAffinities(TSNE $embedder, array $distances) : array
+    {
+        $method = new ReflectionMethod(TSNE::class, 'affinities');
+
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($embedder, [$distances]);
     }
 }
