@@ -236,7 +236,13 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             $probabilities[$class] = $count / $n;
         }
 
-        $impurity = 1.0 - ($counts[$outcome] / $n) ** 2;
+        $ss = 0.0;
+
+        foreach ($counts as $count) {
+            $ss += ($count / $n) ** 2;
+        }
+
+        $impurity = 1.0 - $ss;
 
         return new Best($outcome, $probabilities, $impurity, $n);
     }
@@ -257,13 +263,13 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         $counts = array_count_values($labels);
 
-        $gini = 0.0;
+        $ss = 0.0;
 
         foreach ($counts as $count) {
-            $gini += 1.0 - ($count / $n) ** 2;
+            $ss += ($count / $n) ** 2;
         }
 
-        return $gini;
+        return 1.0 - $ss;
     }
 
     /**
