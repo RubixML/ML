@@ -11,6 +11,7 @@
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
     - Converted Network back from a class to an interface
+    - Fix KDTree edge pruning + optimize traversal
     
 - 2.5.6
     - Fix Batch Norm normalize over batch size not features
