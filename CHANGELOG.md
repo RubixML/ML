@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.6
+    - Fix SELU negative branch derivative computation
+
 - 2.5.5
     - Add numerical stability to logsumexp function
     - Fix Mean Shift delta hyper-parameter
