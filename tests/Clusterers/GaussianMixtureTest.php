@@ -19,6 +19,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+use function array_fill;
+use function is_nan;
+
 #[Group('Clusterers')]
 #[CoversClass(GaussianMixture::class)]
 class GaussianMixtureTest extends TestCase
@@ -165,6 +168,43 @@ class GaussianMixtureTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    /**
+     * @test
+     */
+    public function trainHighDimensional() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $d = 60;
+
+        $generator = new Agglomerate([
+            'a' => new Blob(array_fill(0, $d, 0.0), 2000.0),
+            'b' => new Blob(array_fill(0, $d, 1e6), 2000.0),
+            'c' => new Blob(array_fill(0, $d, -1e6), 2000.0),
+        ]);
+
+        $training = $generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        foreach ($this->estimator->means() as $means) {
+            $this->assertNotContainsNAN($means);
+        }
+
+        foreach ($this->estimator->variances() as $variances) {
+            $this->assertNotContainsNAN($variances);
+        }
+
+        $losses = $this->estimator->losses();
+
+        $this->assertIsArray($losses);
+
+        $this->assertNotContainsNAN($losses);
+    }
+
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -177,5 +217,15 @@ class GaussianMixtureTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * @param (int|float)[] $values
+     */
+    protected function assertNotContainsNAN(array $values) : void
+    {
+        foreach ($values as $value) {
+            $this->assertFalse(is_nan($value), 'Value must not be NAN.');
+        }
     }
 }

@@ -23,6 +23,7 @@ use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
 use function Rubix\ML\iterator_filter;
 use function Rubix\ML\iterator_contains_nan;
+use function is_infinite;
 
 #[Group('Functions')]
 #[CoversFunction('\Rubix\ML\argmax')]
@@ -88,17 +89,6 @@ class FunctionsTest extends TestCase
                 [30.0, 40.0],
             ],
         ];
-    }
-
-    public static function sigmoidProvider() : Generator
-    {
-        yield [2.0, 0.8807970779778823];
-
-        yield [-2.0, 0.11920292202211755];
-
-        yield [0.0, 0.5];
-
-        yield [10.0, 0.9999546021312976];
     }
 
     public static function combProvider() : Generator
@@ -188,6 +178,50 @@ class FunctionsTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     */
+    public function logsumexp() : void
+    {
+        $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
+
+        $this->assertEquals(2.8194175400311074, $value);
+
+        $extreme = logsumexp([-1000.0, -1001.0]);
+
+        $this->assertEquals(-999.6867383124818, $extreme);
+
+        $this->assertFalse(is_infinite($extreme));
+
+        $this->assertEquals(-INF, logsumexp([-INF, -INF]));
+    }
+
+    /**
+     * @test
+     * @dataProvider sigmoidProvider
+     *
+     * @param float $value
+     * @param float $expected
+     */
+    public function sigmoid(float $value, float $expected) : void
+    {
+        $this->assertEquals($expected, sigmoid($value));
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function sigmoidProvider() : Generator
+    {
+        yield [2.0, 0.8807970779778823];
+
+        yield [-2.0, 0.11920292202211755];
+
+        yield [0.0, 0.5];
+
+        yield [10.0, 0.9999546021312976];
+    }
+
     public function testArgmin() : void
     {
         $value = argmin(['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0]);
@@ -224,7 +258,7 @@ class FunctionsTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('sigmoidProvider')]
-    public function sigmoid(float $value, float $expected) : void
+    public function sigmoidTest(float $value, float $expected) : void
     {
         $this->assertEquals($expected, sigmoid($value));
     }

@@ -54,7 +54,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
      */
     public static function minDimensions(int $n, float $maxDistortion = 0.5) : int
     {
-        if ($n < 0) {
+        if ($n <= 0) {
             throw new InvalidArgumentException('Number of samples'
                 . " must be be greater than 0, $n given.");
         }

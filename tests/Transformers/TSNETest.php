@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Tensor\Matrix;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -89,5 +90,35 @@ class TSNETest extends TestCase
 
         $this->assertIsArray($losses);
         $this->assertContainsOnlyFloat($losses);
+    }
+
+    /**
+     * @param TSNE $embedder
+     * @param Matrix $p
+     * @param Matrix $y
+     * @param Matrix $distances
+     * @return Matrix
+     */
+    private function invokeGradient(TSNE $embedder, Matrix $p, Matrix $y, Matrix $distances) : Matrix
+    {
+        $method = new ReflectionMethod(TSNE::class, 'gradient');
+
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($embedder, [$p, $y, $distances]);
+    }
+
+    /**
+     * @param TSNE $embedder
+     * @param array<float[]> $distances
+     * @return array<float[]>
+     */
+    private function invokeAffinities(TSNE $embedder, array $distances) : array
+    {
+        $method = new ReflectionMethod(TSNE::class, 'affinities');
+
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($embedder, [$distances]);
     }
 }
