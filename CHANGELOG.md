@@ -12,6 +12,9 @@
     - Convert NeuralNet classes to use NDArray instead of Matrix
     - Converted Network back from a class to an interface
     
+- 2.5.6
+    - Fix Batch Norm normalize over batch size not features
+
 - 2.5.5
     - Add numerical stability to logsumexp function
     - Fix Mean Shift delta hyper-parameter
@@ -31,6 +34,7 @@
     - Fix CSV extractor crashing on blank body lines
     - Fix K-means size calculation on partial train
     - Fix true-nagatives undercounting in MCC, Informedness, and Multiclass Breakdown
+    - Fix TSNE gradient computation
 
 - 2.5.3
     - Update PHP stemmer library
