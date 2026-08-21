@@ -2,6 +2,7 @@
 
 - 2.5.6
     - Fix Batch Norm normalize over batch size not features
+    - Fix Classification Tree Gini impurity calculation
 
 - 2.5.5
     - Add numerical stability to logsumexp function
