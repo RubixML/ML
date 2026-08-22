@@ -177,7 +177,7 @@ class ClassificationTreeTest extends TestCase
             'r', 'g', 'b',
         ]);
 
-        Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
         $this->assertInstanceOf(Encoding::class, $dot);
         $this->assertStringStartsWith('digraph Tree {', $dot);
@@ -207,7 +207,7 @@ class ClassificationTreeTest extends TestCase
             'r', 'g', 'b',
         ]);
 
-        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+        Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
         $this->assertInstanceOf(Encoding::class, $dot);
         $this->assertStringStartsWith('digraph Tree {', $dot);
