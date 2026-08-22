@@ -357,7 +357,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                     foreach ($column as $i => $value) {
                         $delta = $value - $mean;
 
-                        $ssd += $affinities[$i] * $delta * $delta;
+$ssd += $affinities[$i] * ($delta * $delta);
                     }
 
                     $variance = $ssd / $total;
