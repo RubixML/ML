@@ -88,7 +88,7 @@ class Prior implements Strategy
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        $r = rand(0, $this->n);
+        $r = rand(0, $this->n - 1);
 
         /** @var string $class */
         foreach ($this->counts as $class => $count) {
