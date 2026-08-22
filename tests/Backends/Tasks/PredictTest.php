@@ -1,30 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Backends\Tasks;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Tasks
- * @covers \Rubix\ML\Backends\Tasks\Predict
- */
+#[Group('Tasks')]
+#[CoversClass(Predict::class)]
 class PredictTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function compute() : void
+    public function testCompute() : void
     {
         $estimator = new GaussianNB();
 
-        $generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.0], [1.0, 3.0, 0.3]),
-            'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
-        ], [0.45, 0.55]);
+        $generator = new Agglomerate(
+            generators: [
+                'male' => new Blob(
+                    center: [69.2, 195.7, 40.0],
+                    stdDev: [1.0, 3.0, 0.3]
+                ),
+                'female' => new Blob(
+                    center: [63.7, 168.5, 38.1],
+                    stdDev: [0.8, 2.5, 0.4]
+                ),
+            ],
+            weights: [0.45, 0.55]
+        );
 
         $training = $generator->generate(50);
 
@@ -32,7 +40,7 @@ class PredictTest extends TestCase
 
         $testing = $generator->generate(15);
 
-        $task = new Predict($estimator, $testing);
+        $task = new Predict(estimator: $estimator, dataset: $testing);
 
         $result = $task->compute();
 

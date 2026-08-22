@@ -1,66 +1,115 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Initializers\He;
-use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Initializers\HeUniform;
+use Rubix\ML\NeuralNet\Parameter as TrainableParameter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Dense
- */
+#[Group('Layers')]
+#[CoversClass(Dense::class)]
 class DenseTest extends TestCase
 {
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
+
+    protected NDArray $input;
+
+    protected Deferred $prevGrad;
+
+    protected Optimizer $optimizer;
+
+    protected Dense $layer;
 
     /**
-     * @var Matrix
+     * @return array<int, array{array<array<float>>, array<float>, array<array<float>>}>
      */
-    protected $input;
+    public static function forwardProvider() : array
+    {
+        return [
+            [
+                // weights 2x3
+                [
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],
+                ],
+                // biases length-2
+                [0.0, 0.0],
+                // expected forward output 2x3 for the fixed input in setUp()
+                // input = [
+                //   [1.0, 2.5, -0.1],
+                //   [0.1, 0.0, 3.0],
+                //   [0.002, -6.0, -0.5],
+                // ];
+                // so W * input = first two rows of input
+                [
+                    [1.0, 2.5, -0.1],
+                    [0.1, 0.0, 3.0],
+                ],
+            ],
+        ];
+    }
 
     /**
-     * @var Deferred
+     * @return array<int, array{array<array<float>>, array<float>, array<array<float>>, array<array<float>>}>
      */
-    protected $prevGrad;
+    public static function backProvider() : array
+    {
+        return [
+            [
+                // weights 2x3
+                [
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],
+                ],
+                // biases length-2
+                [0.0, 0.0],
+                // prev gradient 2x3
+                [
+                    [0.50, 0.2, 0.01],
+                    [0.25, 0.1, 0.89],
+                ],
+                // expected gradient for previous layer 3x3
+                [
+                    [0.50, 0.2, 0.01],
+                    [0.25, 0.1, 0.89],
+                    [0.0, 0.0, 0.0],
+                ],
+            ],
+        ];
+    }
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
-
-    /**
-     * @var Dense
-     */
-    protected $layer;
-
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->input = NumPower::array([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(function () {
-            return Matrix::quick([
+        $this->prevGrad = new Deferred(fn: function () : NDArray {
+            return NumPower::array([
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
             ]);
@@ -68,60 +117,190 @@ class DenseTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Dense(2, 0.0, true, new He(), new Constant(0.0));
+        $this->layer = new Dense(
+            neurons: 2,
+            l2Penalty: 0.0,
+            bias: true,
+            weightInitializer: new HeUniform(),
+            biasInitializer: new Constant(0.0)
+        );
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    #[Test]
+    #[TestDox('Throws an exception for invalid constructor arguments')]
+    public function testConstructorValidation() : void
     {
-        $this->assertInstanceOf(Dense::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-        $this->assertInstanceOf(Hidden::class, $this->layer);
-        $this->assertInstanceOf(Parametric::class, $this->layer);
+        $this->expectException(InvalidArgumentException::class);
+
+        new Dense(
+            neurons: 0,
+            l2Penalty: -0.1,
+            bias: true,
+            weightInitializer: new HeUniform(),
+            biasInitializer: new Constant(0.0)
+        );
     }
 
-    /**
-     * @test
-     */
-    public function initializeForwardBackInfer() : void
+    #[Test]
+    #[TestDox('Computes forward activations for fixed weights and biases')]
+    #[DataProvider('forwardProvider')]
+    public function testForward(array $weights, array $biases, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
+        self::assertEquals(2, $this->layer->width());
 
-        $this->assertEquals(2, $this->layer->width());
-
-        $expected = [
-            [0.1331636897703166, -2.659941938483866, 0.37781475642889195],
-            [0.8082829632098398, -2.9282037817258764, 0.21589538926944302],
-        ];
+        $this->layer->restore([
+            'weights' => new TrainableParameter(NumPower::array($weights)),
+            'biases' => new TrainableParameter(NumPower::array($biases)),
+        ]);
 
         $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
+        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
+    }
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+    #[Test]
+    #[TestDox('Method weights() returns the restored weight matrix')]
+    public function testWeightsReturnsExpectedValues() : void
+    {
+        $this->layer->initialize($this->fanIn);
 
-        $expected = [
-            [0.2513486032877107, 0.10053944131508427, 0.698223970571707],
-            [0.16407184592276702, 0.0656287383691068, 0.2102008334557029],
-            [0.44839890381544645, 0.1793595615261786, 0.7297101185916894],
+        $weightsArray = [
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
+        $this->layer->restore([
+            'weights' => new TrainableParameter(NumPower::array($weightsArray)),
+            'biases' => new TrainableParameter(NumPower::array([0.0, 0.0])),
+        ]);
 
-        $expected = [
-            [0.1314490977703166, -2.670373438483866, 0.376362656428892],
-            [0.8063645522098398, -2.9367382817258765, 0.20608923926944314],
-        ];
+        $weights = $this->layer->weights();
+
+        self::assertEqualsWithDelta($weightsArray, $weights->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('width() returns the number of neurons')]
+    public function testWidthReturnsNeuronsCount() : void
+    {
+        // Layer is constructed in setUp() with neurons: 2
+        self::assertSame(2, $this->layer->width());
+    }
+
+    #[Test]
+    #[TestDox('Computes backpropagated gradients for previous layer')]
+    #[DataProvider('backProvider')]
+    public function testBack(array $weights, array $biases, array $prevGrad, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        $this->layer->restore([
+            'weights' => new TrainableParameter(NumPower::array($weights)),
+            'biases' => new TrainableParameter(NumPower::array($biases)),
+        ]);
+
+        $prevGradNd = NumPower::array($prevGrad);
+
+        // Forward pass to set internal input cache
+        $this->layer->forward($this->input);
+
+        $gradient = $this->layer->back(
+            prevGradient: new Deferred(fn: fn () => $prevGradNd),
+            optimizer: $this->optimizer
+        )->compute();
+
+        self::assertInstanceOf(NDArray::class, $gradient);
+        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Computes inference activations equal to forward for fixed parameters')]
+    #[DataProvider('forwardProvider')]
+    public function testInfer(array $weights, array $biases, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        $this->layer->restore([
+            'weights' => new TrainableParameter(NumPower::array($weights)),
+            'biases' => new TrainableParameter(NumPower::array($biases)),
+        ]);
 
         $infer = $this->layer->infer($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
+        self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Method restore() correctly replaces layer parameters')]
+    public function testRestoreReplacesParameters() : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        // Use the same deterministic weights and biases as in forwardProvider
+        $weights = [
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+        ];
+
+        $biases = [0.0, 0.0];
+
+        $expected = [
+            [1.0, 2.5, -0.1],
+            [0.1, 0.0, 3.0],
+        ];
+
+        $this->layer->restore([
+            'weights' => new TrainableParameter(NumPower::array($weights)),
+            'biases' => new TrainableParameter(NumPower::array($biases)),
+        ]);
+
+        $forward = $this->layer->forward($this->input);
+
+        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Method parameters() yields restored weights and biases')]
+    public function testParametersReturnsRestoredParameters() : void
+    {
+        $this->layer->initialize($this->fanIn);
+
+        $weightsArray = [
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+        ];
+
+        $biasesArray = [0.0, 0.0];
+
+        $weightsParam = new TrainableParameter(NumPower::array($weightsArray));
+        $biasesParam = new TrainableParameter(NumPower::array($biasesArray));
+
+        $this->layer->restore([
+            'weights' => $weightsParam,
+            'biases' => $biasesParam,
+        ]);
+
+        $params = iterator_to_array($this->layer->parameters());
+
+        self::assertArrayHasKey('weights', $params);
+        self::assertArrayHasKey('biases', $params);
+
+        self::assertSame($weightsParam, $params['weights']);
+        self::assertSame($biasesParam, $params['biases']);
+
+        self::assertEqualsWithDelta($weightsArray, $params['weights']->param()->toArray(), 1e-7);
+        self::assertEqualsWithDelta($biasesArray, $params['biases']->param()->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('It returns correct string representation')]
+    public function testToStringReturnsCorrectValue() : void
+    {
+        $expected = 'Dense (neurons: 2, l2 penalty: 0, bias: true, weight initializer: He Uniform, bias initializer: Constant (value: 0))';
+
+        self::assertSame($expected, (string) $this->layer);
     }
 }

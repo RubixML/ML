@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Generator;
+use NumPower;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -14,14 +16,15 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -32,7 +35,6 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Generator;
 
 use function is_nan;
 use function count;
@@ -267,9 +269,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return FeedForward|null
+     * @return Network|null
      */
-    public function network() : ?FeedForward
+    public function network() : ?Network
     {
         return $this->network;
     }
@@ -291,7 +293,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new Xavier1())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier1Uniform())],
             new Binary($classes, $this->costFn),
             $this->optimizer
         );
@@ -428,7 +430,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->asArray(), 0);
+        $activations = array_column($activations->toArray(), 0);
 
         $probabilities = [];
 
@@ -460,10 +462,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Weight layer not found.');
         }
 
-        return $layer->weights()
-            ->rowAsVector(0)
-            ->abs()
-            ->asArray();
+        $weights = NumPower::abs($layer->weights())->toArray();
+
+        return $weights[0] ?? [];
     }
 
     /**
@@ -490,5 +491,21 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function __toString() : string
     {
         return 'Logistic Regression (' . Params::stringify($this->params()) . ')';
+    }
+
+    /**
+     * Without this method, causes errors with Swoole backend + Igbinary
+     * serialization.
+     *
+     * Can be removed if it's no longer the case.
+     *
+     * @internal
+     * @param array<string,mixed> $data
+     */
+    public function __unserialize(array $data) : void
+    {
+        foreach ($data as $propertyName => $propertyValue) {
+            $this->{$propertyName} = $propertyValue;
+        }
     }
 }

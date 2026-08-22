@@ -1,112 +1,76 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Nodes;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Ball;
-use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Ball
- */
+#[Group('Nodes')]
+#[CoversClass(Ball::class)]
 class BallTest extends TestCase
 {
-    protected const SAMPLES = [
+    protected const array SAMPLES = [
         [5.0, 2.0, -3],
         [6.0, 4.0, -5],
     ];
 
-    protected const LABELS = [22, 13];
+    protected const array LABELS = [22, 13];
 
-    protected const CENTER = [5.5, 3.0, -4];
+    protected const array CENTER = [5.5, 3.0, -4];
 
-    protected const RADIUS = 1.5;
+    protected const float RADIUS = 1.5;
 
-    /**
-     * @var Ball
-     */
-    protected $node;
+    protected Ball $node;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $subsets = [
-            Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
-            Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
+            Labeled::quick(samples: [self::SAMPLES[0]], labels: [self::LABELS[0]]),
+            Labeled::quick(samples: [self::SAMPLES[1]], labels: [self::LABELS[1]]),
         ];
 
-        $this->node = new Ball(self::CENTER, self::RADIUS, $subsets);
+        $this->node = new Ball(center: self::CENTER, radius: self::RADIUS, subsets: $subsets);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testSplit() : void
     {
-        $this->assertInstanceOf(Ball::class, $this->node);
-        $this->assertInstanceOf(Hypersphere::class, $this->node);
-        $this->assertInstanceOf(Node::class, $this->node);
-    }
+        $dataset = Labeled::quick(samples: self::SAMPLES, labels: self::LABELS);
 
-    /**
-     * @test
-     */
-    public function split() : void
-    {
-        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
-
-        $node = Ball::split($dataset, new Euclidean());
+        $node = Ball::split(dataset: $dataset, kernel: new Euclidean());
 
         $this->assertEquals(self::CENTER, $node->center());
         $this->assertEquals(self::RADIUS, $node->radius());
     }
 
-    /**
-     * @test
-     */
-    public function center() : void
+    public function testCenter() : void
     {
         $this->assertSame(self::CENTER, $this->node->center());
     }
 
-    /**
-     * @test
-     */
-    public function radius() : void
+    public function testRadius() : void
     {
         $this->assertSame(self::RADIUS, $this->node->radius());
     }
 
-    /**
-     * @test
-     */
-    public function subsets() : void
+    public function testSubsets() : void
     {
         $expected = [
-            Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
-            Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
+            Labeled::quick(samples: [self::SAMPLES[0]], labels: [self::LABELS[0]]),
+            Labeled::quick(samples: [self::SAMPLES[1]], labels: [self::LABELS[1]]),
         ];
 
         $this->assertEquals($expected, $this->node->subsets());
     }
 
-    /**
-     * @test
-     */
-    public function cleanup() : void
+    public function testCleanup() : void
     {
-        $subsets = $this->node->subsets();
-
-        $this->assertIsArray($subsets);
-        $this->assertCount(2, $subsets);
-
         $this->node->cleanup();
 
         $this->expectException(RuntimeException::class);

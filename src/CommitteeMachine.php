@@ -165,6 +165,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      */
     public function type() : EstimatorType
     {
+        if ($this->experts === []) {
+            throw new RuntimeException('Committee has no experts.');
+        }
+
         return $this->experts[array_key_first($this->experts)]->type();
     }
 
@@ -311,7 +315,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      * @param list<int|string> $votes
      * @return string|int
      */
-    protected function decideDiscrete(array $votes)
+    protected function decideDiscrete(array $votes) : string|int
     {
         $scores = $this->classes;
 

@@ -1,5 +1,17 @@
 # Changelog
 
+- 3.0.0
+    - Dropped support for PHP 7.4
+    - Renamed TF-IDF dampening parameter to sublinear
+    - Update to PSR-3 Log version 3
+    - Added Emoji preset to Regex Filter
+    - Exportable Extractors now append by default with option to overwrite
+    - Added validation interval parameter to MLPs and GBM Learners
+    - Removed output layer L2 Penalty parameter from MLP Learners
+    - RBX Serializer only tracks major library version number
+    - Convert NeuralNet classes to use NDArray instead of Matrix
+    - Converted Network back from a class to an interface
+    
 - 2.5.6
     - Fix Batch Norm normalize over batch size not features
     - Fix Swish beta and input gradients
@@ -41,8 +53,8 @@
     - Added Vantage Point Spatial tree
     - Blob Generator can now `simulate()` a Dataset object
     - Added Wrapper interface
+    - Added Swoole Backend
     - Plus Plus added check for min number of sample seeds
-    - LOF prevent div by 0 local reachability density
 
 - 2.4.1
     - Sentence Tokenizer fix Arabic and Farsi language support

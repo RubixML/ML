@@ -2,10 +2,13 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
 /**
@@ -13,24 +16,17 @@ use Rubix\ML\Transformers\IntervalDiscretizer;
  */
 class RandomForestBench
 {
-    protected const TRAINING_SIZE = 10000;
+    use BackendProviderTrait;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $training;
 
-    /**
-     * @var RandomForest
-     */
-    protected $estimator;
+    protected Labeled $testing;
+
+    protected RandomForest $estimator;
 
     public function setUpContinuous() : void
     {
@@ -70,9 +66,13 @@ class RandomForestBench
      * @Iterations(5)
      * @BeforeMethods({"setUpContinuous"})
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function continuous() : void
+    public function continuous(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);
@@ -83,9 +83,13 @@ class RandomForestBench
      * @Iterations(5)
      * @BeforeMethods({"setUpCategorical"})
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function categorical() : void
+    public function categorical(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

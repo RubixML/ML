@@ -1,29 +1,24 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Report;
-use Rubix\ML\CrossValidation\Reports\ReportGenerator;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Reports
- * @covers \Rubix\ML\CrossValidation\Reports\AggregateReport
- */
+#[Group('Reports')]
+#[CoversClass(AggregateReport::class)]
 class AggregateReportTest extends TestCase
 {
-    /**
-     * @var AggregateReport
-     */
-    protected $report;
+    protected AggregateReport $report;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->report = new AggregateReport([
@@ -32,19 +27,7 @@ class AggregateReportTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(AggregateReport::class, $this->report);
-        $this->assertInstanceOf(ReportGenerator::class, $this->report);
-    }
-
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             EstimatorType::classifier(),
@@ -54,16 +37,16 @@ class AggregateReportTest extends TestCase
         $this->assertEquals($expected, $this->report->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function generate() : void
+    public function testGenerate() : void
     {
         $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 
         $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-        $result = $this->report->generate($predictions, $labels);
+        $result = $this->report->generate(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertInstanceOf(Report::class, $result);
         $this->assertCount(2, $result->toArray());

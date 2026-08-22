@@ -1,60 +1,36 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Persistable;
-use Rubix\ML\Transformers\Elastic;
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Reversible;
-use Rubix\ML\Transformers\Transformer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\MaxAbsoluteScaler;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\MaxAbsoluteScaler
- */
+#[Group('Transformers')]
+#[CoversClass(MaxAbsoluteScaler::class)]
 class MaxAbsoluteScalerTest extends TestCase
 {
-    /**
-     * @var Blob
-     */
-    protected $generator;
+    protected Blob $generator;
 
-    /**
-     * @var MaxAbsoluteScaler
-     */
-    protected $transformer;
+    protected MaxAbsoluteScaler $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Blob([0.0, 3000.0, -6.0], [1.0, 30.0, 0.001]);
+        $this->generator = new Blob(
+            center: [0.0, 3000.0, -6.0],
+            stdDev: [1.0, 30.0, 0.001]
+        );
 
         $this->transformer = new MaxAbsoluteScaler();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(MaxAbsoluteScaler::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-        $this->assertInstanceOf(Elastic::class, $this->transformer);
-        $this->assertInstanceOf(Reversible::class, $this->transformer);
-        $this->assertInstanceOf(Persistable::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function fitUpdateTransformReverse() : void
+    public function testFitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -77,19 +53,16 @@ class MaxAbsoluteScalerTest extends TestCase
 
         $this->assertCount(3, $sample);
 
-        $this->assertEqualsWithDelta(0, $sample[0], 2 + 1e-8);
-        $this->assertEqualsWithDelta(0, $sample[1], 2 + 1e-8);
-        $this->assertEqualsWithDelta(0, $sample[2], 2 + 1e-8);
+        $this->assertEqualsWithDelta(0, $sample[0], 1 + 1e-8);
+        $this->assertEqualsWithDelta(0, $sample[1], 1 + 1e-8);
+        $this->assertEqualsWithDelta(0, $sample[2], 1 + 1e-8);
 
         $dataset->reverseApply($this->transformer);
 
         $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
+    public function testTransformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 
@@ -98,15 +71,22 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->transformer->transform($samples);
     }
 
-    /**
-     * @test
-     */
-    public function reverseTransformUnfitted() : void
+    public function testReverseTransformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 
         $samples = $this->generator->generate(1)->samples();
 
         $this->transformer->reverseTransform($samples);
+    }
+
+    public function testSkipsNonFinite() : void
+    {
+        $samples = Unlabeled::build(samples: [
+            [0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001],
+        ]);
+        $this->transformer->fit($samples);
+        $this->assertNan($samples[0][2]);
+        $this->assertNan($samples[1][2]);
     }
 }

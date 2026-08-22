@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Swish.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Swish/Swish.php">[source]</a></span>
 
 # Swish
 Swish is a parametric activation layer that utilizes smooth rectified activation functions. The trainable *beta* parameter allows each activation function in the layer to tailor its output to the training set by interpolating between the linear function and ReLU.
@@ -10,8 +10,8 @@ Swish is a parametric activation layer that utilizes smooth rectified activation
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Layers\Swish;
-use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Layers\Swish\Swish;
+use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
 
 $layer = new Swish(new Constant(1.0));
 ```

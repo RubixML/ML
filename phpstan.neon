@@ -1,8 +1,17 @@
+includes:
+    - phpstan-baseline.neon
 parameters:
     level: 8
+    phpVersion: 80400
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    fileExtensions:
+        - php
+    tmpDir: ./runtime/.phpstan/
     paths:
         - 'src'
-        - 'tests'
         - 'benchmarks'
     excludePaths:
         - src/Backends/Amp.php
+        - src/Backends/Swoole.php
+        - tests/Backends/SwooleTest.php

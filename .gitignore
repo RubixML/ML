@@ -3,7 +3,6 @@ test.model
 /vendor
 composer.lock
 .phpunit.result.cache
-.php-cs-fixer.cache
 Thumbs.db
 .DS_Store
 debug.log
@@ -13,3 +12,12 @@ pyvenv.cfg
 .idea
 .vscode
 .vs
+
+# Cache files
+/runtime/
+
+# Docker related files
+Dockerfile
+/docker/
+docker-compose.yml
+Makefile

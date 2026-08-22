@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Activation.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Activation/Activation.php">[source]</a></span>
 
 # Activation
 Activation layers apply a user-defined non-linear activation function to their inputs. They often work in conjunction with [Dense](dense.md) layers as a way to transform their output.
@@ -10,8 +10,8 @@ Activation layers apply a user-defined non-linear activation function to their i
 
 ## Example
 ```php
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\Layers\Activation\Activation;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
 
 $layer = new Activation(new ReLU());
 ```

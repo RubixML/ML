@@ -1,0 +1,8 @@
+path: ./
+jobs: 10
+cache-dir: runtime/.phplint.cache/
+extensions:
+    - php
+exclude:
+    - vendor/
+    - runtime/

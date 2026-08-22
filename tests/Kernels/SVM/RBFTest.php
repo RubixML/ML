@@ -1,44 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Kernels\SVM;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Kernels\SVM\RBF;
-use Rubix\ML\Kernels\SVM\Kernel;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Kernels
- * @requires extension svm
- * @covers \Rubix\ML\Kernels\SVM\RBF
- */
+#[Group('Kernels')]
+#[RequiresPhpExtension('svm')]
+#[CoversClass(RBF::class)]
 class RBFTest extends TestCase
 {
-    /**
-     * @var RBF
-     */
-    protected $kernel;
+    protected RBF $kernel;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->kernel = new RBF(1e-3);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(RBF::class, $this->kernel);
-        $this->assertInstanceOf(Kernel::class, $this->kernel);
-    }
-
-    /**
-     * @test
-     */
-    public function options() : void
+    public function testOptions() : void
     {
         $options = [
             102 => 2,

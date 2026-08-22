@@ -85,7 +85,7 @@ class OneClassSVM implements Estimator, Learner
                 . "0 and 1, $nu given.");
         }
 
-        $kernel = $kernel ?? new RBF();
+        $kernel ??= new RBF();
 
         if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance must be,'

@@ -1,71 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Trees\Tree;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\KDTree;
-use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Trees
- * @covers \Rubix\ML\Graph\Trees\KDTree
- */
+#[Group('Trees')]
+#[CoversClass(KDTree::class)]
 class KDTreeTest extends TestCase
 {
-    protected const DATASET_SIZE = 100;
+    protected const int DATASET_SIZE = 100;
 
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var KDTree
-     */
-    protected $tree;
+    protected KDTree $tree;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'east' => new Blob([5, -2, -2]),
-            'west' => new Blob([0, 5, -3]),
-        ], [0.5, 0.5]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'east' => new Blob(center: [5, -2, -2]),
+                'west' => new Blob(center: [0, 5, -3]),
+            ],
+            weights: [0.5, 0.5]
+        );
 
-        $this->tree = new KDTree(20, new Euclidean());
+        $this->tree = new KDTree(
+            maxLeafSize: 20,
+            kernel: new Euclidean()
+        );
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertEquals(0, $this->tree->height());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(KDTree::class, $this->tree);
-        $this->assertInstanceOf(Spatial::class, $this->tree);
-        $this->assertInstanceOf(BinaryTree::class, $this->tree);
-        $this->assertInstanceOf(Tree::class, $this->tree);
-    }
-
-    /**
-     * @test
-     */
-    public function growNeighborsRange() : void
+    public function testGrowNeighborsRange() : void
     {
         $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
 
@@ -73,7 +55,7 @@ class KDTreeTest extends TestCase
 
         $sample = $this->generator->generate(1)->sample(0);
 
-        [$samples, $labels, $distances] = $this->tree->nearest($sample, 5);
+        [$samples, $labels, $distances] = $this->tree->nearest(sample: $sample, k: 5);
 
         $this->assertCount(5, $samples);
         $this->assertCount(5, $labels);
@@ -81,7 +63,7 @@ class KDTreeTest extends TestCase
 
         $this->assertCount(1, array_unique($labels));
 
-        [$samples, $labels, $distances] = $this->tree->range($sample, 5.0);
+        [$samples, $labels, $distances] = $this->tree->range(sample: $sample, radius: 5.0);
 
         $this->assertCount(50, $samples);
         $this->assertCount(50, $labels);
@@ -90,13 +72,10 @@ class KDTreeTest extends TestCase
         $this->assertCount(1, array_unique($labels));
     }
 
-    /**
-     * @test
-     */
-    public function growWithSameSamples() : void
+    public function testGrowWithSameSamples() : void
     {
-        $generator = new Agglomerate([
-            'east' => new Blob([5, -2, 10], 0.0),
+        $generator = new Agglomerate(generators: [
+            'east' => new Blob(center: [5, -2, 10], stdDev: 0.0),
         ]);
 
         $dataset = $generator->generate(self::DATASET_SIZE);

@@ -57,12 +57,12 @@ $report = $dataset->describeByLabel();
 Another technique used in data analysis is plotting one or more of its dimensions in a chart such as a scatterplot or histogram. Visualizing the data gives us an understanding as to the shape of the data and can aid in discovering outliers or for choosing features to train our model with. Since the library works with common data formats, you are free to use your favorite 3rd party plotting software to visualize the data copied from Rubix ML. If you are looking for a place to start, the free Plotly online [Chart Studio](https://plotly.com/chart-studio/) or a modern spreadsheet application should work well for most visualization tasks.
 
 ### Exporting Data
-Before importing a dataset into your plotting software, you may need to export it in a format that can be recognized. For this, the library provides the [Writable](extractors/api.md) Extractor API to handle exporting dataset objects to various formats including [CSV](extractors/csv.md) and [NDJSON](extractors/ndjson.md). For example, to export a dataset in CSV format pass the CSV extractor to the `exportTo()` method on the dataset object.
+Before importing a dataset into your plotting software, you may need to export it in a format that can be recognized. For this, the library provides the [Writable](extractors/api.md) Extractor API to handle exporting dataset objects to various formats including [CSV](extractors/csv.md) and [NDJSON](extractors/ndjson.md). For example, to export a dataset in CSV format pass the CSV extractor to the `exportTo()` method on the dataset object. If the file already exists and `overwrite` is set to false, then the samples will be appended, otherwise the current samples will be overwritten.
 
 ```php
 use Rubix\ML\Extractors\CSV;
 
-$dataset->exportTo(new CSV('dataset.csv'));
+$dataset->exportTo(new CSV('dataset.csv'), false);
 ```
 
 ### Converting Formats
@@ -111,7 +111,7 @@ use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Extractors\CSV;
 
 $dataset->apply(new TSNE(2, 100.0, 10.0))
-    ->exportTo(new CSV('embedding.csv'));
+    ->exportTo(new CSV('embedding.csv'), true);
 ```
 
 Here is what a t-SNE embedding looks like when it is plotted. Notice that although the clusters are sparser and more gaussian-like, the structure and distances between samples is roughly preserved.

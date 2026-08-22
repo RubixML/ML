@@ -1,26 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Clusterers\Seeders;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Clusterers\Seeders\Preset;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Seeders
- * @covers \Rubix\ML\Clusterers\Seeders\Preset
- */
+#[Group('Seeders')]
+#[CoversClass(Preset::class)]
 class PresetTest extends TestCase
 {
-    /**
-     * @var Preset
-     */
-    protected $seeder;
+    protected Preset $seeder;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->seeder = new Preset([
@@ -30,19 +25,7 @@ class PresetTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Preset::class, $this->seeder);
-        $this->assertInstanceOf(Seeder::class, $this->seeder);
-    }
-
-    /**
-     * @test
-     */
-    public function seed() : void
+    public function testSeed() : void
     {
         $expected = [
             ['foo', 14, 0.72],
@@ -50,7 +33,7 @@ class PresetTest extends TestCase
             ['beer', 21, 1.26],
         ];
 
-        $seeds = $this->seeder->seed(Unlabeled::quick([['beef', 4, 13.0]]), 3);
+        $seeds = $this->seeder->seed(Unlabeled::quick(samples: [['beef', 4, 13.0]]), k: 3);
 
         $this->assertCount(3, $seeds);
 

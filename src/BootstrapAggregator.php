@@ -46,7 +46,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @var list<int>
      */
-    protected const COMPATIBLE_ESTIMATOR_TYPES = [
+    protected const array COMPATIBLE_ESTIMATOR_TYPES = [
         EstimatorType::CLASSIFIER,
         EstimatorType::REGRESSOR,
         EstimatorType::ANOMALY_DETECTOR,
@@ -54,29 +54,21 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
     /**
      * The minimum size of each training subset.
-     *
-     * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const int MIN_SUBSAMPLE = 1;
 
     /**
      * The base learner.
-     *
-     * @var Learner
      */
     protected Learner $base;
 
     /**
      * The number of base learners to train in the ensemble.
-     *
-     * @var int
      */
     protected int $estimators;
 
     /**
      * The ratio of samples from the training set to randomly subsample to train each base learner.
-     *
-     * @var float
      */
     protected float $ratio;
 
@@ -148,7 +140,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @internal
      *
-     * @return mixed[]
+     * @return array
      */
     public function params() : array
     {
@@ -207,7 +199,9 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             $this->backend->enqueue($task);
         }
 
-        $this->ensemble = $this->backend->process();
+        /** @var list<Learner> $process */
+        $process = $this->backend->process();
+        $this->ensemble = $process;
     }
 
     /**
@@ -215,7 +209,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return mixed[]
+     * @return array
      */
     public function predict(Dataset $dataset) : array
     {
@@ -251,7 +245,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     protected function decideDiscrete(array $votes) : string
     {
-        /** @var array<string,int> $counts */
+        /** @var array<string,int<1, max>> $counts */
         $counts = array_count_values($votes);
 
         return argmax($counts);
