@@ -15,6 +15,7 @@ use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -215,5 +216,28 @@ class RegressionTreeTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * Train on a pure dataset, exercising the new purity guard that prunes
+     * pure children to leaves without calling the split routine.
+     *
+     * @test
+     */
+    public function trainPureDataset() : void
+    {
+        $samples = array_fill(0, self::TRAIN_SIZE, [128.0, 64.0, 32.0, 16.0]);
+
+        $labels = array_fill(0, self::TRAIN_SIZE, 42.0);
+
+        $this->estimator->train(Labeled::quick($samples, $labels));
+
+        $this->assertTrue($this->estimator->trained());
+
+        $predictions = $this->estimator->predict(Unlabeled::quick($samples));
+
+        foreach ($predictions as $prediction) {
+            $this->assertEqualsWithDelta(42.0, $prediction, 1e-12);
+        }
     }
 }
