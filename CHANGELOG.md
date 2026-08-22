@@ -14,6 +14,10 @@
     
 - 2.5.6
     - Fix Batch Norm normalize over batch size not features
+    - Fix Swish beta and input gradients
+    - Fix Swish gradient at zero input
+    - Fix GaussianNB variance smoothing when global max is zero
+    - Fix Prior strategy off-by-one bias
 
 - 2.5.5
     - Add numerical stability to logsumexp function
