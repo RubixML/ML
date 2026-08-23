@@ -207,7 +207,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $leftNode = $this->terminate($left);
             }
 
-            if ($right->numSamples() > $this->maxLeafSize and count(array_unique($right->labels())) > 1) {
+            if ($right->numSamples() > $this->maxLeafSize and $this->impurity($right->labels()) > 0.0) {
                 $rightNode = $this->split($right);
             } else {
                 $rightNode = $this->terminate($right);

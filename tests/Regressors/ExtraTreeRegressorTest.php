@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -101,11 +102,41 @@ class ExtraTreeRegressorTest extends TestCase
     /**
      * @test
      */
-    public function badMaxDepth() : void
+    public function badMaxHeight() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new ExtraTreeRegressor(0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxLeafSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeRegressor(30, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMinPurityIncrease() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeRegressor(30, 3, -1.0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxFeatures() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeRegressor(30, 3, 1e-7, 0);
     }
 
     /**
@@ -198,6 +229,53 @@ class ExtraTreeRegressorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * @test
+     */
+    public function trainHeightBalance() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $this->assertGreaterThanOrEqual(2, $this->estimator->height());
+
+        $this->assertIsInt($this->estimator->balance());
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                $this->assertNotNull($node->left());
+                $this->assertNotNull($node->right());
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5, 0.5]], ['ok']));
+    }
+
+    /**
+     * @test
+     */
+    public function predictIncompatible() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->predict(Unlabeled::quick([[0.5, 0.5, 0.5]]));
     }
 
     /**

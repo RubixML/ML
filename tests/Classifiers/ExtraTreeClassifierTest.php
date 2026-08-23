@@ -14,11 +14,14 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+
+use function Rubix\ML\argmax;
 
 /**
  * @group Classifiers
@@ -108,11 +111,41 @@ class ExtraTreeClassifierTest extends TestCase
     /**
      * @test
      */
-    public function badMaxDepth() : void
+    public function badMaxHeight() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new ExtraTreeClassifier(0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxLeafSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeClassifier(30, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMinPurityIncrease() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeClassifier(30, 16, -1.0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxFeatures() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeClassifier(30, 16, 1e-7, 0);
     }
 
     /**
@@ -195,6 +228,99 @@ class ExtraTreeClassifierTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredictProba() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertIsArray($probabilities);
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        $labels = $testing->labels();
+
+        $correct = 0;
+
+        foreach ($probabilities as $offset => $classProbabilities) {
+            $this->assertIsArray($classProbabilities);
+
+            $sum = 0.0;
+
+            foreach ($classProbabilities as $probability) {
+                $this->assertIsNumeric($probability);
+                $this->assertGreaterThanOrEqual(0.0, $probability);
+                $this->assertLessThanOrEqual(1.0, $probability);
+
+                $sum += $probability;
+            }
+
+            $this->assertEqualsWithDelta(1.0, $sum, 1e-9);
+
+            if (argmax($classProbabilities) === $labels[$offset]) {
+                ++$correct;
+            }
+        }
+
+        $score = $correct / self::TEST_SIZE;
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function trainHeightBalance() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $this->assertGreaterThanOrEqual(2, $this->estimator->height());
+
+        $this->assertIsInt($this->estimator->balance());
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                $this->assertNotNull($node->left());
+                $this->assertNotNull($node->right());
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5]], [1]));
+    }
+
+    /**
+     * @test
+     */
+    public function predictIncompatible() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->predict(Unlabeled::quick([[0.5, 0.5]]));
     }
 
     /**
