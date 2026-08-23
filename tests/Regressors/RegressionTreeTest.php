@@ -16,6 +16,7 @@ use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -342,7 +343,7 @@ class RegressionTreeTest extends TestCase
                 ++$splitCount;
 
                 $this->assertNotSame($node->left(), $node->right());
-            } else {
+            } elseif ($node instanceof Outcome) {
                 $this->assertEqualsWithDelta(0.0, $node->impurity(), 1e-9);
             }
         }

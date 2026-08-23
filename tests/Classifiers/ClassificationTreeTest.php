@@ -15,6 +15,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -394,7 +395,7 @@ class ClassificationTreeTest extends TestCase
                 ++$splitCount;
 
                 $this->assertNotSame($node->left(), $node->right());
-            } else {
+            } elseif ($node instanceof Outcome) {
                 $this->assertLessThan(1e-9, $node->impurity());
             }
         }
