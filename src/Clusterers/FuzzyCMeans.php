@@ -285,7 +285,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 $row = [];
 
                 foreach ($this->centroids as $centroid) {
-                    $row[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
+                    $row[] = $this->kernel->compute($sample, $centroid);
                 }
 
                 $distances[] = $row;
