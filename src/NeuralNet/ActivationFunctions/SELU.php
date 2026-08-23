@@ -92,7 +92,7 @@ class SELU implements ActivationFunction
     {
         return $output > 0.0
             ? self::SCALE
-            : self::SCALE * ($output + self::ALPHA);
+            : $output + self::BETA;
     }
 
     /**
