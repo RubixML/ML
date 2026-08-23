@@ -14,6 +14,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Datasets\Labeled;
@@ -307,25 +308,45 @@ class RegressionTreeTest extends TestCase
     }
 
     /**
-     * Train on a pure dataset, exercising the new purity guard that prunes
-     * pure children to leaves without calling the split routine.
+     * Train on two distinct constant feature groups with a constant label, so that
+     * the root split produces two non-empty but pure subsets that must be
+     * terminated by the purity guard rather than further splitting.
      *
      * @test
      */
-    public function trainPureDataset() : void
+    public function trainPureChildren() : void
     {
-        $samples = array_fill(0, self::TRAIN_SIZE, [128.0, 64.0, 32.0, 16.0]);
+        $groupA = (new Blob([32.0, 32.0, 0.0, 0.0], 0.0))->generate(self::TRAIN_SIZE / 2);
 
-        $labels = array_fill(0, self::TRAIN_SIZE, 42.0);
+        $groupB = (new Blob([128.0, 128.0, 128.0, 128.0], 0.0))->generate(self::TRAIN_SIZE / 2);
 
-        $this->estimator->train(Labeled::quick($samples, $labels));
+        $training = Labeled::quick(
+            array_merge($groupA->samples(), $groupB->samples()),
+            array_fill(0, self::TRAIN_SIZE, 42.0)
+        );
+
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
-        $predictions = $this->estimator->predict(Unlabeled::quick($samples));
+        $predictions = $this->estimator->predict($training);
 
         foreach ($predictions as $prediction) {
             $this->assertEqualsWithDelta(42.0, $prediction, 1e-12);
         }
+
+        $splitCount = 0;
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                ++$splitCount;
+
+                $this->assertNotSame($node->left(), $node->right());
+            } else {
+                $this->assertEqualsWithDelta(0.0, $node->impurity(), 1e-9);
+            }
+        }
+
+        $this->assertSame(1, $splitCount);
     }
 }

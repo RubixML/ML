@@ -364,25 +364,41 @@ class ClassificationTreeTest extends TestCase
     }
 
     /**
-     * Train on a pure dataset, exercising the new purity guard that prunes
-     * pure children to leaves without calling the split routine.
+     * Train on two distinct constant feature groups with different labels, so that
+     * the root split produces two non-empty but pure subsets that must be
+     * terminated by the purity guard rather than further splitting.
      *
      * @test
      */
-    public function trainPureDataset() : void
+    public function trainPureChildren() : void
     {
-        $samples = array_fill(0, self::TRAIN_SIZE, [128.0, 64.0, 32.0]);
+        $training = (new Agglomerate([
+            'red' => new Blob([32.0, 32.0, 0.0], 0.0),
+            'green' => new Blob([128.0, 128.0, 128.0], 0.0),
+        ], [0.5, 0.5]))->generate(self::TRAIN_SIZE);
 
-        $labels = array_fill(0, self::TRAIN_SIZE, 'red');
+        $this->assertNotSame($training->label(0), $training->label(self::TRAIN_SIZE / 2));
 
-        $this->estimator->train(Labeled::quick($samples, $labels));
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
-        $predictions = $this->estimator->predict(Unlabeled::quick($samples));
+        $predictions = $this->estimator->predict($training);
 
-        foreach ($predictions as $prediction) {
-            $this->assertSame('red', $prediction);
+        $this->assertEquals($training->labels(), $predictions);
+
+        $splitCount = 0;
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                ++$splitCount;
+
+                $this->assertNotSame($node->left(), $node->right());
+            } else {
+                $this->assertLessThan(1e-9, $node->impurity());
+            }
         }
+
+        $this->assertSame(1, $splitCount);
     }
 }
