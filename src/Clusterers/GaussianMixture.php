@@ -343,14 +343,6 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
                 $total = array_sum($affinities);
 
-                if ($total == 0.0) {
-                    if ($this->logger) {
-                        $this->logger->warning("Cluster $cluster collapsed (zero responsibility)");
-                    }
-
-                    continue;
-                }
-
                 $means = $variances = [];
 
                 foreach ($features as $column) {

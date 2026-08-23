@@ -231,18 +231,23 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $outcome = argmax($counts);
 
         $probabilities = [];
+        $ss = 0.0;
 
         foreach ($counts as $class => $count) {
-            $probabilities[$class] = $count / $n;
+            $probability = $count / $n;
+
+            $ss += $probability ** 2;
+
+            $probabilities[$class] = $probability;
         }
 
-        $impurity = 1.0 - ($counts[$outcome] / $n) ** 2;
+        $impurity = 1.0 - $ss;
 
         return new Best($outcome, $probabilities, $impurity, $n);
     }
 
     /**
-     * Calculate the impurity of a set of labels.
+     * Calculate the impurity of a set of labels using gini coefficient.
      *
      * @param list<string|int> $labels
      * @return float
@@ -257,13 +262,15 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         $counts = array_count_values($labels);
 
-        $gini = 0.0;
+        $ss = 0.0;
 
         foreach ($counts as $count) {
-            $gini += 1.0 - ($count / $n) ** 2;
+            $ss += ($count / $n) ** 2;
         }
 
-        return $gini;
+        $impurity = 1.0 - $ss;
+
+        return $impurity;
     }
 
     /**
