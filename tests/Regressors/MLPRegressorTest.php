@@ -24,6 +24,7 @@ use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -87,7 +88,7 @@ class MLPRegressorTest extends TestCase
 
         $this->estimator = new MLPRegressor([
             new Dense(32),
-            new Activation(new SiLU()),
+            new Activation(new SELU()),
             new Dense(16),
             new Activation(new SiLU()),
             new Dense(8),
@@ -157,7 +158,7 @@ class MLPRegressorTest extends TestCase
         $expected = [
             'hidden layers' => [
                 new Dense(32),
-                new Activation(new SiLU()),
+                new Activation(new SELU()),
                 new Dense(16),
                 new Activation(new SiLU()),
                 new Dense(8),
