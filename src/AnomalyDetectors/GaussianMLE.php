@@ -254,7 +254,7 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
             $oldVariance -= $this->epsilon;
 
-            $delta = $n * $oldMean - $n * $mean;
+            $delta = $n * ($oldMean - $mean);
 
             $this->means[$column] = (($this->n * $oldMean)
                 + ($n * $mean)) / $weight;

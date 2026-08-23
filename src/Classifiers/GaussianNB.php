@@ -273,7 +273,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
                     [$mean, $variance] = Stats::meanVar($values);
 
-                    $delta = $n * $oldMean - $n * $mean;
+                    $delta = $n * ($oldMean - $mean);
 
                     $means[] = (($n * $mean)
                         + ($oldWeight * $oldMean))
