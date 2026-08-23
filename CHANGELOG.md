@@ -2,6 +2,7 @@
 
 - 2.5.7
     - Fix Classification Tree Gini impurity calculation
+    - Fix SELU negative branch derivative computation
 
 - 2.5.6
     - Fix Batch Norm normalize over batch size not features
