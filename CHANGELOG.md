@@ -10,11 +10,20 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
-    - Converted Network back from a class to an interface
     - Fix KDTree edge pruning + optimize traversal
     
+- 2.5.7
+    - Optimize Decision Tree pruning
+    - Optimize K-means training
+    - Fix Classification Tree Gini impurity calculation
+    - Fix SELU negative branch derivative computation
+
 - 2.5.6
     - Fix Batch Norm normalize over batch size not features
+    - Fix Swish beta and input gradients
+    - Fix Swish gradient at zero input
+    - Fix GaussianNB variance smoothing when global max is zero
+    - Fix Prior strategy off-by-one bias
 
 - 2.5.5
     - Add numerical stability to logsumexp function

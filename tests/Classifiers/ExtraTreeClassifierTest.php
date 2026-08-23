@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Classifiers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -13,13 +12,20 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Graph\Nodes\Split;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Classifier')]
-#[CoversClass(ExtraTreeClassifier::class)]
+use function Rubix\ML\argmax;
+
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\ExtraTreeClassifier
+ */
 class ExtraTreeClassifierTest extends TestCase
 {
     /**
@@ -85,14 +91,63 @@ class ExtraTreeClassifierTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadMaxHeight() : void
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(ExtraTreeClassifier::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxHeight() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new ExtraTreeClassifier(maxHeight: 0);
     }
 
-    public function testType() : void
+    /**
+     * @test
+     */
+    public function badMaxLeafSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeClassifier(30, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMinPurityIncrease() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeClassifier(30, 16, -1.0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxFeatures() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeClassifier(30, 16, 1e-7, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
@@ -166,10 +221,145 @@ class ExtraTreeClassifierTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testPredictUntrained() : void
+    /**
+     * @test
+     */
+    public function trainPredictProba() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertIsArray($probabilities);
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        $labels = $testing->labels();
+
+        $correct = 0;
+
+        foreach ($probabilities as $offset => $classProbabilities) {
+            $this->assertIsArray($classProbabilities);
+
+            $sum = 0.0;
+
+            foreach ($classProbabilities as $probability) {
+                $this->assertIsNumeric($probability);
+                $this->assertGreaterThanOrEqual(0.0, $probability);
+                $this->assertLessThanOrEqual(1.0, $probability);
+
+                $sum += $probability;
+            }
+
+            $this->assertEqualsWithDelta(1.0, $sum, 1e-9);
+
+            if (argmax($classProbabilities) === $labels[$offset]) {
+                ++$correct;
+            }
+        }
+
+        $score = $correct / self::TEST_SIZE;
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function trainHeightBalance() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $this->assertGreaterThanOrEqual(2, $this->estimator->height());
+
+        $this->assertIsInt($this->estimator->balance());
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                $this->assertNotNull($node->left());
+                $this->assertNotNull($node->right());
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5]], [1]));
+    }
+
+    /**
+     * @test
+     */
+    public function predictIncompatible() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->predict(Unlabeled::quick([[0.5, 0.5]]));
+    }
+
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * Train on two distinct constant feature groups with different labels, so that
+     * the root split produces two non-empty but pure subsets that must be
+     * terminated by the purity guard rather than further splitting.
+     *
+     * @test
+     */
+    public function trainPureChildren() : void
+    {
+        $training = (new Agglomerate([
+            'red' => new Blob([32.0, 32.0, 0.0], 0.0),
+            'green' => new Blob([128.0, 128.0, 128.0], 0.0),
+        ], [0.5, 0.5]))->generate(self::TRAIN_SIZE);
+
+        $this->assertNotSame($training->label(0), $training->label(self::TRAIN_SIZE / 2));
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $predictions = $this->estimator->predict($training);
+
+        $this->assertEquals($training->labels(), $predictions);
+
+        $splitCount = 0;
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                ++$splitCount;
+
+                $this->assertNotSame($node->left(), $node->right());
+            } elseif ($node instanceof Outcome) {
+                $this->assertLessThan(1e-9, $node->impurity());
+            }
+        }
+
+        $this->assertSame(1, $splitCount);
     }
 }

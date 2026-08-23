@@ -198,9 +198,17 @@ class Swish implements Hidden, Parametric
         $input = $this->input;
         $output = $this->output;
 
+        $dInput = $input->multiply($output)->subtract($output->square());
+
+        $dBeta = $dOut->multiply($dInput)->sum();
+
+        $beta = $this->beta->param();
+
+        $this->beta->update($dBeta, $optimizer);
+
         $this->input = $this->output = null;
 
-        return new Deferred([$this, 'gradient'], [$input, $output, $dOut]);
+        return new Deferred([$this, 'gradient'], [$input, $output, $dOut, $beta]);
     }
 
     /**
@@ -283,9 +291,9 @@ class Swish implements Hidden, Parametric
      */
     protected function differentiate(NDArray $input, NDArray $output) : NDArray
     {
-        if (!$this->beta) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
+        $zHat = $input->multiply($beta);
+
+        $sigmoid = $this->sigmoid->activate($zHat);
 
         // Prevent division by zero if the input contains zero values
         $denominator = NumPower::add($input, EPSILON);
