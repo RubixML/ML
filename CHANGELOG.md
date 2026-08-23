@@ -1,6 +1,8 @@
 # Changelog
 
 - 2.5.7
+    - Optimize Decision Tree pruning
+    - Optimize K-means training
     - Fix Classification Tree Gini impurity calculation
     - Fix SELU negative branch derivative computation
 
