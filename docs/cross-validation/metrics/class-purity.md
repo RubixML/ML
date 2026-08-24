@@ -23,3 +23,5 @@ use Rubix\ML\CrossValidation\Metrics\ClassPurity;
 
 $metric = new ClassPurity();
 ```
+
+Unlike [Completeness](completeness.md), this metric does not use conditional entropy and tends to give more lenient scores on mixed assignments. See [V Measure](v-measure.md) for the balanced entropy-based alternative.

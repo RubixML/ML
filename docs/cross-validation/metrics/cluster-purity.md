@@ -23,3 +23,5 @@ use Rubix\ML\CrossValidation\Metrics\ClusterPurity;
 
 $metric = new ClusterPurity();
 ```
+
+Unlike [Homogeneity](homogeneity.md), this metric does not use conditional entropy and tends to give more lenient scores on mixed assignments. See [V Measure](v-measure.md) for the balanced entropy-based alternative.
