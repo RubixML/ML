@@ -10,6 +10,8 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
+    - Add Class/Cluster Purity clustering metrics
+    - V-measure, Completeness, and Homogeneity now use entropy-based formula
     
 - 2.5.7
     - Optimize Decision Tree pruning
