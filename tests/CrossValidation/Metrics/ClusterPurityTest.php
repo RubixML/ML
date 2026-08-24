@@ -25,6 +25,12 @@ class ClusterPurityTest extends TestCase
     public static function scoreProvider() : Generator
     {
         yield [
+            [],
+            [],
+            0.0,
+        ];
+
+        yield [
             [0, 1, 1, 0, 1],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
             0.5833333333333333,
