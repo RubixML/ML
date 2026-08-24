@@ -86,27 +86,16 @@ class MultilayerPerceptronTest extends TestCase
             weights: [3, 3, 4]
         );
 
-        $this->estimator = new MultilayerPerceptron(
-            hiddenLayers: [
-                new Dense(32),
-                new Activation(new LeakyReLU(0.1)),
-                new Dropout(0.1),
-                new Dense(16),
-                new Activation(new LeakyReLU(0.1)),
-                new Noise(1e-5),
-                new Dense(8),
-                new Activation(new LeakyReLU(0.1)),
-            ],
-            batchSize: 32,
-            optimizer: new Adam(rate: 0.001),
-            epochs: 100,
-            minChange: 1e-3,
-            evalInterval: 3,
-            window: 5,
-            holdOut: 0.1,
-            costFn: new CrossEntropy(),
-            metric: new FBeta()
-        );
+        $this->estimator = new MultilayerPerceptron([
+            new Dense(32),
+            new Activation(new LeakyReLU(0.1)),
+            new Dropout(0.1),
+            new Dense(16),
+            new Activation(new SoftPlus()),
+            new Noise(1e-5),
+            new Dense(8),
+            new Swish(),
+        ], 32, new Adam(0.001), 1e-4, 100, 1e-3, 5, 0.1, new CrossEntropy(), new FBeta());
 
         $this->metric = new FBeta();
 
