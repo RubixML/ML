@@ -11,7 +11,7 @@ use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 
 /**
- * Soft Plus
+ * Softplus
  *
  * A smooth approximation of the ReLU function whose output is constrained to be
  * positive.
@@ -73,6 +73,6 @@ class Softplus implements ActivationFunction, IBufferDerivative
      */
     public function __toString() : string
     {
-        return 'Soft Plus';
+        return 'Softplus';
     }
 }

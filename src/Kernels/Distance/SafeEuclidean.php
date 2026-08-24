@@ -68,7 +68,9 @@ class SafeEuclidean implements Distance, BoxPrunable, NaNSafe
                 continue;
             }
 
-            $distance += ($valueA - $valueB) ** 2;
+            $delta = $valueA - $valueB;
+
+            $distance += $delta * $delta;
         }
 
         $n = count($a);

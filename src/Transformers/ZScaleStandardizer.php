@@ -173,13 +173,15 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Reversible, 
 
             [$mean, $variance] = Stats::meanVar($values);
 
+            $delta = $n * ($oldMean - $mean);
+
             $this->means[$column] = (($this->n * $oldMean)
                 + ($n * $mean)) / $weight;
 
             $this->variances[$column] = ($this->n
                 * $oldVariance + ($n * $variance)
                 + ($this->n / ($n * $weight))
-                * ($n * $oldMean - $n * $mean) ** 2)
+                * ($delta * $delta))
                 / $weight;
         }
 

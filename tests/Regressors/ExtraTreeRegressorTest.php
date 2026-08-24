@@ -17,18 +17,15 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Split;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
-use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\DataType;
-use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Tests\DataProvider\ExtraTreeRegressorProvider;
-use Rubix\ML\Transformers\IntervalDiscretizer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[Group('Regressors')]
 #[CoversClass(ExtraTreeRegressor::class)]
