@@ -10,6 +10,7 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
+    - Fix KDTree edge pruning + optimize traversal
     
 - 2.5.8
     - Optimize squaring operations
