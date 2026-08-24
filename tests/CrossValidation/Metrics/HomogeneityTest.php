@@ -27,7 +27,7 @@ class HomogeneityTest extends TestCase
         yield [
             [0, 1, 1, 0, 1],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
-            0.5833333333333333,
+            0.02057065945069314,
         ];
 
         yield [
@@ -51,7 +51,7 @@ class HomogeneityTest extends TestCase
         yield [
             [0, 0, 0, 0, 0],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
-            0.6,
+            0.0,
         ];
     }
 

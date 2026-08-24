@@ -1,10 +1,10 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/Homogeneity.php">[source]</a></span>
 
 # Homogeneity
-A ground-truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogeneous* when the entire cluster is comprised of a single class of samples.
+A ground-truth clustering metric that measures how well each cluster is comprised of samples from a single class. A clustering is said to be *homogeneous* when all of its clusters contain only samples of a single class. Formally, it is one minus the conditional entropy of the classes given the cluster assignments normalized by the marginal entropy of the classes.
 
 $$
-{\displaystyle Homogeneity = 1-\frac{H(C, K)}{H(C)}}
+{\displaystyle Homogeneity = 1-\frac{H(C \mid K)}{H(C)}}
 $$
 
 !!! note

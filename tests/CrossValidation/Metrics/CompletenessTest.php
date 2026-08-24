@@ -27,7 +27,7 @@ class CompletenessTest extends TestCase
         yield [
             [0, 1, 1, 0, 1],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
-            0.5833333333333333,
+            0.02057065945069314,
         ];
 
         yield [
@@ -45,7 +45,7 @@ class CompletenessTest extends TestCase
         yield [
             [0, 1, 2, 3, 4],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
-            0.41666666666666663,
+            0.41816566007905154,
         ];
 
         yield [
