@@ -355,7 +355,9 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                     $mean = $sigma / $total;
 
                     foreach ($column as $i => $value) {
-                        $ssd += $affinities[$i] * ($value - $mean) ** 2;
+                        $delta = $value - $mean;
+
+                        $ssd += $affinities[$i] * ($delta * $delta);
                     }
 
                     $variance = $ssd / $total;
@@ -505,7 +507,10 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $variance = $variances[$column];
 
                 $pdf = -0.5 * log(TWO_PI * $variance);
-                $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;
+
+                $delta = $feature - $mean;
+
+                $pdf -= 0.5 * ($delta * $delta) / $variance;
 
                 $likelihood += $pdf;
             }

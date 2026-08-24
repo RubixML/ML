@@ -173,7 +173,8 @@ class Stats
         $ssd = 0.0;
 
         foreach ($values as $value) {
-            $ssd += ($value - $mean) ** 2;
+            $delta = $value - $mean;
+            $ssd += $delta * $delta;
         }
 
         return $ssd / count($values);
