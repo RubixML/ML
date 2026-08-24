@@ -2,6 +2,7 @@
 
 - 2.5.8
     - Optimize squaring operations
+    - Optimize Fuzz C-means training
     - Fix K-skip n-gram unigrams
 
 - 2.5.7
