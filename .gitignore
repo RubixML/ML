@@ -12,7 +12,6 @@ pyvenv.cfg
 .idea
 .vscode
 .vs
-/runtime/
 Dockerfile
 /docker/
 docker-compose.yml
