@@ -9,15 +9,15 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\CrossValidation\Metrics\VMeasure;
+use Rubix\ML\CrossValidation\Metrics\ClusterPurity;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 #[Group('Metrics')]
-#[CoversClass(VMeasure::class)]
-class VMeasureTest extends TestCase
+#[CoversClass(ClusterPurity::class)]
+class ClusterPurityTest extends TestCase
 {
-    protected VMeasure $metric;
+    protected ClusterPurity $metric;
 
     /**
      * @return Generator<array>
@@ -25,9 +25,15 @@ class VMeasureTest extends TestCase
     public static function scoreProvider() : Generator
     {
         yield [
+            [],
+            [],
+            0.0,
+        ];
+
+        yield [
             [0, 1, 1, 0, 1],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
-            0.02057065945069314,
+            0.5833333333333333,
         ];
 
         yield [
@@ -45,19 +51,19 @@ class VMeasureTest extends TestCase
         yield [
             [0, 1, 2, 3, 4],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
-            0.5897275217561566,
+            1.0,
         ];
 
         yield [
             [0, 0, 0, 0, 0],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
-            0.0,
+            0.6,
         ];
     }
 
     protected function setUp() : void
     {
-        $this->metric = new VMeasure(1.0);
+        $this->metric = new ClusterPurity();
     }
 
     public function testRange() : void
