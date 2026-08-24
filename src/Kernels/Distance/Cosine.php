@@ -54,8 +54,8 @@ class Cosine implements Distance
 
             $sigma += $valueA * $valueB;
 
-            $ssA += $valueA ** 2;
-            $ssB += $valueB ** 2;
+            $ssA += $valueA * $valueA;
+            $ssB += $valueB * $valueB;
         }
 
         if ($ssA === 0.0 and $ssB === 0.0) {

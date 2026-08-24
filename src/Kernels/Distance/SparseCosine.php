@@ -48,15 +48,15 @@ class SparseCosine implements Distance
             if ($valueA != 0 and $valueB != 0) {
                 $sigma += $valueA * $valueB;
 
-                $ssA += $valueA ** 2;
-                $ssB += $valueB ** 2;
+                $ssA += $valueA * $valueA;
+                $ssB += $valueB * $valueB;
             } else {
                 if ($valueA != 0) {
-                    $ssA += $valueA ** 2;
+                    $ssA += $valueA * $valueA;
                 }
 
                 if ($valueB != 0) {
-                    $ssB += $valueB ** 2;
+                    $ssB += $valueB * $valueB;
                 }
             }
         }
