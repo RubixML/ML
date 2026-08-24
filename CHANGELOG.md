@@ -11,6 +11,7 @@
     - RBX Serializer only tracks major library version number
     - Convert NeuralNet classes to use NDArray instead of Matrix
     - Fix KDTree edge pruning + optimize traversal
+    - Optimize Dataset sort(), sorting is now unstable
     
 - 2.5.8
     - Optimize squaring operations
