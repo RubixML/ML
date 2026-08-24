@@ -17,7 +17,57 @@ class KSkipNGramTest extends TestCase
 {
     protected KSkipNGram $tokenizer;
 
-    public static function tokenizeProvider() : Generator
+    /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        $this->tokenizer = new KSkipNGram(2, 3, 2);
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(KSkipNGram::class, $this->tokenizer);
+        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
+    }
+
+    /**
+     * @test
+     * @dataProvider tokenizeProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @test
+     * @dataProvider tokenizeUnigramProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenizeUnigrams(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(1, 1, 2);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -38,20 +88,20 @@ class KSkipNGramTest extends TestCase
         ];
     }
 
-    protected function setUp() : void
-    {
-        $this->tokenizer = new KSkipNGram(min: 2, max: 3, skip: 2);
-    }
-
     /**
-     * @param string $text
-     * @param list<string> $expected
+     * @return Generator<mixed[]>
      */
-    #[DataProvider('tokenizeProvider')]
-    public function testTokenize(string $text, array $expected) : void
+    public function tokenizeUnigramProvider() : Generator
     {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
+        /**
+         * English
+         */
+        yield [
+            'I would like to die on Mars, just not on impact. The end.',
+            [
+                'I', 'would', 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on', 'impact',
+                'The', 'end',
+            ],
+        ];
     }
 }

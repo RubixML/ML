@@ -16,4 +16,5 @@ pyvenv.cfg
 /docker/
 docker-compose.yml
 Makefile
+Dockerfile
 /worktrees

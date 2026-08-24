@@ -256,13 +256,15 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
 
             $oldVariance -= $this->epsilon;
 
+            $delta = $n * ($oldMean - $mean);
+
             $this->means[$column] = (($this->n * $oldMean)
                 + ($n * $mean)) / $weight;
 
             $this->variances[$column] = ($this->n
                 * $oldVariance + ($n * $variance)
                 + ($this->n / ($n * $weight))
-                * ($n * $oldMean - $n * $mean) ** 2)
+                * ($delta * $delta))
                 / $weight;
         }
 
@@ -348,7 +350,10 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             $variance = $this->variances[$column];
 
             $pdf = 0.5 * log(TWO_PI * $variance);
-            $pdf += 0.5 * (($value - $mean) ** 2) / $variance;
+
+            $delta = $value - $mean;
+
+            $pdf += 0.5 * ($delta * $delta) / $variance;
 
             $likelihood += $pdf;
         }
