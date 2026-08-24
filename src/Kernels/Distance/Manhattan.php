@@ -14,7 +14,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Manhattan implements Distance
+class Manhattan implements Distance, BoxPrunable
 {
     /**
      * Return the data types that this kernel is compatible with.
