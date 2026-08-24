@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.8
+    - Fix K-skip n-gram unigrams
+
 - 2.5.7
     - Optimize Decision Tree pruning
     - Optimize K-means training

@@ -13,3 +13,5 @@ pyvenv.cfg
 .idea
 .vscode
 .vs
+/runtime
+/worktrees
