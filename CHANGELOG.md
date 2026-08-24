@@ -1,6 +1,7 @@
 # Changelog
 
 - 2.5.8
+    - Optimize squaring operations
     - Fix K-skip n-gram unigrams
 
 - 2.5.7
