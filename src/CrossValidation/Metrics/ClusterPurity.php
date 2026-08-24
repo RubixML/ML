@@ -62,6 +62,10 @@ class ClusterPurity implements Metric
     {
         $table = (new ContingencyTable())->generate($predictions, $labels);
 
+        if (count($table) === 0) {
+            return 0.0;
+        }
+
         $score = 0.0;
 
         foreach ($table as $dist) {
