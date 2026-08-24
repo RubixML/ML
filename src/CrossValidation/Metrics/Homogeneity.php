@@ -6,16 +6,16 @@ use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
-use function count;
-
-use const Rubix\ML\EPSILON;
+use function array_sum;
 
 /**
  * Homogeneity
  *
- * A ground-truth clustering metric that measures the ratio of samples in a cluster that
- * are also members of the same class. A cluster is said to be *homogeneous* when the
- * entire cluster is comprised of a single class of samples.
+ * A ground-truth clustering metric that measures how well each cluster is comprised of
+ * samples from a single class. A clustering is said to be *homogeneous* when all of its
+ * clusters contain only samples of a single class. Formally, it is defined as one minus
+ * the conditional entropy of the classes given the cluster assignments normalized by the
+ * marginal entropy of the classes.
  *
  * References:
  * [1] A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based
@@ -63,13 +63,42 @@ class Homogeneity implements Metric
     {
         $table = (new ContingencyTable())->generate($predictions, $labels);
 
-        $score = 0.0;
+        $conditional = $marginal = 0.0;
+        $n = 0;
+
+        $classCounts = [];
 
         foreach ($table as $dist) {
-            $score += max($dist) / (array_sum($dist) ?: EPSILON);
+            $clusterSize = array_sum($dist);
+
+            $n += $clusterSize;
+
+            foreach ($dist as $class => $count) {
+                if ($count === 0) {
+                    continue;
+                }
+
+                $classCounts[$class] = ($classCounts[$class] ?? 0) + $count;
+
+                $conditional += $count * log($clusterSize / $count);
+            }
         }
 
-        return $score / count($table);
+        if ($n === 0) {
+            return 0.0;
+        }
+
+        foreach ($classCounts as $classCount) {
+            $marginal += $classCount * log($n / $classCount);
+        }
+
+        if ($marginal === 0.0) {
+            return 1.0;
+        }
+
+        $score = max(0.0, min(1.0, 1.0 - $conditional / $marginal));
+
+        return $score;
     }
 
     /**

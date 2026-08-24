@@ -11,7 +11,7 @@ A multi-dimensional binary spatial tree for fast nearest neighbor queries. The K
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | maxLeafSize | 30 | int | The maximum number of samples that each leaf node can contain. |
-| 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
+| 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. Must implement the `BoxPrunable` interface. |
 
 ## Example
 ```php

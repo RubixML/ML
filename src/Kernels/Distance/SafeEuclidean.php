@@ -23,7 +23,7 @@ use function is_nan;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SafeEuclidean implements Distance, NaNSafe
+class SafeEuclidean implements Distance, BoxPrunable, NaNSafe
 {
     /**
      * Return the data types that this kernel is compatible with.

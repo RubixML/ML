@@ -13,8 +13,8 @@ pyvenv.cfg
 .vscode
 .vs
 Dockerfile
+/runtime/
 /docker/
 docker-compose.yml
 Makefile
-/runtime
 /worktrees

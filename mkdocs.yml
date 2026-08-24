@@ -237,7 +237,9 @@ nav:
         - RMSE: cross-validation/metrics/rmse.md
         - R Squared: cross-validation/metrics/r-squared.md
         - SMAPE: cross-validation/metrics/smape.md
+        - Class Purity: cross-validation/metrics/class-purity.md
         - Completeness: cross-validation/metrics/completeness.md
+        - Cluster Purity: cross-validation/metrics/cluster-purity.md
         - Homogeneity: cross-validation/metrics/homogeneity.md
         - Rand Index: cross-validation/metrics/rand-index.md
         - Top K Accuracy: cross-validation/metrics/top-k-accuracy.md
