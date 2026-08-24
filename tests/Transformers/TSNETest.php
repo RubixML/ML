@@ -52,7 +52,6 @@ class TSNETest extends TestCase
             exaggeration: 12.0,
             epochs: 500,
             minGradient: 1e-7,
-            window: 10,
             kernel: new Euclidean()
         );
 
