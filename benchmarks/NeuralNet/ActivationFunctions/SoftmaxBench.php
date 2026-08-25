@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 
 /**
@@ -12,12 +13,12 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 class SoftmaxBench
 {
     /**
-     * @var Matrix
+     * @var NDArray
      */
     protected $z;
 
     /**
-     * @var Matrix
+     * @var NDArray
      */
     protected $computed;
 
@@ -28,9 +29,9 @@ class SoftmaxBench
 
     public function setUp() : void
     {
-        $this->z = Matrix::uniform(500, 500);
+        $this->z = NumPower::uniform([500, 500]);
 
-        $this->computed = Matrix::uniform(500, 500);
+        $this->computed = NumPower::uniform([500, 500]);
 
         $this->activationFn = new Softmax();
     }
