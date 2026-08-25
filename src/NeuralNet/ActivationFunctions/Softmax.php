@@ -49,7 +49,6 @@ class Softmax implements ActivationFunction
         $columns = $input->shape()[1];
         $values = $input->toArray();
 
-        // NumPower::max() has no axis argument, so compute column maxima in PHP.
         $maxima = [];
 
         for ($column = 0; $column < $columns; ++$column) {
@@ -62,8 +61,12 @@ class Softmax implements ActivationFunction
             $maxima[] = $maximum;
         }
 
-        $max = NumPower::reshape(NumPower::array($maxima), [1, $columns]);
+        $maxima = NumPower::array($maxima);
+
+        $max = NumPower::reshape($maxima, [1, $columns]);
+
         $exponentials = NumPower::exp(NumPower::subtract($input, $max));
+
         $totals = NumPower::reshape(NumPower::sum($exponentials, axis: 0), [1, $columns]);
 
         return NumPower::divide($exponentials, $totals);
@@ -85,12 +88,12 @@ class Softmax implements ActivationFunction
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
-        // Get the softmax output as a 1D PHP array
-        $softmax = NumPower::flatten($output)->toArray();
-        $diag = NumPower::diag(NumPower::array($softmax));
-        $outer = NumPower::outer(NumPower::array($softmax), NumPower::array($softmax));
+        $softmax = NumPower::flatten($output);
 
-        // Jacobian: diag(s) - outer(s, s)
+        $diag = NumPower::diag($softmax);
+
+        $outer = NumPower::outer($softmax, $softmax);
+
         return NumPower::subtract($diag, $outer);
     }
 

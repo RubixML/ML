@@ -65,6 +65,7 @@ class ELU implements ActivationFunction
         $positiveActivation = NumPower::maximum($input, 0);
 
         $negativeMask = NumPower::minimum($input, 0);
+        
         $negativeActivation = NumPower::multiply(
             NumPower::expm1($negativeMask),
             $this->alpha
