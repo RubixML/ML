@@ -96,8 +96,8 @@ class SoftmaxTest extends TestCase
                 [0.4],
             ]),
             [
-                [0.24, -0.24],
-                [-0.24, 0.24],
+                [0.24],
+                [0.24],
             ],
         ];
 
@@ -108,9 +108,9 @@ class SoftmaxTest extends TestCase
                 [0.2],
             ]),
             [
-                [0.21, -0.15, -0.06],
-                [-0.15, 0.25, -0.10],
-                [-0.06, -0.10, 0.16],
+                [0.21],
+                [0.25],
+                [0.16],
             ],
         ];
 
@@ -120,8 +120,22 @@ class SoftmaxTest extends TestCase
                 [0.7310585],
             ]),
             [
-                [0.1966119, -0.19661192],
-                [-0.1966119, 0.19661192],
+                [0.1966119],
+                [0.1966120],
+            ],
+        ];
+
+        // A batch of 3 samples must be differentiated independently per column.
+        yield [
+            NumPower::array([
+                [0.3097901, 0.5671766, 0.3127109],
+                [0.4762272, 0.2283023, 0.1768459],
+                [0.2139826, 0.2045210, 0.5104430],
+            ]),
+            [
+                [0.2138202, 0.2454873, 0.2149228],
+                [0.2494349, 0.1761804, 0.1455714],
+                [0.1681940, 0.1626922, 0.2498909],
             ],
         ];
     }
@@ -186,14 +200,16 @@ class SoftmaxTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Correctly activates the input')]
+    #[TestDox('Correctly differentiates the activation')]
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $output, array $expected) : void
     {
         $input = NumPower::zeros($output->shape());
-        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output);
 
-        $this->assertEqualsWithDelta($expected, $derivatives, 1e-7);
+        static::assertEquals($output->shape(), $derivatives->shape());
+
+        $this->assertEqualsWithDelta($expected, $derivatives->toArray(), 1e-7);
     }
 
     #[Test]
