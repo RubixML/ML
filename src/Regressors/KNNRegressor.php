@@ -226,8 +226,8 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Find the K nearest neighbors to the given sample vector using the brute force method.
      *
-     * @param (string|int|float)[] $sample
-     * @return array{list<string|int|float>,list<float>}
+     * @param list<string|int|float> $sample
+     * @return array{list<int|float|string>,list<float>}
      */
     protected function nearest(array $sample) : array
     {
@@ -241,9 +241,13 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
 
         $distances = array_slice($distances, 0, $this->k, true);
 
-        $labels = array_intersect_key($this->labels, $distances);
+        $labels = [];
 
-        return [$labels, $distances];
+        foreach ($distances as $i => $distance) {
+            $labels[] = $this->labels[$i];
+        }
+
+        return [$labels, array_values($distances)];
     }
 
     /**

@@ -136,8 +136,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 . ' implement the Learner Interface.');
         }
 
-        $params = array_values($params);
-
         foreach ($params as &$tuple) {
             $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
         }

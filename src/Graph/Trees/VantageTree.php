@@ -163,7 +163,7 @@ class VantageTree implements BinaryTree, Spatial
      * Run a k nearest neighbors search and return the samples, labels, and
      * distances in a 3-tuple.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param int $k
      * @throws InvalidArgumentException
      * @return array<array<mixed>>
@@ -234,7 +234,7 @@ class VantageTree implements BinaryTree, Spatial
     /**
      * Return all samples, labels, and distances within a given radius of a sample.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param float $radius
      * @throws InvalidArgumentException
      * @return array<array<mixed>>
@@ -295,8 +295,8 @@ class VantageTree implements BinaryTree, Spatial
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
-     * @param (string|int|float)[] $sample
-     * @return mixed[]
+     * @param list<string|int|float> $sample
+     * @return list<list<VantagePoint|Hypersphere|Clique>>
      */
     protected function path(array $sample) : array
     {

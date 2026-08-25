@@ -44,6 +44,7 @@ use function is_nan;
 use function count;
 use function get_object_vars;
 use function number_format;
+use function array_map;
 
 /**
  * Multilayer Perceptron
@@ -358,6 +359,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        /** @var list<string> $classes */
         $classes = $dataset->possibleOutcomes();
 
         $hiddenLayers = $this->hiddenLayers;
