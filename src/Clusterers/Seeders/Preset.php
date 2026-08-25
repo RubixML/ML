@@ -38,7 +38,7 @@ class Preset implements Seeder
     protected $dimensions;
 
     /**
-     * @param list<list<string|int|float>> $centroids
+     * @param array<array<string|int|float>> $centroids
      * @throws InvalidArgumentException
      */
     public function __construct(array $centroids)
