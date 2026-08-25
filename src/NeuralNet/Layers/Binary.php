@@ -9,7 +9,7 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -93,7 +93,7 @@ class Binary implements Output
         ];
 
         $this->classes = $classes;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn ?? new BinaryCrossEntropy();
         $this->sigmoid = new Sigmoid();
     }
 
@@ -197,7 +197,7 @@ class Binary implements Output
     {
         $n = $output->shape()[1];
 
-        if ($this->costFn instanceof CrossEntropy) {
+        if ($this->costFn instanceof BinaryCrossEntropy) {
             // Optimization specific to (sigmoid +) binary cross entropy:
             // the loss derivative cancels with the sigmoid derivative, so dZ = (output - expected).
             return NumPower::divide(

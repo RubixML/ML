@@ -9,7 +9,7 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -88,7 +88,7 @@ class Multiclass implements Output
         ])->check();
 
         $this->classes = $classes;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->softmax = new Softmax();
     }
 
@@ -205,7 +205,7 @@ class Multiclass implements Output
     {
         $n = array_product($output->shape());
 
-        if ($this->costFn instanceof CrossEntropy) {
+        if ($this->costFn instanceof MulticlassCrossEntropy) {
             return NumPower::divide(
                 NumPower::subtract($output, $expected),
                 $n

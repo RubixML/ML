@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Dense;
@@ -51,7 +51,7 @@ class SnapshotTest extends TestCase
             ],
             output: new Binary(
                 classes: ['yes', 'no'],
-                costFn:  new CrossEntropy()
+                costFn:  new BinaryCrossEntropy()
             ),
             optimizer: new Stochastic()
         );

@@ -13,21 +13,21 @@ use Rubix\ML\Traits\AssertsShapes;
 use const Rubix\ML\EPSILON;
 
 /**
- * Cross Entropy
+ * Binary Cross Entropy
  *
- * Cross Entropy, or log loss, measures the performance of a classification model
- * whose output is a probability value between 0 and 1. Cross-entropy loss
- * increases as the predicted probability diverges from the actual label. So
- * predicting a probability of .012 when the actual observation label is 1 would
- * be bad and result in a high loss value. A perfect score would have a log loss
- * of 0.
+ * Binary Cross Entropy, or log loss, measures the performance of a binary
+ * classification model whose output is a probability value between 0 and 1.
+ * Cross-entropy loss increases as the predicted probability diverges from the
+ * actual label. So predicting a probability of .012 when the actual observation
+ * label is 1 would be bad and result in a high loss value. A perfect score
+ * would have a log loss of 0.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class CrossEntropy implements ClassificationLoss
+class BinaryCrossEntropy implements ClassificationLoss
 {
     use AssertsShapes;
 
@@ -42,7 +42,7 @@ class CrossEntropy implements ClassificationLoss
     /**
      * Compute the loss score.
      *
-     * L(y, ŷ) = -Σ(y * log(ŷ)) / n
+     * L(y, ŷ) = -Σ(y * log(ŷ) + (1 - y) * log(1 - ŷ)) / n
      *
      * @param NDArray $output The output of the network
      * @param NDArray $target The target values
@@ -52,12 +52,17 @@ class CrossEntropy implements ClassificationLoss
     {
         $this->assertSameShape($output, $target);
 
-        // Clip values to avoid log(0)
-        $output = NumPower::clip($output, EPSILON, 1.0);
+        $output = NumPower::clip($output, EPSILON, 1.0 - EPSILON);
+        $target = NumPower::clip($target, EPSILON, 1.0 - EPSILON);
 
         $logOutput = NumPower::log($output);
+        $logOneMinusOutput = NumPower::log(NumPower::subtract(1.0, $output));
+        $oneMinusTarget = NumPower::subtract(1.0, $target);
+
         $product = NumPower::multiply($target, $logOutput);
-        $negated = NumPower::multiply($product, -1.0);
+        $product2 = NumPower::multiply($oneMinusTarget, $logOneMinusOutput);
+        $sum = NumPower::add($product, $product2);
+        $negated = NumPower::multiply($sum, -1.0);
 
         return NumPower::mean($negated);
     }
@@ -75,13 +80,10 @@ class CrossEntropy implements ClassificationLoss
     {
         $this->assertSameShape($output, $target);
 
-        // Numerator = ŷ - y (calculate before clipping to preserve zeros)
         $numerator = NumPower::subtract($output, $target);
 
-        // Clip values to avoid division by zero
         $output = NumPower::clip($output, EPSILON, 1.0 - EPSILON);
 
-        // Denominator = ŷ * (1 - ŷ)
         $oneMinusOutput = NumPower::subtract(1.0, $output);
         $denominator = NumPower::multiply($output, $oneMinusOutput);
         $denominator = NumPower::clip($denominator, EPSILON, 1.0);
@@ -96,6 +98,6 @@ class CrossEntropy implements ClassificationLoss
      */
     public function __toString() : string
     {
-        return 'Cross Entropy';
+        return 'Binary Cross Entropy';
     }
 }

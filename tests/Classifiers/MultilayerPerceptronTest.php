@@ -24,7 +24,7 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -104,7 +104,7 @@ class MultilayerPerceptronTest extends TestCase
             evalInterval: 3,
             window: 5,
             holdOut: 0.1,
-            costFn: new CrossEntropy(),
+            costFn: new MulticlassCrossEntropy(),
             metric: new FBeta()
         );
 
@@ -159,7 +159,7 @@ class MultilayerPerceptronTest extends TestCase
             'eval interval' => 3,
             'window' => 5,
             'hold out' => 0.1,
-            'cost fn' => new CrossEntropy(),
+            'cost fn' => new MulticlassCrossEntropy(),
             'metric' => new FBeta(),
         ];
 
