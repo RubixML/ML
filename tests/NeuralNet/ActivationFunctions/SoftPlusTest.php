@@ -13,16 +13,16 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softplus;
+use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 
 #[Group('ActivationFunctions')]
-#[CoversClass(Softplus::class)]
-class SoftplusTest extends TestCase
+#[CoversClass(SoftPlus::class)]
+class SoftPlusTest extends TestCase
 {
     /**
-     * @var Softplus
+     * @var SoftPlus
      */
-    protected Softplus $activationFn;
+    protected SoftPlus $activationFn;
 
     /**
      * @return Generator<array>
@@ -134,14 +134,14 @@ class SoftplusTest extends TestCase
     {
         parent::setUp();
 
-        $this->activationFn = new Softplus();
+        $this->activationFn = new SoftPlus();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('Soft Plus', (string) $this->activationFn);
+        static::assertEquals('SoftPlus', (string) $this->activationFn);
     }
 
     #[Test]

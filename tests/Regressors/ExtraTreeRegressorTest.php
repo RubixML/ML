@@ -10,6 +10,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
