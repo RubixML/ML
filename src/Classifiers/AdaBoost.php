@@ -159,7 +159,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         float $ratio = 0.8,
         int $epochs = 100,
         float $minChange = 1e-4,
-        int $window = 5
+        int $window = 10
     ) {
         if ($base and !$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base Estimator must be'

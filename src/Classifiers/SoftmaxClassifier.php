@@ -140,7 +140,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $window = 5,
+        int $window = 10,
         ?ClassificationLoss $costFn = null
     ) {
         if ($batchSize < 1) {

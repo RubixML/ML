@@ -147,7 +147,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         int $batchSize = 128,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $window = 5,
+        int $window = 10,
         ?Distance $kernel = null,
         ?Seeder $seeder = null
     ) {
