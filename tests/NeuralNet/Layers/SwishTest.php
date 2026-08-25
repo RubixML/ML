@@ -9,6 +9,7 @@ use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Deferred;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -43,19 +44,19 @@ class SwishTest extends TestCase
         return [
             [
                 'forwardExpected' => [
-                    [0.7310585, 2.3103545, -0.0475020],
+                    [0.7310586, 2.3103545, -0.0475021],
                     [0.0524979, 0.0524979, 2.8577223],
-                    [0.0010009, -0.0148357, -0.1887703],
+                    [0.0010010, -0.0148357, -0.1887703],
                 ],
                 'backExpected' => [
                     [0.2319176, 0.7695808, 0.0450083],
-                    [0.2749583, 0.1099833, 0.0108810],
-                    [0.1252494, -0.0012326, 0.2314345],
+                    [0.2749584, 0.1099834, 0.0108810],
+                    [0.1252500, -0.0012326, 0.2314346],
                 ],
                 'inferExpected' => [
-                    [0.7306671, 2.3094806, -0.0475070],
-                    [0.0524976, 0.0524976, 2.8576817],
-                    [0.0010010, -0.0147432, -0.1887089],
+                    [0.7309885, 2.3101985, -0.0475030],
+                    [0.0524979, 0.0524979, 2.8577199],
+                    [0.0010010, -0.0148412, -0.1887739],
                 ],
             ],
         ];
@@ -184,38 +185,39 @@ class SwishTest extends TestCase
 
         $output = $this->layer->forward($this->input);
 
+        $parameters = iterator_to_array($this->layer->parameters());
+        $beta = clone $parameters['beta']->param();
+
         $backGradient = $this->layer->back(
             prevGradient: $this->prevGrad,
             optimizer: $this->optimizer
         )->compute();
 
         $directGradient = $this->layer->gradient(
-            $this->input,
-            $output,
-            ($this->prevGrad)()
+            input: $this->input,
+            dOut: ($this->prevGrad)(),
+            beta: $beta,
         );
 
         self::assertInstanceOf(NDArray::class, $directGradient);
         self::assertEqualsWithDelta($backGradient->toArray(), $directGradient->toArray(), 1e-7);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInferWithNonDefaultBeta() : void
     {
         $layer = new Swish(new Constant(0.75));
 
         $layer->initialize(3);
 
-        $input = Matrix::quick([
+        $input = NumPower::array([
             [1.5, 0.0, -2.0],
             [0.75, -0.25, 4.0],
             [0.0, -7.5, 0.001],
         ]);
 
         $prevGrad = new Deferred(function () {
-            return Matrix::quick([
+            return NumPower::array([
                 [0.9, 0.33, 0.05],
                 [0.61, 0.44, 0.02],
                 [0.77, 0.08, 0.95],
@@ -225,40 +227,38 @@ class SwishTest extends TestCase
         $forward = $layer->forward($input);
 
         $expected = [
-            [1.1323724803014423, 0.0, -0.3648510476127127],
-            [0.4777730958602874, -0.11331546200384654, 3.8102965072897335],
-            [0.0, -0.026952019360650677, 0.0005001874999912109],
+            [1.1323725, 0.0, -0.3648511],
+            [0.4777731, -0.1133155, 3.8102965],
+            [0.0, -0.0269520, 0.0005002],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals($expected, $forward->asArray());
+        $this->assertInstanceOf(NDArray::class, $forward);
+        $this->assertEqualsWithDelta($expected, $forward->toArray(), 1e-5);
 
         $gradient = $layer->back($prevGrad, $this->optimizer)->compute();
 
         $expected = [
-            [0.8667545670195208, 0.165, -0.0020647077149571467],
-            [0.46792702600108194, 0.1789904306519722, 0.02176208212030339],
-            [0.385, -0.001323821664344498, 0.4753562499666015],
+            [0.8667545, 0.1650000, -0.0020647],
+            [0.4679271, 0.1789904, 0.0217621],
+            [0.3850000, -0.0013238, 0.4753563],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEquals($expected, $gradient->asArray());
+        $this->assertInstanceOf(NDArray::class, $gradient);
+        $this->assertEqualsWithDelta($expected, $gradient->toArray(), 1e-5);
 
         $expected = [
-            [1.1322040679936571, 0.0, -0.36509242346948234],
-            [0.477760010156692, -0.11331702029615623, 3.810223770680048],
-            [0.0, -0.026955265002565797, 0.0005001874959628773],
+            [1.1322041, 0.0, -0.3650924],
+            [0.4777600, -0.1133170, 3.8102238],
+            [0.0, -0.0269553, 0.0005002],
         ];
 
         $infer = $layer->infer($input);
 
-        $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals($expected, $infer->asArray());
+        $this->assertInstanceOf(NDArray::class, $infer);
+        $this->assertEqualsWithDelta($expected, $infer->toArray(), 1e-5);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parametersRestoreRoundTrip() : void
     {
         $this->layer->initialize($this->fanIn);
@@ -276,8 +276,8 @@ class SwishTest extends TestCase
         $restored = iterator_to_array($fresh->parameters())['beta'];
 
         $this->assertSame(
-            $parameters['beta']->param()->asArray(),
-            $restored->param()->asArray()
+            $parameters['beta']->param()->toArray(),
+            $restored->param()->toArray()
         );
     }
 }
