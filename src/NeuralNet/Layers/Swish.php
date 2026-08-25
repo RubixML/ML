@@ -192,7 +192,7 @@ class Swish implements Hidden, Parametric
 
         $sigma = $this->sigmoid->activate($z);
 
-        $sigmoidDelta = $this->sigmoid->differentiate($sigma);
+        $sigmoidDelta = $this->sigmoid->differentiate($z, $sigma);
 
         $dBeta = NumPower::sum(
             NumPower::multiply(

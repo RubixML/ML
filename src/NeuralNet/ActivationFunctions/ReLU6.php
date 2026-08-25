@@ -26,7 +26,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ReLU6 implements ActivationFunction, IBufferDerivative
+class ReLU6 implements ActivationFunction
 {
     public function __construct()
     {
@@ -57,9 +57,10 @@ class ReLU6 implements ActivationFunction, IBufferDerivative
      * f'(x) = 1 if 0 < x < 6, else 0
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $greaterThanZero = NumPower::greater($input, 0.0);
         $lessThanSix = NumPower::less($input, 6.0);

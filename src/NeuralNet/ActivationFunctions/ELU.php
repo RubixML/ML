@@ -27,7 +27,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ELU implements ActivationFunction, IOBufferDerivative
+class ELU implements ActivationFunction
 {
     /**
      * Class constructor.

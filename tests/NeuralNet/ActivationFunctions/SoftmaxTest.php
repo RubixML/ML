@@ -190,7 +190,8 @@ class SoftmaxTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $output, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($output)->toArray();
+        $input = NumPower::zeros($output->shape());
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         $this->assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }

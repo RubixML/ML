@@ -21,7 +21,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HyperbolicTangent implements ActivationFunction, OBufferDerivative
+class HyperbolicTangent implements ActivationFunction
 {
     public function __construct()
     {
@@ -49,12 +49,13 @@ class HyperbolicTangent implements ActivationFunction, OBufferDerivative
      *
      * f'(x) = 1 - tanh^2(x)
      *
-     * @param NDArray $x Output matrix
+     * @param NDArray $input Input matrix
+     * @param NDArray $tanH Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $x) : NDArray
+    public function differentiate(NDArray $input, NDArray $tanH) : NDArray
     {
-        $squared = NumPower::pow($x, 2);
+        $squared = NumPower::pow($tanH, 2);
 
         return NumPower::subtract(1.0, $squared);
     }

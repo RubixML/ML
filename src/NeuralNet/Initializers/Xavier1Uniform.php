@@ -9,6 +9,7 @@ use NDArray;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Xavier 1 Uniform
@@ -27,8 +28,10 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class Xavier1Uniform extends AbstractInitializer
+class Xavier1Uniform implements Initializer
 {
+    use AssertsShapes;
+
     public function __construct()
     {
         SpecificationChain::with([

@@ -172,7 +172,7 @@ class Activation implements Hidden
     public function gradient(NDArray $input, NDArray $output, Deferred $prevGradient) : NDArray
     {
         return NumPower::multiply(
-            $this->activationFn->differentiate($input),
+            $this->activationFn->differentiate($input, $output),
             $prevGradient()
         );
     }

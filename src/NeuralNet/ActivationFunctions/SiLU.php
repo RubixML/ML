@@ -25,7 +25,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class SiLU implements ActivationFunction, IBufferDerivative
+class SiLU implements ActivationFunction
 {
     /**
      * The Sigmoid activation function.
@@ -69,12 +69,13 @@ class SiLU implements ActivationFunction, IBufferDerivative
      *        = sigmoid(x) + x * sigmoid'(x)
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $sigmoid = $this->sigmoid->activate($input);
-        $sigmoidDerivative = $this->sigmoid->differentiate($sigmoid);
+        $sigmoidDerivative = $this->sigmoid->differentiate($input, $sigmoid);
         $xTimesSigmoidDerivative = NumPower::multiply($input, $sigmoidDerivative);
 
         return NumPower::add($sigmoid, $xTimesSigmoidDerivative);

@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Xavier 1 Uniform
@@ -24,8 +25,10 @@ use NDArray;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Xavier2Uniform extends AbstractInitializer
+class Xavier2Uniform implements Initializer
 {
+    use AssertsShapes;
+
     /**
      * @inheritdoc
      */

@@ -9,6 +9,7 @@ use NDArray;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Constant
@@ -20,8 +21,10 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class Constant extends AbstractInitializer
+class Constant implements Initializer
 {
+    use AssertsShapes;
+
     /**
      * @param float $value The value to initialize the parameter to
      */

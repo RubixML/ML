@@ -10,6 +10,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 use Rubix\ML\Exceptions\InvalidStandardDeviationException;
 
 /**
@@ -24,8 +25,10 @@ use Rubix\ML\Exceptions\InvalidStandardDeviationException;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class TruncatedNormal extends AbstractInitializer
+class TruncatedNormal implements Initializer
 {
+    use AssertsShapes;
+
     /**
      * @param float $stdDev The standard deviation of the distribution to sample from
      * @throws InvalidArgumentException

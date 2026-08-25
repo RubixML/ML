@@ -26,7 +26,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ThresholdedReLU implements ActivationFunction, IBufferDerivative
+class ThresholdedReLU implements ActivationFunction
 {
     /**
      * The input value necessary to trigger an activation.
@@ -78,9 +78,10 @@ class ThresholdedReLU implements ActivationFunction, IBufferDerivative
      * f'(x) = 1 if x > threshold, 0 otherwise
      *
      * @param NDArray $input
+     * @param NDArray $output
      * @return NDArray
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         return NumPower::greater($input, $this->threshold);
     }

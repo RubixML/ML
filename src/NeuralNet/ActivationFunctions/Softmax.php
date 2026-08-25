@@ -23,7 +23,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Softmax implements ActivationFunction, OBufferDerivative
+class Softmax implements ActivationFunction
 {
     public function __construct()
     {
@@ -79,10 +79,11 @@ class Softmax implements ActivationFunction, OBufferDerivative
      * Since we typically need this for backpropagation where we multiply by the gradient,
      * we can simplify by using the Jacobian-vector product directly.
      *
+     * @param NDArray $input
      * @param NDArray $output The output from the Softmax activation
      * @return NDArray The derivative
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         // Get the softmax output as a 1D PHP array
         $softmax = NumPower::flatten($output)->toArray();

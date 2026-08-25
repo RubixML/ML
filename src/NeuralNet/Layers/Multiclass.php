@@ -218,7 +218,7 @@ class Multiclass implements Output
         );
 
         return NumPower::multiply(
-            $this->softmax->differentiate($output),
+            $this->softmax->differentiate($input, $output),
             $dLoss
         );
     }

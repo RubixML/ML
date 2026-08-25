@@ -24,7 +24,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HardSigmoid implements ActivationFunction, IBufferDerivative
+class HardSigmoid implements ActivationFunction
 {
     /**
      * The slope of the linear region.
@@ -87,9 +87,10 @@ class HardSigmoid implements ActivationFunction, IBufferDerivative
      * f'(x) = 0   otherwise
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         // For values in the linear region (-2.5 <= x <= 2.5): SLOPE
         $inLinearRegion = NumPower::greaterEqual($input, self::LOWER_BOUND);
