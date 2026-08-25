@@ -16,8 +16,6 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Parameter;
 use Generator;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Swish
  *
@@ -121,10 +119,9 @@ class Swish implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        // Initialize beta as a vector of length fanOut (one beta per neuron)
-        // Using shape [fanOut, 1] then flattening to [fanOut]
-        $betaMat = $this->initializer->initialize(1, $fanOut);
-        $beta = NumPower::flatten($betaMat);
+        $beta = $this->initializer->initialize(1, $fanOut);
+
+        $beta = NumPower::flatten($beta);
 
         $this->width = $fanOut;
         $this->beta = new Parameter($beta);
@@ -185,30 +182,31 @@ class Swish implements Hidden, Parametric
         /** @var NDArray $dOut */
         $dOut = $prevGradient();
 
-        // Gradient of the loss with respect to beta
-        // dL/dbeta = sum_over_batch(dL/dy * dy/dbeta)
-        // Here we use a simplified formulation: dL/dbeta ~ sum(dOut * input)
-        $dBetaFull = NumPower::multiply($dOut, $this->input);
-
-        // Sum over the batch axis (axis = 1) to obtain a gradient vector [width]
-        $dBeta = NumPower::sum($dBetaFull, axis: 1);
-
-        $this->beta->update($dBeta, $optimizer);
-
         $input = $this->input;
-        $output = $this->output;
-
-        $dInput = $input->multiply($output)->subtract($output->square());
-
-        $dBeta = $dOut->multiply($dInput)->sum();
 
         $beta = $this->beta->param();
+
+        $betaCol = NumPower::reshape($beta, [$this->width(), 1]);
+
+        $z = NumPower::multiply($betaCol, $input);
+
+        $sigma = $this->sigmoid->activate($z);
+
+        $sigmoidDelta = $this->sigmoid->differentiate($sigma);
+
+        $dBeta = NumPower::sum(
+            NumPower::multiply(
+                NumPower::multiply($dOut, NumPower::multiply($input, $input)),
+                $sigmoidDelta
+            ),
+            axis: 1
+        );
 
         $this->beta->update($dBeta, $optimizer);
 
         $this->input = $this->output = null;
 
-        return new Deferred([$this, 'gradient'], [$input, $output, $dOut, $beta]);
+        return new Deferred([$this, 'gradient'], [$input, $dOut, $beta]);
     }
 
     /**
@@ -217,13 +215,13 @@ class Swish implements Hidden, Parametric
      * @internal
      *
      * @param NDArray $input
-     * @param NDArray $output
      * @param NDArray $dOut
+     * @param NDArray $beta
      * @return NDArray
      */
-    public function gradient(NDArray $input, NDArray $output, NDArray $dOut) : NDArray
+    public function gradient(NDArray $input, NDArray $dOut, NDArray $beta) : NDArray
     {
-        $derivative = $this->differentiate($input, $output);
+        $derivative = $this->differentiate($input, $beta);
 
         return NumPower::multiply($derivative, $dOut);
     }
@@ -270,7 +268,6 @@ class Swish implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        // Reshape beta vector [width] to column [width, 1] for broadcasting
         $betaCol = NumPower::reshape($this->beta->param(), [$this->width(), 1]);
 
         $zHat = NumPower::multiply($betaCol, $input);
@@ -281,28 +278,31 @@ class Swish implements Hidden, Parametric
     }
 
     /**
-     * Calculate the derivative of the activation function at a given output.
-     * Formulation: derivative = (output / input) * (1 - output) + output
+     * Calculate the derivative of the activation function with respect to the input.
+     *
+     *     f'(x) = sigma(z) + z * sigma(z) * (1 - sigma(z))
+     *
+     * where z = beta * x. This formulation is defined at x = 0 for any value of beta.
      *
      * @param NDArray $input
-     * @param NDArray $output
+     * @param NDArray $beta
      * @throws RuntimeException
      * @return NDArray
      */
-    protected function differentiate(NDArray $input, NDArray $output) : NDArray
+    protected function differentiate(NDArray $input, NDArray $beta) : NDArray
     {
-        $zHat = $input->multiply($beta);
+        $betaCol = NumPower::reshape($beta, [$this->width(), 1]);
 
-        $sigmoid = $this->sigmoid->activate($zHat);
+        $z = NumPower::multiply($betaCol, $input);
 
-        // Prevent division by zero if the input contains zero values
-        $denominator = NumPower::add($input, EPSILON);
-        $term1 = NumPower::divide($output, $denominator);
+        $sigma = $this->sigmoid->activate($z);
 
-        $oneMinusOutput = NumPower::subtract(1.0, $output);
-        $product = NumPower::multiply($term1, $oneMinusOutput);
+        $term = NumPower::multiply(
+            NumPower::multiply($z, $sigma),
+            NumPower::subtract(1.0, $sigma)
+        );
 
-        return NumPower::add($product, $output);
+        return NumPower::add($sigma, $term);
     }
 
     /**
