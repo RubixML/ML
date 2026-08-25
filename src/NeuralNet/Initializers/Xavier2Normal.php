@@ -36,7 +36,6 @@ class Xavier2Normal implements Initializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        // Xavier-2 uses fourth-root scaling instead of standard square-root Xavier 1 scaling.
         $stdDev = (2.0 / ($fanOut + $fanIn)) ** 0.25;
 
         return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);

@@ -18,7 +18,7 @@ use Rubix\ML\Traits\AssertsShapes;
  * first published attempts to control the variance of activations between
  * layers through weight initialization. It remains a good default choice for
  * many hidden layer configurations. It draws from a uniform distribution
- * with limits +/- sqrt(3 / fanOut).
+ * with limits +/- sqrt(3 / fanIn).
  *
  * References:
  * [1] Y. Le Cun et al. (1998). Efficient Backprop.
@@ -47,7 +47,7 @@ class LeCunUniform implements Initializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $limit = sqrt(3 / $fanOut);
+        $limit = sqrt(3 / $fanIn);
 
         return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
     }

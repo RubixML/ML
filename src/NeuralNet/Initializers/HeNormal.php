@@ -16,7 +16,7 @@ use Rubix\ML\Traits\AssertsShapes;
  *
  * The He initializer was designed for hidden layers that feed into rectified
  * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a truncated
- * normal distribution with mean 0 and standart deviation sqrt(2 / fanOut).
+ * normal distribution with mean 0 and standard deviation sqrt(2 / fanIn).
  *
  * References:
  * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
@@ -46,7 +46,7 @@ class HeNormal implements Initializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $stdDev = sqrt(2 / $fanOut);
+        $stdDev = sqrt(2 / $fanIn);
 
         return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }

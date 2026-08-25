@@ -16,7 +16,7 @@ use Rubix\ML\Traits\AssertsShapes;
  *
  * The He initializer was designed for hidden layers that feed into rectified
  * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a uniform
- * distribution with limits +/- sqrt(6 / fanOut).
+ * distribution with limits +/- sqrt(6 / fanIn).
  *
  * References:
  * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
@@ -46,7 +46,7 @@ class HeUniform implements Initializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $limit = sqrt(6 / $fanOut);
+        $limit = sqrt(6 / $fanIn);
 
         return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
     }
