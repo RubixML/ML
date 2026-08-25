@@ -23,6 +23,7 @@ use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
@@ -56,14 +57,20 @@ class GridSearchTest extends TestCase
             'backend' => $serialBackend,
         ];
 
+        $ampBackend = new Amp();
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
         if (
             SwooleExtensionIsLoaded::create()->passes()
             && ExtensionIsLoaded::with('igbinary')->passes()
         ) {
-            $swooleProcessBackend = new Swoole();
+            $swooleBackend = new Swoole();
 
-            yield (string) $swooleProcessBackend => [
-                'backend' => $swooleProcessBackend,
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
             ];
         }
     }
