@@ -190,13 +190,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null
     ) {
-        foreach ($hiddenLayers as $layer) {
-            if (!$layer instanceof Hidden) {
-                throw new InvalidArgumentException('Hidden layer'
-                    . ' must implement the Hidden interface.');
-            }
-        }
-
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");

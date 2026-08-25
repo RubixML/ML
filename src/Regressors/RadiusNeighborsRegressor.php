@@ -2,26 +2,25 @@
 
 namespace Rubix\ML\Regressors;
 
-use NumPower;
+use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Estimator;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Helpers\Params;
-use Rubix\ML\Helpers\Stats;
-use Rubix\ML\Learner;
-use Rubix\ML\Persistable;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Radius Neighbors Regressor
@@ -36,7 +35,6 @@ use Rubix\ML\Traits\AutotrackRevisions;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 {
@@ -200,7 +198,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      * @param list<string|int|float> $sample
      * @return int|float
      */
-    public function predictSample(array $sample) : int|float
+    public function predictSample(array $sample)
     {
         [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
@@ -209,8 +207,11 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
         }
 
         if ($this->weighted) {
-            $distances = NumPower::array($distances);
-            $weights = NumPower::divide(1.0, NumPower::add($distances, 1.0))->toArray();
+            $weights = [];
+
+            foreach ($distances as $distance) {
+                $weights[] = 1.0 / (1.0 + $distance);
+            }
 
             return Stats::weightedMean($labels, $weights);
         }

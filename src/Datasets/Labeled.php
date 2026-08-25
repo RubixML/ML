@@ -10,7 +10,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function count;
-use function get_class;
 use function gettype;
 use function is_string;
 use function is_numeric;
@@ -104,12 +103,6 @@ class Labeled extends Dataset
         $samples = $labels = [];
 
         foreach ($datasets as $i => $dataset) {
-            if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Dataset must be'
-                    . ' an instance of Labeled, ' . get_class($dataset)
-                    . ' given.');
-            }
-
             if ($dataset->empty()) {
                 continue;
             }

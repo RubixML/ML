@@ -77,11 +77,6 @@ class Unlabeled extends Dataset
         $samples = [];
 
         foreach ($datasets as $i => $dataset) {
-            if (!$dataset instanceof Dataset) {
-                throw new InvalidArgumentException('Dataset must implement'
-                    . ' the Dataset interface.');
-            }
-
             if ($dataset->empty()) {
                 continue;
             }

@@ -21,6 +21,8 @@ use function func_get_args;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  *
+ * @template T of mixed
+ * @template U of mixed
  * @implements ArrayAccess<int, mixed>
  * @implements IteratorAggregate<int, mixed>
  */

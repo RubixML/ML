@@ -176,12 +176,12 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $biases = NumPower::ones([$dataset->numSamples(), 1]);
+        $biases = NumPower::ones([$dataset->numSamples(), 1], 'float32', 0);
 
-        $samples = NumPower::array(array_pack($dataset->samples()));
+        $samples = NumPower::array(array_pack($dataset->samples()), 'float32');
         // Add bias from left
         $x = NumPower::concatenate([$biases, $samples], axis: 1);
-        $y = NumPower::array($dataset->labels());
+        $y = NumPower::array($dataset->labels(), 'float32');
 
         /** @var int<0,max> $nHat */
         $nHat = $x->shape()[1] - 1;
@@ -199,7 +199,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $coefficients = NumPower::dot(NumPower::inv($a), $b)->toArray();
 
         $this->bias = (float) array_shift($coefficients);
-        $this->coefficients = NumPower::array($coefficients);
+        $this->coefficients = NumPower::array($coefficients, 'float32');
     }
 
     /**
@@ -222,7 +222,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $predictions = [];
 
         foreach ($dataset->samples() as $sample) {
-            $x = NumPower::array($sample);
+            $x = NumPower::array($sample, 'float32');
             $dot = NumPower::dot($x, $this->coefficients);
             $result = NumPower::add($dot, $this->bias);
 

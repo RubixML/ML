@@ -60,13 +60,6 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
      */
     public function __construct(array $transformers, Estimator $base, bool $elastic = true)
     {
-        foreach ($transformers as $transformer) {
-            if (!$transformer instanceof Transformer) {
-                throw new InvalidArgumentException('Transformer must'
-                    . ' implement the Transformer interface.');
-            }
-        }
-
         $this->transformers = array_values($transformers);
         $this->base = $base;
         $this->elastic = $elastic;

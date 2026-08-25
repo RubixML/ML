@@ -37,9 +37,9 @@ class Split implements Decision, HasBinaryChildren
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
+     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}|null
      */
-    protected array $subsets;
+    protected ?array $subsets;
 
     /**
      * The amount of impurity that the split introduces.
@@ -151,6 +151,6 @@ class Split implements Decision, HasBinaryChildren
      */
     public function cleanup() : void
     {
-        unset($this->subsets);
+        $this->subsets = null;
     }
 }

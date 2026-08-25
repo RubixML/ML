@@ -194,12 +194,12 @@ class FeedForward implements Network
     public function infer(Dataset $dataset) : NDArray
     {
         if ($dataset->empty()) {
-            return NumPower::array([]);
+            return NumPower::array([], 'float32');
         }
 
         $samples = array_pack($dataset->samples());
 
-        $input = NumPower::transpose(NumPower::array($samples), [1, 0]);
+        $input = NumPower::transpose(NumPower::array($samples, 'float32'), [1, 0]);
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
@@ -217,7 +217,7 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $dataset) : float
     {
-        $input = NumPower::transpose(NumPower::array($dataset->samples()), [1, 0]);
+        $input = NumPower::transpose(NumPower::array($dataset->samples(), 'float32'), [1, 0]);
 
         $this->feed($input);
 

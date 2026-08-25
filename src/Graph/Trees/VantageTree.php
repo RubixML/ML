@@ -124,10 +124,6 @@ class VantageTree implements BinaryTree, Spatial
      */
     public function grow(Labeled $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Tree requires a labeled dataset.');
-        }
-
         $this->root = VantagePoint::split($dataset, $this->kernel);
 
         $stack = [$this->root];
