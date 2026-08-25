@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Base;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -23,14 +24,15 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
 #[Group('MetaEstimators')]
 #[CoversClass(CommitteeMachine::class)]
 class CommitteeMachineTest extends TestCase
 {
-    use BackendProviderTrait;
-
     protected const int TRAIN_SIZE = 512;
 
     protected const int TEST_SIZE = 256;
@@ -44,6 +46,29 @@ class CommitteeMachineTest extends TestCase
     protected CommitteeMachine $estimator;
 
     protected Accuracy $metric;
+
+    /**
+     * @return Generator<string, array{backend: Backend}>
+     */
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        if (
+            SwooleExtensionIsLoaded::create()->passes()
+            && ExtensionIsLoaded::with('igbinary')->passes()
+        ) {
+            $swooleProcessBackend = new Swoole();
+
+            yield (string) $swooleProcessBackend => [
+                'backend' => $swooleProcessBackend,
+            ];
+        }
+    }
 
     protected function setUp() : void
     {

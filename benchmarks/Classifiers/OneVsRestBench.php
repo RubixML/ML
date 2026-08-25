@@ -7,9 +7,13 @@ use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Datasets\Labeled;
+use Generator;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
 /**
  * @Groups({"Classifiers"})
@@ -17,8 +21,6 @@ use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
  */
 class OneVsRestBench
 {
-    use BackendProviderTrait;
-
     protected const int TRAINING_SIZE = 10000;
 
     protected const int TESTING_SIZE = 10000;
@@ -28,6 +30,29 @@ class OneVsRestBench
     protected Labeled $testing;
 
     protected OneVsRest $estimator;
+
+    /**
+     * @return Generator<string, array{backend: Backend}>
+     */
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        if (
+            SwooleExtensionIsLoaded::create()->passes()
+            && ExtensionIsLoaded::with('igbinary')->passes()
+        ) {
+            $swooleProcessBackend = new Swoole();
+
+            yield (string) $swooleProcessBackend => [
+                'backend' => $swooleProcessBackend,
+            ];
+        }
+    }
 
     public function setUp() : void
     {

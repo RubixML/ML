@@ -8,16 +8,18 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Tests\DataProvider\BackendProviderTrait;
+use Generator;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
 /**
  * @Groups({"Classifiers"})
  */
 class RandomForestBench
 {
-    use BackendProviderTrait;
-
     protected const int TRAINING_SIZE = 10000;
 
     protected const int TESTING_SIZE = 10000;
@@ -27,6 +29,29 @@ class RandomForestBench
     protected Labeled $testing;
 
     protected RandomForest $estimator;
+
+    /**
+     * @return Generator<string, array{backend: Backend}>
+     */
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        if (
+            SwooleExtensionIsLoaded::create()->passes()
+            && ExtensionIsLoaded::with('igbinary')->passes()
+        ) {
+            $swooleProcessBackend = new Swoole();
+
+            yield (string) $swooleProcessBackend => [
+                'backend' => $swooleProcessBackend,
+            ];
+        }
+    }
 
     public function setUpContinuous() : void
     {

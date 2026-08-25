@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\KSkipNGram;
+use Rubix\ML\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -18,56 +19,9 @@ class KSkipNGramTest extends TestCase
     protected KSkipNGram $tokenizer;
 
     /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->tokenizer = new KSkipNGram(2, 3, 2);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(KSkipNGram::class, $this->tokenizer);
-        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider tokenizeProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    /**
-     * @test
-     * @dataProvider tokenizeUnigramProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenizeUnigrams(string $text, array $expected) : void
-    {
-        $tokenizer = new KSkipNGram(1, 1, 2);
-
-        $tokens = $tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    /**
      * @return Generator<mixed[]>
      */
-    public function tokenizeProvider() : Generator
+    public static function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -91,7 +45,7 @@ class KSkipNGramTest extends TestCase
     /**
      * @return Generator<mixed[]>
      */
-    public function tokenizeUnigramProvider() : Generator
+    public static function tokenizeUnigramProvider() : Generator
     {
         /**
          * English
@@ -103,5 +57,42 @@ class KSkipNGramTest extends TestCase
                 'The', 'end',
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->tokenizer = new KSkipNGram(2, 3, 2);
+    }
+
+    public function testBuild() : void
+    {
+        $this->assertInstanceOf(KSkipNGram::class, $this->tokenizer);
+        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('tokenizeProvider')]
+    public function testTokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('tokenizeUnigramProvider')]
+    public function testTokenizeUnigrams(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(1, 1, 2);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
     }
 }

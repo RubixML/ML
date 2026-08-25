@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Regressors;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -22,7 +23,6 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Regressors\Ridge;
-use Rubix\ML\Tests\DataProvider\GradientBoostProvider;
 
 #[Group('Regressors')]
 #[CoversClass(GradientBoost::class)]
@@ -53,6 +53,16 @@ class GradientBoostTest extends TestCase
     protected GradientBoost $estimator;
 
     protected RSquared $metric;
+
+    /**
+     * @return Generator<string, array{0: int, 1: int}>
+     */
+    public static function trainPredictAdditionalProvider() : Generator
+    {
+        yield 'default swiss roll sample' => [512, 256];
+
+        yield 'smaller swiss roll sample' => [128, 64];
+    }
 
     protected function setUp() : void
     {
@@ -186,7 +196,7 @@ class GradientBoostTest extends TestCase
 
     #[Test]
     #[TestDox('Returns additional training artifacts and prediction details')]
-    #[DataProviderExternal(GradientBoostProvider::class, 'trainPredictAdditionalProvider')]
+    #[DataProvider('trainPredictAdditionalProvider')]
     public function trainPredictAdditionalChecks(int $trainSize, int $testSize) : void
     {
         $this->estimator->setLogger(new BlackHole());
