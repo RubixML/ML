@@ -9,13 +9,14 @@ use NDArray;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * He Uniform
  *
  * The He initializer was designed for hidden layers that feed into rectified
  * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a uniform
- * distribution with limits +/- sqrt(6 / fanOut).
+ * distribution with limits +/- sqrt(6 / fanIn).
  *
  * References:
  * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
@@ -26,8 +27,10 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class HeUniform extends AbstractInitializer
+class HeUniform implements Initializer
 {
+    use AssertsShapes;
+
     public function __construct()
     {
         SpecificationChain::with([
@@ -43,7 +46,7 @@ class HeUniform extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $limit = sqrt(6 / $fanOut);
+        $limit = sqrt(6 / $fanIn);
 
         return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
     }

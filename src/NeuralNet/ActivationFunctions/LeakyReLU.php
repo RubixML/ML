@@ -27,7 +27,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class LeakyReLU implements ActivationFunction, IBufferDerivative
+class LeakyReLU implements ActivationFunction
 {
     /**
      * The amount of leakage as a ratio of the input value to allow to pass through when inactivated.
@@ -86,9 +86,10 @@ class LeakyReLU implements ActivationFunction, IBufferDerivative
      * f'(x) = leakage   if x ≤ 0
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $positivePart = NumPower::greater($input, 0);
 

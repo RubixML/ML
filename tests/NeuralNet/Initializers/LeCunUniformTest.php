@@ -119,7 +119,7 @@ final class LeCunUniformTest extends TestCase
     public function testDistributionStatisticsMatchLeCunUniform(int $fanIn, int $fanOut) : void
     {
         //given
-        $limit = sqrt(3 / $fanOut);
+        $limit = sqrt(3 / $fanIn);
 
         //when
         $w = (new LeCunUniform())->initialize(fanIn: $fanIn, fanOut:  $fanOut);

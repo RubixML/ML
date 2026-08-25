@@ -6,6 +6,7 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use NumPower;
 use NDArray;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Xavier 2 Normal
@@ -24,8 +25,10 @@ use NDArray;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Xavier2Normal extends AbstractInitializer
+class Xavier2Normal implements Initializer
 {
+    use AssertsShapes;
+
     /**
      * @inheritdoc
      */
@@ -33,7 +36,6 @@ class Xavier2Normal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        // Xavier-2 uses fourth-root scaling instead of standard square-root Xavier 1 scaling.
         $stdDev = (2.0 / ($fanOut + $fanIn)) ** 0.25;
 
         return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);

@@ -159,7 +159,8 @@ class SiLUTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
@@ -171,7 +172,7 @@ class SiLUTest extends TestCase
     {
         $output = $this->activationFn->activate($input);
         $activations = $output->toArray();
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
@@ -184,7 +185,7 @@ class SiLUTest extends TestCase
     {
         $output = $this->activationFn->activate($input);
         $activations = $output->toArray();
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);

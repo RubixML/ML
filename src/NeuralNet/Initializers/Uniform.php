@@ -10,6 +10,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 use Rubix\ML\Exceptions\InvalidBetaException;
 
 /**
@@ -23,8 +24,10 @@ use Rubix\ML\Exceptions\InvalidBetaException;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class Uniform extends AbstractInitializer
+class Uniform implements Initializer
 {
+    use AssertsShapes;
+
     /**
      * @param float $beta The upper and lower bound of the distribution.
      * @throws InvalidArgumentException

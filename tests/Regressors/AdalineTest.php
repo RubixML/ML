@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Regressors;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -22,7 +23,6 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Regressors\Adaline;
-use Rubix\ML\Tests\DataProvider\AdalineProvider;
 
 #[Group('Regressors')]
 #[CoversClass(Adaline::class)]
@@ -53,6 +53,45 @@ class AdalineTest extends TestCase
     protected Adaline $estimator;
 
     protected RSquared $metric;
+
+    /**
+     * @return Generator<string, array{0: list<list<int>>, 1: list<int>, 2: list<int>}>
+     */
+    public static function trainPredictProvider() : Generator
+    {
+        yield '1 feature linear sample' => [
+            [
+                [0],
+                [1],
+                [2],
+                [3],
+            ],
+            [3, 5, 7, 9],
+            [4],
+        ];
+
+        yield '2 feature linear sample' => [
+            [
+                [0, 0],
+                [1, 1],
+                [2, 1],
+                [1, 2],
+            ],
+            [3, 6, 7, 8],
+            [2, 2],
+        ];
+
+        yield '3 feature linear sample' => [
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 1],
+            ],
+            [4, 5, 6, 7],
+            [1, 1, 1],
+        ];
+    }
 
     protected function setUp() : void
     {
@@ -183,7 +222,7 @@ class AdalineTest extends TestCase
 
     #[Test]
     #[TestDox('Trains, predicts, and returns acceptable Adaline values')]
-    #[DataProviderExternal(AdalineProvider::class, 'trainPredictProvider')]
+    #[DataProvider('trainPredictProvider')]
     public function trainPredict(array $samples, array $labels, array $prediction) : void
     {
         $estimator = new Adaline(

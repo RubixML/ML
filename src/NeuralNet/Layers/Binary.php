@@ -212,7 +212,7 @@ class Binary implements Output
         );
 
         return NumPower::multiply(
-            $this->sigmoid->differentiate($output),
+            $this->sigmoid->differentiate($input, $output),
             $dLoss
         );
     }

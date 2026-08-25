@@ -119,7 +119,7 @@ final class LeCunNormalTest extends TestCase
     public function testDistributionStatisticsMatchLeCunNormal(int $fanIn, int $fanOut) : void
     {
         //given
-        $expectedStd = sqrt(1 / $fanOut);
+        $expectedStd = sqrt(1 / $fanIn);
         $w = (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
         $flatValues = array_merge(...$w->toArray());
 

@@ -10,6 +10,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
@@ -20,9 +21,9 @@ use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Tests\DataProvider\ExtraTreeRegressorProvider;
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -56,6 +57,56 @@ class ExtraTreeRegressorTest extends TestCase
     protected ExtraTreeRegressor $estimator;
 
     protected RSquared $metric;
+
+    /**
+     * @return Generator<string, array{0: list<list<int>>, 1: list<int>, 2: list<int>}>
+     */
+    public static function trainPredictProvider() : Generator
+    {
+        yield '1 feature sample' => [
+            [
+                [0],
+                [1],
+                [2],
+                [3],
+            ],
+            [2, 4, 6, 8],
+            [4],
+        ];
+
+        yield '2 feature sample' => [
+            [
+                [0, 0],
+                [1, 1],
+                [2, 1],
+                [1, 2],
+            ],
+            [3, 6, 7, 8],
+            [2, 2],
+        ];
+
+        yield '3 feature sample' => [
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 1],
+            ],
+            [4, 5, 6, 7],
+            [1, 1, 1],
+        ];
+
+        yield '4 feature sample' => [
+            [
+                [0, 0, 0, 0],
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+            ],
+            [2, 4, 6, 8],
+            [1, 1, 1, 1],
+        ];
+    }
 
     protected function setUp() : void
     {
@@ -201,7 +252,7 @@ class ExtraTreeRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Can train and predict from provider samples')]
-    #[DataProviderExternal(ExtraTreeRegressorProvider::class, 'trainPredictProvider')]
+    #[DataProvider('trainPredictProvider')]
     public function trainPredictAdditional(array $samples, array $labels, array $prediction) : void
     {
         $training = Labeled::quick($samples, $labels);

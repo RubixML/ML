@@ -112,7 +112,8 @@ class HardSigmoidTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }

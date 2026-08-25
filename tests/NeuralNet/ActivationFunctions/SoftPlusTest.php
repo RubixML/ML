@@ -13,16 +13,16 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softplus;
+use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 
 #[Group('ActivationFunctions')]
-#[CoversClass(Softplus::class)]
-class SoftplusTest extends TestCase
+#[CoversClass(SoftPlus::class)]
+class SoftPlusTest extends TestCase
 {
     /**
-     * @var Softplus
+     * @var SoftPlus
      */
-    protected Softplus $activationFn;
+    protected SoftPlus $activationFn;
 
     /**
      * @return Generator<array>
@@ -134,14 +134,14 @@ class SoftplusTest extends TestCase
     {
         parent::setUp();
 
-        $this->activationFn = new Softplus();
+        $this->activationFn = new SoftPlus();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('Soft Plus', (string) $this->activationFn);
+        static::assertEquals('SoftPlus', (string) $this->activationFn);
     }
 
     #[Test]
@@ -159,7 +159,8 @@ class SoftplusTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
@@ -169,8 +170,9 @@ class SoftplusTest extends TestCase
     #[DataProvider('zeroRegionProvider')]
     public function testZeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
@@ -181,8 +183,9 @@ class SoftplusTest extends TestCase
     #[DataProvider('extremeValuesProvider')]
     public function testExtremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);

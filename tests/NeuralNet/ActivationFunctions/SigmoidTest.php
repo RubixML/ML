@@ -166,7 +166,8 @@ class SigmoidTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $output, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($output)->toArray();
+        $input = NumPower::zeros($output->shape());
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
@@ -176,8 +177,9 @@ class SigmoidTest extends TestCase
     #[DataProvider('zeroRegionProvider')]
     public function testZeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
-        $derivatives = $this->activationFn->differentiate($this->activationFn->activate($input))->toArray();
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
@@ -188,8 +190,9 @@ class SigmoidTest extends TestCase
     #[DataProvider('extremeValuesProvider')]
     public function testExtremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
-        $derivatives = $this->activationFn->differentiate($this->activationFn->activate($input))->toArray();
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);

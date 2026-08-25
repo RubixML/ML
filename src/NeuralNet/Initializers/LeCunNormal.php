@@ -9,6 +9,7 @@ use NDArray;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Le Cun Normal
@@ -17,7 +18,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * first published attempts to control the variance of activations between
  * layers through weight initialization. It remains a good default choice for
  * many hidden layer configurations. It draws from a truncated
- * normal distribution with mean 0 and standard deviation sqrt(1 / fanOut).
+ * normal distribution with mean 0 and standard deviation sqrt(1 / fanIn).
  *
  * References:
  * [1] Y. Le Cun et al. (1998). Efficient Backprop.
@@ -27,8 +28,10 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class LeCunNormal extends AbstractInitializer
+class LeCunNormal implements Initializer
 {
+    use AssertsShapes;
+
     public function __construct()
     {
         SpecificationChain::with([
@@ -44,7 +47,7 @@ class LeCunNormal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $stdDev = sqrt(1 / $fanOut);
+        $stdDev = sqrt(1 / $fanIn);
 
         return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }

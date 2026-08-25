@@ -25,7 +25,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Softsign implements ActivationFunction, IBufferDerivative
+class Softsign implements ActivationFunction
 {
     public function __construct()
     {
@@ -57,9 +57,10 @@ class Softsign implements ActivationFunction, IBufferDerivative
      * f'(x) = 1 / (1 + |x|)²
      *
      * @param NDArray $input
+     * @param NDArray $output
      * @return NDArray
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $absInput = NumPower::abs($input);
         $onePlusAbs = NumPower::add(1.0, $absInput);

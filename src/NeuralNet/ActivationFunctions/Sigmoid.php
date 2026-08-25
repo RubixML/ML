@@ -22,7 +22,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Sigmoid implements ActivationFunction, OBufferDerivative
+class Sigmoid implements ActivationFunction
 {
     public function __construct()
     {
@@ -55,10 +55,11 @@ class Sigmoid implements ActivationFunction, OBufferDerivative
      * f'(x) = f(x) * (1 - f(x))
      * where f(x) is the output of the sigmoid function
      *
+     * @param NDArray $input
      * @param NDArray $output
      * @return NDArray
      */
-    public function differentiate(NDArray $output) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $oneMinusOutput = NumPower::subtract(1.0, $output);
 

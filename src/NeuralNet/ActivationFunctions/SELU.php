@@ -26,7 +26,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class SELU implements ActivationFunction, IBufferDerivative
+class SELU implements ActivationFunction
 {
     /**
      * The value at which leakage starts to saturate.
@@ -89,9 +89,10 @@ class SELU implements ActivationFunction, IBufferDerivative
      * f'(x) = λ * α * e^x      if x ≤ 0
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $positiveMask = NumPower::greater($input, 0);
         $positivePart = NumPower::multiply($positiveMask, self::LAMBDA);

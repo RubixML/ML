@@ -24,7 +24,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class HardSiLU implements ActivationFunction, IBufferDerivative
+class HardSiLU implements ActivationFunction
 {
     /**
      * The Hard Sigmoid activation function.
@@ -67,12 +67,13 @@ class HardSiLU implements ActivationFunction, IBufferDerivative
      * f'(x) = HardSigmoid(x) + x * HardSigmoid'(x)
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $hardSigmoid = $this->hardSigmoid->activate($input);
-        $hardSigmoidDerivative = $this->hardSigmoid->differentiate($input);
+        $hardSigmoidDerivative = $this->hardSigmoid->differentiate($input, $hardSigmoid);
         $xTimesDerivative = NumPower::multiply($input, $hardSigmoidDerivative);
 
         return NumPower::add($hardSigmoid, $xTimesDerivative);

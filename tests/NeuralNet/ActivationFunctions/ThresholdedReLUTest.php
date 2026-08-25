@@ -195,7 +195,8 @@ class ThresholdedReLUTest extends TestCase
     #[DataProvider('differentiateProvider')]
     public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
@@ -207,8 +208,9 @@ class ThresholdedReLUTest extends TestCase
     {
         $activationFn = new ThresholdedReLU($threshold);
 
-        $activations = $activationFn->activate($input)->toArray();
-        $derivatives = $activationFn->differentiate($input)->toArray();
+        $output = $activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
@@ -219,8 +221,9 @@ class ThresholdedReLUTest extends TestCase
     #[DataProvider('zeroRegionProvider')]
     public function testZeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
@@ -231,8 +234,9 @@ class ThresholdedReLUTest extends TestCase
     #[DataProvider('extremeValuesProvider')]
     public function testExtremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
-        $derivatives = $this->activationFn->differentiate($input)->toArray();
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
         static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
         static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);

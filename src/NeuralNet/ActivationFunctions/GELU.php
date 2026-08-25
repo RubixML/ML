@@ -26,7 +26,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class GELU implements ActivationFunction, IBufferDerivative
+class GELU implements ActivationFunction
 {
     /**
      * The square root of two over pi constant sqrt(2/π).
@@ -94,9 +94,10 @@ class GELU implements ActivationFunction, IBufferDerivative
      * - sech^2(z) = (1/cosh(z))^2
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $cubed = NumPower::pow($input, 3);
 

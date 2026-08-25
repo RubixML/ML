@@ -87,12 +87,12 @@ final class HeNormalTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('It generates values with mean ~0 and std ~sqrt(2 / fanOut)')]
+    #[TestDox('It generates values with mean ~0 and std ~sqrt(2 / fanIn)')]
     #[DataProvider('heNormalDistributionValidationProvider')]
     public function testDistributionStatisticsMatchHeNormal(int $fanIn, int $fanOut) : void
     {
         //given
-        $expectedStd = sqrt(2 / $fanOut);
+        $expectedStd = sqrt(2 / $fanIn);
         $matrix = (new HeNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
         $flatValues = array_merge(...$matrix->toArray());
 

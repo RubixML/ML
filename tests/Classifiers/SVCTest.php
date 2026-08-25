@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Classifiers;
 
-use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
@@ -81,7 +80,6 @@ class SVCTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    #[After]
     protected function tearDown() : void
     {
         if (file_exists('svc.model')) {

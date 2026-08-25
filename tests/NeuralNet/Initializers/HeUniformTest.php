@@ -119,7 +119,7 @@ final class HeUniformTest extends TestCase
     public function testDistributionStatisticsMatchHeUniform(int $fanIn, int $fanOut) : void
     {
         //given
-        $limit = sqrt(6 / $fanOut);
+        $limit = sqrt(6 / $fanIn);
 
         //when
         $w = (new HeUniform())->initialize(fanIn: $fanIn, fanOut:  $fanOut);

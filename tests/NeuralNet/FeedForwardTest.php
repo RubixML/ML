@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Tests\NeuralNet;
 
-use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -50,7 +49,6 @@ class FeedForwardTest extends TestCase
      */
     protected Output $output;
 
-    #[Before]
     protected function setUp() : void
     {
         $this->dataset = Labeled::quick([

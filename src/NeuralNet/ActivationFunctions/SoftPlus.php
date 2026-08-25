@@ -11,7 +11,7 @@ use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 
 /**
- * Softplus
+ * SoftPlus
  *
  * A smooth approximation of the ReLU function whose output is constrained to be
  * positive.
@@ -24,7 +24,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Softplus implements ActivationFunction, IBufferDerivative
+class SoftPlus implements ActivationFunction
 {
     public function __construct()
     {
@@ -56,9 +56,10 @@ class Softplus implements ActivationFunction, IBufferDerivative
      * f'(x) = 1 / (1 + e^(-x))
      *
      * @param NDArray $input
+     * @param NDArray $output
      * @return NDArray
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $negExp = NumPower::exp(NumPower::multiply($input, -1.0));
         $denominator = NumPower::add(1.0, $negExp);
@@ -73,6 +74,6 @@ class Softplus implements ActivationFunction, IBufferDerivative
      */
     public function __toString() : string
     {
-        return 'Softplus';
+        return 'SoftPlus';
     }
 }

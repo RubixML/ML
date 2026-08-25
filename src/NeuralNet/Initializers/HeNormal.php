@@ -9,13 +9,14 @@ use NDArray;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * He Normal
  *
  * The He initializer was designed for hidden layers that feed into rectified
  * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a truncated
- * normal distribution with mean 0 and standart deviation sqrt(2 / fanOut).
+ * normal distribution with mean 0 and standard deviation sqrt(2 / fanIn).
  *
  * References:
  * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
@@ -26,8 +27,10 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
-class HeNormal extends AbstractInitializer
+class HeNormal implements Initializer
 {
+    use AssertsShapes;
+
     public function __construct()
     {
         SpecificationChain::with([
@@ -43,7 +46,7 @@ class HeNormal extends AbstractInitializer
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        $stdDev = sqrt(2 / $fanOut);
+        $stdDev = sqrt(2 / $fanIn);
 
         return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
     }

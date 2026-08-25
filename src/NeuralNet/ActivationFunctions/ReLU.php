@@ -25,7 +25,7 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class ReLU implements ActivationFunction, IBufferDerivative
+class ReLU implements ActivationFunction
 {
     public function __construct()
     {
@@ -54,9 +54,10 @@ class ReLU implements ActivationFunction, IBufferDerivative
      * f'(x) = 1 if x > 0, else 0
      *
      * @param NDArray $input Input matrix
+     * @param NDArray $output Output matrix
      * @return NDArray Derivative matrix
      */
-    public function differentiate(NDArray $input) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         return NumPower::greater($input, 0.0);
     }
