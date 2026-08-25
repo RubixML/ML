@@ -276,7 +276,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
             throw new RuntimeException('Cannot determine data types of empty dataset.');
         }
 
-        return array_map([DataType::class, 'detect'], $this->samples[0] ?? []);
+        return array_map([DataType::class, 'detect'], $this->samples[0]);
     }
 
     /**

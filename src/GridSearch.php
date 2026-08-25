@@ -287,7 +287,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         $best = reset($combinations) ?: [];
 
-        $estimator = new $this->base(...array_values($best));
+        $estimator = new $this->base(...$best);
 
         if ($this->logger) {
             $this->logger->info('Training with best hyper-parameters');
