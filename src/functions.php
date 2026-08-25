@@ -25,11 +25,16 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
+     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @return T
      */
     function argmin(array $values)
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('Argmin is undefined for empty set.');
+        }
+
         $index = array_search(min($values), $values);
 
         if ($index === false) {
@@ -46,11 +51,16 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
+     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @return T
      */
     function argmax(array $values)
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('Argmax is undefined for empty set.');
+        }
+
         $index = array_search(max($values), $values);
 
         if ($index === false) {
@@ -66,10 +76,15 @@ namespace Rubix\ML
      * @internal
      *
      * @param (int|float)[] $values
+     * @throws InvalidArgumentException
      * @return float
      */
     function logsumexp(array $values) : float
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('LogSumExp is undefined for empty set.');
+        }
+
         $max = max($values);
 
         if ($max === -INF or $max === INF) {

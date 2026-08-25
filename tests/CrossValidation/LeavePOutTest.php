@@ -15,10 +15,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
-use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
+use Rubix\ML\Backends\Amp;
 
 #[Group('Validators')]
 #[CoversClass(LeavePOut::class)]
@@ -39,22 +36,11 @@ class LeavePOutTest extends TestCase
      */
     public static function provideBackends() : Generator
     {
-        $serialBackend = new Serial();
+        $ampBackend = new Amp();
 
-        yield (string) $serialBackend => [
-            'backend' => $serialBackend,
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
         ];
-
-        if (
-            SwooleExtensionIsLoaded::create()->passes()
-            && ExtensionIsLoaded::with('igbinary')->passes()
-        ) {
-            $swooleProcessBackend = new Swoole();
-
-            yield (string) $swooleProcessBackend => [
-                'backend' => $swooleProcessBackend,
-            ];
-        }
     }
 
     protected function setUp() : void
@@ -62,8 +48,8 @@ class LeavePOutTest extends TestCase
         $this->generator = new Agglomerate(
             generators: [
                 'male' => new Blob(
-                    center: [69.2, 195.7, 40.],
-                    stdDev: [1., 3., 0.3]
+                    center: [69.2, 195.7, 40.0],
+                    stdDev: [1.0, 3.0, 0.3]
                 ),
                 'female' => new Blob(
                     center: [63.7, 168.5, 38.1],

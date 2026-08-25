@@ -192,7 +192,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare() or !isset($this->classes, $this->featureCount)) {
+        if ($this->bare() or !isset($this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -243,7 +243,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * Calculate the impurity of a set of labels.
      *
-     * @param list<string|int> $labels
+     * @param list<int|float|string> $labels
      * @return float
      */
     protected function impurity(array $labels) : float

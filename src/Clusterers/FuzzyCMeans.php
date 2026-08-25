@@ -333,9 +333,13 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             foreach ($sums as $cluster => $sigmas) {
                 $total = $totals[$cluster];
 
+                $centroid = [];
+
                 foreach ($sigmas as $j => $sigma) {
-                    $this->centroids[$cluster][$j] = $sigma / $total;
+                    $centroid[] = $sigma / $total;
                 }
+
+                $this->centroids[$cluster] = $centroid;
             }
 
             if (is_nan($loss)) {

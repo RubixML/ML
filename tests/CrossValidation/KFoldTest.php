@@ -15,10 +15,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
-use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
+use Rubix\ML\Backends\Amp;
 
 #[Group('Validators')]
 #[CoversClass(KFold::class)]
@@ -39,22 +36,11 @@ class KFoldTest extends TestCase
      */
     public static function provideBackends() : Generator
     {
-        $serialBackend = new Serial();
+        $ampBackend = new Amp();
 
-        yield (string) $serialBackend => [
-            'backend' => $serialBackend,
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
         ];
-
-        if (
-            SwooleExtensionIsLoaded::create()->passes()
-            && ExtensionIsLoaded::with('igbinary')->passes()
-        ) {
-            $swooleProcessBackend = new Swoole();
-
-            yield (string) $swooleProcessBackend => [
-                'backend' => $swooleProcessBackend,
-            ];
-        }
     }
 
     protected function setUp() : void

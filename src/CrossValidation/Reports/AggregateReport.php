@@ -36,7 +36,7 @@ class AggregateReport implements ReportGenerator
     protected $compatibility;
 
     /**
-     * @param ReportGenerator[] $reports
+     * @param mixed[] $reports
      * @throws InvalidArgumentException
      */
     public function __construct(array $reports)

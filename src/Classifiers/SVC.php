@@ -22,6 +22,8 @@ use Rubix\ML\Exceptions\RuntimeException;
 use svmmodel;
 use svm;
 
+use function array_map;
+
 /**
  * SVC
  *
@@ -242,7 +244,7 @@ class SVC implements Estimator, Learner
             $sampleWithOffset[$key + 1] = $value;
         }
 
-        $index = $this->model->predict($sampleWithOffset);
+        $index = (int) $this->model->predict($sampleWithOffset);
 
         return $this->classes[$index];
     }

@@ -99,10 +99,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $compatibilities = [];
 
         foreach ($experts as $expert) {
-            if (!$expert instanceof Learner) {
-                throw new InvalidArgumentException('Expert must implement the Learner interface.');
-            }
-
             if (!in_array($expert->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
                 throw new InvalidArgumentException('Committee only supports'
                     . ' classifiers, regressors, and anomaly detectors, '

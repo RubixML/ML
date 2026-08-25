@@ -44,6 +44,7 @@ use function is_nan;
 use function count;
 use function get_object_vars;
 use function number_format;
+use function array_map;
 
 /**
  * Multilayer Perceptron
@@ -190,13 +191,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null
     ) {
-        foreach ($hiddenLayers as $layer) {
-            if (!$layer instanceof Hidden) {
-                throw new InvalidArgumentException('Hidden layer'
-                    . ' must implement the Hidden interface.');
-            }
-        }
-
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
@@ -365,6 +359,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        /** @var list<string> $classes */
         $classes = $dataset->possibleOutcomes();
 
         $hiddenLayers = $this->hiddenLayers;

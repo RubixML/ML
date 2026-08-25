@@ -48,9 +48,9 @@ class Isolator implements HasBinaryChildren
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{Dataset,Dataset}
+     * @var array{Dataset,Dataset}|null
      */
-    protected array $subsets;
+    protected ?array $subsets;
 
     /**
      * Factory method to build a isolator node from a dataset using a random split of the dataset.
@@ -139,6 +139,6 @@ class Isolator implements HasBinaryChildren
      */
     public function cleanup() : void
     {
-        unset($this->subsets);
+        $this->subsets = null;
     }
 }

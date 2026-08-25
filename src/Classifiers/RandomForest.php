@@ -31,6 +31,8 @@ use function Rubix\ML\array_transpose;
 use function array_count_values;
 use function get_class;
 use function in_array;
+use function array_map;
+use function array_fill_keys;
 
 /**
  * Random Forest
@@ -222,7 +224,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         if ($this->balanced) {
             $counts = array_count_values($dataset->labels());
 
-            $min = min($counts);
+            $min = $counts ? min($counts) : 1;
 
             $weights = [];
 
@@ -247,7 +249,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         $this->trees = $this->backend->process();
 
-        $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
+        $this->classes = array_fill_keys(array_map('strval', $dataset->possibleOutcomes()), 0.0);
 
         $this->featureCount = $dataset->numFeatures();
     }
@@ -278,8 +280,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         $predictions = [];
 
         foreach ($aggregate as $votes) {
-            /** @var array<string,int> $counts */
-            $counts = array_count_values($votes);
+            $counts = array_count_values(array_map('strval', $votes));
 
             $predictions[] = argmax($counts);
         }

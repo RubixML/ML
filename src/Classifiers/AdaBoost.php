@@ -133,7 +133,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The loss at each epoch from the last training session.
      *
-     * @var list<float,int>|null
+     * @var list<float>|null
      */
     protected ?array $losses = null;
 
@@ -274,7 +274,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the loss at each epoch of the last training session.
      *
-     * @return list<float,int>|null
+     * @return list<float>|null
      */
     public function losses() : ?array
     {

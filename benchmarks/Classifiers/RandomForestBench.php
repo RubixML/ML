@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Generator;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
@@ -41,14 +42,20 @@ class RandomForestBench
             'backend' => $serialBackend,
         ];
 
+        $ampBackend = new Amp();
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
         if (
             SwooleExtensionIsLoaded::create()->passes()
             && ExtensionIsLoaded::with('igbinary')->passes()
         ) {
-            $swooleProcessBackend = new Swoole();
+            $swooleBackend = new Swoole();
 
-            yield (string) $swooleProcessBackend => [
-                'backend' => $swooleProcessBackend,
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
             ];
         }
     }
