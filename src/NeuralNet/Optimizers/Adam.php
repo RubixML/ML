@@ -119,7 +119,7 @@ class Adam implements Optimizer, Adaptive
         }
 
         /** @var NDArray $zeros */
-        $zeros = NumPower::zeros($param->param()->shape());
+        $zeros = NumPower::zeros($param->param()->shape(), 'float32', 0);
 
         $this->cache[$param->id()] = [clone $zeros, $zeros];
     }

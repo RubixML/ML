@@ -38,6 +38,7 @@ use function is_nan;
 use function count;
 use function get_object_vars;
 use function number_format;
+use function array_map;
 
 /**
  * Softmax Classifier

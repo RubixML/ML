@@ -136,8 +136,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 . ' implement the Learner Interface.');
         }
 
-        $params = array_values($params);
-
         foreach ($params as &$tuple) {
             $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
         }
@@ -289,7 +287,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         $best = reset($combinations) ?: [];
 
-        $estimator = new $this->base(...array_values($best));
+        $estimator = new $this->base(...$best);
 
         if ($this->logger) {
             $this->logger->info('Training with best hyper-parameters');

@@ -194,7 +194,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare() or !isset($this->featureCount, $this->classes)) {
+        if ($this->bare() or !isset($this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -249,7 +249,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Calculate the impurity of a set of labels using gini coefficient.
      *
-     * @param list<string|int> $labels
+     * @param list<int|float|string> $labels
      * @return float
      */
     protected function impurity(array $labels) : float

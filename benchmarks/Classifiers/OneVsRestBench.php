@@ -11,6 +11,7 @@ use Generator;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
@@ -42,14 +43,20 @@ class OneVsRestBench
             'backend' => $serialBackend,
         ];
 
+        $ampBackend = new Amp();
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
         if (
             SwooleExtensionIsLoaded::create()->passes()
             && ExtensionIsLoaded::with('igbinary')->passes()
         ) {
-            $swooleProcessBackend = new Swoole();
+            $swooleBackend = new Swoole();
 
-            yield (string) $swooleProcessBackend => [
-                'backend' => $swooleProcessBackend,
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
             ];
         }
     }

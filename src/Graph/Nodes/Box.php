@@ -44,9 +44,9 @@ class Box implements Hypercube, HasBinaryChildren
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{Labeled,Labeled}
+     * @var array{Labeled,Labeled}|null
      */
-    protected array $subsets;
+    protected ?array $subsets;
 
     /**
      * The minimum vector containing all the points.
@@ -166,6 +166,6 @@ class Box implements Hypercube, HasBinaryChildren
      */
     public function cleanup() : void
     {
-        unset($this->subsets);
+        $this->subsets = null;
     }
 }

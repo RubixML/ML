@@ -107,7 +107,7 @@ class Momentum implements Optimizer, Adaptive
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $this->cache[$param->id()] = NumPower::zeros($param->param()->shape());
+        $this->cache[$param->id()] = NumPower::zeros($param->param()->shape(), 'float32', 0);
     }
 
     /**

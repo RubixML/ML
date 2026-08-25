@@ -61,7 +61,7 @@ class Softmax implements ActivationFunction
             $maxima[] = $maximum;
         }
 
-        $maxima = NumPower::array($maxima);
+        $maxima = NumPower::array($maxima, 'float32');
 
         $max = NumPower::reshape($maxima, [1, $columns]);
 

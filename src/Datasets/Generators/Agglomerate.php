@@ -55,13 +55,6 @@ class Agglomerate implements Generator
                 . ' at least 1 Generator.');
         }
 
-        foreach ($generators as $generator) {
-            if (!$generator instanceof Generator) {
-                throw new InvalidArgumentException('Generator must'
-                    . ' implement the Generator interface.');
-            }
-        }
-
         $dimensions = current($generators)->dimensions();
 
         $k = count($generators);

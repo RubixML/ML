@@ -155,6 +155,6 @@ class VantagePoint implements Hypersphere, HasBinaryChildren
      */
     public function cleanup() : void
     {
-        unset($this->subsets);
+        $this->subsets = null;
     }
 }
