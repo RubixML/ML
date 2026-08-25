@@ -33,6 +33,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -219,6 +220,10 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if ($holdOut < 0.0 or $holdOut > 0.5) {
             throw new InvalidArgumentException('Hold out ratio must be'
                 . " between 0 and 0.5, $holdOut given.");
+        }
+
+        if ($costFn and $costFn instanceof BinaryCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
 
         if ($metric) {

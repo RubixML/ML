@@ -26,6 +26,7 @@ use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
@@ -166,6 +167,10 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
+        }
+
+        if ($costFn and $costFn instanceof BinaryCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
 
         $this->batchSize = $batchSize;
