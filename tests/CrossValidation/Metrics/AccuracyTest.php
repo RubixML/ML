@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
-use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -62,7 +61,6 @@ class AccuracyTest extends TestCase
         ];
     }
 
-    #[Before]
     protected function setUp() : void
     {
         $this->metric = new Accuracy();
