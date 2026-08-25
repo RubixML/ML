@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Regressors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
@@ -21,6 +21,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Regressors')]
@@ -52,6 +53,16 @@ class RegressionTreeTest extends TestCase
     protected RegressionTree $estimator;
 
     protected RSquared $metric;
+
+    /**
+     * @return Generator<string, array{0: int, 1: int}>
+     */
+    public static function trainedModelCases() : Generator
+    {
+        yield 'standard split' => [512, 256];
+
+        yield 'smaller split' => [128, 64];
+    }
 
     protected function setUp() : void
     {
@@ -233,7 +244,7 @@ class RegressionTreeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[DataProviderExternal(RegressionTreeProvider::class, 'trainedModelCases')]
+    #[DataProvider('trainedModelCases')]
     public function testTrainedModelExposesAdditionalChecks(int $trainingSize, int $testingSize) : void
     {
         $training = $this->generator->generate($trainingSize);
