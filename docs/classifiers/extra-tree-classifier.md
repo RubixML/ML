@@ -11,7 +11,7 @@ An *Extremely Randomized* Classification Tree that recursively chooses node spli
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | maxHeight | PHP_INT_MAX | int | The maximum height of the tree. |
-| 2 | maxLeafSize | 3 | int | The max number of samples that a leaf node can contain. |
+| 2 | maxLeafSize | 5 | int | The max number of samples that a leaf node can contain. |
 | 3 | minPurityIncrease | 1e-7 | float | The minimum increase in purity necessary to continue splitting a subtree. |
 | 4 | maxFeatures | Auto | int | The max number of feature columns to consider when determining a best split. |
 

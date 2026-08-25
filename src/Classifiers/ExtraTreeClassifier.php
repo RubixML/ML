@@ -69,7 +69,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
-        int $maxLeafSize = 3,
+        int $maxLeafSize = 5,
         float $minPurityIncrease = 1e-7,
         ?int $maxFeatures = null
     ) {

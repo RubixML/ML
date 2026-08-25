@@ -181,6 +181,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         ?RegressionLoss $costFn = null,
         ?Metric $metric = null
     ) {
+        if (empty($hiddenLayers)) {
+            throw new InvalidArgumentException('At least one hidden layer'
+                . ' must be specified.');
+        }
+
         foreach ($hiddenLayers as $layer) {
             if (!$layer instanceof Hidden) {
                 throw new InvalidArgumentException('Hidden layer'
