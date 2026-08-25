@@ -205,6 +205,8 @@ class Multiclass implements Output
     {
         $n = array_product($output->shape());
 
+        // Optimization specific to softmax + cross entropy.
+        // The loss derivative cancels with the softmax derivative, so dZ = (output - expected).
         if ($this->costFn instanceof MulticlassCrossEntropy) {
             return NumPower::divide(
                 NumPower::subtract($output, $expected),
