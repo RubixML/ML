@@ -13,7 +13,7 @@
 ## Parameters
 | # | Name | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | radius | 0.5 | float | The maximum distance between two points to be considered neighbors. |
+| 1 | radius | 1.0 | float | The maximum distance between two points to be considered neighbors. |
 | 2 | minDensity | 5 | int | The minimum number of points within radius of each other to form a cluster. |
 | 3 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 
