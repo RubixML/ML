@@ -45,6 +45,9 @@ use function count;
 use function get_object_vars;
 use function number_format;
 use function array_map;
+use function is_dir;
+use function uniqid;
+use function sys_get_temp_dir;
 
 /**
  * Multilayer Perceptron
@@ -165,6 +168,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var float[]|null
      */
     protected ?array $losses = null;
+
+    /**
+     * The file path to store the snapshot on disk during training.
+     *
+     * @var string|null
+     */
+    protected ?string $snapshotPath = null;
 
     /**
      * @param mixed[] $hiddenLayers
@@ -359,6 +369,21 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
+     * Set the file path to store the snapshot on disk during training.
+     *
+     * @param string|null $path
+     * @throws InvalidArgumentException
+     */
+    public function setSnapshotPath(?string $path) : void
+    {
+        if (isset($path) && is_dir($path)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
+        $this->snapshotPath = $path;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -431,6 +456,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $snapshot = null;
         $prevLoss = INF;
 
+        $snapshotPath = $this->snapshotPath;
+
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
+
         if ($testing->empty() and $this->logger) {
             $this->logger->notice('Insufficient validation data, '
                 . 'some features are disabled');
@@ -488,7 +519,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $snapshot = Snapshot::take($this->network);
+                    if ($snapshot) {
+                        $snapshot->clean();
+                    }
+
+                    $snapshot = Snapshot::take($this->network, $snapshotPath);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -509,12 +544,16 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $prevLoss = $loss;
         }
 
-        if ($snapshot and (end($this->scores) < $bestScore or is_nan($loss))) {
-            $snapshot->restore();
+        if ($snapshot) {
+            if (end($this->scores) < $bestScore or is_nan($loss)) {
+                $snapshot->restore();
 
-            if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+                if ($this->logger) {
+                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                }
             }
+
+            $snapshot->clean();
         }
 
         if ($this->logger) {
@@ -583,7 +622,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset(
+            $properties['losses'],
+            $properties['scores'],
+            $properties['logger'],
+            $properties['snapshotPath']
+        );
 
         return $properties;
     }
