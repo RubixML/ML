@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\NeuralNet;
 
+use NDArray;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\Layers\Activation;
@@ -102,11 +104,22 @@ class SnapshotTest extends TestCase
             $this->assertIsArray($params);
 
             foreach ($params as $param) {
-                $this->assertInstanceOf(\NDArray::class, $param->param());
+                $this->assertInstanceOf(NDArray::class, $param->param());
             }
 
             $offset += $length['len'];
         }
+
+        $dataset = Labeled::quick(
+            [[1.0], [0.5], [2.0]],
+            ['yes', 'no', 'yes']
+        );
+
+        $network->roundtrip($dataset);
+
+        $mutatedData = $this->captureNetworkData($network);
+
+        $this->assertNotEquals($originalData, $mutatedData);
 
         $snapshot->restore();
 
