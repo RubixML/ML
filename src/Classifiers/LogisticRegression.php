@@ -94,14 +94,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an
-     * early stop.
-     *
-     * @var positive-int
-     */
-    protected int $window;
-
-    /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var ClassificationLoss
@@ -135,7 +127,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
-     * @param int $window
      * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
@@ -145,7 +136,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $window = 5,
         ?ClassificationLoss $costFn = null
     ) {
         if ($batchSize < 1) {
@@ -168,17 +158,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . " greater than 0, $minChange given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
-                . " greater than 0, $window given.");
-        }
-
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->window = $window;
         $this->costFn = $costFn ?? new CrossEntropy();
     }
 
@@ -223,7 +207,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
-            'window' => $this->window,
             'cost fn' => $this->costFn,
         ];
     }
@@ -335,8 +318,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             $this->logger->info("{$numParams} trainable parameters");
         }
 
-        $prevLoss = $bestLoss = INF;
-        $numWorseEpochs = 0;
+        $prevLoss = INF;
 
         $this->losses = [];
 
@@ -378,18 +360,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             }
 
             if ($lossChange < $this->minChange) {
-                break;
-            }
-
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 

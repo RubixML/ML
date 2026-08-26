@@ -12,7 +12,7 @@
   displayDetailsOnSkippedTests="true"
   processIsolation="true"
   stopOnFailure="false"
-  testdox="true"
+  testdox="false"
   xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
 >
   <source>

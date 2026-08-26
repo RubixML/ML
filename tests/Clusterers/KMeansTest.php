@@ -78,7 +78,6 @@ class KMeansTest extends TestCase
             batchSize: 128,
             epochs: 300,
             minChange: 1e-4,
-            window: 5,
             kernel: new Euclidean(),
             seeder: new PlusPlus()
         );
@@ -121,7 +120,6 @@ class KMeansTest extends TestCase
             'batch size' => 128,
             'epochs' => 300,
             'min change' => 1e-4,
-            'window' => 5,
             'kernel' => new Euclidean(),
             'seeder' => new PlusPlus(),
         ];
