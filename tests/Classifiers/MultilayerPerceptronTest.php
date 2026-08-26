@@ -13,7 +13,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Noise;
+use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 use Rubix\ML\NeuralNet\Layers\Swish;
@@ -29,6 +29,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+
+use function sys_get_temp_dir;
+use function uniqid;
 
 #[Group('Classifiers')]
 #[CoversClass(MultilayerPerceptron::class)]
@@ -93,7 +96,7 @@ class MultilayerPerceptronTest extends TestCase
                 new Dropout(0.1),
                 new Dense(16),
                 new Activation(new SoftPlus()),
-                new Noise(1e-5),
+                new BatchNorm(),
                 new Dense(8),
                 new Swish(),
             ],
@@ -148,7 +151,7 @@ class MultilayerPerceptronTest extends TestCase
                 new Dropout(0.1),
                 new Dense(16),
                 new Activation(new SoftPlus()),
-                new Noise(1e-5),
+                new BatchNorm(),
                 new Dense(8),
                 new Swish(),
             ],
@@ -209,6 +212,42 @@ class MultilayerPerceptronTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    public function testSnapshotPathIsTransientAndResolvedLazily() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
+
+        $this->estimator->setSnapshotPath($snapshotPath);
+
+        $this->estimator->train($dataset->stratifiedFold(2)[0]);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $this->assertArrayNotHasKey('snapshotPath', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        $this->assertTrue($copy->trained());
+
+        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+
+        $copy->partial($dataset->stratifiedFold(2)[0]);
+
+        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+    }
+
+    public function testSnapshotPathRejectsDirectory() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->setSnapshotPath(sys_get_temp_dir());
     }
 
     public function testTrainIncompatible() : void

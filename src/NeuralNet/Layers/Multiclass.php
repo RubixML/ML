@@ -196,6 +196,14 @@ class Multiclass implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
+     * For Cross Entropy, the loss derivative cancels with the Softmax
+     * derivative, so dZ = (output - expected). Otherwise, an exact backward
+     * pass through Softmax is computed as the Jacobian-vector product
+     *
+     * dZ_i = s_i * (g_i - sum_j(s_j * g_j))
+     *
+     * where s is the Softmax output and g is the upstream gradient.
+     *
      * @param NDArray $input
      * @param NDArray $output
      * @param NDArray $expected
@@ -214,14 +222,21 @@ class Multiclass implements Output
             );
         }
 
-        $dLoss = NumPower::divide(
+        $gradient = NumPower::divide(
             $this->costFn->differentiate($output, $expected),
             $n
         );
 
+        $batch = $output->shape()[1];
+
+        $dot = NumPower::reshape(
+            NumPower::sum(NumPower::multiply($gradient, $output), axis: 0),
+            [1, $batch]
+        );
+
         return NumPower::multiply(
-            $this->softmax->differentiate($input, $output),
-            $dLoss
+            $output,
+            NumPower::subtract($gradient, $dot)
         );
     }
 
