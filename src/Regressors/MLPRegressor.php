@@ -38,10 +38,14 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
+
 use function count;
 use function get_object_vars;
+use function is_dir;
 use function is_nan;
 use function number_format;
+use function uniqid;
+use function sys_get_temp_dir;
 
 /**
  * MLP Regressor
@@ -160,9 +164,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The file path to store the snapshot on disk during training.
      *
-     * @var string
+     * @var string|null
      */
-    protected string $snapshotPath;
+    protected ?string $snapshotPath = null;
 
     /**
      * @param list<mixed> $hiddenLayers
@@ -175,7 +179,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
-     * @param string|null $snapshotPath
      */
     public function __construct(
         array $hiddenLayers,
@@ -187,8 +190,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         int $window = 5,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
-        ?Metric $metric = null,
-        ?string $snapshotPath = null
+        ?Metric $metric = null
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -236,14 +238,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
-        if (!$snapshotPath) {
-            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . spl_object_id($this) . '.dat';
-        }
-
-        if (is_dir($snapshotPath)) {
-            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
-        }
-
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
@@ -254,7 +248,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
-        $this->snapshotPath = $snapshotPath;
     }
 
     /**
@@ -367,6 +360,21 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
+     * Set the file path to store the snapshot on disk during training.
+     *
+     * @param string|null $path
+     * @throws InvalidArgumentException
+     */
+    public function setSnapshotPath(?string $path) : void
+    {
+        if (isset($path) && is_dir($path)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
+        $this->snapshotPath = $path;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -431,6 +439,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $score = $snapshot = null;
         $prevLoss = INF;
 
+        $snapshotPath = $this->snapshotPath;
+
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
+
         $this->scores = $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
@@ -487,7 +501,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                         $snapshot->clean();
                     }
 
-                    $snapshot = Snapshot::take($this->network, $this->snapshotPath);
+                    $snapshot = Snapshot::take($this->network, $snapshotPath);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -570,7 +584,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset(
+            $properties['losses'],
+            $properties['scores'],
+            $properties['logger'],
+            $properties['snapshotPath']
+        );
 
         return $properties;
     }

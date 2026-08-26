@@ -45,6 +45,9 @@ use function count;
 use function get_object_vars;
 use function number_format;
 use function array_map;
+use function is_dir;
+use function uniqid;
+use function sys_get_temp_dir;
 
 /**
  * Multilayer Perceptron
@@ -169,9 +172,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The file path to store the snapshot on disk during training.
      *
-     * @var string
+     * @var string|null
      */
-    protected string $snapshotPath;
+    protected ?string $snapshotPath = null;
 
     /**
      * @param mixed[] $hiddenLayers
@@ -184,7 +187,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
-     * @param string|null $snapshotPath
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -197,8 +199,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
-        ?Metric $metric = null,
-        ?string $snapshotPath = null
+        ?Metric $metric = null
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -246,14 +247,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
-        if (!$snapshotPath) {
-            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . spl_object_id($this) . '.dat';
-        }
-
-        if (is_dir($snapshotPath)) {
-            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
-        }
-
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
@@ -264,7 +257,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->metric = $metric ?? new FBeta();
-        $this->snapshotPath = $snapshotPath;
     }
 
     /**
@@ -377,6 +369,21 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
+     * Set the file path to store the snapshot on disk during training.
+     *
+     * @param string|null $path
+     * @throws InvalidArgumentException
+     */
+    public function setSnapshotPath(?string $path) : void
+    {
+        if (isset($path) && is_dir($path)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
+        $this->snapshotPath = $path;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -449,6 +456,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $snapshot = null;
         $prevLoss = INF;
 
+        $snapshotPath = $this->snapshotPath;
+
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
+
         if ($testing->empty() and $this->logger) {
             $this->logger->notice('Insufficient validation data, '
                 . 'some features are disabled');
@@ -510,7 +523,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                         $snapshot->clean();
                     }
 
-                    $snapshot = Snapshot::take($this->network, $this->snapshotPath);
+                    $snapshot = Snapshot::take($this->network, $snapshotPath);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -609,7 +622,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset(
+            $properties['losses'],
+            $properties['scores'],
+            $properties['logger'],
+            $properties['snapshotPath']
+        );
 
         return $properties;
     }

@@ -28,6 +28,9 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
+use function sys_get_temp_dir;
+use function uniqid;
+
 #[Group('Regressors')]
 #[CoversClass(MLPRegressor::class)]
 class MLPRegressorTest extends TestCase
@@ -194,6 +197,48 @@ class MLPRegressorTest extends TestCase
         );
 
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Snapshot path is transient and resolved lazily')]
+    public function snapshotPathIsTransientAndResolvedLazily() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
+
+        $this->estimator->setSnapshotPath($snapshotPath);
+
+        $this->estimator->train($dataset);
+
+        self::assertTrue($this->estimator->trained());
+
+        $serialized = $this->estimator->__serialize();
+
+        self::assertArrayNotHasKey('snapshotPath', $serialized);
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertTrue($copy->trained());
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+
+        $copy->partial($dataset->fold(2)[0]);
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+    }
+
+    #[Test]
+    #[TestDox('Snapshot path rejects a directory')]
+    public function snapshotPathRejectsDirectory() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->setSnapshotPath(sys_get_temp_dir());
     }
 
     #[Test]

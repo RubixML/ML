@@ -76,8 +76,6 @@ class Snapshot
             }
         }
 
-        $layers = [];
-
         $numLayers = 0;
 
         foreach ($network->layers() as $layer) {
@@ -91,6 +89,8 @@ class Snapshot
         if ($written === false) {
             throw new RuntimeException("Could not write snapshot header to $path.");
         }
+
+        $layers = [];
 
         foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
