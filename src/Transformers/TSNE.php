@@ -438,8 +438,9 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
-     * Compute the conditional probabilities from the distance matrix such that
-     * they approximately match the desired perplexity.
+     * Compute the joint probabilities from the distance matrix such that they
+     * approximately match the desired perplexity. The resulting matrix is
+     * symmetric and globally normalized (total sum equals 1).
      *
      * @param array<float[]> $distances
      * @return array<float[]>
@@ -511,7 +512,27 @@ class TSNE implements Transformer, Verbose
             $affinities[] = $candidate;
         }
 
-        return $affinities;
+        $n = count($affinities);
+
+        if ($n === 0) {
+            return [];
+        }
+
+        $scale = 1.0 / (2.0 * $n);
+
+        $symmetric = [];
+
+        for ($i = 0; $i < $n; ++$i) {
+            $row = [];
+
+            for ($j = 0; $j < $n; ++$j) {
+                $row[] = ($affinities[$i][$j] + $affinities[$j][$i]) * $scale;
+            }
+
+            $symmetric[] = $row;
+        }
+
+        return $symmetric;
     }
 
     /**

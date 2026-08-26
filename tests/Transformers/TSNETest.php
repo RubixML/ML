@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use ReflectionMethod;
+use ReflectionProperty;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Loggers\BlackHole;
@@ -174,6 +175,68 @@ class TSNETest extends TestCase
     /**
      * @test
      */
+    public function gradientCorrectness() : void
+    {
+        $p = Matrix::quick([
+            [0.0, 0.4, 0.3, 0.3],
+            [0.4, 0.0, 0.3, 0.3],
+            [0.3, 0.3, 0.0, 0.4],
+            [0.3, 0.3, 0.4, 0.0],
+        ]);
+
+        $pTotal = $p->sum()->sum();
+
+        $p = $p->divide($pTotal);
+
+        $y = Matrix::quick([
+            [1.0, 0.0],
+            [0.0, 1.0],
+            [-1.0, 0.0],
+            [0.0, -1.0],
+        ]);
+
+        $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
+        $pwMethod->setAccessible(true);
+        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]));
+
+        $codeGradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
+
+        $eps = 1e-5;
+        $numericalGradient = [];
+
+        for ($i = 0; $i < 4; ++$i) {
+            $row = [];
+
+            for ($d = 0; $d < 2; ++$d) {
+                $yArray = $y->asArray();
+
+                $yArray[$i][$d] += $eps;
+                $yPlus = Matrix::quick($yArray);
+
+                $yArray[$i][$d] -= 2.0 * $eps;
+                $yMinus = Matrix::quick($yArray);
+
+                $costPlus = $this->klCost($p, $yPlus);
+                $costMinus = $this->klCost($p, $yMinus);
+
+                $row[] = ($costPlus - $costMinus) / (2.0 * $eps);
+            }
+
+            $numericalGradient[] = $row;
+        }
+
+        $numerical = Matrix::quick($numericalGradient);
+
+        $codeNorm = $codeGradient->l2Norm();
+        $diff = $codeGradient->subtract($numerical)->l2Norm();
+
+        $this->assertGreaterThan(0.0, $codeNorm);
+        $this->assertLessThan(0.05 * $codeNorm, $diff);
+    }
+
+    /**
+     * @test
+     */
     public function affinities() : void
     {
         $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
@@ -187,12 +250,23 @@ class TSNETest extends TestCase
 
         $affinities = $this->invokeAffinities($embedder, $distances);
 
-        $row = $affinities[0];
+        $this->assertCount(4, $affinities);
 
-        $left = log($row[1] / $row[2]) * ($distances[0][3] ** 2 - $distances[0][2] ** 2);
-        $right = log($row[2] / $row[3]) * ($distances[0][2] ** 2 - $distances[0][1] ** 2);
+        $totalSum = 0.0;
 
-        $this->assertEqualsWithDelta($left, $right, 1e-8);
+        foreach ($affinities as $i => $row) {
+            $this->assertCount(4, $row);
+            $this->assertSame(0.0, $row[$i]);
+            $totalSum += array_sum($row);
+        }
+
+        $this->assertEqualsWithDelta(1.0, $totalSum, 1e-8);
+
+        foreach ($affinities as $i => $row) {
+            foreach ($row as $j => $value) {
+                $this->assertEqualsWithDelta($value, $affinities[$j][$i], 1e-8);
+            }
+        }
     }
 
     /**
@@ -241,5 +315,52 @@ class TSNETest extends TestCase
         $method->setAccessible(true);
 
         return $method->invokeArgs($embedder, [$distances]);
+    }
+
+    /**
+     * Compute the KL divergence cost C = Σ_{i≠j} p_{ij} log(p_{ij} / q_{ij}).
+     *
+     * @param Matrix $p
+     * @param Matrix $y
+     * @return float
+     */
+    private function klCost(Matrix $p, Matrix $y) : float
+    {
+        $prop = new ReflectionProperty(TSNE::class, 'dofs');
+
+        $prop->setAccessible(true);
+
+        $dofs = (int) $prop->getValue($this->embedder);
+
+        $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
+
+        $pwMethod->setAccessible(true);
+
+        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]));
+
+        $base = $distances->square()
+            ->divide($dofs)
+            ->add(1.0);
+
+        $kernel = $base->pow((1.0 + $dofs) / -2.0);
+
+        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
+
+        $q = $kernel->divide(max($norm, 1e-8));
+
+        $pArray = $p->asArray();
+        $qArray = $q->asArray();
+        $n = $p->m();
+        $cost = 0.0;
+
+        for ($i = 0; $i < $n; ++$i) {
+            for ($j = 0; $j < $n; ++$j) {
+                if ($i !== $j && $pArray[$i][$j] > 0.0) {
+                    $cost += $pArray[$i][$j] * log($pArray[$i][$j] / $qArray[$i][$j]);
+                }
+            }
+        }
+
+        return $cost;
     }
 }
