@@ -91,7 +91,7 @@ class HuberLoss implements RegressionLoss
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * ∂L/∂ŷ = (ŷ - y) / √(α² + (ŷ - y)²)
+     * ∂L/∂ŷ = α(ŷ - y) / √(α² + (ŷ - y)²)
      *
      * @internal
      *
@@ -107,7 +107,7 @@ class HuberLoss implements RegressionLoss
         $squared = NumPower::pow($difference, 2);
         $denominator = NumPower::sqrt(NumPower::add($squared, $this->alpha2));
 
-        return NumPower::divide($difference, $denominator);
+        return NumPower::divide(NumPower::multiply($this->alpha, $difference), $denominator);
     }
 
     /**
