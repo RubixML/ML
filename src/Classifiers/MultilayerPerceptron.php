@@ -531,12 +531,16 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $prevLoss = $loss;
         }
 
-        if ($snapshot and (end($this->scores) < $bestScore or is_nan($loss))) {
-            $snapshot->restore();
+        if ($snapshot) {
+            if (end($this->scores) < $bestScore or is_nan($loss)) {
+                $snapshot->restore();
 
-            if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+                if ($this->logger) {
+                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                }
             }
+
+            $snapshot->clean();
         }
 
         if ($this->logger) {
