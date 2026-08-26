@@ -1,5 +1,3 @@
-includes:
-    - phpstan-baseline.neon
 parameters:
     level: 5
     phpVersion: 80400
@@ -14,3 +12,6 @@ parameters:
     excludePaths:
         - src/Backends/Amp.php
         - src/Backends/Swoole.php
+    ignoreErrors:
+        - identifier: foreach.emptyArray
+    

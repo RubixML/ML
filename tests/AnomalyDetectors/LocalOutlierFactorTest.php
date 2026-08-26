@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\KDTree;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Graph\Trees\VantageTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -48,6 +53,13 @@ class LocalOutlierFactorTest extends TestCase
     protected LocalOutlierFactor $estimator;
 
     protected FBeta $metric;
+
+    public static function trainPredictProvider() : Generator
+    {
+        yield 'kd tree' => [new KDTree()];
+        yield 'ball tree' => [new BallTree()];
+        yield 'vantage tree' => [new VantageTree()];
+    }
 
     protected function setUp() : void
     {
@@ -116,16 +128,23 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPredict() : void
+    #[DataProvider('trainPredictProvider')]
+    public function testTrainPredict(Spatial $tree) : void
     {
+        $estimator = new LocalOutlierFactor(
+            k: 60,
+            contamination: 0.1,
+            tree: $tree
+        );
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($training);
+        $estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        $this->assertTrue($estimator->trained());
 
-        $predictions = $this->estimator->predict($testing);
+        $predictions = $estimator->predict($testing);
 
         /** @var list<int|string> $labels */
         $labels = $testing->labels();

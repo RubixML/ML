@@ -51,7 +51,7 @@ docs/         →  MkDocs documentation
 - No inline comments — use expressive syntax and abstractions instead
 - Named arguments preferred in constructor calls
 - Single quotes for strings, short array syntax (`[]`)
-- Pre-increment (`++$i`)
+- Prefer pre-increment (`++$i`) over post-increment where possible
 - No superfluous `else`/`return` constructs
 
 ## Workflows
