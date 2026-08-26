@@ -167,6 +167,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected ?array $losses = null;
 
     /**
+     * The directory to store snapshot files on disk during training.
+     *
+     * @var string
+     */
+    protected string $snapshotDir;
+
+    /**
      * @param mixed[] $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
@@ -177,6 +184,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
+     * @param string $snapshotDir
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -189,7 +197,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
+        string $snapshotDir = Snapshot::DEFAULT_DIRECTORY
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -247,6 +256,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->metric = $metric ?? new FBeta();
+        $this->snapshotDir = $snapshotDir;
     }
 
     /**
@@ -488,7 +498,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $snapshot = Snapshot::take($this->network);
+                    $snapshot = Snapshot::take($this->network, $this->snapshotDir);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -583,7 +593,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['snapshotDir']);
 
         return $properties;
     }

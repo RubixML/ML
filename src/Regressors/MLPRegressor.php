@@ -158,6 +158,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?array $losses = null;
 
     /**
+     * The directory to store snapshot files on disk during training.
+     *
+     * @var string
+     */
+    protected string $snapshotDir;
+
+    /**
      * @param list<mixed> $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
@@ -168,6 +175,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
+     * @param string $snapshotDir
      */
     public function __construct(
         array $hiddenLayers,
@@ -179,7 +187,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         int $window = 5,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
+        string $snapshotDir = Snapshot::DEFAULT_DIRECTORY
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -237,6 +246,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
+        $this->snapshotDir = $snapshotDir;
     }
 
     /**
@@ -465,7 +475,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $snapshot = Snapshot::take($this->network);
+                    $snapshot = Snapshot::take($this->network, $this->snapshotDir);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -544,7 +554,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['snapshotDir']);
 
         return $properties;
     }
