@@ -15,7 +15,7 @@ Random Forest (RF) is a classifier that trains an ensemble of Decision Trees ([C
 |---|---|---|---|---|
 | 1 | base | ClassificationTree | Learner | The base learner. |
 | 2 | estimators | 100 | int | The number of learners to train in the ensemble. |
-| 3 | ratio | 0.2 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
+| 3 | ratio | 0.5 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
 | 4 | balanced | false | bool | Should we sample the bootstrap set to compensate for imbalanced class labels? |
 
 ## Example
