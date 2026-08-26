@@ -18,6 +18,7 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Snapshot;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function sys_get_temp_dir;
 use function is_file;
@@ -25,6 +26,9 @@ use function is_dir;
 use function dirname;
 use function rmdir;
 use function strlen;
+use function pack;
+use function substr;
+use function file_put_contents;
 use function unpack;
 
 #[Group('NeuralNet')]
@@ -124,6 +128,113 @@ class SnapshotTest extends TestCase
         $snapshot->clean();
 
         $this->assertFileDoesNotExist($this->testPath);
+    }
+
+    public function testRestoreMismatchedCount() : void
+    {
+        $network = $this->createNetwork();
+
+        $snapshot = Snapshot::take($network, $this->testPath);
+
+        $contents = file_get_contents($this->testPath);
+
+        $this->assertNotFalse($contents);
+
+        $this->writeCorruptedFile(
+            $network,
+            pack('J', 99) . substr($contents, 8)
+        );
+
+        $this->expectException(RuntimeException::class);
+
+        $snapshot->restore();
+    }
+
+    public function testRestoreTruncatedData() : void
+    {
+        $network = $this->createNetwork();
+
+        $snapshot = Snapshot::take($network, $this->testPath);
+
+        $contents = file_get_contents($this->testPath);
+
+        $this->assertNotFalse($contents);
+
+        $numLayers = 0;
+
+        foreach ($network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                ++$numLayers;
+            }
+        }
+
+        $groupLength = unpack('Jlen', substr($contents, 8, 8));
+
+        $this->assertIsArray($groupLength);
+
+        $payload = substr($contents, 16, $groupLength['len']);
+
+        $this->assertNotFalse($payload);
+
+        $truncated = substr($payload, 0, max(1, strlen($payload) - 4));
+
+        $this->writeCorruptedFile(
+            $network,
+            pack('J', $numLayers) . pack('J', strlen($payload) + 4) . $truncated
+        );
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not read snapshot data');
+
+        $snapshot->restore();
+    }
+
+    public function testRestoreIsAtomic() : void
+    {
+        $network = $this->createNetwork();
+
+        $originalData = $this->captureNetworkData($network);
+
+        $snapshot = Snapshot::take($network, $this->testPath);
+
+        $contents = file_get_contents($this->testPath);
+
+        $this->assertNotFalse($contents);
+
+        $this->writeCorruptedFile(
+            $network,
+            pack('J', 99) . substr($contents, 8)
+        );
+
+        $this->expectException(RuntimeException::class);
+
+        try {
+            $snapshot->restore();
+        } finally {
+            $this->assertEquals($originalData, $this->captureNetworkData($network));
+        }
+    }
+
+    /**
+     * Build a snapshot object bound to the network's layers at the corrupt path.
+     *
+     * @param Network $network
+     * @param string $contents
+     * @return Snapshot
+     */
+    protected function writeCorruptedFile(Network $network, string $contents) : Snapshot
+    {
+        file_put_contents($this->testPath, $contents);
+
+        $layers = [];
+
+        foreach ($network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                $layers[] = $layer;
+            }
+        }
+
+        return new Snapshot($layers, $this->testPath);
     }
 
     /**

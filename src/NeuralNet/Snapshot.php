@@ -136,39 +136,52 @@ class Snapshot
             throw new RuntimeException("Could not read snapshot file {$this->file}.");
         }
 
-        $header = unpack('Jcount', fread($handle, 8));
+        try {
+            $header = unpack('Jcount', fread($handle, 8));
 
-        if ($header === false) {
-            throw new RuntimeException("Could not read snapshot header from {$this->file}.");
-        }
-
-        $count = $header['count'];
-
-        for ($i = 0; $i < $count; ++$i) {
-            $length = unpack('Jlen', fread($handle, 8));
-
-            if ($length === false) {
-                throw new RuntimeException("Could not read snapshot length from {$this->file}.");
+            if ($header === false) {
+                throw new RuntimeException("Could not read snapshot header from {$this->file}.");
             }
 
-            $data = fread($handle, $length['len']);
+            $count = $header['count'];
 
-            $params = unserialize($data, [
-                'allowed_classes' => self::ALLOWED_CLASSES,
-            ]);
-
-            unset($data);
-
-            if (!is_array($params)) {
-                throw new RuntimeException("Could not unserialize snapshot data from {$this->file}.");
+            if ($count !== count($this->layers)) {
+                throw new RuntimeException(
+                    "Snapshot parameter group count $count does not match the " .
+                    count($this->layers) . " parametric layers of {$this->file}."
+                );
             }
 
-            $layer = $this->layers[$i];
+            for ($i = 0; $i < $count; ++$i) {
+                $length = unpack('Jlen', fread($handle, 8));
 
-            $layer->restore($params);
+                if ($length === false) {
+                    throw new RuntimeException("Could not read snapshot length from {$this->file}.");
+                }
+
+                $data = fread($handle, $length['len']);
+
+                if ($data === false || strlen($data) !== $length['len']) {
+                    throw new RuntimeException("Could not read snapshot data from {$this->file}.");
+                }
+
+                $params = unserialize($data, [
+                    'allowed_classes' => self::ALLOWED_CLASSES,
+                ]);
+
+                unset($data);
+
+                if (!is_array($params)) {
+                    throw new RuntimeException("Could not unserialize snapshot data from {$this->file}.");
+                }
+
+                $layer = $this->layers[$i];
+
+                $layer->restore($params);
+            }
+        } finally {
+            fclose($handle);
         }
-
-        fclose($handle);
     }
 
     /**
