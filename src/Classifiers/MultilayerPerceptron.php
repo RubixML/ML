@@ -605,7 +605,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['snapshotPath']);
+        unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
     }
