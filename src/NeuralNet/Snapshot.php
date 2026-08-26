@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\NeuralNet;
 
+use NDArray;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -9,7 +10,9 @@ use function is_dir;
 use function dirname;
 use function mkdir;
 use function file_put_contents;
-use function file_get_contents;
+use function fopen;
+use function fread;
+use function fclose;
 use function serialize;
 use function unserialize;
 use function strlen;
@@ -34,6 +37,11 @@ use function unlink;
  */
 class Snapshot
 {
+    public const ALLOWED_CLASSES = [
+        Parameter::class,
+        NDArray::class,
+    ];
+
     /**
      * The parametric layers of the network.
      *
@@ -93,7 +101,11 @@ class Snapshot
 
                 $data = serialize($params);
 
-                file_put_contents($path, pack('J', strlen($data)) . $data, FILE_APPEND);
+                $written = file_put_contents($path, pack('J', strlen($data)) . $data, FILE_APPEND);
+
+                if ($written === false) {
+                    throw new RuntimeException("Could not write parameter data to $path.");
+                }
 
                 unset($params, $data);
 
@@ -121,15 +133,13 @@ class Snapshot
      */
     public function restore() : void
     {
-        $contents = file_get_contents($this->file);
+        $handle = @fopen($this->file, 'rb');
 
-        if ($contents === false) {
+        if ($handle === false) {
             throw new RuntimeException("Could not read snapshot file {$this->file}.");
         }
 
-        $offset = 0;
-
-        $header = unpack('Jcount', substr($contents, $offset, 8));
+        $header = unpack('Jcount', fread($handle, 8));
 
         if ($header === false) {
             throw new RuntimeException("Could not read snapshot header from {$this->file}.");
@@ -137,29 +147,31 @@ class Snapshot
 
         $count = $header['count'];
 
-        $offset += 8;
-
         for ($i = 0; $i < $count; ++$i) {
-            $length = unpack('Jlen', substr($contents, $offset, 8));
+            $length = unpack('Jlen', fread($handle, 8));
 
             if ($length === false) {
                 throw new RuntimeException("Could not read snapshot length from {$this->file}.");
             }
 
-            $offset += 8;
+            $data = fread($handle, $length['len']);
 
-            $params = unserialize(substr($contents, $offset, $length['len']), ['allowed_classes' => [\Rubix\ML\NeuralNet\Parameter::class, \NDArray::class]]);
+            $params = unserialize($data, [
+                'allowed_classes' => self::ALLOWED_CLASSES,
+            ]);
+
+            unset($data);
 
             if (!is_array($params)) {
                 throw new RuntimeException("Could not unserialize snapshot data from {$this->file}.");
             }
 
-            $offset += $length['len'];
-
             $layer = $this->layers[$i];
 
             $layer->restore($params);
         }
+
+        fclose($handle);
     }
 
     /**
