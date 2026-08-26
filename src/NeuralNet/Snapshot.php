@@ -148,9 +148,9 @@ class Snapshot
 
             $offset += 8;
 
-            $params = unserialize(substr($contents, $offset, $length['len']));
+            $params = unserialize(substr($contents, $offset, $length['len']), ['allowed_classes' => [\Rubix\ML\NeuralNet\Parameter::class, \NDArray::class]]);
 
-            if ($params === false) {
+            if (!is_array($params)) {
                 throw new RuntimeException("Could not unserialize snapshot data from {$this->file}.");
             }
 
