@@ -158,11 +158,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?array $losses = null;
 
     /**
-     * The directory to store snapshot files on disk during training.
+     * The file path to store the snapshot on disk during training.
      *
      * @var string
      */
-    protected string $snapshotDir;
+    protected string $snapshotPath;
 
     /**
      * @param list<mixed> $hiddenLayers
@@ -175,7 +175,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
-     * @param string $snapshotDir
+     * @param string|null $snapshotPath
      */
     public function __construct(
         array $hiddenLayers,
@@ -188,7 +188,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
         ?Metric $metric = null,
-        string $snapshotDir = Snapshot::DEFAULT_DIRECTORY
+        ?string $snapshotPath = null
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -236,6 +236,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot.dat';
+        }
+
+        if (is_dir($snapshotPath)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
@@ -246,7 +254,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
-        $this->snapshotDir = $snapshotDir;
+        $this->snapshotPath = $snapshotPath;
     }
 
     /**
@@ -475,7 +483,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $snapshot = Snapshot::take($this->network, $this->snapshotDir);
+                    if ($snapshot) {
+                        $snapshot->clean();
+                    }
+
+                    $snapshot = Snapshot::take($this->network, $this->snapshotPath);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -554,7 +566,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['snapshotDir']);
+        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['snapshotPath']);
 
         return $properties;
     }

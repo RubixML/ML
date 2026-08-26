@@ -7,95 +7,61 @@ namespace Rubix\ML\Tests\NeuralNet;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
-use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Snapshot;
 use function sys_get_temp_dir;
-use function glob;
-use function rmdir;
+use function is_file;
 use function is_dir;
-use function unserialize;
-use function file_get_contents;
+use function dirname;
+use function rmdir;
+use function strlen;
+use function unpack;
 
 #[Group('NeuralNet')]
 #[CoversClass(Snapshot::class)]
 class SnapshotTest extends TestCase
 {
-    protected string $testDir;
+    protected string $testPath;
 
     protected function setUp() : void
     {
-        $this->testDir = sys_get_temp_dir() . '/rubix-ml-test-snapshots-' . uniqid('', true);
-
-        mkdir($this->testDir, 0o755, true);
+        $this->testPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid('', true) . '.dat';
     }
 
     protected function tearDown() : void
     {
-        if (is_dir($this->testDir)) {
-            $files = glob($this->testDir . '/*/*');
-
-            foreach ($files as $file) {
-                @unlink($file);
-            }
-
-            $dirs = glob($this->testDir . '/*');
-
-            foreach ($dirs as $dir) {
-                @rmdir($dir);
-            }
-
-            @rmdir($this->testDir);
+        if (is_file($this->testPath)) {
+            @unlink($this->testPath);
         }
-    }
 
-    public function testConstructorThrowsWithWrongParameters() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Number of layers and file paths must be equal.');
+        $parent = dirname($this->testPath);
 
-        new Snapshot(
-            layers: [new Dense(1)],
-            files: [],
-            directory: $this->testDir,
-        );
-    }
-
-    public function testConstructorThrowsWithNonexistentDirectory() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('does not exist');
-
-        new Snapshot(
-            layers: [],
-            files: [],
-            directory: '/nonexistent/directory',
-        );
+        if (is_dir($parent)) {
+            @rmdir($parent);
+        }
     }
 
     public function testTake() : void
     {
         $network = $this->createNetwork();
 
-        $snapshot = Snapshot::take($network, $this->testDir);
+        $snapshot = Snapshot::take($network, $this->testPath);
 
-        $snapshotDirs = glob($this->testDir . '/*');
+        $this->assertFileExists($this->testPath);
 
-        $this->assertCount(1, $snapshotDirs);
-        $this->assertTrue(is_dir($snapshotDirs[0]));
+        $contents = file_get_contents($this->testPath);
 
-        $files = glob($snapshotDirs[0] . '/*.params');
-
-        $this->assertCount(3, $files);
+        $this->assertNotFalse($contents);
+        $this->assertGreaterThan(0, strlen($contents));
 
         $snapshot->clean();
     }
@@ -106,23 +72,35 @@ class SnapshotTest extends TestCase
 
         $originalData = $this->captureNetworkData($network);
 
-        $snapshot = Snapshot::take($network, $this->testDir);
+        $snapshot = Snapshot::take($network, $this->testPath);
 
-        $snapshotDirs = glob($this->testDir . '/*');
-        $files = glob($snapshotDirs[0] . '/*.params');
+        $contents = file_get_contents($this->testPath);
 
-        foreach ($files as $file) {
-            $contents = file_get_contents($file);
+        $this->assertNotFalse($contents);
 
-            $this->assertNotFalse($contents);
+        $offset = 0;
+        $header = unpack('Jcount', substr($contents, $offset, 8));
 
-            $data = unserialize($contents);
+        $this->assertIsArray($header);
+        $this->assertSame(3, $header['count']);
 
-            $this->assertIsArray($data);
+        $offset += 8;
 
-            foreach ($data as $param) {
+        for ($i = 0; $i < $header['count']; ++$i) {
+            $length = unpack('Jlen', substr($contents, $offset, 8));
+
+            $this->assertIsArray($length);
+            $offset += 8;
+
+            $params = unserialize(substr($contents, $offset, $length['len']));
+
+            $this->assertIsArray($params);
+
+            foreach ($params as $param) {
                 $this->assertInstanceOf(\NDArray::class, $param->param());
             }
+
+            $offset += $length['len'];
         }
 
         $snapshot->restore();
@@ -138,17 +116,13 @@ class SnapshotTest extends TestCase
     {
         $network = $this->createNetwork();
 
-        $snapshot = Snapshot::take($network, $this->testDir);
+        $snapshot = Snapshot::take($network, $this->testPath);
 
-        $snapshotDirs = glob($this->testDir . '/*');
-
-        $this->assertCount(1, $snapshotDirs);
+        $this->assertFileExists($this->testPath);
 
         $snapshot->clean();
 
-        $files = glob($snapshotDirs[0] . '/*');
-
-        $this->assertCount(0, $files);
+        $this->assertFileDoesNotExist($this->testPath);
     }
 
     /**

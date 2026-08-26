@@ -3,24 +3,27 @@
 namespace Rubix\ML\NeuralNet;
 
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+
 use function is_dir;
+use function dirname;
 use function mkdir;
 use function file_put_contents;
 use function file_get_contents;
 use function serialize;
 use function unserialize;
+use function strlen;
+use function pack;
+use function unpack;
 use function is_file;
 use function unlink;
-use function rmdir;
-use function uniqid;
 
 /**
  * Snapshot
  *
  * A snapshot represents the state of a neural network at a moment in time. The
- * parameters are stored on disk to minimize memory usage during training.
+ * parameters are streamed to a single file on disk to minimize memory usage
+ * during training.
  *
  * @internal
  *
@@ -32,13 +35,6 @@ use function uniqid;
 class Snapshot
 {
     /**
-     * The default directory for storing snapshot files.
-     *
-     * @var string
-     */
-    public const DEFAULT_DIRECTORY = '/tmp/rubix-ml/snapshots';
-
-    /**
      * The parametric layers of the network.
      *
      * @var Parametric[]
@@ -46,41 +42,42 @@ class Snapshot
     protected array $layers;
 
     /**
-     * The file paths containing the serialized parameters for each layer.
-     *
-     * @var list<string>
-     */
-    protected array $files;
-
-    /**
-     * The directory where snapshot files are stored.
+     * The file path of the snapshot file.
      *
      * @var string
      */
-    protected string $directory;
+    protected string $file;
 
     /**
      * Take a snapshot of the network.
      *
      * @param Network $network
-     * @param string $directory
+     * @param string $path
      * @return Snapshot
      */
-    public static function take(Network $network, string $directory = self::DEFAULT_DIRECTORY) : self
+    public static function take(Network $network, string $path) : self
     {
-        $snapshotDir = $directory . '/' . uniqid('', true);
+        $parent = dirname($path);
 
-        if (!is_dir($snapshotDir)) {
-            $created = @mkdir($snapshotDir, 0o755, true);
+        if (!is_dir($parent)) {
+            $created = @mkdir($parent, 0o755, true);
 
             if (!$created) {
-                throw new RuntimeException("Could not create snapshot directory $snapshotDir.");
+                throw new RuntimeException("Could not create snapshot directory $parent.");
             }
         }
 
-        $layers = $files = [];
+        $layers = [];
 
-        $index = 0;
+        $numLayers = 0;
+
+        foreach ($network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                ++$numLayers;
+            }
+        }
+
+        file_put_contents($path, pack('J', $numLayers));
 
         foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
@@ -90,51 +87,29 @@ class Snapshot
                     $params[$key] = clone $parameter;
                 }
 
-                $filePath = $snapshotDir . "/{$index}.params";
+                $data = serialize($params);
 
-                file_put_contents($filePath, serialize($params));
+                file_put_contents($path, pack('J', strlen($data)) . $data, FILE_APPEND);
 
-                unset($params);
+                unset($params, $data);
 
                 $layers[] = $layer;
-                $files[] = $filePath;
-
-                ++$index;
             }
         }
 
-        return new self($layers, $files, $snapshotDir);
+        return new self($layers, $path);
     }
 
     /**
      * Class constructor.
      *
      * @param Parametric[] $layers
-     * @param list<string> $files
-     * @param string $directory
-     * @throws InvalidArgumentException
+     * @param string $file
      */
-    public function __construct(array $layers, array $files, string $directory)
+    public function __construct(array $layers, string $file)
     {
-        if (count($layers) !== count($files)) {
-            throw new InvalidArgumentException('Number of layers and file paths must be equal.');
-        }
-
-        if (!is_dir($directory)) {
-            throw new InvalidArgumentException("Snapshot directory $directory does not exist.");
-        }
-
         $this->layers = $layers;
-        $this->files = $files;
-        $this->directory = $directory;
-    }
-
-    /**
-     * Clean up snapshot files when the object is destroyed.
-     */
-    public function __destruct()
-    {
-        $this->clean();
+        $this->file = $file;
     }
 
     /**
@@ -142,38 +117,54 @@ class Snapshot
      */
     public function restore() : void
     {
-        foreach ($this->layers as $i => $layer) {
-            $filePath = $this->files[$i];
+        $contents = file_get_contents($this->file);
 
-            $contents = file_get_contents($filePath);
+        if ($contents === false) {
+            throw new RuntimeException("Could not read snapshot file {$this->file}.");
+        }
 
-            if ($contents === false) {
-                throw new RuntimeException("Could not read snapshot file $filePath.");
+        $offset = 0;
+
+        $header = unpack('Jcount', substr($contents, $offset, 8));
+
+        if ($header === false) {
+            throw new RuntimeException("Could not read snapshot header from {$this->file}.");
+        }
+
+        $count = $header['count'];
+
+        $offset += 8;
+
+        for ($i = 0; $i < $count; ++$i) {
+            $length = unpack('Jlen', substr($contents, $offset, 8));
+
+            if ($length === false) {
+                throw new RuntimeException("Could not read snapshot length from {$this->file}.");
             }
 
-            $params = unserialize($contents);
+            $offset += 8;
+
+            $params = unserialize(substr($contents, $offset, $length['len']));
 
             if ($params === false) {
-                throw new RuntimeException("Could not unserialize snapshot file $filePath.");
+                throw new RuntimeException("Could not unserialize snapshot data from {$this->file}.");
             }
+
+            $offset += $length['len'];
+
+            $layer = $this->layers[$i];
 
             $layer->restore($params);
         }
     }
 
     /**
-     * Remove the snapshot files from disk.
+     * Remove the snapshot file from disk.
      */
     public function clean() : void
     {
-        foreach ($this->files as $filePath) {
-            if (is_file($filePath)) {
-                @unlink($filePath);
-            }
-        }
-
-        if (is_dir($this->directory)) {
-            @rmdir($this->directory);
+        if (is_file($this->file)) {
+            @unlink($this->file);
         }
     }
 }
