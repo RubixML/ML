@@ -39,26 +39,26 @@ class VantageTree implements BinaryTree, Spatial
      *
      * @var int
      */
-    protected $maxLeafSize;
+    protected int $maxLeafSize;
 
     /**
      * The distance function to use when computing the distances.
      *
      * @var Distance
      */
-    protected $kernel;
+    protected Distance $kernel;
 
     /**
      * The root node of the tree.
      *
      * @var VantagePoint|null
      */
-    protected $root;
+    protected ?VantagePoint $root = null;
 
     /**
      * @param int $maxLeafSize
      * @param Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $maxLeafSize = 30, ?Distance $kernel = null)
     {
@@ -136,6 +136,7 @@ class VantageTree implements BinaryTree, Spatial
             if ($left->numSamples() > $this->maxLeafSize) {
                 $node = VantagePoint::split($left, $this->kernel);
 
+                // Left branch has potential to collapse into a point.
                 if ($node->isPoint()) {
                     $current->attachLeft(Clique::terminate($left, $this->kernel));
                 } else {
@@ -288,7 +289,7 @@ class VantageTree implements BinaryTree, Spatial
      */
     public function destroy() : void
     {
-        unset($this->root);
+        $this->root = null;
     }
 
     /**
@@ -296,7 +297,7 @@ class VantageTree implements BinaryTree, Spatial
      * in an array.
      *
      * @param list<string|int|float> $sample
-     * @return list<list<VantagePoint|Hypersphere|Clique>>
+     * @return list<Hypersphere>
      */
     protected function path(array $sample) : array
     {
@@ -311,7 +312,7 @@ class VantageTree implements BinaryTree, Spatial
                 $left = $current->left();
                 $right = $current->right();
 
-                if ($left instanceof Hypersphere) {
+                if ($left instanceof Hypersphere and $right instanceof Hypersphere) {
                     $distance = $this->kernel->compute($sample, $left->center());
 
                     if ($distance <= $left->radius()) {
@@ -319,9 +320,21 @@ class VantageTree implements BinaryTree, Spatial
                     } else {
                         $current = $right;
                     }
+
+                    continue;
                 }
 
-                continue;
+                if ($left instanceof Hypersphere) {
+                    $current = $left;
+
+                    continue;
+                }
+
+                if ($right instanceof Hypersphere) {
+                    $current = $right;
+
+                    continue;
+                }
             }
 
             break;
