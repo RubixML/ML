@@ -34,7 +34,7 @@ class SnapshotTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->testPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid('', true) . '.dat';
+        $this->testPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid('', true) . '/snapshot.dat';
     }
 
     protected function tearDown() : void
