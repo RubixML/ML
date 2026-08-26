@@ -1,6 +1,7 @@
 # Changelog
 
 - 3.0.0
+    - Neural Network subsystem now powered by NumPower
     - Dropped support for PHP 7.4
     - Renamed TF-IDF dampening parameter to sublinear
     - Update to PSR-3 Log version 3
@@ -16,6 +17,7 @@
     - Fix KDTree edge pruning + optimize traversal
     - Optimize Dataset sort(), sorting is now unstable
     - Remove loss-based window early stopping
+    - Add disk-based neural network snapshotting
     
 - 2.5.8
     - Optimize squaring operations
