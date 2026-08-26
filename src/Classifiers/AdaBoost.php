@@ -103,13 +103,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
-     *
-     * @var positive-int
-     */
-    protected int $window;
-
-    /**
      * The ensemble of *weak* classifiers.
      *
      * @var Learner[]|null
@@ -150,7 +143,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
-     * @param int $window
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -158,8 +150,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         float $rate = 1.0,
         float $ratio = 0.8,
         int $epochs = 100,
-        float $minChange = 1e-4,
-        int $window = 5
+        float $minChange = 1e-4
     ) {
         if ($base and !$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base Estimator must be'
@@ -186,17 +177,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " greater than 0, $minChange given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
-                . " greater than 0, $window given.");
-        }
-
         $this->base = $base ?? new ClassificationTree(1);
         $this->rate = $rate;
         $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->window = $window;
     }
 
     /**
@@ -238,7 +223,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
-            'window' => $this->window,
         ];
     }
 
@@ -315,9 +299,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $this->ensemble = $this->influences = $this->losses = [];
 
-        $prevLoss = $bestLoss = INF;
+        $prevLoss = INF;
         $lossThreshold = 1.0 - (1.0 / $k);
-        $numWorseEpochs = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $estimator = clone $this->base;
@@ -376,18 +359,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->influences[] = $influence;
 
             if ($lossChange < $this->minChange) {
-                break;
-            }
-
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 

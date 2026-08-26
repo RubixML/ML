@@ -15,8 +15,7 @@ A multiclass generalization of [Logistic Regression](logistic-regression.md) usi
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 5 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 6 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
-| 7 | costFn | MulticlassCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 6 | costFn | BinaryCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 
 ## Example
 ```php
@@ -24,7 +23,7 @@ use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 
-$estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, 10, new MulticlassCrossEntropy());
+$estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, new BinaryCrossEntropy());
 ```
 
 ## Additional Methods
