@@ -30,7 +30,7 @@ class AmpTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->backend = new Amp(2);
+        $this->backend = new Amp(4);
     }
 
     protected function tearDown() : void
@@ -40,7 +40,7 @@ class AmpTest extends TestCase
 
     public function testWorkers() : void
     {
-        $this->assertEquals(2, $this->backend->workers());
+        $this->assertEquals(4, $this->backend->workers());
     }
 
     public function testEnqueueProcess() : void

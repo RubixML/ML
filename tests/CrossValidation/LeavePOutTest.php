@@ -38,7 +38,7 @@ class LeavePOutTest extends TestCase
      */
     public static function provideBackends() : Generator
     {
-        $ampBackend = new Amp(2);
+        $ampBackend = new Amp(4);
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,

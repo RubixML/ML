@@ -68,7 +68,7 @@ class OneVsRestTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp(2);
+        $ampBackend = new Amp(4);
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
