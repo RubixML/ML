@@ -48,8 +48,12 @@ class LabeledTest extends TestCase
 
     protected Labeled $dataset;
 
+    protected string $originalPrecision;
+
     protected function setUp() : void
     {
+        $this->originalPrecision = ini_get('precision') ?: '14';
+
         ini_set('precision', '14');
 
         $this->dataset = new Labeled(
@@ -59,6 +63,11 @@ class LabeledTest extends TestCase
         );
 
         srand(self::RANDOM_SEED);
+    }
+
+    protected function tearDown() : void
+    {
+        ini_set('precision', $this->originalPrecision);
     }
 
     public function testFromIterator() : void

@@ -75,6 +75,15 @@ class Serial implements Backend
     }
 
     /**
+     * Shut down the backend. No-op for the serial backend.
+     *
+     * @internal
+     */
+    public function shutdown() : void
+    {
+    }
+
+    /**
      * Return the string representation of the object.
      *
      * @internal

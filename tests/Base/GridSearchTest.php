@@ -46,6 +46,8 @@ class GridSearchTest extends TestCase
 
     protected Accuracy $metric;
 
+    protected ?Backend $backend = null;
+
     /**
      * @return Generator<string, array{backend: Backend}>
      */
@@ -57,7 +59,7 @@ class GridSearchTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp();
+        $ampBackend = new Amp(4);
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -104,6 +106,11 @@ class GridSearchTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
+    }
+
     public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
@@ -139,6 +146,8 @@ class GridSearchTest extends TestCase
     #[DataProvider('provideBackends')]
     public function testTrainPredictBest(Backend $backend) : void
     {
+        $this->backend = $backend;
+
         $this->estimator->setLogger(new BlackHole());
         $this->estimator->setBackend($backend);
 

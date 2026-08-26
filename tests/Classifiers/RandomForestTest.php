@@ -56,6 +56,8 @@ class RandomForestTest extends TestCase
 
     protected FBeta $metric;
 
+    protected ?Backend $backend = null;
+
     /**
      * @return Generator<string, array{backend: Backend}>
      */
@@ -67,7 +69,7 @@ class RandomForestTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp();
+        $ampBackend = new Amp(4);
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -117,6 +119,11 @@ class RandomForestTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
+    }
+
     public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
@@ -159,6 +166,8 @@ class RandomForestTest extends TestCase
     #[DataProvider('provideBackends')]
     public function testTrainPredictImportances(Backend $backend) : void
     {
+        $this->backend = $backend;
+
         $this->estimator->setBackend($backend);
 
         $training = $this->generator->generate(self::TRAIN_SIZE);

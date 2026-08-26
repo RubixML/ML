@@ -48,6 +48,8 @@ class CommitteeMachineTest extends TestCase
 
     protected Accuracy $metric;
 
+    protected ?Backend $backend = null;
+
     /**
      * @return Generator<string, array{backend: Backend}>
      */
@@ -59,7 +61,7 @@ class CommitteeMachineTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp();
+        $ampBackend = new Amp(4);
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -100,6 +102,11 @@ class CommitteeMachineTest extends TestCase
         $this->metric = new Accuracy();
 
         srand(self::RANDOM_SEED);
+    }
+
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
     }
 
     #[Test]
@@ -155,6 +162,8 @@ class CommitteeMachineTest extends TestCase
     #[TestDox('Train predict')]
     public function trainPredict(Backend $backend) : void
     {
+        $this->backend = $backend;
+
         $this->estimator->setBackend($backend);
 
         $training = $this->generator->generate(self::TRAIN_SIZE);

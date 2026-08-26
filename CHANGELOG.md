@@ -15,6 +15,7 @@
     - V-measure, Completeness, and Homogeneity now use entropy-based formula
     - Fix KDTree edge pruning + optimize traversal
     - Optimize Dataset sort(), sorting is now unstable
+    - Remove loss-based window early stopping
     
 - 2.5.8
     - Optimize squaring operations
