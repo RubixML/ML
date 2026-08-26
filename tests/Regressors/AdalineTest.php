@@ -107,7 +107,6 @@ class AdalineTest extends TestCase
             l2Penalty: 1e-4,
             epochs: 100,
             minChange: 1e-4,
-            window: 5,
             costFn: new HuberLoss(1.0)
         );
 
@@ -160,7 +159,6 @@ class AdalineTest extends TestCase
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
-            'window' => 5,
             'cost fn' => new HuberLoss(1.0),
         ];
 
@@ -231,7 +229,6 @@ class AdalineTest extends TestCase
             l2Penalty: 1e-4,
             epochs: 100,
             minChange: 1e-4,
-            window: 5,
             costFn: new HuberLoss(1.0)
         );
 
@@ -245,7 +242,6 @@ class AdalineTest extends TestCase
         self::assertEquals(1e-4, $params['l2 penalty']);
         self::assertSame(100, $params['epochs']);
         self::assertEquals(1e-4, $params['min change']);
-        self::assertSame(5, $params['window']);
 
         $predictions = $estimator->predict(Unlabeled::quick([$prediction]));
 

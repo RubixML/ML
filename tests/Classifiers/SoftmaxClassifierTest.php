@@ -78,7 +78,6 @@ class SoftmaxClassifierTest extends TestCase
             l2Penalty: 1e-4,
             epochs: 300,
             minChange: 1e-4,
-            window: 5,
             costFn: new CrossEntropy()
         );
 
@@ -121,7 +120,6 @@ class SoftmaxClassifierTest extends TestCase
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
-            'window' => 5,
             'cost fn' => new CrossEntropy(),
         ];
 

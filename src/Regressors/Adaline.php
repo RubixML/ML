@@ -94,13 +94,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
-     *
-     * @var positive-int
-     */
-    protected int $window;
-
-    /**
      * The function that computes the loss associated with an erroneous
      * activation during training.
      *
@@ -128,7 +121,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
-     * @param int $window
      * @param RegressionLoss|null $costFn
      * @throws InvalidArgumentException
      */
@@ -138,7 +130,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $window = 10,
         ?RegressionLoss $costFn = null
     ) {
         if ($batchSize < 1) {
@@ -161,17 +152,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 . " greater than 0, $minChange given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
-                . " greater than 0, $window given.");
-        }
-
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->window = $window;
         $this->costFn = $costFn ?? new LeastSquares();
     }
 
@@ -216,7 +201,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
-            'window' => $this->window,
             'cost fn' => $this->costFn,
         ];
     }
@@ -320,8 +304,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             $this->logger->info("{$numParams} trainable parameters");
         }
 
-        $prevLoss = $bestLoss = INF;
-        $numWorseEpochs = 0;
+        $prevLoss = INF;
 
         $this->losses = [];
 
@@ -363,18 +346,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             }
 
             if ($lossChange < $this->minChange) {
-                break;
-            }
-
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 

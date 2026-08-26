@@ -74,8 +74,7 @@ class AdaBoostTest extends TestCase
             rate: 1.0,
             ratio: 0.5,
             epochs: 100,
-            minChange: 1e-4,
-            window: 5
+            minChange: 1e-4
         );
 
         $this->metric = new FBeta();
@@ -118,7 +117,6 @@ class AdaBoostTest extends TestCase
             'ratio' => 0.5,
             'epochs' => 100,
             'min change' => 0.0001,
-            'window' => 5,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

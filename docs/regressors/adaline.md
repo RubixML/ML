@@ -15,8 +15,7 @@
 | 3 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 5 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 6 | window | 10 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
-| 7 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 6 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 
 ## Example
 ```php
@@ -24,7 +23,7 @@ use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Regressors\Adaline;
 
-$estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 5, new HuberLoss(2.5));
+$estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, new HuberLoss(2.5));
 ```
 
 ## Additional Methods
