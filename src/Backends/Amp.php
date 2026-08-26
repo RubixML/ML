@@ -126,6 +126,16 @@ class Amp implements Backend
     }
 
     /**
+     * Gracefully shut down the worker pool.
+     *
+     * @internal
+     */
+    public function shutdown() : void
+    {
+        $this->pool->shutdown();
+    }
+
+    /**
      * @return array{int}
      */
     public function __serialize() : array

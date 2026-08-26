@@ -10,7 +10,7 @@
   displayDetailsOnTestsThatTriggerWarnings="true"
   displayDetailsOnTestsThatTriggerErrors="true"
   displayDetailsOnSkippedTests="true"
-  processIsolation="true"
+  processIsolation="false"
   stopOnFailure="false"
   testdox="false"
   xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
@@ -84,6 +84,6 @@
   </testsuites>
   <php>
     <env name="ENV" value="testing"/>
-    <ini name="memory_limit" value="256M"/>
+    <ini name="memory_limit" value="1G"/>
   </php>
 </phpunit>

@@ -29,6 +29,11 @@ class PersistentModelTest extends TestCase
         );
     }
 
+    protected function tearDown() : void
+    {
+        @unlink('test.model');
+    }
+
     public function testType() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());

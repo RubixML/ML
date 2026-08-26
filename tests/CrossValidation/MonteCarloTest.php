@@ -31,12 +31,14 @@ class MonteCarloTest extends TestCase
 
     protected Accuracy $metric;
 
+    protected ?Backend $backend = null;
+
     /**
      * @return Generator<string, array{backend: Backend}>
      */
     public static function provideBackends() : Generator
     {
-        $ampBackend = new Amp();
+        $ampBackend = new Amp(4);
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -66,9 +68,16 @@ class MonteCarloTest extends TestCase
         $this->metric = new Accuracy();
     }
 
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
+    }
+
     #[DataProvider('provideBackends')]
     public function testTestEstimator(Backend $backend) : void
     {
+        $this->backend = $backend;
+
         $this->validator->setBackend($backend);
 
         [$min, $max] = $this->metric->range()->list();

@@ -144,6 +144,15 @@ class Swoole implements Backend
         $this->queue = [];
     }
 
+    /**
+     * Shut down the backend. No-op for the Swoole backend.
+     *
+     * @internal
+     */
+    public function shutdown() : void
+    {
+    }
+
     private function serialize(mixed $data) : string
     {
         if ($this->hasIgbinary) {
