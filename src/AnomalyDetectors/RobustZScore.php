@@ -278,7 +278,6 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
             );
         }
 
-        /** @var non-empty-array<float> $scores */
         return (1.0 - $this->beta) * Stats::mean($scores)
             + $this->beta * max($scores);
     }

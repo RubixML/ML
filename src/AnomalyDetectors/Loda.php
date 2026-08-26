@@ -355,7 +355,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->transpose()
             ->asArray();
 
-        return $this->densities($projections);
+        $scores = $this->densities($projections);
+
+        return $scores;
     }
 
     /**

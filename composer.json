@@ -37,13 +37,11 @@
         "andrewdalpino/okbloomer": "^1.0",
         "psr/log": "^1.1|^2.0|^3.0",
         "rubix/tensor": "^3.0",
-        "symfony/polyfill-mbstring": "^1.0",
-        "wamania/php-stemmer": "^4.0"
+        "symfony/polyfill-mbstring": "^1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.73",
         "phpbench/phpbench": "^1.0",
-        "overtrue/phplint": "^9.6.2",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
