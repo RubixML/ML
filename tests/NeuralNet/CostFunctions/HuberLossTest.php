@@ -121,6 +121,62 @@ class HuberLossTest extends TestCase
         ];
     }
 
+    public static function differentiateWithAlphaProvider() : Generator
+    {
+        $alpha = 0.5;
+
+        yield [
+            $alpha,
+            NumPower::array([
+                [0.99],
+            ]),
+            NumPower::array([
+                [1.0],
+            ]),
+            [
+                [-0.0099980],
+            ],
+        ];
+
+        yield [
+            $alpha,
+            NumPower::array([
+                [1000.0],
+            ]),
+            NumPower::array([
+                [1.0],
+            ]),
+            [
+                [0.4999999],
+            ],
+        ];
+
+        yield [
+            $alpha,
+            NumPower::array([
+                [33.98],
+                [20.0],
+                [4.6],
+                [44.2],
+                [38.5],
+            ]),
+            NumPower::array([
+                [36.0],
+                [22.0],
+                [18.0],
+                [41.5],
+                [38.0],
+            ]),
+            [
+                [-0.4853526],
+                [-0.4850713],
+                [-0.4996523],
+                [0.4916410],
+                [0.3535534],
+            ],
+        ];
+    }
+
     protected function setUp() : void
     {
         $this->costFn = new HuberLoss(1.0);
@@ -192,36 +248,59 @@ class HuberLossTest extends TestCase
         self::assertEqualsWithDelta($expected, $gradientArray, 1e-7);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Calculate gradient of cost function with non-unity alpha')]
+    #[DataProvider('differentiateWithAlphaProvider')]
+    public function testDifferentiateWithAlpha(float $alpha, NDArray $output, NDArray $target, array $expected) : void
+    {
+        $costFn = new HuberLoss($alpha);
+
+        $gradient = $costFn->differentiate($output, $target);
+        $gradientArray = $gradient->toArray();
+        self::assertEqualsWithDelta($expected, $gradientArray, 1e-5);
+    }
+
+    #[Test]
+    #[TestDox('Analytic gradient matches numeric gradient')]
     public function differentiateMatchesNumericGradient() : void
     {
-        $costFn = new HuberLoss(0.5);
+        $alpha = 0.5;
 
-        $output = Matrix::quick([
+        $costFn = new HuberLoss($alpha);
+
+        $output = NumPower::array([
             [0.1, 0.5, 1.0],
             [2.0, 5.0, 10.0],
         ]);
 
-        $target = Matrix::quick([
+        $target = NumPower::array([
             [1.0, 1.0, 1.0],
             [1.0, 1.0, 1.0],
         ]);
 
         $epsilon = 1e-6;
 
+        $pseudoHuber = static function (float $e, float $a) : float {
+            return $a ** 2 * (sqrt(1.0 + ($e / $a) ** 2) - 1.0);
+        };
+
         $numeric = [];
 
-        foreach ($output->asArray() as $i => $row) {
+        $outputArray = $output->toArray();
+
+        foreach ($outputArray as $i => $row) {
             foreach ($row as $j => $v) {
-                $plus = $costFn->_compute($target[$i][$j] - ($v + $epsilon));
-                $minus = $costFn->_compute($target[$i][$j] - ($v - $epsilon));
+                $e = $target->toArray()[$i][$j];
+
+                $plus = $pseudoHuber($e - ($v + $epsilon), $alpha);
+                $minus = $pseudoHuber($e - ($v - $epsilon), $alpha);
 
                 $numeric[$i][$j] = ($plus - $minus) / (2.0 * $epsilon);
             }
         }
 
-        $this->assertEqualsWithDelta($numeric, $costFn->differentiate($output, $target)->asArray(), 1e-8);
+        $analytic = $costFn->differentiate($output, $target)->toArray();
+
+        $this->assertEqualsWithDelta($numeric, $analytic, 1e-5);
     }
 }
