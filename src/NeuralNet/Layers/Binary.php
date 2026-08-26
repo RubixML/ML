@@ -199,6 +199,7 @@ class Binary implements Output
 
         // Optimization specific to sigmoid + binary cross entropy.
         // The loss derivative cancels with the sigmoid derivative, so dZ = (output - expected).
+        if ($this->costFn instanceof BinaryCrossEntropy) {
             return NumPower::divide(
                 NumPower::subtract($output, $expected),
                 $n
