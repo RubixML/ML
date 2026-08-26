@@ -10,7 +10,6 @@
     - Added validation interval parameter to MLPs and GBM Learners
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer only tracks major library version number
-    - Convert NeuralNet classes to use NDArray instead of Matrix
     - Removed window (early stopping) hyper-parameter from TSNE
     - Add Class/Cluster Purity clustering metrics
     - V-measure, Completeness, and Homogeneity now use entropy-based formula
