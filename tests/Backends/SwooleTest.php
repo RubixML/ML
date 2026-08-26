@@ -6,14 +6,15 @@ namespace Rubix\ML\Tests\Backends;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Backends\Swoole as SwooleBackend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 use Swoole\Event;
 
 #[Group('backends')]
 #[Group('Swoole')]
+#[RequiresPhpExtension('swoole')]
 #[CoversClass(SwooleBackend::class)]
 class SwooleTest extends TestCase
 {
@@ -26,10 +27,6 @@ class SwooleTest extends TestCase
 
     protected function setUp() : void
     {
-        if (!SwooleExtensionIsLoaded::create()->passes()) {
-            $this->markTestSkipped('Swoole extension is not available.');
-        }
-
         $this->backend = new SwooleBackend();
     }
 
