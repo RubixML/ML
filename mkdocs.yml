@@ -176,7 +176,8 @@ nav:
         - SiLU: neural-network/activation-functions/silu.md
         - Thresholded ReLU: neural-network/activation-functions/thresholded-relu.md
       - Cost Functions:
-        - Cross Entropy: neural-network/cost-functions/cross-entropy.md
+        - Binary Cross Entropy: neural-network/cost-functions/binary-cross-entropy.md
+        - Multiclass Cross Entropy: neural-network/cost-functions/multiclass-cross-entropy.md
         - Huber Loss: neural-network/cost-functions/huber-loss.md
         - Least Squares: neural-network/cost-functions/least-squares.md
         - Relative Entropy: neural-network/cost-functions/relative-entropy.md

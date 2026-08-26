@@ -16,7 +16,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use PHPUnit\Framework\TestCase;
 
@@ -97,7 +97,7 @@ class MulticlassTest extends TestCase
 
         $this->layer = new Multiclass(
             classes: ['hot', 'cold', 'ice cold'],
-            costFn: new CrossEntropy()
+            costFn: new MulticlassCrossEntropy()
         );
     }
 
@@ -250,7 +250,7 @@ class MulticlassTest extends TestCase
     #[TestDox('It returns correct string representation')]
     public function testToStringReturnsCorrectValue() : void
     {
-        $expected = 'Multiclass (cost function: Cross Entropy)';
+        $expected = 'Multiclass (cost function: Multiclass Cross Entropy)';
 
         self::assertSame($expected, (string) $this->layer);
     }
