@@ -231,7 +231,10 @@ class BatchNorm implements Hidden, Parametric
         $this->stdInv = $stdInv;
         $this->xHat = $xHat;
 
-        return NumPower::add(NumPower::multiply($xHat, $this->gamma->param()), $this->beta->param());
+        $gamma = NumPower::reshape($this->gamma->param(), [$n, 1]);
+        $beta = NumPower::reshape($this->beta->param(), [$n, 1]);
+
+        return NumPower::add(NumPower::multiply($xHat, $gamma), $beta);
     }
 
     /**
@@ -258,12 +261,12 @@ class BatchNorm implements Hidden, Parametric
             NumPower::reshape(NumPower::sqrt($varianceClipped), [$n, 1])
         );
 
+        $gamma = NumPower::reshape($this->gamma->param(), [$n, 1]);
+        $beta = NumPower::reshape($this->beta->param(), [$n, 1]);
+
         return NumPower::add(
-            NumPower::multiply(
-                $xHat,
-                $this->gamma->param()
-            ),
-            $this->beta->param()
+            NumPower::multiply($xHat, $gamma),
+            $beta
         );
     }
 
@@ -321,11 +324,12 @@ class BatchNorm implements Hidden, Parametric
      */
     public function gradient(NDArray $dOut, NDArray $gamma, NDArray $stdInv, NDArray $xHat) : NDArray
     {
-        $dXHat = NumPower::multiply($dOut, $gamma);
+        [$n, $m] = $dOut->shape();
+
+        $gammaCol = NumPower::reshape($gamma, [$n, 1]);
+        $dXHat = NumPower::multiply($dOut, $gammaCol);
         $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), axis: 1);
         $dXHatSigma = NumPower::sum($dXHat, axis: 1);
-
-        [$n, $m] = $dOut->shape();
 
         // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
         $dXHatTimesM = NumPower::multiply($dXHat, $m);

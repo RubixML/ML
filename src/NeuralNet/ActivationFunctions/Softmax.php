@@ -75,12 +75,14 @@ class Softmax implements ActivationFunction
     /**
      * Calculate the derivative of the Softmax activation function.
      *
-     * For Softmax, the derivative can be calculated using only the output:
-     * f'(x) = diag(s) - outer(s, s)
-     * where f(x) is the output of the softmax function and s is the softmax output
+     * Returns the element-wise diagonal of each sample's Softmax Jacobian:
+     * f'(x_i) = f(x_i) * (1 - f(x_i))
      *
-     * Since we typically need this for backpropagation where we multiply by the gradient,
-     * we can simplify by using the Jacobian-vector product directly.
+     * The result has the same shape as the input, preserving the
+     * `[classes, batch]` layout where each sample column is treated
+     * independently. Since the full Softmax Jacobian couples all classes of a
+     * sample together, an exact backward pass through this function requires
+     * the Jacobian-vector product which must be handled by the output layer.
      *
      * @param NDArray $input
      * @param NDArray $output The output from the Softmax activation
@@ -88,13 +90,9 @@ class Softmax implements ActivationFunction
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
-        $softmax = NumPower::flatten($output);
+        $oneMinusOutput = NumPower::subtract(1.0, $output);
 
-        $diag = NumPower::diag($softmax);
-
-        $outer = NumPower::outer($softmax, $softmax);
-
-        return NumPower::subtract($diag, $outer);
+        return NumPower::multiply($output, $oneMinusOutput);
     }
 
     /**

@@ -9,7 +9,7 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -88,7 +88,7 @@ class Multiclass implements Output
         ])->check();
 
         $this->classes = $classes;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->softmax = new Softmax();
     }
 
@@ -196,6 +196,14 @@ class Multiclass implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
+     * For Cross Entropy, the loss derivative cancels with the Softmax
+     * derivative, so dZ = (output - expected). Otherwise, an exact backward
+     * pass through Softmax is computed as the Jacobian-vector product
+     *
+     * dZ_i = s_i * (g_i - sum_j(s_j * g_j))
+     *
+     * where s is the Softmax output and g is the upstream gradient.
+     *
      * @param NDArray $input
      * @param NDArray $output
      * @param NDArray $expected
@@ -205,21 +213,30 @@ class Multiclass implements Output
     {
         $n = array_product($output->shape());
 
-        if ($this->costFn instanceof CrossEntropy) {
+        // Optimization specific to softmax + multiclass cross entropy.
+        // The loss derivative cancels with the softmax derivative, so dZ = (output - expected).
+        if ($this->costFn instanceof MulticlassCrossEntropy) {
             return NumPower::divide(
                 NumPower::subtract($output, $expected),
                 $n
             );
         }
 
-        $dLoss = NumPower::divide(
+        $gradient = NumPower::divide(
             $this->costFn->differentiate($output, $expected),
             $n
         );
 
+        $batch = $output->shape()[1];
+
+        $dot = NumPower::reshape(
+            NumPower::sum(NumPower::multiply($gradient, $output), axis: 0),
+            [1, $batch]
+        );
+
         return NumPower::multiply(
-            $this->softmax->differentiate($input, $output),
-            $dLoss
+            $output,
+            NumPower::subtract($gradient, $dot)
         );
     }
 

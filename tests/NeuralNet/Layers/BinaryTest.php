@@ -15,7 +15,7 @@ use NumPower;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -85,7 +85,7 @@ class BinaryTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Binary(classes: ['hot', 'cold'], costFn: new CrossEntropy());
+        $this->layer = new Binary(classes: ['hot', 'cold'], costFn: new BinaryCrossEntropy());
     }
 
     #[Test]
@@ -94,7 +94,7 @@ class BinaryTest extends TestCase
     {
         $this->layer->initialize(1);
 
-        self::assertEquals('Binary (cost function: Cross Entropy)', (string) $this->layer);
+        self::assertEquals('Binary (cost function: Binary Cross Entropy)', (string) $this->layer);
     }
 
     #[Test]
@@ -111,14 +111,14 @@ class BinaryTest extends TestCase
     public function testConstructorRejectsInvalidClasses(array $classes) : void
     {
         $this->expectException(InvalidArgumentException::class);
-        new Binary(classes: $classes, costFn: new CrossEntropy());
+        new Binary(classes: $classes, costFn: new BinaryCrossEntropy());
     }
 
     #[Test]
     #[TestDox('Constructor accepts classes arrays that dedupe to exactly 2 labels')]
     public function testConstructorAcceptsDuplicateClassesThatDedupeToTwo() : void
     {
-        $layer = new Binary(classes: ['hot', 'cold', 'hot'], costFn: new CrossEntropy());
+        $layer = new Binary(classes: ['hot', 'cold', 'hot'], costFn: new BinaryCrossEntropy());
         // Should initialize without throwing and report correct width
         $layer->initialize(1);
         self::assertEquals(1, $layer->width());

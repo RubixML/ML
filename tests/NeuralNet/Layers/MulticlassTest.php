@@ -16,7 +16,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Layers')]
@@ -96,7 +97,7 @@ class MulticlassTest extends TestCase
 
         $this->layer = new Multiclass(
             classes: ['hot', 'cold', 'ice cold'],
-            costFn: new CrossEntropy()
+            costFn: new MulticlassCrossEntropy()
         );
     }
 
@@ -196,6 +197,44 @@ class MulticlassTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Computes exact Softmax Jacobian-vector product for losses other than Cross Entropy')]
+    public function testGradientWithRelativeEntropy() : void
+    {
+        $expectedGradient = [
+            [-0.0920019936, 0.0055337012, 0.0691078631],
+            [0.0856411220, -0.1061040102, 0.0001709579],
+            [0.0063608715, 0.1005703090, -0.0692788210],
+        ];
+
+        $layer = new Multiclass(
+            classes: ['hot', 'cold', 'ice cold'],
+            costFn: new RelativeEntropy()
+        );
+
+        $layer->initialize(3);
+
+        $output = $layer->forward($this->input);
+
+        // Rebuild expected one-hot matrix the same way as Multiclass::back()
+        $expected = [];
+
+        foreach (['hot', 'cold', 'ice cold'] as $class) {
+            $row = [];
+
+            foreach ($this->labels as $label) {
+                $row[] = $class === $label ? 1.0 : 0.0;
+            }
+
+            $expected[] = $row;
+        }
+
+        $gradient = $layer->gradient($this->input, $output, NumPower::array($expected));
+
+        self::assertEquals($this->input->shape(), $gradient->shape());
+        self::assertEqualsWithDelta($expectedGradient, $gradient->toArray(), 1e-7);
+    }
+
+    #[Test]
     #[TestDox('Computes infer softmax probabilities')]
     #[DataProvider('inferProvider')]
     public function testInfer(array $expected) : void
@@ -211,7 +250,7 @@ class MulticlassTest extends TestCase
     #[TestDox('It returns correct string representation')]
     public function testToStringReturnsCorrectValue() : void
     {
-        $expected = 'Multiclass (cost function: Cross Entropy)';
+        $expected = 'Multiclass (cost function: Multiclass Cross Entropy)';
 
         self::assertSame($expected, (string) $this->layer);
     }

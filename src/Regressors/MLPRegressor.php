@@ -38,10 +38,14 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
+
 use function count;
 use function get_object_vars;
+use function is_dir;
 use function is_nan;
 use function number_format;
+use function uniqid;
+use function sys_get_temp_dir;
 
 /**
  * MLP Regressor
@@ -156,6 +160,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @var float[]|null
      */
     protected ?array $losses = null;
+
+    /**
+     * The file path to store the snapshot on disk during training.
+     *
+     * @var string|null
+     */
+    protected ?string $snapshotPath = null;
 
     /**
      * @param list<mixed> $hiddenLayers
@@ -349,6 +360,21 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
+     * Set the file path to store the snapshot on disk during training.
+     *
+     * @param string|null $path
+     * @throws InvalidArgumentException
+     */
+    public function setSnapshotPath(?string $path) : void
+    {
+        if (isset($path) && is_dir($path)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
+        $this->snapshotPath = $path;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -413,6 +439,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $score = $snapshot = null;
         $prevLoss = INF;
 
+        $snapshotPath = $this->snapshotPath;
+
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
+
         $this->scores = $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
@@ -465,7 +497,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $snapshot = Snapshot::take($this->network);
+                    if ($snapshot) {
+                        $snapshot->clean();
+                    }
+
+                    $snapshot = Snapshot::take($this->network, $snapshotPath);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -486,12 +522,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $prevLoss = $loss;
         }
 
-        if ($snapshot and (end($this->scores) < $bestScore or is_nan($loss))) {
-            $snapshot->restore();
+        if ($snapshot) {
+            if (end($this->scores) < $bestScore or is_nan($loss)) {
+                $snapshot->restore();
 
-            if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+                if ($this->logger) {
+                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                }
             }
+
+            $snapshot->clean();
         }
 
         if ($this->logger) {
@@ -544,7 +584,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset(
+            $properties['losses'],
+            $properties['scores'],
+            $properties['logger'],
+            $properties['snapshotPath']
+        );
 
         return $properties;
     }

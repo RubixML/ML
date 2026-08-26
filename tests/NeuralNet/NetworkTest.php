@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Input;
@@ -61,7 +61,7 @@ class NetworkTest extends TestCase
 
         $this->output = new Multiclass(
             classes: ['yes', 'no', 'maybe'],
-            costFn: new CrossEntropy()
+            costFn: new MulticlassCrossEntropy()
         );
 
         $this->network = new FeedForward(

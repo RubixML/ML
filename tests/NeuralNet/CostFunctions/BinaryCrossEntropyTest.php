@@ -12,15 +12,15 @@ use PHPUnit\Framework\Attributes\TestDox;
 use NumPower;
 use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
 #[Group('CostFunctions')]
-#[CoversClass(CrossEntropy::class)]
-class CrossEntropyTest extends TestCase
+#[CoversClass(BinaryCrossEntropy::class)]
+class BinaryCrossEntropyTest extends TestCase
 {
-    protected CrossEntropy $costFn;
+    protected BinaryCrossEntropy $costFn;
 
     public static function computeProvider() : Generator
     {
@@ -32,46 +32,44 @@ class CrossEntropyTest extends TestCase
 
         yield [
             NumPower::array([
-                [0.99, 0.01, 0.0],
+                [0.99],
             ]),
             NumPower::array([
-                [1.0, 0.0, 0.0],
+                [1.0],
             ]),
-            0.0033501,
+            0.0100503,
         ];
 
         yield [
             NumPower::array([
-                [0.2, 0.4, 0.4],
+                [0.7],
             ]),
             NumPower::array([
-                [0.0, 1.0, 0.0],
+                [1.0],
             ]),
-            0.3054302,
+            0.3566749,
         ];
 
         yield [
             NumPower::array([
-                [0.0, 0.1, 0.9],
+                [0.01],
             ]),
             NumPower::array([
-                [1.0, 0.0, 0.0],
+                [1.0],
             ]),
-            6.1402269,
+            4.6051702,
         ];
 
         yield [
             NumPower::array([
-                [0.2, 0.1, 0.7],
-                [0.0, 0.9, 0.1],
-                [0.1, 0.3, 0.6],
+                [0.9],
+                [0.1],
             ]),
             NumPower::array([
-                [0.0, 0.0, 1.0],
-                [0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0],
+                [1.0],
+                [0.0],
             ]),
-            0.1080956,
+            0.1053605,
         ];
     }
 
@@ -79,69 +77,66 @@ class CrossEntropyTest extends TestCase
     {
         yield [
             NumPower::array([
-                [0.99, 0.01, 0.0],
+                [0.99],
             ]),
             NumPower::array([
-                [1.0, 0.0, 0.0],
+                [1.0],
             ]),
             [
-                [-1.0101009, 1.0101009, 0.0],
+                [-1.0101010],
             ],
         ];
 
         yield [
             NumPower::array([
-                [0.2, 0.4, 0.4],
+                [0.7],
             ]),
             NumPower::array([
-                [0.0, 1.0, 0.0],
+                [1.0],
             ]),
             [
-                [1.2499999, -2.5, 1.6666666],
+                [-1.4285714],
             ],
         ];
 
         yield [
             NumPower::array([
-                [0.0, 0.1, 0.9],
+                [0.01],
             ]),
             NumPower::array([
-                [1.0, 0.0, 0.0],
+                [1.0],
             ]),
             [
-                [-100000000.0, 1.1111111, 9.9999981],
+                [-100.0],
             ],
         ];
 
         yield [
             NumPower::array([
-                [0.2, 0.1, 0.7],
-                [0.0, 0.9, 0.1],
-                [0.1, 0.3, 0.6],
+                [0.9],
+                [0.1],
             ]),
             NumPower::array([
-                [0.0, 0.0, 1.0],
-                [0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0],
+                [1.0],
+                [0.0],
             ]),
             [
-                [1.2499999, 1.1111111, -1.4285714],
-                [0.0, -1.1111111, 1.1111111],
-                [1.1111111, 1.4285714, -1.6666666],
+                [-1.1111111],
+                [1.1111111],
             ],
         ];
     }
 
     protected function setUp() : void
     {
-        $this->costFn = new CrossEntropy();
+        $this->costFn = new BinaryCrossEntropy();
     }
 
     #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        static::assertEquals('Cross Entropy', (string) $this->costFn);
+        static::assertEquals('Binary Cross Entropy', (string) $this->costFn);
     }
 
     #[Test]

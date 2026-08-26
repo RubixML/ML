@@ -21,7 +21,7 @@ A multiclass feed-forward neural network classifier with user-defined hidden lay
 | 6 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
 | 7 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 8 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
-| 9 | costFn | CrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 9 | costFn | MulticlassCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
 
 ## Example
@@ -33,7 +33,7 @@ use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $estimator = new MultilayerPerceptron([
@@ -45,7 +45,7 @@ $estimator = new MultilayerPerceptron([
     new Dropout(0.3),
     new Dense(50),
     new PReLU(),
-], 128, new Adam(0.001), 1000, 1e-3, 10, 3, 0.1, new CrossEntropy(), new MCC());
+], 128, new Adam(0.001), 1000, 1e-3, 10, 3, 0.1, new MulticlassCrossEntropy(), new MCC());
 ```
 
 ## Additional Methods
@@ -92,6 +92,12 @@ Graphviz::dotToImage($dot)->saveTo(new Filesystem('network.png'));
 ```
 
 ![Neural Network Graph](https://github.com/RubixML/ML/blob/master/docs/images/neural-network-graph.png?raw=true)
+
+Set the path of the temporary snapshot file used to store network parameters during training.
+
+```php
+public setSnapshotPath(?string $path) : void
+```
 
 ## References
 [^1]: G. E. Hinton. (1989). Connectionist learning procedures.

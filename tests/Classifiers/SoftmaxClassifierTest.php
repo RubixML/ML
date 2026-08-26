@@ -17,7 +17,7 @@ use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -78,7 +78,7 @@ class SoftmaxClassifierTest extends TestCase
             l2Penalty: 1e-4,
             epochs: 300,
             minChange: 1e-4,
-            costFn: new CrossEntropy()
+            costFn: new MulticlassCrossEntropy()
         );
 
         $this->metric = new FBeta();
@@ -120,7 +120,7 @@ class SoftmaxClassifierTest extends TestCase
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
-            'cost fn' => new CrossEntropy(),
+            'cost fn' => new MulticlassCrossEntropy(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
