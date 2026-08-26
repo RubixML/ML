@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Backends;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
 
@@ -15,6 +16,8 @@ use PHPUnit\Framework\TestCase;
 class AmpTest extends TestCase
 {
     protected Amp $backend;
+
+    protected ?Backend $usedBackend = null;
 
     /**
      * @param int $i
@@ -27,16 +30,23 @@ class AmpTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->backend = new Amp(4);
+        $this->backend = new Amp(2);
+    }
+
+    protected function tearDown() : void
+    {
+        $this->usedBackend?->shutdown();
     }
 
     public function testWorkers() : void
     {
-        $this->assertEquals(4, $this->backend->workers());
+        $this->assertEquals(2, $this->backend->workers());
     }
 
     public function testEnqueueProcess() : void
     {
+        $this->usedBackend = $this->backend;
+
         for ($i = 0; $i < 10; ++$i) {
             $this->backend->enqueue(
                 task: new Task(fn: [self::class, 'foo'], args: [$i])

@@ -42,6 +42,8 @@ class BootstrapAggregatorTest extends TestCase
 
     protected RSquared $metric;
 
+    protected ?Backend $backend = null;
+
     /**
      * @return Generator<string, array{backend: Backend}>
      */
@@ -53,7 +55,7 @@ class BootstrapAggregatorTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp();
+        $ampBackend = new Amp(2);
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -87,6 +89,11 @@ class BootstrapAggregatorTest extends TestCase
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
+    }
+
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
     }
 
     public function testAssertPreConditions() : void
@@ -126,6 +133,8 @@ class BootstrapAggregatorTest extends TestCase
     #[DataProvider('provideBackends')]
     public function trainPredict(Backend $backend) : void
     {
+        $this->backend = $backend;
+
         $this->estimator->setBackend($backend);
 
         $training = $this->generator->generate(self::TRAIN_SIZE);

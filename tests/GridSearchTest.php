@@ -8,6 +8,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
+use Rubix\ML\Parallel;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
@@ -81,6 +82,7 @@ class GridSearchTest extends TestCase
     {
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

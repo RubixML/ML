@@ -40,4 +40,11 @@ interface Backend extends Stringable
      * @internal
      */
     public function flush() : void;
+
+    /**
+     * Gracefully shut down the backend and release any resources.
+     *
+     * @internal
+     */
+    public function shutdown() : void;
 }

@@ -33,6 +33,11 @@ class PersistentModelTest extends TestCase
         $this->estimator = new PersistentModel(new GaussianNB(), new Filesystem('test.model'), new RBX());
     }
 
+    protected function tearDown() : void
+    {
+        @unlink('test.model');
+    }
+
     /**
      * @test
      */
