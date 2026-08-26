@@ -17,6 +17,7 @@
     - Optimize Dataset sort(), sorting is now unstable
     - Remove loss-based window early stopping
     - Add disk-based neural network snapshotting
+    - Update Amp Backend to Amp version 2.0
     
 - 2.5.9
     - Symmetrize TSNE affinities matrix, fixes optimization
