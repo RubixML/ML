@@ -77,7 +77,11 @@ class Snapshot
             }
         }
 
-        file_put_contents($path, pack('J', $numLayers));
+        $written = file_put_contents($path, pack('J', $numLayers));
+
+        if ($written === false) {
+            throw new RuntimeException("Could not write snapshot header to $path.");
+        }
 
         foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
