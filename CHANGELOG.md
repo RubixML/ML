@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.9
+    - Symmetrize TSNE affinities matrix, fixes optimization
+
 - 2.5.8
     - Optimize squaring operations
     - Optimize Fuzzy C-means training
