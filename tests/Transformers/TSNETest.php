@@ -16,6 +16,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Tensor\Matrix;
 use ReflectionMethod;
+use ReflectionProperty;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -182,18 +183,42 @@ class TSNETest extends TestCase
     {
         srand(self::RANDOM_SEED);
 
-        $this->generator->generate(self::TEST_SIZE)->apply($this->embedder);
+        $embedder = new TSNE(
+            dimensions: 1,
+            rate: 10.0,
+            perplexity: 10,
+            exaggeration: 12.0,
+            epochs: 500,
+            minGradient: 0.0,
+            kernel: new Euclidean()
+        );
 
-        $this->assertCount(500, $this->embedder->losses());
+        $embedder->setLogger(new BlackHole());
+
+        $this->generator->generate(self::TEST_SIZE)->apply($embedder);
+
+        $this->assertCount(500, $embedder->losses());
     }
 
     public function testSteps() : void
     {
         srand(self::RANDOM_SEED);
 
-        $this->generator->generate(self::TEST_SIZE)->apply($this->embedder);
+        $embedder = new TSNE(
+            dimensions: 1,
+            rate: 10.0,
+            perplexity: 10,
+            exaggeration: 12.0,
+            epochs: 500,
+            minGradient: 0.0,
+            kernel: new Euclidean()
+        );
 
-        $steps = iterator_to_array($this->embedder->steps());
+        $embedder->setLogger(new BlackHole());
+
+        $this->generator->generate(self::TEST_SIZE)->apply($embedder);
+
+        $steps = iterator_to_array($embedder->steps());
 
         $this->assertCount(500, $steps);
 
@@ -209,7 +234,7 @@ class TSNETest extends TestCase
             ++$epoch;
         }
 
-        $this->assertEquals($losses, $this->embedder->losses());
+        $this->assertEquals($losses, $embedder->losses());
     }
 
     public function testKernelAffectsPairwiseDistances() : void
@@ -245,10 +270,20 @@ class TSNETest extends TestCase
 
         $this->assertCount(4, $affinities);
 
+        $totalSum = 0.0;
+
         foreach ($affinities as $i => $row) {
             $this->assertCount(4, $row);
-            $this->assertEqualsWithDelta(1.0, array_sum($row), 1e-8);
             $this->assertSame(0.0, $row[$i]);
+            $totalSum += array_sum($row);
+        }
+
+        $this->assertEqualsWithDelta(1.0, $totalSum, 1e-8);
+
+        foreach ($affinities as $i => $row) {
+            foreach ($row as $j => $value) {
+                $this->assertEqualsWithDelta($value, $affinities[$j][$i], 1e-8);
+            }
         }
     }
 
@@ -305,6 +340,63 @@ class TSNETest extends TestCase
             0.0,
             $this->invokeGradient($this->embedder, $p, $y, $distances)->l2Norm()
         );
+    }
+
+    public function testGradientCorrectness() : void
+    {
+        $p = Matrix::quick([
+            [0.0, 0.4, 0.3, 0.3],
+            [0.4, 0.0, 0.3, 0.3],
+            [0.3, 0.3, 0.0, 0.4],
+            [0.3, 0.3, 0.4, 0.0],
+        ]);
+
+        $pTotal = $p->sum()->sum();
+
+        $p = $p->divide($pTotal);
+
+        $y = Matrix::quick([
+            [1.0, 0.0],
+            [0.0, 1.0],
+            [-1.0, 0.0],
+            [0.0, -1.0],
+        ]);
+
+        $distances = $this->invokePairwiseDistances($this->embedder, $y->asArray());
+
+        $codeGradient = $this->invokeGradient($this->embedder, $p, $y, Matrix::quick($distances));
+
+        $eps = 1e-5;
+        $numericalGradient = [];
+
+        for ($i = 0; $i < 4; ++$i) {
+            $row = [];
+
+            for ($d = 0; $d < 2; ++$d) {
+                $yArray = $y->asArray();
+
+                $yArray[$i][$d] += $eps;
+                $yPlus = Matrix::quick($yArray);
+
+                $yArray[$i][$d] -= 2.0 * $eps;
+                $yMinus = Matrix::quick($yArray);
+
+                $costPlus = $this->klCost($p, $yPlus);
+                $costMinus = $this->klCost($p, $yMinus);
+
+                $row[] = ($costPlus - $costMinus) / (2.0 * $eps);
+            }
+
+            $numericalGradient[] = $row;
+        }
+
+        $numerical = Matrix::quick($numericalGradient);
+
+        $codeNorm = $codeGradient->l2Norm();
+        $diff = $codeGradient->subtract($numerical)->l2Norm();
+
+        $this->assertGreaterThan(0.0, $codeNorm);
+        $this->assertLessThan(0.05 * $codeNorm, $diff);
     }
 
     public function testAttenuate() : void
@@ -392,5 +484,48 @@ class TSNETest extends TestCase
         $method->setAccessible(true);
 
         return $method->invokeArgs($embedder, [$samples]);
+    }
+
+    /**
+     * Compute the KL divergence cost C = Σ_{i≠j} p_{ij} log(p_{ij} / q_{ij}).
+     *
+     * @param Matrix $p
+     * @param Matrix $y
+     * @return float
+     */
+    private function klCost(Matrix $p, Matrix $y) : float
+    {
+        $prop = new ReflectionProperty(TSNE::class, 'dofs');
+
+        $prop->setAccessible(true);
+
+        $dofs = (int) $prop->getValue($this->embedder);
+
+        $distances = Matrix::quick($this->invokePairwiseDistances($this->embedder, $y->asArray()));
+
+        $base = $distances->square()
+            ->divide($dofs)
+            ->add(1.0);
+
+        $kernel = $base->pow((1.0 + $dofs) / -2.0);
+
+        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
+
+        $q = $kernel->divide(max($norm, 1e-8));
+
+        $pArray = $p->asArray();
+        $qArray = $q->asArray();
+        $n = $p->m();
+        $cost = 0.0;
+
+        for ($i = 0; $i < $n; ++$i) {
+            for ($j = 0; $j < $n; ++$j) {
+                if ($i !== $j && $pArray[$i][$j] > 0.0) {
+                    $cost += $pArray[$i][$j] * log($pArray[$i][$j] / $qArray[$i][$j]);
+                }
+            }
+        }
+
+        return $cost;
     }
 }
