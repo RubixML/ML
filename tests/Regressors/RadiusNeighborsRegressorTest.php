@@ -19,7 +19,10 @@ use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Graph\Trees\VantageTree;
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 
 #[Group('Regressors')]
@@ -55,6 +58,13 @@ class RadiusNeighborsRegressorTest extends TestCase
     public static function predictionChecks() : Generator
     {
         yield 'default dataset sizes' => [self::TRAIN_SIZE, self::TEST_SIZE];
+    }
+
+    public static function trainPredictProvider() : Generator
+    {
+        yield 'kd tree' => [new KDTree()];
+        yield 'ball tree' => [new BallTree()];
+        yield 'vantage tree' => [new VantageTree()];
     }
 
     protected function setUp() : void
@@ -104,16 +114,19 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('It trains and predicts with the expected score')]
-    public function trainPredict() : void
+    #[DataProvider('trainPredictProvider')]
+    public function trainPredict(Spatial $tree) : void
     {
+        $estimator = new RadiusNeighborsRegressor(radius: 0.8, weighted: true, tree: $tree);
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($training);
+        $estimator->train($training);
 
-        self::assertTrue($this->estimator->trained());
+        self::assertTrue($estimator->trained());
 
-        $predictions = $this->estimator->predict($testing);
+        $predictions = $estimator->predict($testing);
 
         /** @var list<int|float> $labels */
         $labels = $testing->labels();

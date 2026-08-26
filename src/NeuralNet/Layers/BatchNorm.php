@@ -211,7 +211,6 @@ class BatchNorm implements Hidden, Parametric
         // Normalize: (x - mean) * stdInv
         $xHat = NumPower::multiply($centered, NumPower::reshape($stdInv, [$n, 1]));
 
-        // Initialize running stats if needed
         if (!$this->mean or !$this->variance) {
             $this->mean = $mean;
             $this->variance = $variance;
@@ -232,7 +231,6 @@ class BatchNorm implements Hidden, Parametric
         $this->stdInv = $stdInv;
         $this->xHat = $xHat;
 
-        // gamma * xHat + beta (per-column scale/shift) using NDArray ops
         return NumPower::add(NumPower::multiply($xHat, $this->gamma->param()), $this->beta->param());
     }
 
@@ -253,8 +251,8 @@ class BatchNorm implements Hidden, Parametric
 
         $n = $input->shape()[0];
 
-        // Use clipped variance for numerical stability during inference
         $varianceClipped = NumPower::clip($this->variance, EPSILON, PHP_FLOAT_MAX);
+
         $xHat = NumPower::divide(
             NumPower::subtract($input, NumPower::reshape($this->mean, [$n, 1])),
             NumPower::reshape(NumPower::sqrt($varianceClipped), [$n, 1])
@@ -290,6 +288,7 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $dOut = $prevGradient();
+
         // Sum across samples (axis 1) for parameter gradients
         $dBeta = NumPower::sum($dOut, axis: 1);
         $dGamma = NumPower::sum(NumPower::multiply($dOut, $this->xHat), axis: 1);
@@ -326,11 +325,11 @@ class BatchNorm implements Hidden, Parametric
         $xHatSigma = NumPower::sum(NumPower::multiply($dXHat, $xHat), axis: 1);
         $dXHatSigma = NumPower::sum($dXHat, axis: 1);
 
-        $m = $dOut->shape()[1];
+        [$n, $m] = $dOut->shape();
 
         // Compute gradient per formula: dX = (dXHat * m - dXHatSigma - xHat * xHatSigma) * (stdInv / m)
         $dXHatTimesM = NumPower::multiply($dXHat, $m);
-        $n = $dOut->shape()[0];
+
         $dXHatSigmaColumn = NumPower::reshape($dXHatSigma, [$n, 1]);
         $xHatSigmaColumn = NumPower::reshape($xHatSigma, [$n, 1]);
         $xHatTimesXHatSigma = NumPower::multiply($xHat, $xHatSigmaColumn);
@@ -343,7 +342,6 @@ class BatchNorm implements Hidden, Parametric
         $stdInvOverMColumn = NumPower::reshape(NumPower::divide($stdInv, $m), [$n, 1]);
 
         return NumPower::multiply($numerator, $stdInvOverMColumn);
-
     }
 
     /**

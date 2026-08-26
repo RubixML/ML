@@ -1,9 +1,0 @@
-parameters:
-	ignoreErrors:
-	# Add here all the errors that you want to ignore
-	# -----------------------------------------------
-	#	-
-	#		message: '#^Method Rubix\\ML\\BootstrapAggregator\:\:params\(\) return type has no value type specified in iterable type array\.$#'
-	#		identifier: missingType.iterableValue
-	#		count: 1
-	#		path: src/BootstrapAggregator.php
