@@ -247,7 +247,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         if (!$snapshotPath) {
-            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot.dat';
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . spl_object_id($this) . '.dat';
         }
 
         if (is_dir($snapshotPath)) {
