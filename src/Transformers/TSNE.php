@@ -514,13 +514,19 @@ class TSNE implements Transformer, Verbose
 
         $n = count($affinities);
 
+        if ($n === 0) {
+            return [];
+        }
+
+        $scale = 1.0 / (2.0 * $n);
+
         $symmetric = [];
 
         for ($i = 0; $i < $n; ++$i) {
             $row = [];
 
             for ($j = 0; $j < $n; ++$j) {
-                $row[] = ($affinities[$i][$j] + $affinities[$j][$i]) / (2.0 * $n);
+                $row[] = ($affinities[$i][$j] + $affinities[$j][$i]) * $scale;
             }
 
             $symmetric[] = $row;
