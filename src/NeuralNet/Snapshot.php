@@ -20,6 +20,7 @@ use function pack;
 use function unpack;
 use function is_file;
 use function unlink;
+use function iterator_to_array;
 
 /**
  * Snapshot
@@ -93,13 +94,9 @@ class Snapshot
 
         foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
-                $params = [];
+                $parameters = iterator_to_array($layer->parameters());
 
-                foreach ($layer->parameters() as $key => $parameter) {
-                    $params[$key] = clone $parameter;
-                }
-
-                $data = serialize($params);
+                $data = serialize($parameters);
 
                 $written = file_put_contents($path, pack('J', strlen($data)) . $data, FILE_APPEND);
 
@@ -107,7 +104,7 @@ class Snapshot
                     throw new RuntimeException("Could not write parameter data to $path.");
                 }
 
-                unset($params, $data);
+                unset($data);
 
                 $layers[] = $layer;
             }
