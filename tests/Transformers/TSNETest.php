@@ -19,6 +19,8 @@ use ReflectionMethod;
 use ReflectionProperty;
 use PHPUnit\Framework\TestCase;
 
+use const Rubix\ML\EPSILON;
+
 #[Group('Transformers')]
 #[CoversClass(TSNE::class)]
 class TSNETest extends TestCase
@@ -511,7 +513,7 @@ class TSNETest extends TestCase
 
         $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
 
-        $q = $kernel->divide(max($norm, \Rubix\ML\EPSILON));
+        $q = $kernel->divide(max($norm, EPSILON));
 
         $pArray = $p->asArray();
         $qArray = $q->asArray();
