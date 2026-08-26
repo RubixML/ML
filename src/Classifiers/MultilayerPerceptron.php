@@ -180,7 +180,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @throws InvalidArgumentException
      */
     public function __construct(
-        array $hiddenLayers = [],
+        array $hiddenLayers,
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
         int $epochs = 1000,
