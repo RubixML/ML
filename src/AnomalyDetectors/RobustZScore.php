@@ -206,11 +206,9 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
             $this->mads[$column] = $mad;
         }
 
-        /** @var non-empty-array<float> $mads */
-        $mads = $this->mads;
-        $epsilon = max($this->smoothing * max($mads), CPU::epsilon());
+        $epsilon = max($this->smoothing * max($this->mads), CPU::epsilon());
 
-        foreach ($mads as &$mad) {
+        foreach ($this->mads as &$mad) {
             $mad += $epsilon;
         }
     }
