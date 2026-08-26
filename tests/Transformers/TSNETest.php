@@ -511,7 +511,7 @@ class TSNETest extends TestCase
 
         $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
 
-        $q = $kernel->divide(max($norm, 1e-8));
+        $q = $kernel->divide(max($norm, \Rubix\ML\EPSILON));
 
         $pArray = $p->asArray();
         $qArray = $q->asArray();
