@@ -208,11 +208,9 @@ class GaussianMLE implements Estimator, Learner, Online, Scoring, Persistable
             $this->variances[$column] = $variance;
         }
 
-        /** @var non-empty-array<float> $variances */
-        $variances = $this->variances;
-        $epsilon = max($this->smoothing * max($variances), CPU::epsilon());
+        $epsilon = max($this->smoothing * max($this->variances), CPU::epsilon());
 
-        foreach ($variances as &$variance) {
+        foreach ($this->variances as &$variance) {
             $variance += $epsilon;
         }
 
