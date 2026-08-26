@@ -65,7 +65,7 @@ class MLPRegressorTest extends TestCase
         $this->estimator = new MLPRegressor(
             hiddenLayers: [
                 new Dense(32),
-                new Activation(new SiLU()),
+                new Activation(new SELU()),
                 new Dense(16),
                 new Activation(new SiLU()),
                 new Dense(8),
