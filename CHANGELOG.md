@@ -23,6 +23,7 @@
     - Symmetrize TSNE affinities matrix, fixes optimization
     - Add numerical stability to SoftPlus activation function
     - Fix Extra Tree leaf node entropy
+    - Add numerical stability to BM25 Transformer
 
 - 2.5.8
     - Optimize squaring operations
