@@ -98,6 +98,10 @@ class SVCTest extends TestCase
         if (file_exists('svc.model')) {
             unlink('svc.model');
         }
+
+        if (file_exists('svc.model.classes.json')) {
+            unlink('svc.model.classes.json');
+        }
     }
 
     /**
@@ -163,9 +167,19 @@ class SVCTest extends TestCase
 
         $this->estimator->save('svc.model');
 
-        $this->estimator->load('svc.model');
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
 
-        $predictions = $this->estimator->predict($testing);
+        $estimator->load('svc.model');
+
+        $predictions = $estimator->predict($testing);
+
+        $expectedClasses = ['male', 'female'];
+
+        foreach ($predictions as $prediction) {
+            $this->assertIsString($prediction);
+            $this->assertNotSame('', $prediction);
+            $this->assertContains($prediction, $expectedClasses);
+        }
 
         $score = $this->metric->score($predictions, $testing->labels());
 

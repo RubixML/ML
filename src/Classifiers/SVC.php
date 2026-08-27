@@ -19,6 +19,16 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+
+use function is_file;
+use function is_readable;
+use function is_array;
+use function json_decode;
+use function json_encode;
+use function file_get_contents;
+use function file_put_contents;
+use function array_values;
+
 use svmmodel;
 use svm;
 
@@ -244,7 +254,7 @@ class SVC implements Estimator, Learner
 
         $index = $this->model->predict($sampleWithOffset);
 
-        return $this->classes[$index];
+        return $this->classes[$index] ?? throw new RuntimeException("Unknown class index {$index}.");
     }
 
     /**
@@ -260,16 +270,46 @@ class SVC implements Estimator, Learner
         }
 
         $this->model->save($path);
+
+        $classesPath = "$path.classes.json";
+
+        $success = file_put_contents($classesPath, json_encode($this->classes), LOCK_EX);
+
+        if (!$success) {
+            throw new RuntimeException("Could not save the class map to {$classesPath}.");
+        }
     }
 
     /**
      * Load model data from the filesystem.
      *
      * @param string $path
+     * @throws RuntimeException
      */
     public function load(string $path) : void
     {
         $this->model = new svmmodel($path);
+
+        $classesPath = "$path.classes.json";
+
+        if (!is_file($classesPath) or !is_readable($classesPath)) {
+            throw new RuntimeException("The class label map at {$classesPath} is"
+                . ' missing or unreadable; re-save the model with the current version.');
+        }
+
+        $data = file_get_contents($classesPath);
+
+        if ($data === false) {
+            throw new RuntimeException("Could not load the class map from {$classesPath}.");
+        }
+
+        $classes = json_decode($data, true);
+
+        if (!is_array($classes)) {
+            throw new RuntimeException("The class label map at {$classesPath} is malformed.");
+        }
+
+        $this->classes = array_values($classes);
     }
 
     /**
