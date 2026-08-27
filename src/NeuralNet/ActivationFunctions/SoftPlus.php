@@ -45,9 +45,8 @@ class SoftPlus implements ActivationFunction
     public function activate(NDArray $input) : NDArray
     {
         $exp = NumPower::exp($input);
-        $onePlusExp = NumPower::add(1.0, $exp);
 
-        return NumPower::log($onePlusExp);
+        return NumPower::log1p($exp);
     }
 
     /**

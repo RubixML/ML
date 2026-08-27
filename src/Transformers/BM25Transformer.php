@@ -10,7 +10,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function array_fill;
 use function array_sum;
-use function log;
+use function log1p;
 
 /**
  * BM25 Transformer
@@ -155,9 +155,9 @@ class BM25Transformer implements Transformer, Stateful, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->dfs = array_fill(0, $dataset->numFeatures(), 1);
+        $this->dfs = array_fill(0, $dataset->numFeatures(), 0);
         $this->totalTokens = 0;
-        $this->n = 1;
+        $this->n = 0;
 
         $this->update($dataset);
     }
@@ -195,7 +195,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
         $idfs = [];
 
         foreach ($this->dfs as $df) {
-            $idfs[] = log(1.0 + ($this->n - $df + 0.5) / ($df + 0.5));
+            $idfs[] = log1p(($this->n - $df + 0.5) / ($df + 0.5));
         }
 
         $this->idfs = $idfs;
