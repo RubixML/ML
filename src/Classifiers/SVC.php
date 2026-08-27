@@ -254,7 +254,11 @@ class SVC implements Estimator, Learner
 
         $index = $this->model->predict($sampleWithOffset);
 
-        return $this->classes[$index] ?? throw new RuntimeException("Unknown class index {$index}.");
+        if (!isset($this->classes[$index])) {
+            throw new RuntimeException("Unknown class index: $index.");
+        }
+
+        return $this->classes[$index];
     }
 
     /**
