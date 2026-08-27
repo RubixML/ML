@@ -94,7 +94,7 @@ class Prior implements Strategy
         foreach ($this->counts as $class => $count) {
             $r -= $count;
 
-            if ($r <= 0) {
+            if ($r < 0) {
                 return $class;
             }
         }
