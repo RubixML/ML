@@ -189,6 +189,28 @@ class SVCTest extends TestCase
     /**
      * @test
      */
+    public function loadWithoutClassMap() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->estimator->save('svc.model');
+
+        if (file_exists('svc.model.classes.json')) {
+            unlink('svc.model.classes.json');
+        }
+
+        $this->expectException(RuntimeException::class);
+
+        (new SVC(1.0, new RBF(), true, 1e-3))->load('svc.model');
+    }
+
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
