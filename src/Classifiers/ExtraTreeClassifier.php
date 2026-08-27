@@ -262,9 +262,9 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         $entropy = 0.0;
 
         foreach ($counts as $count) {
-            $p = $count / $n;
+            $probability = $count / $n;
 
-            $entropy -= $p * log($p);
+            $entropy -= $probability * log($probability);
         }
 
         return $entropy;
