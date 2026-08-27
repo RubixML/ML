@@ -228,14 +228,17 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         $outcome = argmax($counts);
 
         $probabilities = [];
+        $entropy = 0.0;
 
         foreach ($counts as $class => $count) {
-            $probabilities[$class] = $count / $n;
+            $probability = $count / $n;
+
+            if ($probability > 0.0) {
+                $entropy -= $probability * log($probability);
+            }
+
+            $probabilities[$class] = $probability;
         }
-
-        $p = $counts[$outcome] / $n;
-
-        $entropy = -($p * log($p));
 
         return new Best($outcome, $probabilities, $entropy, $n);
     }
@@ -259,9 +262,9 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
         $entropy = 0.0;
 
         foreach ($counts as $count) {
-            $p = $count / $n;
+            $probability = $count / $n;
 
-            $entropy -= $p * log($p);
+            $entropy -= $probability * log($probability);
         }
 
         return $entropy;
