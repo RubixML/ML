@@ -4,6 +4,9 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
+use function log1p;
+use function exp;
+
 /**
  * Soft Plus
  *
@@ -54,7 +57,7 @@ class SoftPlus implements ActivationFunction
      */
     public function _activate(float $input) : float
     {
-        return log(1.0 + exp($input));
+        return log1p(exp($input));
     }
 
     /**

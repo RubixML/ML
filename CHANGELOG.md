@@ -2,7 +2,7 @@
 
 - 2.5.9
     - Symmetrize TSNE affinities matrix, fixes optimization
-    - Fix Prior strategy off-by-one
+    - Add numerical stability to SoftPlus activation function
 
 - 2.5.8
     - Optimize squaring operations
