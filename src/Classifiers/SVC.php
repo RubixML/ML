@@ -275,7 +275,7 @@ class SVC implements Estimator, Learner
 
         $this->model->save($path);
 
-        $classesPath = "$path.classes.json";
+        $classesPath = "{$path}.classes.json";
 
         $success = file_put_contents($classesPath, json_encode($this->classes), LOCK_EX);
 
@@ -292,9 +292,7 @@ class SVC implements Estimator, Learner
      */
     public function load(string $path) : void
     {
-        $this->model = new svmmodel($path);
-
-        $classesPath = "$path.classes.json";
+        $classesPath = "{$path}.classes.json";
 
         if (!is_file($classesPath) or !is_readable($classesPath)) {
             throw new RuntimeException("The class label map at {$classesPath} is"
@@ -314,6 +312,7 @@ class SVC implements Estimator, Learner
         }
 
         $this->classes = array_values($classes);
+        $this->model = new svmmodel($path);
     }
 
     /**
