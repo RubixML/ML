@@ -21,6 +21,9 @@
     - Add per-class smoothing to Gaussian Naive Bayes
     - You can now exclude certain categories from one-hot encoding
     
+- 2.5.10
+    - Added even more numerical stability to SoftPlus
+
 - 2.5.9
     - Symmetrize TSNE affinities matrix, fixes optimization
     - Add numerical stability to SoftPlus activation function
