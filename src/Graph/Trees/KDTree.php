@@ -206,7 +206,7 @@ class KDTree implements BinaryTree, Spatial
                 $radius = $distances[$k - 1] ?? INF;
 
                 foreach ($current->children() as $child) {
-                    if (!$visited->contains($child)) {
+                    if (!$visited->offsetExists($child)) {
                         if ($child instanceof Hypercube) {
                             $distance = $this->minDistance($sample, $child);
 
