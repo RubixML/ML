@@ -212,7 +212,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
             $iHat[] = $indices;
             $dHat[] = $distances;
 
-            $this->kdistances[] = end($distances) ?: INF;
+            $this->kdistances[] = $distances[0] ?? INF;
         }
 
         $this->lrds = array_map([$this, 'localReachabilityDensity'], $iHat, $dHat);
