@@ -44,7 +44,9 @@ class Euclidean implements Distance
         $distance = 0.0;
 
         foreach ($a as $i => $value) {
-            $distance += ($value - $b[$i]) ** 2;
+            $delta = $value - $b[$i];
+
+            $distance += $delta * $delta;
         }
 
         return sqrt($distance);

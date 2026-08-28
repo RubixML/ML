@@ -438,8 +438,9 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
-     * Compute the conditional probabilities from the distance matrix such that
-     * they approximately match the desired perplexity.
+     * Compute the joint probabilities from the distance matrix such that they
+     * approximately match the desired perplexity. The resulting matrix is
+     * symmetric and globally normalized (total sum equals 1).
      *
      * @param array<float[]> $distances
      * @return array<float[]>
@@ -460,7 +461,7 @@ class TSNE implements Transformer, Verbose
 
                 foreach ($row as $k => $distance) {
                     if ($i !== $k) {
-                        $affinity = exp(-$distance * $beta);
+                        $affinity = exp(-$distance ** 2 * $beta);
 
                         $candidate[] = $affinity;
                         $pSigma += $affinity;
@@ -476,8 +477,10 @@ class TSNE implements Transformer, Verbose
                 foreach ($candidate as $k => &$affinity) {
                     $affinity /= $pSigma;
 
-                    $distSigma += $row[$k] * $affinity;
+                    $distSigma += $row[$k] ** 2 * $affinity;
                 }
+
+                unset($affinity);
 
                 $entropy = log($pSigma) + $beta * $distSigma;
 
@@ -509,7 +512,27 @@ class TSNE implements Transformer, Verbose
             $affinities[] = $candidate;
         }
 
-        return $affinities;
+        $n = count($affinities);
+
+        if ($n === 0) {
+            return [];
+        }
+
+        $scale = 1.0 / (2.0 * $n);
+
+        $symmetric = [];
+
+        for ($i = 0; $i < $n; ++$i) {
+            $row = [];
+
+            for ($j = 0; $j < $n; ++$j) {
+                $row[] = ($affinities[$i][$j] + $affinities[$j][$i]) * $scale;
+            }
+
+            $symmetric[] = $row;
+        }
+
+        return $symmetric;
     }
 
     /**
@@ -522,13 +545,19 @@ class TSNE implements Transformer, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $q = $distances->divide($this->dofs)
-            ->add(1.0)
-            ->pow((1.0 + $this->dofs) / -2.0);
+        $base = $distances->square()
+            ->divide($this->dofs)
+            ->add(1.0);
 
-        $q = $q->divide($q->sum()->multiply(2.0)->clipLower(EPSILON));
+        $kernel = $base->pow((1.0 + $this->dofs) / -2.0);
 
-        $pqd = $p->subtract($q)->multiply($distances);
+        $weights = $base->pow(-1.0);
+
+        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
+
+        $q = $kernel->divide(max($norm, EPSILON));
+
+        $pqd = $p->subtract($q)->multiply($weights);
 
         $gradient = [];
 

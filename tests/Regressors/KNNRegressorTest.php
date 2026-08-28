@@ -168,6 +168,64 @@ class KNNRegressorTest extends TestCase
     /**
      * @test
      */
+    public function weightedPredictionAlignsLabelsAndWeights() : void
+    {
+        // Samples in a different input order than their ranking by proximity,
+        // so a distance-sorted weight table must be re-aligned against labels.
+        $this->estimator = new KNNRegressor(3, true);
+
+        $this->estimator->train(Labeled::quick(
+            [[1.0], [2.0], [3.0]],
+            [0.0, 10.0, 30.0]
+        ));
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([[2.0]]));
+
+        $this->assertEqualsWithDelta([12.5], $predictions, 1e-8);
+    }
+
+    /**
+     * @test
+     */
+    public function weightedPredictionAlignsLabelsAndWeightsAtBoundary() : void
+    {
+        $this->estimator = new KNNRegressor(3, true);
+
+        $this->estimator->train(Labeled::quick(
+            [[1.0], [5.0], [10.0]],
+            [0.0, 5.0, 100.0]
+        ));
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([[10.0]]));
+
+        $this->assertEqualsWithDelta(79.605263158, $predictions[0], 1e-8);
+    }
+
+    /**
+     * @test
+     */
+    public function weightedPredictionWithKLimit() : void
+    {
+        $this->estimator = new KNNRegressor(2, true);
+
+        $this->estimator->train(Labeled::quick(
+            [[1.0], [0.5], [3.0]],
+            [1.0, 2.0, 100.0]
+        ));
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([[0.0]]));
+
+        // Only the two nearest neighbors (labels 1 and 2) contribute; the
+        // far outlier (label 100) must be excluded by the k limit.
+        $expected = (1.0 * (1.0 / (1.0 + 1.0)) + 2.0 * (1.0 / (1.0 + 0.5)))
+            / ((1.0 / (1.0 + 1.0)) + (1.0 / (1.0 + 0.5)));
+
+        $this->assertEqualsWithDelta($expected, $predictions[0], 1e-8);
+    }
+
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);

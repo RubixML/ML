@@ -273,6 +273,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
                     [$mean, $variance] = Stats::meanVar($values);
 
+                    $delta = $n * ($oldMean - $mean);
+
                     $means[] = (($n * $mean)
                         + ($oldWeight * $oldMean))
                         / $weight;
@@ -280,7 +282,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                     $variances[] = ($oldWeight
                         * $oldVariance + ($n * $variance)
                         + ($oldWeight / ($n * $weight))
-                        * ($n * $oldMean - $n * $mean) ** 2)
+                        * ($delta * $delta))
                         / $weight;
                 }
             } else {
@@ -303,7 +305,11 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             $this->weights[$class] = $weight;
         }
 
-        $epsilon = max($this->smoothing * $maxVariance, CPU::epsilon());
+        if ($maxVariance === 0.0) {
+            $epsilon = max($this->smoothing, CPU::epsilon());
+        } else {
+            $epsilon = max($this->smoothing * $maxVariance, CPU::epsilon());
+        }
 
         foreach ($this->variances as &$variances) {
             foreach ($variances as &$variance) {
@@ -414,7 +420,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 $variance = $variances[$column];
 
                 $pdf = -0.5 * log(TWO_PI * $variance);
-                $pdf -= 0.5 * (($value - $mean) ** 2) / $variance;
+                $delta = $value - $mean;
+                $pdf -= 0.5 * ($delta * $delta) / $variance;
 
                 $likelihood += $pdf;
             }

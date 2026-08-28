@@ -12,8 +12,9 @@ namespace Rubix\ML
     use function is_iterable;
     use function array_search;
     use function array_map;
-    use function array_sum;
     use function exp;
+    use function log;
+    use function max;
     use function trigger_error;
 
     /**
@@ -68,7 +69,19 @@ namespace Rubix\ML
      */
     function logsumexp(array $values) : float
     {
-        return log(array_sum(array_map('exp', $values)));
+        $max = max($values);
+
+        if ($max === -INF or $max === INF) {
+            return $max;
+        }
+
+        $sum = 0.0;
+
+        foreach ($values as $value) {
+            $sum += exp($value - $max);
+        }
+
+        return $max + log($sum);
     }
 
     /**

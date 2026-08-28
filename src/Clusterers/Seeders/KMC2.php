@@ -7,6 +7,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
 
@@ -69,6 +70,11 @@ class KMC2 implements Seeder
     public function seed(Dataset $dataset, int $k) : array
     {
         DatasetIsNotEmpty::with($dataset)->check();
+
+        if ($k > $dataset->numSamples()) {
+            throw new RuntimeException("Cannot seed $k clusters with only "
+                . $dataset->numSamples() . ' samples.');
+        }
 
         $centroids = $dataset->randomSubset(1)->samples();
 

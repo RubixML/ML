@@ -163,4 +163,37 @@ class HuberLossTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @test
+     */
+    public function differentiateMatchesNumericGradient() : void
+    {
+        $costFn = new HuberLoss(0.5);
+
+        $output = Matrix::quick([
+            [0.1, 0.5, 1.0],
+            [2.0, 5.0, 10.0],
+        ]);
+
+        $target = Matrix::quick([
+            [1.0, 1.0, 1.0],
+            [1.0, 1.0, 1.0],
+        ]);
+
+        $epsilon = 1e-6;
+
+        $numeric = [];
+
+        foreach ($output->asArray() as $i => $row) {
+            foreach ($row as $j => $v) {
+                $plus = $costFn->_compute($target[$i][$j] - ($v + $epsilon));
+                $minus = $costFn->_compute($target[$i][$j] - ($v - $epsilon));
+
+                $numeric[$i][$j] = ($plus - $minus) / (2.0 * $epsilon);
+            }
+        }
+
+        $this->assertEqualsWithDelta($numeric, $costFn->differentiate($output, $target)->asArray(), 1e-8);
+    }
 }

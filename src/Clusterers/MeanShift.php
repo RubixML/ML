@@ -341,14 +341,18 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             foreach ($centroids as $i => &$centroidA) {
                 [$samples, $indices, $distances] = $this->tree->range($centroidA, $this->radius);
 
-                $means = array_map([Stats::class, 'mean'], array_transpose($samples));
+                if (!empty($samples)) {
+                    $weights = [];
 
-                $mu2 = Stats::mean($distances) ** 2;
+                    foreach ($distances as $distance) {
+                        $weights[] = exp(-($distance ** 2) / $this->delta);
+                    }
 
-                $weight = exp(-$mu2 / $this->delta);
+                    $weightedMeanFunc = function (array $column) use ($weights) : float {
+                        return Stats::weightedMean($column, $weights);
+                    };
 
-                foreach ($centroidA as $column => &$mean) {
-                    $mean = ($weight * $means[$column]) / $weight;
+                    $centroidA = array_map($weightedMeanFunc, array_transpose($samples));
                 }
 
                 foreach ($centroids as $j => $centroidB) {

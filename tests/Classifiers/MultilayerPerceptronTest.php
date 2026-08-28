@@ -19,6 +19,8 @@ use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Noise;
 use Rubix\ML\NeuralNet\Layers\Dropout;
+use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
+use Rubix\ML\NeuralNet\Layers\Swish;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
@@ -97,10 +99,10 @@ class MultilayerPerceptronTest extends TestCase
             new Activation(new LeakyReLU(0.1)),
             new Dropout(0.1),
             new Dense(16),
-            new Activation(new LeakyReLU(0.1)),
+            new Activation(new SoftPlus()),
             new Noise(1e-5),
             new Dense(8),
-            new Activation(new LeakyReLU(0.1)),
+            new Swish(),
         ], 32, new Adam(0.001), 1e-4, 100, 1e-3, 5, 0.1, new CrossEntropy(), new FBeta());
 
         $this->metric = new FBeta();
@@ -168,10 +170,10 @@ class MultilayerPerceptronTest extends TestCase
                 new Activation(new LeakyReLU(0.1)),
                 new Dropout(0.1),
                 new Dense(16),
-                new Activation(new LeakyReLU(0.1)),
+                new Activation(new SoftPlus()),
                 new Noise(1e-5),
                 new Dense(8),
-                new Activation(new LeakyReLU(0.1)),
+                new Swish(),
             ],
             'batch size' => 32,
             'optimizer' => new Adam(0.001),

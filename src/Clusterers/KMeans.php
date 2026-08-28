@@ -28,11 +28,13 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function Rubix\ML\argmin;
 use function count;
 use function is_nan;
 use function array_fill;
 use function array_map;
 use function get_object_vars;
+use function min;
 
 use const Rubix\ML\EPSILON;
 
@@ -299,10 +301,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
         $this->centroids = $seeds;
 
-        $sizes = array_fill(0, $this->k, 0);
-        $sizes[0] = $dataset->numSamples();
-
-        $this->sizes = $sizes;
+        $this->sizes = array_fill(0, $this->k, 0);
 
         $this->partial($dataset);
     }
@@ -330,7 +329,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $this->logger->info("Training $this");
         }
 
-        $labels = array_fill(0, $dataset->numSamples(), 0);
+        $labels = array_map([$this, 'predictSample'], $dataset->samples());
+
+        foreach ($labels as $cluster) {
+            ++$this->sizes[$cluster];
+        }
 
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
@@ -345,7 +348,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $loss = 0.0;
 
             foreach ($batches as $i => &$batch) {
-                $assignments = array_map([$this, 'predictSample'], $batch->samples());
+                $samples = $batch->samples();
+
+                $distances = array_map([$this, 'centroidDistances'], $samples);
+
+                $assignments = array_map('Rubix\ML\argmin', $distances);
 
                 $labels = $batch->labels();
 
@@ -360,9 +367,9 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                     }
                 }
 
-                $batch = Labeled::quick($batch->samples(), $labels);
+                $batch = Labeled::quick($samples, $labels);
 
-                $loss += $this->inertia($batch->samples(), $labels);
+                $loss += $this->inertia($distances);
 
                 foreach ($batch->stratifyByLabel() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
@@ -459,19 +466,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      */
     public function predictSample(array $sample) : int
     {
-        $bestDistance = INF;
-        $bestCluster = -1;
-
-        foreach ($this->centroids as $cluster => $centroid) {
-            $distance = $this->kernel->compute($sample, $centroid);
-
-            if ($distance < $bestDistance) {
-                $bestDistance = $distance;
-                $bestCluster = $cluster;
-            }
-        }
-
-        return (int) $bestCluster;
+        return argmin($this->centroidDistances($sample));
     }
 
     /**
@@ -522,21 +517,37 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     }
 
     /**
+     * Compute the distance from a sample to each centroid.
+     *
+     * @internal
+     *
+     * @param list<int|float> $sample
+     * @return list<float>
+     */
+    protected function centroidDistances(array $sample) : array
+    {
+        $distances = [];
+
+        foreach ($this->centroids as $centroid) {
+            $distances[] = $this->kernel->compute($sample, $centroid);
+        }
+
+        return $distances;
+    }
+
+    /**
      * Calculate the average sum of distances between all samples and their closest
      * centroid.
      *
-     * @param list<list<int|float>> $samples
-     * @param list<int> $labels
+     * @param list<list<float>> $distances
      * @return float
      */
-    protected function inertia(array $samples, array $labels) : float
+    protected function inertia(array $distances) : float
     {
         $inertia = 0.0;
 
-        foreach ($samples as $i => $sample) {
-            $centroid = $this->centroids[$labels[$i]];
-
-            $inertia += $this->kernel->compute($sample, $centroid);
+        foreach ($distances as $row) {
+            $inertia += min($row);
         }
 
         return $inertia;

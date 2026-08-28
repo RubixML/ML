@@ -5,9 +5,15 @@ namespace Rubix\ML\Tests\Extractors;
 use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Extractors\Exporter;
 use Rubix\ML\Extractors\Extractor;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use Traversable;
+
+use function sys_get_temp_dir;
+use function tempnam;
+use function file_put_contents;
+use function unlink;
 
 /**
  * @group Extractors
@@ -81,5 +87,44 @@ class CSVTest extends TestCase
         $this->extractor->export($records);
 
         $this->assertFileExists('tests/test.csv');
+    }
+
+    /**
+     * @test
+     */
+    public function extractSkipsBlankLines() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'csv_');
+
+        file_put_contents($path, "attitude,texture\nnice,furry\n\nmean,rough\n\n\n");
+
+        $extractor = new CSV($path, true, ',', '"');
+
+        $expected = [
+            ['attitude' => 'nice', 'texture' => 'furry'],
+            ['attitude' => 'mean', 'texture' => 'rough'],
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($extractor, false));
+
+        unlink($path);
+    }
+
+    /**
+     * @test
+     */
+    public function extractMalformedRecord() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'csv_');
+
+        file_put_contents($path, "attitude,texture,sociability\nnice,furry\n");
+
+        $extractor = new CSV($path, true, ',', '"');
+
+        $this->expectException(RuntimeException::class);
+
+        iterator_to_array($extractor, false);
+
+        unlink($path);
     }
 }

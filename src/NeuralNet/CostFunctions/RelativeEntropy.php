@@ -52,8 +52,7 @@ class RelativeEntropy implements ClassificationLoss
         $target = $target->clip(EPSILON, 1.0);
         $output = $output->clip(EPSILON, 1.0);
 
-        return $output->subtract($target)
-            ->divide($output);
+        return $target->negate()->divide($output);
     }
 
     /**

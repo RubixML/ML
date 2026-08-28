@@ -11,7 +11,11 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Graph\Nodes\Split;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -100,11 +104,41 @@ class ExtraTreeRegressorTest extends TestCase
     /**
      * @test
      */
-    public function badMaxDepth() : void
+    public function badMaxHeight() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new ExtraTreeRegressor(0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxLeafSize() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeRegressor(30, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMinPurityIncrease() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeRegressor(30, 3, -1.0);
+    }
+
+    /**
+     * @test
+     */
+    public function badMaxFeatures() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ExtraTreeRegressor(30, 3, 1e-7, 0);
     }
 
     /**
@@ -197,5 +231,95 @@ class ExtraTreeRegressorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * @test
+     */
+    public function trainHeightBalance() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $this->assertGreaterThanOrEqual(2, $this->estimator->height());
+
+        $this->assertIsInt($this->estimator->balance());
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                $this->assertNotNull($node->left());
+                $this->assertNotNull($node->right());
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5, 0.5]], ['ok']));
+    }
+
+    /**
+     * @test
+     */
+    public function predictIncompatible() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->predict(Unlabeled::quick([[0.5, 0.5, 0.5]]));
+    }
+
+    /**
+     * Train on two distinct constant feature groups with a constant label, so that
+     * the root split produces two non-empty but pure subsets that must be
+     * terminated by the purity guard rather than further splitting.
+     *
+     * @test
+     */
+    public function trainPureChildren() : void
+    {
+        $groupA = (new Blob([32.0, 32.0, 0.0, 0.0], 0.0))->generate(self::TRAIN_SIZE / 2);
+
+        $groupB = (new Blob([128.0, 128.0, 128.0, 128.0], 0.0))->generate(self::TRAIN_SIZE / 2);
+
+        $training = Labeled::quick(
+            array_merge($groupA->samples(), $groupB->samples()),
+            array_fill(0, self::TRAIN_SIZE, 42.0)
+        );
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $predictions = $this->estimator->predict($training);
+
+        foreach ($predictions as $prediction) {
+            $this->assertEqualsWithDelta(42.0, $prediction, 1e-12);
+        }
+
+        $splitCount = 0;
+
+        foreach ($this->estimator as $node) {
+            if ($node instanceof Split) {
+                ++$splitCount;
+
+                $this->assertNotSame($node->left(), $node->right());
+            } elseif ($node instanceof Outcome) {
+                $this->assertEqualsWithDelta(0.0, $node->impurity(), 1e-9);
+            }
+        }
+
+        $this->assertSame(1, $splitCount);
     }
 }
