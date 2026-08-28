@@ -145,6 +145,50 @@ class GaussianNBTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    public function testPartialWithAbsentClassesPreservesSmoothing() : void
+    {
+        $estimator = new GaussianNB(smoothing: 1e-6);
+
+        $training = (new Labeled(
+            samples: (new Blob(center: [10.0, 10.0], stdDev: 4.0))->generate(64)->samples(),
+            labels: array_fill(0, 64, 'red')
+        ))->merge(new Labeled(
+            samples: (new Blob(center: [40.0, 40.0], stdDev: 8.0))->generate(64)->samples(),
+            labels: array_fill(0, 64, 'green')
+        ));
+
+        $estimator->train($training);
+
+        $baseline = [
+            'means' => $estimator->means(),
+            'variances' => $estimator->variances(),
+        ];
+
+        $batch = new Labeled(
+            samples: (new Blob(center: [80.0, 10.0], stdDev: 6.0))->generate(32)->samples(),
+            labels: array_fill(0, 32, 'blue')
+        );
+
+        $estimator->partial($batch);
+
+        $firstUpdate = $estimator->variances();
+
+        for ($i = 0; $i < 5; ++$i) {
+            $estimator->partial($batch);
+        }
+
+        $this->assertEquals($baseline['means']['red'], $estimator->means()['red']);
+        $this->assertEquals($baseline['means']['green'], $estimator->means()['green']);
+        $this->assertEquals($baseline['variances']['red'], $estimator->variances()['red']);
+        $this->assertEquals($baseline['variances']['green'], $estimator->variances()['green']);
+
+        $this->assertEqualsWithDelta(
+            $firstUpdate['blue'],
+            $estimator->variances()['blue'],
+            1e-9
+        );
+    }
+
     public function testTrainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
