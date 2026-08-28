@@ -26,6 +26,7 @@ use function is_file;
 use function is_dir;
 use function is_readable;
 use function is_writable;
+use function count;
 use function file_get_contents;
 use function file_put_contents;
 use function tempnam;
@@ -378,6 +379,13 @@ class SVC implements Estimator, Learner
         $classes = array_values($classes);
 
         $model = new svmmodel($path);
+
+        $nrClass = $model->getNrClass();
+
+        if (count($classes) !== $nrClass) {
+            throw new RuntimeException("The class label map at {$classesPath}"
+                . ' does not match the class count of the model.');
+        }
 
         $this->classes = $classes;
         $this->model = $model;

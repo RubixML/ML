@@ -5,6 +5,7 @@
     - Add numerical stability to SoftPlus activation function
     - Fix Extra Tree leaf node entropy
     - Fix SVC save/load dropping the class label map
+    - Validate the SVC class label map class count against the model on load
     - Add numerical stability to BM25 Transformer
 
 - 2.5.8

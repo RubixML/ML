@@ -354,6 +354,74 @@ class SVCTest extends TestCase
     /**
      * @test
      */
+    public function loadSidecarWithTooManyClassesThrows() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->estimator->save('svc.model');
+
+        file_put_contents('svc.model.classes.json', '["male", "female", "extra"]');
+
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        try {
+            $estimator->load('svc.model');
+
+            $this->fail('Expected the load of a mismatched class map to throw.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('class label map', $exception->getMessage());
+        }
+
+        $this->assertFalse($estimator->trained());
+
+        $this->estimator->save('svc.model');
+
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $estimator->load('svc.model');
+
+        $predictions = $estimator->predict(Unlabeled::quick($dataset->samples()));
+
+        foreach ($predictions as $prediction) {
+            $this->assertContains($prediction, ['male', 'female']);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function loadSidecarWithTooFewClassesThrows() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->estimator->save('svc.model');
+
+        file_put_contents('svc.model.classes.json', '["male"]');
+
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        try {
+            $estimator->load('svc.model');
+
+            $this->fail('Expected the load of a mismatched class map to throw.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('class label map', $exception->getMessage());
+        }
+
+        $this->assertFalse($estimator->trained());
+    }
+
+    /**
+     * @test
+     */
     public function failedSaveLeavesExistingPairUntouched() : void
     {
         if (function_exists('posix_geteuid') and posix_geteuid() === 0) {
