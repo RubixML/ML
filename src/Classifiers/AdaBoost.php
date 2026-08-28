@@ -68,6 +68,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected const MIN_SUBSAMPLE = 2;
 
     /**
+     * The maximum total weight sum before renormalizing the sample weights.
+     *
+     * @var float
+     */
+    protected const MAX_WEIGHT_SUM = 1e6;
+
+    /**
      * The base classifier to be boosted.
      *
      * @var Learner
@@ -310,6 +317,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $weights = array_fill(0, $m, 1.0 / $m);
 
+        $totalWeight = 1.0;
+
         $this->classes = array_fill_keys($classes, 0.0);
         $this->featureCount = $n;
 
@@ -344,9 +353,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 break;
             }
 
-            $totalWeight = array_sum($weights) ?: EPSILON;
-
-            $loss /= $totalWeight;
+            $loss /= $totalWeight ?: EPSILON;
 
             $lossChange = abs($prevLoss - $loss);
 
@@ -396,17 +403,28 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             if ($epoch < $this->epochs) {
                 $step = exp($influence);
 
+                $total = 0.0;
+
                 foreach ($predictions as $i => $prediction) {
+                    $weight = $weights[$i];
+
                     if ($prediction != $labels[$i]) {
-                        $weights[$i] *= $step;
+                        $weight *= $step;
+                        $weights[$i] = $weight;
                     }
+
+                    $total += $weight;
                 }
 
-                $total = array_sum($weights) ?: EPSILON;
+                if ($total > self::MAX_WEIGHT_SUM) {
+                    foreach ($weights as &$weight) {
+                        $weight /= $total;
+                    }
 
-                foreach ($weights as &$weight) {
-                    $weight /= $total;
+                    $total = 1.0;
                 }
+
+                $totalWeight = $total ?: EPSILON;
             }
 
             $prevLoss = $loss;
