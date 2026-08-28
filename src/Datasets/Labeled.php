@@ -409,7 +409,15 @@ class Labeled extends Dataset
 
         shuffle($order);
 
-        array_multisort($order, $this->samples, $this->labels);
+        $samples = $labels = [];
+
+        foreach ($order as $i) {
+            $samples[] = $this->samples[$i];
+            $labels[] = $this->labels[$i];
+        }
+
+        $this->samples = $samples;
+        $this->labels = $labels;
 
         return $this;
     }

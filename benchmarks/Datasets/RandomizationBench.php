@@ -44,6 +44,16 @@ class RandomizationBench
      * @Iterations(5)
      * @OutputTimeUnit("milliseconds", precision=3)
      */
+    public function randomize() : void
+    {
+        $this->dataset->randomize();
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
     public function randomSubset() : void
     {
         $this->dataset->randomSubset(self::SUBSAMPLE_SIZE);

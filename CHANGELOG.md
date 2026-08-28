@@ -19,6 +19,7 @@
     - Add disk-based neural network snapshotting
     - Update Amp Backend to Amp version 2.0
     - Add per-class smoothing to Gaussian Naive Bayes
+    - You can now exclude certain categories from one-hot encoding
     
 - 2.5.9
     - Symmetrize TSNE affinities matrix, fixes optimization
