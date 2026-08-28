@@ -102,6 +102,19 @@ class SVCTest extends TestCase
         if (file_exists('svc.model.classes.json')) {
             unlink('svc.model.classes.json');
         }
+
+        if (is_dir('svc_fail_dir')) {
+            chmod('svc_fail_dir', 0755);
+
+            $files = glob('svc_fail_dir/*');
+
+            foreach ($files === false ? [] : $files as $file) {
+                chmod($file, 0644);
+                unlink($file);
+            }
+
+            rmdir('svc_fail_dir');
+        }
     }
 
     /**
@@ -184,6 +197,119 @@ class SVCTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function saveOverwritesPreviousPair() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->estimator->save('svc.model');
+
+        $otherGenerator = new Agglomerate([
+            'cat' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
+            'dog' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
+        ], [0.45, 0.55]);
+
+        $otherDataset = $otherGenerator->generate(self::TRAIN_SIZE);
+
+        $otherDataset->apply(new ZScaleStandardizer());
+
+        $otherEstimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $otherEstimator->train($otherDataset);
+
+        $otherEstimator->save('svc.model');
+
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $estimator->load('svc.model');
+
+        $predictions = $estimator->predict($otherDataset);
+
+        foreach ($predictions as $prediction) {
+            $this->assertContains($prediction, ['cat', 'dog']);
+        }
+
+        $data = file_get_contents('svc.model.classes.json');
+
+        $this->assertNotSame(false, $data);
+
+        $this->assertSame(['cat', 'dog'], json_decode($data, true));
+    }
+
+    /**
+     * @test
+     */
+    public function failedSaveLeavesExistingPairUntouched() : void
+    {
+        if (function_exists('posix_geteuid') and posix_geteuid() === 0) {
+            $this->markTestSkipped('Permission failures cannot be simulated as root.');
+        }
+
+        $dir = 'svc_fail_dir';
+
+        if (!is_dir($dir) and !mkdir($dir) and !is_dir($dir)) {
+            $this->fail('Could not create the fixture directory.');
+        }
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->estimator->save("$dir/svc.model");
+
+        $before = (new SVC(1.0, new RBF(), true, 1e-3));
+
+        $before->load("$dir/svc.model");
+
+        $beforePredictions = $before->predict(Unlabeled::quick($dataset->samples()));
+
+        $otherGenerator = new Agglomerate([
+            'cat' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
+            'dog' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
+        ], [0.45, 0.55]);
+
+        $otherDataset = $otherGenerator->generate(self::TRAIN_SIZE);
+
+        $otherDataset->apply(new ZScaleStandardizer());
+
+        $otherEstimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $otherEstimator->train($otherDataset);
+
+        chmod($dir, 0555);
+
+        try {
+            $otherEstimator->save("$dir/svc.model");
+
+            $this->fail('Expected a failed save to throw.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('writable', strtolower($exception->getMessage()));
+        } finally {
+            chmod($dir, 0755);
+        }
+
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $estimator->load("$dir/svc.model");
+
+        $this->assertEquals(
+            $beforePredictions,
+            $estimator->predict(Unlabeled::quick($dataset->samples()))
+        );
+
+        $leftovers = glob("$dir/tmp*");
+
+        $this->assertCount(0, $leftovers === false ? [] : $leftovers);
     }
 
     /**

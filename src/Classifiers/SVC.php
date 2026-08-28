@@ -21,12 +21,18 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_file;
+use function is_dir;
 use function is_readable;
 use function is_array;
+use function is_writable;
 use function json_decode;
 use function json_encode;
 use function file_get_contents;
 use function file_put_contents;
+use function tempnam;
+use function rename;
+use function unlink;
+use function dirname;
 use function array_values;
 
 use svmmodel;
@@ -264,6 +270,10 @@ class SVC implements Estimator, Learner
     /**
      * Save the model data to the filesystem.
      *
+     * The model and its class label map are written to temporary files in the same
+     * directory as the target and atomically swapped into place via rename() so
+     * that a failure or crash can never leave a mismatched pair behind.
+     *
      * @param string $path
      * @throws RuntimeException
      */
@@ -273,14 +283,65 @@ class SVC implements Estimator, Learner
             throw new RuntimeException('Learner must be trained before saving.');
         }
 
-        $this->model->save($path);
+        $dir = dirname($path);
+
+        if (!is_dir($dir) or !is_writable($dir)) {
+            throw new RuntimeException("The directory {$dir} does not exist or"
+                . ' is not writable.');
+        }
 
         $classesPath = "{$path}.classes.json";
 
-        $success = file_put_contents($classesPath, json_encode($this->classes), LOCK_EX);
+        $temporary = [];
 
-        if (!$success) {
-            throw new RuntimeException("Could not save the class map to {$classesPath}.");
+        try {
+            $tmpModel = tempnam($dir, 'svcmodel');
+
+            if ($tmpModel === false) {
+                throw new RuntimeException('Could not create a temporary file'
+                    . " in {$dir}.");
+            }
+
+            $temporary[] = $tmpModel;
+
+            $saved = $this->model->save($tmpModel);
+
+            if ($saved !== true) {
+                throw new RuntimeException("Could not save the model to {$path}.");
+            }
+
+            $tmpClasses = tempnam($dir, 'svclasses');
+
+            if ($tmpClasses === false) {
+                throw new RuntimeException('Could not create a temporary file'
+                    . " in {$dir}.");
+            }
+
+            $temporary[] = $tmpClasses;
+
+            $data = json_encode($this->classes);
+
+            if ($data === false or file_put_contents($tmpClasses, $data, LOCK_EX) === false) {
+                throw new RuntimeException("Could not save the class map to {$classesPath}.");
+            }
+
+            if (!rename($tmpModel, $path)) {
+                throw new RuntimeException("Could not finalize the model at {$path}.");
+            }
+
+            $temporary = array_diff($temporary, [$tmpModel]);
+
+            if (!rename($tmpClasses, $classesPath)) {
+                throw new RuntimeException("Could not finalize the class map at {$classesPath}.");
+            }
+
+            $temporary = array_diff($temporary, [$tmpClasses]);
+        } finally {
+            foreach ($temporary as $tmp) {
+                if (is_file($tmp)) {
+                    unlink($tmp);
+                }
+            }
         }
     }
 
