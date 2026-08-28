@@ -124,6 +124,26 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     protected int $n = 0;
 
     /**
+     * Return the index of the equi-width bin that a value falls into.
+     *
+     * @param float $min
+     * @param float $width
+     * @param int $bins
+     * @param float $value
+     * @return int
+     */
+    protected static function binIndex(float $min, float $width, int $bins, float $value) : int
+    {
+        if ($width <= 0.0) {
+            return 0;
+        }
+
+        $index = (int) (($value - $min) / $width);
+
+        return $index < 0 ? 0 : ($index >= $bins ? $bins - 1 : $index);
+    }
+
+    /**
      * @param float $contamination
      * @param int $estimators
      * @param int|null $bins
@@ -246,7 +266,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             $counts = array_fill(0, $this->bins, 0);
 
             foreach ($values as $value) {
-                ++$counts[$this->binIndex($min, $width, $this->bins, $value)];
+                $index = self::binIndex($min, $width, $this->bins, $value);
+
+                ++$counts[$index];
             }
 
             $this->histograms[] = [$min, $width, $counts];
@@ -287,7 +309,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             [$min, $width, $counts] = $this->histograms[$i];
 
             foreach ($values as $value) {
-                ++$counts[$this->binIndex($min, $width, count($counts), $value)];
+                $index = self::binIndex($min, $width, count($counts), $value);
+
+                ++$counts[$index];
             }
 
             $this->histograms[$i] = [$min, $width, $counts];
@@ -343,26 +367,6 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     }
 
     /**
-     * Return the index of the equi-width bin that a value falls into.
-     *
-     * @param float $min
-     * @param float $width
-     * @param int $bins
-     * @param float $value
-     * @return int
-     */
-    protected function binIndex(float $min, float $width, int $bins, float $value) : int
-    {
-        if ($width <= 0.0) {
-            return 0;
-        }
-
-        $index = (int) (($value - $min) / $width);
-
-        return $index < 0 ? 0 : ($index >= $bins ? $bins - 1 : $index);
-    }
-
-    /**
      * Estimate the probability density function of each 1-dimensional projection using the histograms
      * created during training.
      *
@@ -379,7 +383,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             [$min, $width, $counts] = $this->histograms[$i];
 
             foreach ($values as $j => $value) {
-                $count = $counts[$this->binIndex($min, $width, count($counts), $value)];
+                $index = self::binIndex($min, $width, count($counts), $value);
+
+                $count = $counts[$index];
 
                 $densities[$j] += $count > 0
                     ? -log($count / $this->n)
