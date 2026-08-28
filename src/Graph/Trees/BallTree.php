@@ -191,7 +191,7 @@ class BallTree implements BinaryTree, Spatial
                 $radius = $distances[$k - 1] ?? INF;
 
                 foreach ($current->children() as $child) {
-                    if (!$visited->contains($child)) {
+                    if (!$visited->offsetExists($child)) {
                         if ($child instanceof Hypersphere) {
                             $distance = $this->kernel->compute($sample, $child->center());
 
