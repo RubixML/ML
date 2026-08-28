@@ -103,7 +103,9 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
             if ($type->isCategorical()) {
                 $values = $dataset->feature($column);
 
-                $values = array_diff($values, $this->excluded);
+                if ($this->excluded) {
+                    $values = array_diff($values, $this->excluded);
+                }
 
                 $categories = array_values(array_unique($values));
 
