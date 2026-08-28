@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Helpers;
 
 use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\JSONException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,6 +37,27 @@ class JSONTest extends TestCase
         $expected = '{"package":"rubix\/ml"}';
 
         $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function encodeInvalidUTF8() : void
+    {
+        $this->expectException(JSONException::class);
+        $this->expectExceptionMessage('Malformed UTF-8 characters, check encoding.');
+
+        JSON::encode(['class' => "caf\xE9"]);
+    }
+
+    /**
+     * @test
+     */
+    public function decodeNonArrayJson() : void
+    {
+        $this->expectException(JSONException::class);
+
+        JSON::decode('42');
     }
 
     /**

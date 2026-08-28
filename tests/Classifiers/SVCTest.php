@@ -16,6 +16,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\JSONException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -247,6 +248,112 @@ class SVCTest extends TestCase
     /**
      * @test
      */
+    public function saveWithInvalidUTF8LabelThrewBeforeWriting() : void
+    {
+        $badLabel = "caf\xE9";
+
+        $samples = [
+            [1.0, 2.0, 3.0],
+            [2.0, 3.0, 4.0],
+            [3.0, 4.0, 5.0],
+            [4.0, 5.0, 6.0],
+        ];
+
+        $labels = [
+            'ok',
+            'ok',
+            $badLabel,
+            $badLabel,
+        ];
+
+        $dataset = Labeled::quick($samples, $labels);
+
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $estimator->train($dataset);
+
+        $path = 'svc_invalid_utf8.model';
+        $sidecar = "$path.classes.json";
+
+        $this->assertFileDoesNotExist($path);
+        $this->assertFileDoesNotExist($sidecar);
+
+        $this->expectException(JSONException::class);
+
+        $estimator->save($path);
+
+        $this->assertFileDoesNotExist($path);
+        $this->assertFileDoesNotExist($sidecar);
+    }
+
+    /**
+     * @test
+     */
+    public function saveFailedWithInvalidUTF8DidNotClobberExistingPair() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->estimator->save('svc.model');
+
+        $validSidecar = file_get_contents('svc.model.classes.json');
+
+        $this->assertNotSame(false, $validSidecar);
+
+        $badLabel = "caf\xE9";
+
+        $badDataset = Labeled::quick(
+            [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0], [4.0, 5.0, 6.0]],
+            ['ok', 'ok', $badLabel, $badLabel]
+        );
+
+        $badEstimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $badEstimator->train($badDataset);
+
+        try {
+            $badEstimator->save('svc.model');
+
+            $this->fail('Expected saving a model with invalid UTF-8 labels to throw.');
+        } catch (JSONException $exception) {
+            $this->assertStringContainsString('UTF-8', $exception->getMessage());
+        }
+
+        $this->assertSame($validSidecar, file_get_contents('svc.model.classes.json'));
+
+        $estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $estimator->load('svc.model');
+
+        $predictions = $estimator->predict($dataset);
+
+        foreach ($predictions as $prediction) {
+            $this->assertContains($prediction, ['male', 'female']);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function loadEmptySidecarThrew() : void
+    {
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $this->estimator->save('svc.model');
+
+        file_put_contents('svc.model.classes.json', '');
+
+        $this->expectException(JSONException::class);
+
+        (new SVC(1.0, new RBF(), true, 1e-3))->load('svc.model');
+    }
+
+    /**
+     * @test
+     */
     public function failedSaveLeavesExistingPairUntouched() : void
     {
         if (function_exists('posix_geteuid') and posix_geteuid() === 0) {
@@ -345,8 +452,6 @@ class SVCTest extends TestCase
 
         $this->estimator->train($dataset);
 
-        $this->estimator->save('svc.model');
-
         $otherGenerator = new Agglomerate([
             'cat' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
             'dog' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
@@ -366,7 +471,11 @@ class SVCTest extends TestCase
             $this->assertContains($prediction, ['cat', 'dog']);
         }
 
-        unlink('svc.model');
+        $otherEstimator->save('svc.model');
+
+        if (file_exists('svc.model')) {
+            unlink('svc.model');
+        }
 
         try {
             $otherEstimator->load('svc.model');
