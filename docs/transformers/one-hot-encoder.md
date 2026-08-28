@@ -8,9 +8,9 @@ The One Hot Encoder takes a categorical feature column and produces an n-dimensi
 **Data Type Compatibility:** Categorical
 
 ## Parameters
-| # | Name | Default | Type           | Description |
-|---|------|---------|----------------|-------------|
-| 1 | drop | []      | array\|string | The list of categories to drop (ignore) during categorization |
+| # | Name | Default | Type | Description |
+|---|------|---------|------|-------------|
+| 1 | excluded | [] | array | The list of categories to drop (ignore) during one-hot encoding. |
 
 ## Example
 ```php
