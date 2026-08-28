@@ -311,8 +311,12 @@ class SVC implements Estimator, Learner
             throw new RuntimeException("The class label map at {$classesPath} is malformed.");
         }
 
-        $this->classes = array_values($classes);
-        $this->model = new svmmodel($path);
+        $classes = array_values($classes);
+
+        $model = new svmmodel($path);
+
+        $this->classes = $classes;
+        $this->model = $model;
     }
 
     /**

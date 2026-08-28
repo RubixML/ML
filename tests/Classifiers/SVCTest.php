@@ -211,6 +211,57 @@ class SVCTest extends TestCase
     /**
      * @test
      */
+    public function loadFailureLeavesEstimatorUntouched() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->estimator->save('svc.model');
+
+        $otherGenerator = new Agglomerate([
+            'cat' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
+            'dog' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
+        ], [0.45, 0.55]);
+
+        $otherDataset = $otherGenerator->generate(self::TRAIN_SIZE);
+
+        $otherDataset->apply(new ZScaleStandardizer());
+
+        $otherEstimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $otherEstimator->train($otherDataset);
+
+        $before = $otherEstimator->predict($otherDataset);
+
+        foreach ($before as $prediction) {
+            $this->assertContains($prediction, ['cat', 'dog']);
+        }
+
+        unlink('svc.model');
+
+        try {
+            $otherEstimator->load('svc.model');
+
+            $this->fail('Expected the load of a missing model to throw.');
+        } catch (\Throwable $exception) {
+            $this->assertInstanceOf(\svmexception::class, $exception);
+        }
+
+        $this->assertTrue($otherEstimator->trained());
+
+        foreach ($otherEstimator->predict($otherDataset) as $prediction) {
+            $this->assertContains($prediction, ['cat', 'dog']);
+        }
+
+        $this->assertEquals($before, $otherEstimator->predict($otherDataset));
+    }
+
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
