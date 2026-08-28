@@ -53,7 +53,15 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
      */
     public function __construct(array $excluded = [])
     {
-        $this->excluded = $excluded;
+        foreach ($excluded as $category) {
+            if (!is_string($category)) {
+                throw new \Rubix\ML\Exceptions\InvalidArgumentException(
+                    'Excluded category must be a string, ' . gettype($category) . ' found.'
+                );
+            }
+        }
+
+        $this->excluded = array_values($excluded);
     }
 
     /**
