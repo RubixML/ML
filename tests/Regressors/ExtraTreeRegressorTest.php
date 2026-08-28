@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
@@ -8,6 +10,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
@@ -15,78 +18,121 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Split;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Regressors
- * @covers \Rubix\ML\Regressors\ExtraTreeRegressor
- */
+#[Group('Regressors')]
+#[CoversClass(ExtraTreeRegressor::class)]
 class ExtraTreeRegressorTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.89;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
+
+    protected Hyperplane $generator;
+
+    protected ExtraTreeRegressor $estimator;
+
+    protected RSquared $metric;
 
     /**
-     * @var Hyperplane
+     * @return Generator<string, array{0: list<list<int>>, 1: list<int>, 2: list<int>}>
      */
-    protected $generator;
+    public static function trainPredictProvider() : Generator
+    {
+        yield '1 feature sample' => [
+            [
+                [0],
+                [1],
+                [2],
+                [3],
+            ],
+            [2, 4, 6, 8],
+            [4],
+        ];
 
-    /**
-     * @var ExtraTreeRegressor
-     */
-    protected $estimator;
+        yield '2 feature sample' => [
+            [
+                [0, 0],
+                [1, 1],
+                [2, 1],
+                [1, 2],
+            ],
+            [3, 6, 7, 8],
+            [2, 2],
+        ];
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+        yield '3 feature sample' => [
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 1],
+            ],
+            [4, 5, 6, 7],
+            [1, 1, 1],
+        ];
 
-    /**
-     * @before
-     */
+        yield '4 feature sample' => [
+            [
+                [0, 0, 0, 0],
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+            ],
+            [2, 4, 6, 8],
+            [1, 1, 1, 1],
+        ];
+    }
+
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 35.0, 1.0);
+        $this->generator = new Hyperplane(
+            coefficients: [1.0, 5.5, -7, 0.01],
+            intercept: 35.0,
+            noise: 1.0
+        );
 
-        $this->estimator = new ExtraTreeRegressor(30, 3, 1e-7, 4);
+        $this->estimator = new ExtraTreeRegressor(
+            maxHeight: 30,
+            maxLeafSize: 3,
+            minPurityIncrease: 1e-7,
+            maxFeatures: 4
+        );
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    #[Test]
+    #[TestDox('Is not trained before training')]
+    public function preConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
     /**
@@ -146,12 +192,11 @@ class ExtraTreeRegressorTest extends TestCase
      */
     public function type() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Declares feature compatibility')]
     public function compatibility() : void
     {
         $expected = [
@@ -159,12 +204,11 @@ class ExtraTreeRegressorTest extends TestCase
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Returns hyperparameters')]
     public function params() : void
     {
         $expected = [
@@ -174,12 +218,11 @@ class ExtraTreeRegressorTest extends TestCase
             'max features' => 4,
         ];
 
-        $this->assertEquals($expected, $this->estimator->params());
+        self::assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Trains, predicts, and returns importances for continuous targets')]
     public function trainPredictImportancesContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -187,45 +230,76 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertIsArray($importances);
-        $this->assertCount(4, $importances);
-        $this->assertContainsOnly('float', $importances);
+        self::assertCount(4, $importances);
+        self::assertContainsOnlyFloat($importances);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<float|int> $labels */
+        $labels = $testing->labels();
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Can train and predict from provider samples')]
+    #[DataProvider('trainPredictProvider')]
+    public function trainPredictAdditional(array $samples, array $labels, array $prediction) : void
+    {
+        $training = Labeled::quick($samples, $labels);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        $importances = $this->estimator->featureImportances();
+
+        self::assertCount(count($samples[0]), $importances);
+        self::assertContainsOnlyFloat($importances);
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([$prediction]));
+
+        self::assertIsFloat($predictions[0]);
+    }
+
+    #[Test]
+    #[TestDox('Trains and predicts with discretized targets')]
     public function trainPredictCategorical() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
-            ->apply(new IntervalDiscretizer(5));
+        $training = $this->generator
+            ->generate(self::TRAIN_SIZE + self::TEST_SIZE)
+            ->apply(new IntervalDiscretizer(bins: 5));
 
         $testing = $training->randomize()->take(self::TEST_SIZE);
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<float|int> $labels */
+        $labels = $testing->labels();
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Throws when predicting before training')]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

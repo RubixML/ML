@@ -24,6 +24,10 @@ use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\argmax;
 use function array_slice;
+use function array_intersect_key;
+use function array_map;
+use function array_count_values;
+use function array_fill_keys;
 
 /**
  * K Nearest Neighbors
@@ -223,6 +227,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      */
     public function predictSample(array $sample) : string
     {
+        /** @var array<string> $labels */
         [$labels, $distances] = $this->nearest($sample);
 
         if ($this->weighted) {
@@ -267,6 +272,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
      */
     public function probaSample(array $sample) : array
     {
+        /** @var array<string> $labels */
         [$labels, $distances] = $this->nearest($sample);
 
         if ($this->weighted) {

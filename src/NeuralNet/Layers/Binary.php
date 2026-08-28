@@ -2,10 +2,14 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\Deferred;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -24,6 +28,7 @@ use function count;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Binary implements Output
 {
@@ -53,16 +58,16 @@ class Binary implements Output
     /**
      * The memorized input matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $input = null;
+    protected ?NDArray $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $output = null;
+    protected ?NDArray $output = null;
 
     /**
      * @param string[] $classes
@@ -74,9 +79,13 @@ class Binary implements Output
         $classes = array_values(array_unique($classes));
 
         if (count($classes) !== 2) {
-            throw new InvalidArgumentException('Number of classes'
-                . ' must be 2, ' . count($classes) . ' given.');
+            throw new InvalidArgumentException('Number of classes must be 2, ' . count($classes) . ' given.');
         }
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $classes = [
             $classes[0] => 0.0,
@@ -84,7 +93,7 @@ class Binary implements Output
         ];
 
         $this->classes = $classes;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn ?? new BinaryCrossEntropy();
         $this->sigmoid = new Sigmoid();
     }
 
@@ -109,8 +118,7 @@ class Binary implements Output
     public function initialize(int $fanIn) : int
     {
         if ($fanIn !== 1) {
-            throw new InvalidArgumentException('Fan in must be'
-                . " equal to 1, $fanIn given.");
+            throw new InvalidArgumentException("Fan in must be equal to 1, $fanIn given.");
         }
 
         return 1;
@@ -119,10 +127,10 @@ class Binary implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(NDArray $input) : NDArray
     {
         $output = $this->sigmoid->activate($input);
 
@@ -135,10 +143,10 @@ class Binary implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param Matrix $input
-     * @return Matrix
+     * @param NDArray $input
+     * @return NDArray
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(NDArray $input) : NDArray
     {
         return $this->sigmoid->activate($input);
     }
@@ -154,8 +162,7 @@ class Binary implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input or !$this->output) {
-            throw new RuntimeException('Must perform forward pass'
-                . ' before backpropagating.');
+            throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
         $expected = [];
@@ -164,7 +171,7 @@ class Binary implements Output
             $expected[] = $this->classes[$label];
         }
 
-        $expected = Matrix::quick([$expected]);
+        $expected = NumPower::array([$expected], 'float32');
 
         $input = $this->input;
         $output = $this->output;
@@ -181,23 +188,33 @@ class Binary implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @param Matrix $expected
-     * @return Matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @param NDArray $expected
+     * @return NDArray
      */
-    public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
+    public function gradient(NDArray $input, NDArray $output, NDArray $expected) : NDArray
     {
-        if ($this->costFn instanceof CrossEntropy) {
-            return $output->subtract($expected)
-                ->divide($output->n());
+        $n = $output->shape()[1];
+
+        // Optimization specific to sigmoid + binary cross entropy.
+        // The loss derivative cancels with the sigmoid derivative, so dZ = (output - expected).
+        if ($this->costFn instanceof BinaryCrossEntropy) {
+            return NumPower::divide(
+                NumPower::subtract($output, $expected),
+                $n
+            );
         }
 
-        $dLoss = $this->costFn->differentiate($output, $expected)
-            ->divide($output->n());
+        $dLoss = NumPower::divide(
+            $this->costFn->differentiate($output, $expected),
+            $n
+        );
 
-        return $this->sigmoid->differentiate($input, $output)
-            ->multiply($dLoss);
+        return NumPower::multiply(
+            $this->sigmoid->differentiate($input, $output),
+            $dLoss
+        );
     }
 
     /**

@@ -1,99 +1,89 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Regressors;
 
-use Rubix\ML\Online;
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
-use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Graphviz;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Loggers\BlackHole;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\Regressors\MLPRegressor;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Layers\Activation;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
-use Rubix\ML\Datasets\Generators\SwissRoll;
-use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\DataType;
+use Rubix\ML\EstimatorType;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 
-/**
- * @group Regressors
- * @covers \Rubix\ML\Regressors\MLPRegressor
- */
+use function sys_get_temp_dir;
+use function uniqid;
+
+#[Group('Regressors')]
+#[CoversClass(MLPRegressor::class)]
 class MLPRegressorTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var SwissRoll
-     */
-    protected $generator;
+    protected SwissRoll $generator;
 
-    /**
-     * @var MLPRegressor
-     */
-    protected $estimator;
+    protected MLPRegressor $estimator;
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+    protected RSquared $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new SwissRoll(4.0, -7.0, 0.0, 1.0, 21.0, 0.5);
+        $this->generator = new SwissRoll(x: 4.0, y: -7.0, z: 0.0, scale: 1.0, depth: 21.0, noise: 0.5);
 
-        $this->estimator = new MLPRegressor([
-            new Dense(32),
-            new Activation(new SELU()),
-            new Dense(16),
-            new Activation(new SiLU()),
-            new Dense(8),
-            new Activation(new SiLU()),
-        ], 32, new Adam(0.01), 1e-4, 100, 1e-4, 5, 0.1, new LeastSquares(), new RMSE());
+        $this->estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(32),
+                new Activation(new SELU()),
+                new Dense(16),
+                new Activation(new SiLU()),
+                new Dense(8),
+                new Activation(new SiLU()),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(0.01),
+            epochs: 100,
+            minChange: 1e-4,
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            costFn: new LeastSquares(),
+            metric: new RMSE()
+        );
 
         $this->metric = new RSquared();
 
@@ -102,57 +92,42 @@ class MLPRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    #[Test]
+    #[TestDox('Assert pre conditions')]
+    public function preConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(MLPRegressor::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Bad batch size')]
     public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MLPRegressor([], -100);
+        new MLPRegressor(hiddenLayers: [], batchSize: -100);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Type')]
     public function type() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Compatibility')]
     public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Params')]
     public function params() : void
     {
         $expected = [
@@ -166,21 +141,20 @@ class MLPRegressorTest extends TestCase
             ],
             'batch size' => 32,
             'optimizer' => new Adam(0.01),
-            'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
+            'eval interval' => 3,
             'window' => 5,
             'hold out' => 0.1,
             'cost fn' => new LeastSquares(),
             'metric' => new RMSE(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->params());
+        self::assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Train partial predict')]
     public function trainPartialPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
@@ -195,49 +169,224 @@ class MLPRegressorTest extends TestCase
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $dot = $this->estimator->exportGraphviz();
 
         // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
-        $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', $dot);
+        self::assertStringStartsWith('digraph Tree {', (string) $dot);
 
         $losses = $this->estimator->losses();
 
-        $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        self::assertIsArray($losses);
+        self::assertContainsOnlyFloat($losses);
 
         $scores = $this->estimator->scores();
 
-        $this->assertIsArray($scores);
-        $this->assertContainsOnly('float', $scores);
+        self::assertIsArray($scores);
+        self::assertContainsOnlyFloat($scores);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<int|float> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Snapshot path is transient and resolved lazily')]
+    public function snapshotPathIsTransientAndResolvedLazily() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
+
+        $this->estimator->setSnapshotPath($snapshotPath);
+
+        $this->estimator->train($dataset);
+
+        self::assertTrue($this->estimator->trained());
+
+        $serialized = $this->estimator->__serialize();
+
+        self::assertArrayNotHasKey('snapshotPath', $serialized);
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertTrue($copy->trained());
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+
+        $copy->partial($dataset->fold(2)[0]);
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+    }
+
+    #[Test]
+    #[TestDox('Snapshot path rejects a directory')]
+    public function snapshotPathRejectsDirectory() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->setSnapshotPath(sys_get_temp_dir());
+    }
+
+    #[Test]
+    #[TestDox('Predict count matches number of samples')]
+    public function predictCountMatchesNumberOfSamples() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+    }
+
+    #[Test]
+    #[TestDox('Predict returns numeric finite values')]
+    public function predictReturnsNumericFiniteValues() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+            self::assertFalse(is_nan((float) $prediction));
+            self::assertTrue(is_finite((float) $prediction));
+        }
+    }
+
+    #[Test]
+    #[TestDox('Predict is repeatable for same model and dataset')]
+    public function predictIsRepeatableForSameModelAndDataset() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictions1 = $this->estimator->predict($testing);
+        $predictions2 = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions1);
+        self::assertCount($testing->numSamples(), $predictions2);
+
+        foreach ($predictions1 as $i => $prediction) {
+            self::assertEqualsWithDelta((float) $prediction, (float) $predictions2[$i], 1e-12);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Predict does not mutate dataset samples or labels')]
+    public function predictDoesNotMutateDataset() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $samplesBefore = $testing->samples();
+        $labelsBefore = $testing->labels();
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+        self::assertEquals($samplesBefore, $testing->samples());
+        self::assertEquals($labelsBefore, $testing->labels());
+    }
+
+    #[Test]
+    #[TestDox('Serialization preserves predict output')]
+    public function serializationPreservesPredictOutput() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        $predictionsBefore = $this->estimator->predict($testing);
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(MLPRegressor::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictionsAfter = $copy->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictionsAfter);
+
+        foreach ($predictionsAfter as $i => $prediction) {
+            self::assertEqualsWithDelta((float) $predictionsBefore[$i], (float) $prediction, 1e-8);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Train incompatible')]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([['bad']], [2]));
+        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Predict untrained')]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Trained model exposes network, losses, and scores')]
+    public function trainedModelExposesNetworkLossesAndScores() : void
+    {
+        [$testing] = $this->trainEstimatorAndGetTestingSet();
+
+        self::assertTrue($this->estimator->trained());
+        self::assertNotNull($this->estimator->network());
+
+        $losses = $this->estimator->losses();
+        $scores = $this->estimator->scores();
+
+        self::assertIsArray($losses);
+        self::assertIsArray($scores);
+        self::assertNotEmpty($losses);
+        self::assertNotEmpty($scores);
+        self::assertContainsOnlyFloat($losses);
+        self::assertContainsOnlyFloat($scores);
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testing->numSamples(), $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+        }
+    }
+
+    /**
+     * @return array{0: Unlabeled}
+     */
+    private function trainEstimatorAndGetTestingSet() : array
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $folds = $dataset->fold(3);
+
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
+
+        return [$testing];
     }
 }

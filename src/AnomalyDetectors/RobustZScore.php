@@ -49,29 +49,21 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
 
     /**
      * The expected value of the MAD as n asymptotes.
-     *
-     * @var float
      */
-    protected const ETA = 0.6745;
+    protected const float ETA = 0.6745;
 
     /**
      * The minimum z score to be flagged as an anomaly.
-     *
-     * @var float
      */
     protected float $threshold;
 
     /**
      * The weight of the maximum per sample z score in the overall anomaly score.
-     *
-     * @var float
      */
     protected float $beta;
 
     /**
      * The amount of epsilon smoothing added to the median absolute deviation (MAD) of each feature.
-     *
-     * @var float
      */
     protected float $smoothing;
 
@@ -286,10 +278,8 @@ class RobustZScore implements Estimator, Learner, Scoring, Persistable
             );
         }
 
-        $zHat = (1.0 - $this->beta) * Stats::mean($scores)
+        return (1.0 - $this->beta) * Stats::mean($scores)
             + $this->beta * max($scores);
-
-        return $zHat;
     }
 
     /**

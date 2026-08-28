@@ -143,7 +143,7 @@ class TokenHashingVectorizer implements Transformer
     /**
      * Vectorize the text features of a sample.
      *
-     * @param list<mixed> $sample
+     * @param array<mixed> $sample
      */
     public function vectorize(array &$sample) : void
     {

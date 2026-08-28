@@ -10,7 +10,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function count;
-use function get_class;
 use function gettype;
 use function is_string;
 use function is_numeric;
@@ -104,12 +103,6 @@ class Labeled extends Dataset
         $samples = $labels = [];
 
         foreach ($datasets as $i => $dataset) {
-            if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Dataset must be'
-                    . ' an instance of Labeled, ' . get_class($dataset)
-                    . ' given.');
-            }
-
             if ($dataset->empty()) {
                 continue;
             }
@@ -192,7 +185,7 @@ class Labeled extends Dataset
      * @throws InvalidArgumentException
      * @return int|float|string
      */
-    public function label(int $offset)
+    public function label(int $offset) : int|float|string
     {
         if (!isset($this->labels[$offset])) {
             throw new InvalidArgumentException("Row at offset $offset not found.");
@@ -600,7 +593,7 @@ class Labeled extends Dataset
      * @throws InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByFeature(int $column, $value) : array
+    public function splitByFeature(int $column, string|int|float $value) : array
     {
         $type = $this->featureType($column);
 

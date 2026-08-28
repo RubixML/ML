@@ -21,7 +21,7 @@
         "svm", "text mining", "tf-idf", "tf idf", "t-sne", "tsne", "unsupervised learning"
     ],
     "authors": [
-        { 
+        {
             "name": "Andrew DalPino",
             "homepage": "https://github.com/andrewdalpino"
         },
@@ -31,31 +31,29 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.3",
         "ext-json": "*",
-        "amphp/parallel": "^1.3",
+        "amphp/parallel": "^2.0",
         "andrewdalpino/okbloomer": "^1.0",
         "psr/log": "^1.1|^2.0|^3.0",
         "rubix/tensor": "^3.0",
-        "symfony/polyfill-mbstring": "^1.0",
-        "symfony/polyfill-php80": "^1.17",
-        "symfony/polyfill-php82": "^1.27",
-        "symfony/polyfill-php83": "^1.27",
-        "wamania/php-stemmer": "^4.0"
+        "symfony/polyfill-mbstring": "^1.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
+        "friendsofphp/php-cs-fixer": "^3.73",
         "phpbench/phpbench": "^1.0",
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0",
-        "phpunit/phpunit": "^9.0"
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^12.0",
+        "swoole/ide-helper": "^5.1"
     },
     "suggest": {
         "ext-tensor": "For fast Matrix/Vector computing",
         "ext-gd": "For image support",
         "ext-mbstring": "For fast multibyte string manipulation",
-        "ext-svm": "For Support Vector Machine engine (libsvm)"
+        "ext-svm": "For support Vector Machine engine (libsvm)",
+        "ext-swoole": "For support Swoole runner"
     },
     "autoload": {
         "psr-4": {
@@ -82,10 +80,15 @@
         "analyze": "phpstan analyse -c phpstan.neon --memory-limit 1G",
         "benchmark": "phpbench run --report=aggregate",
         "check": [
-            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
-            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no"
+            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --using-cache=no --sequential --show-progress=dots --stop-on-violation"
         ],
-        "fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+        "diff": [
+            "php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --diff"
+        ],
+        "fix": [
+            "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
+        ],
+        "phplint": "phplint",
         "test": "phpunit"
     },
     "config": {

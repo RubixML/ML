@@ -22,12 +22,12 @@ class Constant implements Strategy
      *
      * @var string|int|float
      */
-    protected $value;
+    protected string|int|float $value;
 
     /**
      * @param string|int|float $value
      */
-    public function __construct($value = 0)
+    public function __construct(string|int|float $value = 0)
     {
         $this->value = $value;
     }
@@ -75,7 +75,7 @@ class Constant implements Strategy
      *
      * @return string|int|float
      */
-    public function guess()
+    public function guess() : string|int|float
     {
         return $this->value;
     }

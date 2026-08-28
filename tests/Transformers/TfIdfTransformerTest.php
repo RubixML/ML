@@ -1,54 +1,29 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Persistable;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Elastic;
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Reversible;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TfIdfTransformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\TfIdfTransformer
- */
+#[Group('Transformers')]
+#[CoversClass(TfIdfTransformer::class)]
 class TfIdfTransformerTest extends TestCase
 {
-    /**
-     * @var TfIdfTransformer
-     */
-    protected $transformer;
+    protected TfIdfTransformer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new TfIdfTransformer(1.0, false);
+        $this->transformer = new TfIdfTransformer(smoothing: 1.0, sublinear: false);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testFitTransformReverse() : void
     {
-        $this->assertInstanceOf(TfIdfTransformer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-        $this->assertInstanceOf(Elastic::class, $this->transformer);
-        $this->assertInstanceOf(Reversible::class, $this->transformer);
-        $this->assertInstanceOf(Persistable::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function fitTransformReverse() : void
-    {
-        $dataset = new Unlabeled([
+        $dataset = new Unlabeled(samples: [
             [1, 3, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 4, 1, 0, 1],
             [0, 1, 1, 0, 0, 2, 1, 0, 0, 0, 0, 3, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 1, 2, 3, 0, 0, 4, 2, 0, 0, 1, 0, 2, 0, 1, 0, 0],
@@ -62,7 +37,7 @@ class TfIdfTransformerTest extends TestCase
 
         $this->assertIsArray($dfs);
         $this->assertCount(19, $dfs);
-        $this->assertContainsOnly('int', $dfs);
+        $this->assertContainsOnlyInt($dfs);
 
         $original = clone $dataset;
 

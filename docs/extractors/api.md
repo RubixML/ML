@@ -22,18 +22,15 @@ $dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
 ```
 
 ## Export
-Extractors that implement the Exporter interface have an additional `export()` method that takes an iterable type and exports the data to storage.
+Extractors that implement the Exporter interface have an additional `export()` method that takes an iterable type and exports the data to storage. If the `overwrite` argument is set to true then, if the file or database already exist, the current records will be overwritten, otherwise the records will be appended.
 
 ```php
-public export(iterable $iterator, ?array $header = null) : void
+public export(iterable $iterator, bool $overwrite = false) : void
 ```
 
 ```php
-$extractor->export($dataset);
+$extractor->export($dataset, true);
 ```
-
-!!! note
-    The extractor will overwrite any existing data if the file or database already exists.
 
 ## Return an Iterator
 To return the underlying iterator wrapped by the extractor object:

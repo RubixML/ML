@@ -13,5 +13,9 @@ pyvenv.cfg
 .idea
 .vscode
 .vs
-/runtime
+Dockerfile
+/runtime/
+/docker/
+docker-compose.yml
+Makefile
 /worktrees

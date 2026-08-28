@@ -81,7 +81,7 @@ class DBSCAN implements Estimator
      * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
-    public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
+    public function __construct(float $radius = 1.0, int $minDensity = 5, ?Spatial $tree = null)
     {
         if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'

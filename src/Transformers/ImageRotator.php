@@ -116,7 +116,7 @@ class ImageRotator implements Transformer
                             'x' => $newWidth / 2 - $originalWidth / 2,
                             'y' => $newHeight / 2 - $originalHeight / 2,
                             'width' => $originalWidth,
-                            'height' => $originalHeight
+                            'height' => $originalHeight,
                         ]);
                     }
 

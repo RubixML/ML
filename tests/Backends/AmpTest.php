@@ -1,22 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Backends;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Backends
- * @covers \Rubix\ML\Backends\Amp
- */
+#[Group('Backends')]
+#[CoversClass(Amp::class)]
 class AmpTest extends TestCase
 {
-    /**
-     * @var Amp
-     */
-    protected $backend;
+    protected Amp $backend;
+
+    protected ?Backend $usedBackend = null;
 
     /**
      * @param int $i
@@ -27,38 +28,29 @@ class AmpTest extends TestCase
         return [$i * 2, microtime(true)];
     }
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->backend = new Amp(4);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    protected function tearDown() : void
     {
-        $this->assertInstanceOf(Amp::class, $this->backend);
-        $this->assertInstanceOf(Backend::class, $this->backend);
+        $this->usedBackend?->shutdown();
     }
 
-    /**
-     * @test
-     */
-    public function workers() : void
+    public function testWorkers() : void
     {
         $this->assertEquals(4, $this->backend->workers());
     }
 
-    /**
-     * @test
-     */
-    public function enqueueProcess() : void
+    public function testEnqueueProcess() : void
     {
+        $this->usedBackend = $this->backend;
+
         for ($i = 0; $i < 10; ++$i) {
-            $this->backend->enqueue(new Task([self::class, 'foo'], [$i]));
+            $this->backend->enqueue(
+                task: new Task(fn: [self::class, 'foo'], args: [$i])
+            );
         }
 
         $results = $this->backend->process();

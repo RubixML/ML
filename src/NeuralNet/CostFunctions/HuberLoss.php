@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Tensor\Matrix;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use NDArray;
+use NumPower;
+use Rubix\ML\Exceptions\InvalidAlphaException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Huber Loss
@@ -16,9 +23,12 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class HuberLoss implements RegressionLoss
 {
+    use AssertsShapes;
+
     /**
      * The alpha quantile i.e the pivot point at which numbers larger will be
      * evalutated with an L1 loss while number smaller will be evalutated with
@@ -37,71 +47,76 @@ class HuberLoss implements RegressionLoss
 
     /**
      * @param float $alpha
-     * @throws InvalidArgumentException
+     * @throws InvalidAlphaException
      */
     public function __construct(float $alpha = 0.9)
     {
         if ($alpha <= 0.0) {
-            throw new InvalidArgumentException('Alpha must be greater than'
-                . " 0, $alpha given.");
+            throw new InvalidAlphaException('Alpha must be greater than 0, ' . $alpha . ' given.');
         }
 
         $this->alpha = $alpha;
         $this->alpha2 = $alpha ** 2;
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**
      * Compute the loss score.
      *
+     * L(y, ŷ) = α²(√(1 + ((y - ŷ)/α)²) - 1)
+     *
      * @internal
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param NDArray $output The output of the network
+     * @param NDArray $target The target values
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float
+    public function compute(NDArray $output, NDArray $target) : float
     {
-        return $target->subtract($output)->map([$this, '_compute'])->mean()->mean();
+        $this->assertSameShape($output, $target);
+
+        $difference = NumPower::subtract($target, $output);
+        $scaled = NumPower::divide($difference, $this->alpha);
+        $squared = NumPower::pow($scaled, 2);
+        $sqrt = NumPower::sqrt(NumPower::add($squared, 1.0));
+        $loss = NumPower::multiply($this->alpha2, NumPower::subtract($sqrt, 1.0));
+
+        return NumPower::mean($loss);
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
+     * ∂L/∂ŷ = α(ŷ - y) / √(α² + (ŷ - y)²)
+     *
      * @internal
      *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @return Matrix
+     * @param NDArray $output The output of the network
+     * @param NDArray $target The target values
+     * @return NDArray
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix
+    public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        $beta = $output->subtract($target);
+        $this->assertSameShape($output, $target);
 
-        return $beta->square()
-            ->add($this->alpha2)
-            ->pow(-0.5)
-            ->multiply($beta)
-            ->multiply($this->alpha);
-    }
+        $difference = NumPower::subtract($output, $target);
+        $squared = NumPower::pow($difference, 2);
+        $denominator = NumPower::sqrt(NumPower::add($squared, $this->alpha2));
 
-    /**
-     * @param float $z
-     * @return float
-     */
-    public function _compute(float $z) : float
-    {
-        return $this->alpha2 * (sqrt(1.0 + ($z / $this->alpha) ** 2) - 1.0);
+        return NumPower::divide(NumPower::multiply($this->alpha, $difference), $denominator);
     }
 
     /**
      * Return the string representation of the object.
      *
-     * @internal
-     *
      * @return string
      */
     public function __toString() : string
     {
-        return "Huber Loss (alpha: {$this->alpha})";
+        return 'Huber Loss (alpha: ' . $this->alpha . ')';
     }
 }

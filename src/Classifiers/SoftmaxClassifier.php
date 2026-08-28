@@ -13,18 +13,20 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
@@ -37,6 +39,7 @@ use function is_nan;
 use function count;
 use function get_object_vars;
 use function number_format;
+use function array_map;
 
 /**
  * Softmax Classifier
@@ -88,13 +91,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
-     *
-     * @var positive-int
-     */
-    protected int $window;
-
-    /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var ClassificationLoss
@@ -128,7 +124,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
-     * @param int $window
      * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
@@ -138,7 +133,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $window = 5,
         ?ClassificationLoss $costFn = null
     ) {
         if ($batchSize < 1) {
@@ -161,9 +155,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . " greater than 0, $minChange given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
-                . " greater than 0, $window given.");
+        if ($costFn and $costFn instanceof BinaryCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
 
         $this->batchSize = $batchSize;
@@ -171,8 +164,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->window = $window;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn ?? new MulticlassCrossEntropy();
     }
 
     /**
@@ -216,7 +208,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
-            'window' => $this->window,
             'cost fn' => $this->costFn,
         ];
     }
@@ -263,9 +254,9 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return FeedForward|null
+     * @return Network|null
      */
-    public function network() : ?FeedForward
+    public function network() : ?Network
     {
         return $this->network;
     }
@@ -287,7 +278,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(count($classes), $this->l2Penalty, true, new Xavier1())],
+            [new Dense(count($classes), $this->l2Penalty, true, new Xavier1Uniform())],
             new Multiclass($classes, $this->costFn),
             $this->optimizer
         );
@@ -327,8 +318,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             $this->logger->info("{$numParams} trainable parameters");
         }
 
-        $prevLoss = $bestLoss = INF;
-        $numWorseEpochs = 0;
+        $prevLoss = INF;
 
         $this->losses = [];
 
@@ -373,18 +363,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 break;
             }
 
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
-                break;
-            }
-
             $prevLoss = $loss;
         }
 
@@ -423,7 +401,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $probabilities = [];
 
-        foreach ($activations->asArray() as $dist) {
+        foreach ($activations->toArray() as $dist) {
             $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 

@@ -14,7 +14,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Euclidean implements Distance
+class Euclidean implements Distance, BoxPrunable
 {
     /**
      * Return the data types that this kernel is compatible with.

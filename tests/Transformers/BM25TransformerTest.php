@@ -1,48 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Elastic;
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\BM25Transformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\BM25Transformer
- */
+#[Group('Transformers')]
+#[CoversClass(BM25Transformer::class)]
 class BM25TransformerTest extends TestCase
 {
-    /**
-     * @var BM25Transformer
-     */
-    protected $transformer;
+    protected BM25Transformer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new BM25Transformer(1.2, 0.75);
+        $this->transformer = new BM25Transformer(dampening: 1.2, normalization: 0.75);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(BM25Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-        $this->assertInstanceOf(Elastic::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function fitTransform() : void
+    public function testFitTransform() : void
     {
         $dataset = new Unlabeled([
             [1, 3, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 4, 1, 0, 1],
@@ -58,14 +37,14 @@ class BM25TransformerTest extends TestCase
 
         $this->assertIsArray($dfs);
         $this->assertCount(19, $dfs);
-        $this->assertContainsOnly('int', $dfs);
+        $this->assertContainsOnlyInt($dfs);
 
         $dataset->apply($this->transformer);
 
         $expected = [
-            [0.2562582002070131, 0.22742881339794754, 0.0, 0.0, 0.13186359514416618, 0.0, 0.0, 0.0, 0.13186359514416618, 0.19254341937443092, 0.0, 0.19254341937443092, 0.0, 0.0, 0.0, 0.4860031535349766, 0.13186359514416618, 0.0, 0.2562582002070131],
-            [0.0, 0.17063795450977862, 0.3316106698128093, 0.0, 0.0, 0.23083934808978732, 0.3316106698128093, 0.0, 0.0, 0.0, 0.0, 0.26160416281731713, 0.0, 0.3316106698128093, 0.0, 0.0, 0.0, 0.0, 0.0],
-            [0.0, 0.0, 0.0, 0.2562582002070131, 0.19254341937443092, 0.22742881339794754, 0.0, 0.0, 0.25008418471976107, 0.19254341937443092, 0.0, 0.0, 0.2562582002070131, 0.0, 0.3741808347986538, 0.0, 0.13186359514416618, 0.0, 0.0],
+            [0.4167253821086091, 0.32386804704328004, 0.0, 0.0, 0.19969066113031256, 0.0, 0.0, 0.0, 0.19969066113031256, 0.2802930734410933, 0.0, 0.2802930734410933, 0.0, 0.0, 0.0, 0.7328291457581919, 0.19969066113031256, 0.0, 0.4167253821086091],
+            [0.0, 0.2483266597818964, 0.5182216414108348, 0.0, 0.0, 0.32496035074325735, 0.5182216414108348, 0.0, 0.0, 0.0, 0.0, 0.36222084208787897, 0.0, 0.5182216414108348, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.4167253821086091, 0.2802930734410933, 0.32386804704328004, 0.0, 0.0, 0.35116444280774783, 0.2802930734410933, 0.0, 0.0, 0.4167253821086091, 0.0, 0.5849308999779023, 0.0, 0.19969066113031256, 0.0, 0.0],
         ];
 
         $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);

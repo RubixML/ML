@@ -18,9 +18,9 @@ This is the regressor version of [Radius Neighbors](../classifiers/radius-neighb
 
 ## Example
 ```php
-use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;
+use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 
 $estimator = new RadiusNeighborsRegressor(0.5, false, new BallTree(30, new Diagonal()));
 ```

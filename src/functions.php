@@ -7,6 +7,7 @@ namespace Rubix\ML
     use Generator;
 
     use function count;
+    use function array_is_list;
     use function is_nan;
     use function is_float;
     use function is_iterable;
@@ -24,11 +25,16 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
+     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @return T
      */
     function argmin(array $values)
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('Argmin is undefined for empty set.');
+        }
+
         $index = array_search(min($values), $values);
 
         if ($index === false) {
@@ -45,11 +51,16 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
+     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @return T
      */
     function argmax(array $values)
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('Argmax is undefined for empty set.');
+        }
+
         $index = array_search(max($values), $values);
 
         if ($index === false) {
@@ -65,10 +76,15 @@ namespace Rubix\ML
      * @internal
      *
      * @param (int|float)[] $values
+     * @throws InvalidArgumentException
      * @return float
      */
     function logsumexp(array $values) : float
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('LogSumExp is undefined for empty set.');
+        }
+
         $max = max($values);
 
         if ($max === -INF or $max === INF) {
@@ -178,11 +194,13 @@ namespace Rubix\ML
      * @param iterable<mixed> $iterator
      * @return mixed
      */
-    function iterator_first(iterable $iterator)
+    function iterator_first(iterable $iterator) : mixed
     {
         foreach ($iterator as $element) {
             return $element;
         }
+
+        throw new RuntimeException('Iterator did not return any elements.');
     }
 
     /**
@@ -256,5 +274,29 @@ namespace Rubix\ML
     function warn_deprecated(string $message) : void
     {
         trigger_error($message, E_USER_DEPRECATED);
+    }
+
+    /**
+     * Pack an array of samples.
+     *
+     * @internal
+     *
+     * @param array<mixed> $samples
+     * @return array<mixed>
+     */
+    function array_pack(array $samples) : array
+    {
+        // Ensure all levels have sequential numeric keys
+        if (!array_is_list($samples)) {
+            $samples = array_values($samples);
+        }
+
+        return array_map(function ($item) {
+            if (is_array($item)) {
+                return array_pack($item);
+            }
+
+            return $item;
+        }, $samples);
     }
 }

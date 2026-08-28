@@ -25,7 +25,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Gower implements Distance, NaNSafe
+class Gower implements Distance, BoxPrunable, NaNSafe
 {
     /**
      * The range of the continuous feature columns.
