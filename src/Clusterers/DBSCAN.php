@@ -14,11 +14,9 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use SplQueue;
 
 use function count;
-use function array_unique;
-use function array_merge;
-use function array_pop;
 
 /**
  * DBSCAN
@@ -168,27 +166,31 @@ class DBSCAN implements Estimator
                 continue;
             }
 
+            $queue = new SplQueue();
+
+            $queue->enqueue($i);
+
             $predictions[$i] = $cluster;
 
-            while ($indices) {
-                $index = (int) array_pop($indices);
+            while (!$queue->isEmpty()) {
+                $index = $queue->dequeue();
 
-                if (isset($predictions[$index])) {
-                    if ($predictions[$index] === self::NOISE) {
-                        $predictions[$index] = $cluster;
-                    }
+                [, $seeds] = $this->tree->range($dataset->sample($index), $this->radius);
 
+                if (count($seeds) < $this->minDensity) {
                     continue;
                 }
 
-                $predictions[$index] = $cluster;
+                foreach ($seeds as $seed) {
+                    $seed = (int) $seed;
 
-                $neighbor = $dataset->sample($index);
+                    if (!isset($predictions[$seed])) {
+                        $predictions[$seed] = $cluster;
 
-                [$samples, $seeds, $distances] = $this->tree->range($neighbor, $this->radius);
-
-                if (count($seeds) >= $this->minDensity) {
-                    $indices = array_unique(array_merge($indices, $seeds));
+                        $queue->enqueue($seed);
+                    } elseif ($predictions[$seed] === self::NOISE) {
+                        $predictions[$seed] = $cluster;
+                    }
                 }
             }
 
