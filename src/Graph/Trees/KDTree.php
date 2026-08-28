@@ -4,7 +4,6 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Graph\Nodes\Box;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;

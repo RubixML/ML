@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Nodes\Clique;
