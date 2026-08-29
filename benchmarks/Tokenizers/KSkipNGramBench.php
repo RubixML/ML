@@ -16,7 +16,7 @@ class KSkipNGramBench
 
     public function setUp() : void
     {
-        $this->tokenizer = new KSkipNGram(2, 3);
+        $this->tokenizer = new KSkipNGram(2, 8);
     }
 
     /**

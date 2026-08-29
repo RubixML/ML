@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
@@ -19,6 +20,22 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\JSONException;
+
+use function is_file;
+use function is_dir;
+use function is_readable;
+use function is_writable;
+use function count;
+use function file_get_contents;
+use function file_put_contents;
+use function tempnam;
+use function rename;
+use function unlink;
+use function dirname;
+use function array_values;
+use function strlen;
+
 use svmmodel;
 use svm;
 
@@ -246,13 +263,26 @@ class SVC implements Estimator, Learner
 
         $index = (int) $this->model->predict($sampleWithOffset);
 
+        if (!isset($this->classes[$index])) {
+            throw new RuntimeException("Unknown class index: $index.");
+        }
+
         return $this->classes[$index];
     }
 
     /**
      * Save the model data to the filesystem.
      *
+     * The model and its class label map are written to temporary files in the same
+     * directory as the target and atomically swapped into place via rename() so
+     * that a failure or crash can never leave a mismatched pair behind.
+     *
+     * The class label map is serialized first so an encoding error, such as a label
+     * containing invalid UTF-8, is reported with its exact cause before a single
+     * byte is written.
+     *
      * @param string $path
+     * @throws JSONException
      * @throws RuntimeException
      */
     public function save(string $path) : void
@@ -261,17 +291,106 @@ class SVC implements Estimator, Learner
             throw new RuntimeException('Learner must be trained before saving.');
         }
 
-        $this->model->save($path);
+        $dir = dirname($path);
+
+        if (!is_dir($dir) or !is_writable($dir)) {
+            throw new RuntimeException("The directory {$dir} does not exist or"
+                . ' is not writable.');
+        }
+
+        $classesPath = "{$path}.classes.json";
+
+        $data = JSON::encode($this->classes);
+
+        $temporary = [];
+
+        try {
+            $tmpModel = tempnam($dir, 'svcmodel');
+
+            if ($tmpModel === false) {
+                throw new RuntimeException('Could not create a temporary file'
+                    . " in {$dir}.");
+            }
+
+            $temporary[] = $tmpModel;
+
+            $saved = $this->model->save($tmpModel);
+
+            if ($saved !== true) {
+                throw new RuntimeException("Could not save the model to {$path}.");
+            }
+
+            $tmpClasses = tempnam($dir, 'svclasses');
+
+            if ($tmpClasses === false) {
+                throw new RuntimeException("Could not create a temporary file in {$dir}.");
+            }
+
+            $temporary[] = $tmpClasses;
+
+            $written = file_put_contents($tmpClasses, $data, LOCK_EX);
+
+            if ($written === false || $written !== strlen($data)) {
+                throw new RuntimeException("Could not save the class map to {$classesPath}.");
+            }
+
+            if (!rename($tmpModel, $path)) {
+                throw new RuntimeException("Could not finalize the model at {$path}.");
+            }
+
+            $temporary = array_diff($temporary, [$tmpModel]);
+
+            if (!rename($tmpClasses, $classesPath)) {
+                throw new RuntimeException("Could not finalize the class map at {$classesPath}.");
+            }
+
+            $temporary = array_diff($temporary, [$tmpClasses]);
+        } finally {
+            foreach ($temporary as $tmp) {
+                if (is_file($tmp)) {
+                    unlink($tmp);
+                }
+            }
+        }
     }
 
     /**
      * Load model data from the filesystem.
      *
      * @param string $path
+     * @throws JSONException
+     * @throws RuntimeException
      */
     public function load(string $path) : void
     {
-        $this->model = new svmmodel($path);
+        $classesPath = "{$path}.classes.json";
+
+        if (!is_file($classesPath) || !is_readable($classesPath)) {
+            throw new RuntimeException("The class label map at {$classesPath} is"
+                . ' missing or unreadable; re-save the model with the current version.');
+        }
+
+        $data = file_get_contents($classesPath);
+
+        if ($data === false) {
+            throw new RuntimeException("Could not load the class map from {$classesPath}.");
+        }
+
+        $classes = JSON::decode($data);
+
+        $classes = array_values($classes);
+
+        $model = new svmmodel($path);
+
+        $nrClass = $model->getNrClass();
+
+        if (count($classes) !== $nrClass) {
+            throw new RuntimeException("The class label map at {$classesPath}"
+                . ' does not match the class count of the model.');
+        }
+
+        $this->classes = $classes;
+        $this->model = $model;
     }
 
     /**

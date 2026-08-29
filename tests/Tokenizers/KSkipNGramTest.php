@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Tokenizers;
 
@@ -59,9 +59,23 @@ class KSkipNGramTest extends TestCase
         ];
     }
 
+    /**
+     * @return Generator<mixed[]>
+     */
+    public static function minThreeProvider() : Generator
+    {
+        yield [
+            'a b c d e',
+            [
+                'a b c', 'a c d', 'a b c d', 'a c d e', 'b c d',
+                'b d e', 'b c d e', 'c d e',
+            ],
+        ];
+    }
+
     protected function setUp() : void
     {
-        $this->tokenizer = new KSkipNGram(2, 3, 2);
+        $this->tokenizer = new KSkipNGram(min: 2, max: 3, skip: 2);
     }
 
     public function testBuild() : void
@@ -89,7 +103,21 @@ class KSkipNGramTest extends TestCase
     #[DataProvider('tokenizeUnigramProvider')]
     public function testTokenizeUnigrams(string $text, array $expected) : void
     {
-        $tokenizer = new KSkipNGram(1, 1, 2);
+        $tokenizer = new KSkipNGram(min: 1, max: 1, skip: 2);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('minThreeProvider')]
+    public function testTokenizeMinThree(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(min: 3, max: 4, skip: 1);
 
         $tokens = $tokenizer->tokenize($text);
 
