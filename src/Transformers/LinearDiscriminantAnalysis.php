@@ -161,7 +161,8 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = NumPower::transpose(NumPower::array($eigenvectors, 'float32'), [1, 0]);
+        $eigenvectors = NumPower::array($eigenvectors, 'float32');
+        $eigenvectors = NumPower::transpose($eigenvectors, [1, 0]);
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
