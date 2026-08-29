@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\GaussianRandomProjector;
@@ -67,12 +68,14 @@ class GaussianRandomProjectorTest extends TestCase
      * @param int $expected
      */
     #[DataProvider('minDimensionsProvider')]
-    public function testMinDimensions(int $n, float $maxDistortion, int $expected) : void
+    #[Test]
+    public function minDimensions(int $n, float $maxDistortion, int $expected) : void
     {
         $this->assertEqualsWithDelta($expected, GaussianRandomProjector::minDimensions($n, $maxDistortion), 1e-8);
     }
 
-    public function testFitTransform() : void
+    #[Test]
+    public function fitTransform() : void
     {
         $dataset = $this->generator->generate(30);
 
@@ -87,7 +90,8 @@ class GaussianRandomProjectorTest extends TestCase
         $this->assertCount(5, $sample);
     }
 
-    public function testTransformUnfitted() : void
+    #[Test]
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

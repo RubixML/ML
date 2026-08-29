@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Backends;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Backend;
@@ -38,12 +39,14 @@ class AmpTest extends TestCase
         $this->usedBackend?->shutdown();
     }
 
-    public function testWorkers() : void
+    #[Test]
+    public function workers() : void
     {
         $this->assertEquals(4, $this->backend->workers());
     }
 
-    public function testEnqueueProcess() : void
+    #[Test]
+    public function enqueueProcess() : void
     {
         $this->usedBackend = $this->backend;
 

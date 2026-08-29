@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
@@ -24,13 +25,15 @@ class ImageRotatorTest extends TestCase
         $this->transformer = new ImageRotator(offset: 0.0, jitter: 1.0);
     }
 
-    public function testBuild() : void
+    #[Test]
+    public function build() : void
     {
         $this->assertInstanceOf(ImageRotator::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function testTransformWithDefaultJitter() : void
+    #[Test]
+    public function transformWithDefaultJitter() : void
     {
         $transformer = new ImageRotator(0.0);
 
@@ -49,7 +52,8 @@ class ImageRotatorTest extends TestCase
         $this->assertSame('whatever', $sample[1]);
     }
 
-    public function testTransform() : void
+    #[Test]
+    public function transform() : void
     {
         $dataset = Unlabeled::quick([
             [imagecreatefrompng('./tests/test.png'), 'whatever', 69],

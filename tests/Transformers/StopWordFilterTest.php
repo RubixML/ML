@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\StopWordFilter;
@@ -21,7 +22,8 @@ class StopWordFilterTest extends TestCase
         $this->transformer = new StopWordFilter(['a', 'quick', 'pig', 'à']);
     }
 
-    public function testTransform() : void
+    #[Test]
+    public function transform() : void
     {
         $dataset = Unlabeled::quick(samples: [
             ['the quick brown fox jumped over the lazy man sitting at a bus'

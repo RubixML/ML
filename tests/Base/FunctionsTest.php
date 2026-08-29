@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Base;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -179,8 +180,20 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @test
+     * @return Generator<mixed[]>
      */
+    public static function sigmoidProvider() : Generator
+    {
+        yield [2.0, 0.8807970779778823];
+
+        yield [-2.0, 0.11920292202211755];
+
+        yield [0.0, 0.5];
+
+        yield [10.0, 0.9999546021312976];
+    }
+
+    #[Test]
     public function logsumexp() : void
     {
         $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
@@ -196,33 +209,8 @@ class FunctionsTest extends TestCase
         $this->assertEquals(-INF, logsumexp([-INF, -INF]));
     }
 
-    /**
-     * @test
-     * @dataProvider sigmoidProvider
-     *
-     * @param float $value
-     * @param float $expected
-     */
-    public function sigmoid(float $value, float $expected) : void
-    {
-        $this->assertEquals($expected, sigmoid($value));
-    }
-
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function sigmoidProvider() : Generator
-    {
-        yield [2.0, 0.8807970779778823];
-
-        yield [-2.0, 0.11920292202211755];
-
-        yield [0.0, 0.5];
-
-        yield [10.0, 0.9999546021312976];
-    }
-
-    public function testArgmin() : void
+    #[Test]
+    public function argmin() : void
     {
         $value = argmin(['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0]);
 
@@ -233,32 +221,28 @@ class FunctionsTest extends TestCase
      * @param float[] $input
      * @param string|int $expected
      */
+    #[Test]
     #[DataProvider('argmaxProvider')]
-    public function testArgmax(array $input, mixed $expected) : void
+    public function argmax(array $input, mixed $expected) : void
     {
         $this->assertEquals($expected, argmax($input));
     }
 
-    public function testArgmaxUndefined() : void
+    #[Test]
+    public function argmaxUndefined() : void
     {
         $this->expectException(RuntimeException::class);
 
         argmax([NAN, NAN, NAN]);
     }
 
-    public function testLogsumexp() : void
-    {
-        $value = logsumexp([0.5, 0.4, 0.9, 1.0, 0.2, 0.9, 0.1, 0.5, 0.7]);
-
-        $this->assertEquals(2.8194175400311074, $value);
-    }
-
     /**
      * @param float $value
      * @param float $expected
      */
+    #[Test]
     #[DataProvider('sigmoidProvider')]
-    public function sigmoidTest(float $value, float $expected) : void
+    public function sigmoid(float $value, float $expected) : void
     {
         $this->assertEquals($expected, sigmoid($value));
     }
@@ -268,6 +252,7 @@ class FunctionsTest extends TestCase
      * @param int $k
      * @param int $expected
      */
+    #[Test]
     #[DataProvider('combProvider')]
     public function comb(int $n, int $k, int $expected) : void
     {
@@ -280,6 +265,7 @@ class FunctionsTest extends TestCase
      * @param int $n
      * @param list<float> $expected
      */
+    #[Test]
     #[DataProvider('linspaceProvider')]
     public function linspace(float $min, float $max, int $n, array $expected) : void
     {
@@ -290,6 +276,7 @@ class FunctionsTest extends TestCase
      * @param list<list<float>> $table
      * @param list<list<float>> $expected
      */
+    #[Test]
     #[DataProvider('arrayTransposeProvider')]
     public function arrayTranspose(array $table, array $expected) : void
     {
@@ -300,20 +287,23 @@ class FunctionsTest extends TestCase
      * @param array<array<int|float>> $samples
      * @param array<array<int|float>> $expected
      */
+    #[Test]
     #[DataProvider('arrayPackProvider')]
     public function arrayPack(array $samples, array $expected) : void
     {
         $this->assertEquals($expected, array_pack($samples));
     }
 
-    public function testIteratorFirst() : void
+    #[Test]
+    public function iteratorFirst() : void
     {
         $element = iterator_first(['first', 'last']);
 
         $this->assertEquals('first', $element);
     }
 
-    public function testIteratorMap() : void
+    #[Test]
+    public function iteratorMap() : void
     {
         $doubleIt = function ($value) {
             return $value * 2;
@@ -326,7 +316,8 @@ class FunctionsTest extends TestCase
         $this->assertEquals($expected, iterator_to_array($values));
     }
 
-    public function testIteratorFilter() : void
+    #[Test]
+    public function iteratorFilter() : void
     {
         $isPositive = function ($value) {
             return $value >= 0;
@@ -343,8 +334,9 @@ class FunctionsTest extends TestCase
      * @param array<array<int|float>|bool> $values
      * @param bool $expected
      */
+    #[Test]
     #[DataProvider('iteratorContainsNanProvider')]
-    public function testIteratorContainsNan(array $values, bool $expected) : void
+    public function iteratorContainsNan(array $values, bool $expected) : void
     {
         $this->assertEquals($expected, iterator_contains_nan($values));
     }

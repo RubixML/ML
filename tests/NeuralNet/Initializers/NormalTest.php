@@ -110,7 +110,7 @@ final class NormalTest extends TestCase
 
     #[Test]
     #[TestDox('It constructs the initializer with default standard deviation')]
-    public function testConstructorSucceedsWithDefaultStdDev() : void
+    public function constructorSucceedsWithDefaultStdDev() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -122,7 +122,7 @@ final class NormalTest extends TestCase
     #[Test]
     #[TestDox('It throws an exception if standard deviation is not positive')]
     #[DataProvider('invalidStandardDeviationProvider')]
-    public function testConstructorThrowsForInvalidStdDev(float $stdDev) : void
+    public function constructorThrowsForInvalidStdDev(float $stdDev) : void
     {
         //expect
         $this->expectException(InvalidStandardDeviationException::class);
@@ -134,7 +134,7 @@ final class NormalTest extends TestCase
     #[Test]
     #[TestDox('The initialized matrix has the correct shape')]
     #[DataProvider('validFanInFanOutCombinationsProvider')]
-    public function testInitializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
+    public function initializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
         $w = (new Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -149,7 +149,7 @@ final class NormalTest extends TestCase
     #[Test]
     #[TestDox('The initialized values follow a Normal distribution')]
     #[DataProvider('normalDistributionInitializationProvider')]
-    public function testValuesFollowNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
+    public function valuesFollowNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
     {
         //given
         $w = (new Normal($stdDev))->initialize(fanIn: $fanIn, fanOut:  $fanOut);
@@ -182,7 +182,7 @@ final class NormalTest extends TestCase
     #[Test]
     #[TestDox('It throws an exception if fanIn or fanOut are less than 1')]
     #[DataProvider('invalidFanInFanOutProvider')]
-    public function testInitializationThrowsForInvalidFanValues(int $fanIn, int $fanOut) : void
+    public function initializationThrowsForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
@@ -199,7 +199,7 @@ final class NormalTest extends TestCase
 
     #[Test]
     #[TestDox('String representation is correct')]
-    public function testToStringReturnsExpectedFormat() : void
+    public function toStringReturnsExpectedFormat() : void
     {
         //when
         $string = (string) new Normal();

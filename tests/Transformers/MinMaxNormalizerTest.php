@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -30,7 +31,8 @@ class MinMaxNormalizerTest extends TestCase
         $this->transformer = new MinMaxNormalizer(min: 0.0, max: 1.0);
     }
 
-    public function testFitUpdateTransformReverse() : void
+    #[Test]
+    public function fitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -67,7 +69,8 @@ class MinMaxNormalizerTest extends TestCase
         $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
-    public function testTransformUnfitted() : void
+    #[Test]
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 
@@ -76,7 +79,8 @@ class MinMaxNormalizerTest extends TestCase
         $this->transformer->transform($samples);
     }
 
-    public function testSkipsNonFinite() : void
+    #[Test]
+    public function skipsNonFinite() : void
     {
         $samples = Unlabeled::build(samples: [
             [0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001],

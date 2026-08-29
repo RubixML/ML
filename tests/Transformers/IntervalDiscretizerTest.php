@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\IntervalDiscretizer;
@@ -29,7 +30,8 @@ class IntervalDiscretizerTest extends TestCase
         $this->transformer = new IntervalDiscretizer(bins: 5, equiWidth: false);
     }
 
-    public function testFitTransform() : void
+    #[Test]
+    public function fitTransform() : void
     {
         $dataset = $this->generator->generate(30);
 
@@ -57,7 +59,8 @@ class IntervalDiscretizerTest extends TestCase
         $this->assertContains($sample[3], $expected);
     }
 
-    public function testTransformUnfitted() : void
+    #[Test]
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

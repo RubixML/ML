@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -34,17 +35,20 @@ class PersistentModelTest extends TestCase
         @unlink('test.model');
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $this->assertEquals([DataType::continuous()], $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'base' => new GaussianNB(),

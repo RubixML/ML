@@ -182,7 +182,6 @@ class HuberLossTest extends TestCase
         $this->costFn = new HuberLoss(1.0);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -191,7 +190,7 @@ class HuberLossTest extends TestCase
 
     #[Test]
     #[TestDox('Throws exception when constructed with invalid alpha parameter')]
-    public function testConstructorWithInvalidAlpha() : void
+    public function constructorWithInvalidAlpha() : void
     {
         $this->expectException(InvalidAlphaException::class);
 
@@ -200,7 +199,7 @@ class HuberLossTest extends TestCase
 
     #[Test]
     #[TestDox('Throws exception when output and target shapes do not match in compute')]
-    public function testComputeThrowsExceptionOnShapeMismatch() : void
+    public function computeThrowsExceptionOnShapeMismatch() : void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
@@ -213,7 +212,7 @@ class HuberLossTest extends TestCase
 
     #[Test]
     #[TestDox('Throws exception when output and target shapes do not match in differentiate')]
-    public function testDifferentiateThrowsExceptionOnShapeMismatch() : void
+    public function differentiateThrowsExceptionOnShapeMismatch() : void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
@@ -227,7 +226,7 @@ class HuberLossTest extends TestCase
     #[Test]
     #[TestDox('Compute loss score')]
     #[DataProvider('computeProvider')]
-    public function testCompute(NDArray $output, NDArray $target, float $expected) : void
+    public function compute(NDArray $output, NDArray $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
@@ -241,7 +240,7 @@ class HuberLossTest extends TestCase
     #[Test]
     #[TestDox('Calculate gradient of cost function')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $output, NDArray $target, array $expected) : void
+    public function differentiate(NDArray $output, NDArray $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target);
         $gradientArray = $gradient->toArray();
@@ -251,7 +250,7 @@ class HuberLossTest extends TestCase
     #[Test]
     #[TestDox('Calculate gradient of cost function with non-unity alpha')]
     #[DataProvider('differentiateWithAlphaProvider')]
-    public function testDifferentiateWithAlpha(float $alpha, NDArray $output, NDArray $target, array $expected) : void
+    public function differentiateWithAlpha(float $alpha, NDArray $output, NDArray $target, array $expected) : void
     {
         $costFn = new HuberLoss($alpha);
 

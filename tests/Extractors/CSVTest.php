@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Extractors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -31,7 +32,8 @@ class CSVTest extends TestCase
         );
     }
 
-    public function testHeader() : void
+    #[Test]
+    public function header() : void
     {
         $expected = [
             'attitude', 'texture', 'sociability', 'rating', 'class',
@@ -40,7 +42,8 @@ class CSVTest extends TestCase
         $this->assertEquals($expected, $this->extractor->header());
     }
 
-    public function testExtractExport() : void
+    #[Test]
+    public function extractExport() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],
@@ -68,9 +71,7 @@ class CSVTest extends TestCase
         $this->assertFileExists('tests/test.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function extractSkipsBlankLines() : void
     {
         $path = tempnam(sys_get_temp_dir(), 'csv_');
@@ -89,9 +90,7 @@ class CSVTest extends TestCase
         unlink($path);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function extractMalformedRecord() : void
     {
         $path = tempnam(sys_get_temp_dir(), 'csv_');

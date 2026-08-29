@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Best;
 use PHPUnit\Framework\TestCase;
@@ -36,22 +37,26 @@ class BestTest extends TestCase
         );
     }
 
-    public function testOutcome() : void
+    #[Test]
+    public function outcome() : void
     {
         $this->assertEquals(self::OUTCOME, $this->node->outcome());
     }
 
-    public function testProbabilities() : void
+    #[Test]
+    public function probabilities() : void
     {
         $this->assertEquals(self::PROBABILITIES, $this->node->probabilities());
     }
 
-    public function testImpurity() : void
+    #[Test]
+    public function impurity() : void
     {
         $this->assertEquals(self::IMPURITY, $this->node->impurity());
     }
 
-    public function testN() : void
+    #[Test]
+    public function n() : void
     {
         $this->assertEquals(self::N, $this->node->n());
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Trees;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
@@ -39,12 +40,14 @@ class ITreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertEquals(0, $this->tree->height());
     }
 
-    public function testGrowSearch() : void
+    #[Test]
+    public function growSearch() : void
     {
         $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
 
@@ -57,7 +60,8 @@ class ITreeTest extends TestCase
         $this->assertInstanceOf(Depth::class, $node);
     }
 
-    public function testGrowWithSameSamples() : void
+    #[Test]
+    public function growWithSameSamples() : void
     {
         $generator = new Agglomerate(generators: [
             'east' => new Blob(center: [5, -2, 10], stdDev: 0.0),

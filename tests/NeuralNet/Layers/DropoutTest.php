@@ -88,7 +88,7 @@ class DropoutTest extends TestCase
     #[Test]
     #[TestDox('Constructor rejects invalid ratio values')]
     #[DataProvider('badRatioProvider')]
-    public function testConstructorRejectsInvalidRatio(float $ratio) : void
+    public function constructorRejectsInvalidRatio(float $ratio) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -97,7 +97,7 @@ class DropoutTest extends TestCase
 
     #[Test]
     #[TestDox('Initializes width equal to fan-in')]
-    public function testInitializeSetsWidth() : void
+    public function initializeSetsWidth() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -106,7 +106,7 @@ class DropoutTest extends TestCase
 
     #[Test]
     #[TestDox('Method forward() applies dropout mask with correct shape and scaling')]
-    public function testForward() : void
+    public function forward() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -164,7 +164,7 @@ class DropoutTest extends TestCase
 
     #[Test]
     #[TestDox('Backpropagates gradients using the same dropout mask')]
-    public function testBack() : void
+    public function back() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -218,7 +218,7 @@ class DropoutTest extends TestCase
     #[Test]
     #[TestDox('Inference pass leaves inputs unchanged')]
     #[DataProvider('inferProvider')]
-    public function testInfer(array $expected) : void
+    public function infer(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -229,7 +229,7 @@ class DropoutTest extends TestCase
 
     #[Test]
     #[TestDox('Method initialize() returns fan out equal to fan in')]
-    public function testInitializeReturnsFanOut() : void
+    public function initializeReturnsFanOut() : void
     {
         $fanOut = $this->layer->initialize($this->fanIn);
 
@@ -238,7 +238,7 @@ class DropoutTest extends TestCase
 
     #[Test]
     #[TestDox('Method width() returns the initialized width')]
-    public function testWidthAfterInitialize() : void
+    public function widthAfterInitialize() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -247,7 +247,7 @@ class DropoutTest extends TestCase
 
     #[Test]
     #[TestDox('Method gradient() multiplies previous gradient by the dropout mask')]
-    public function testGradient() : void
+    public function gradient() : void
     {
         // Deterministic previous gradient (same shape as input)
         $prevGradNd = NumPower::array([
@@ -278,7 +278,6 @@ class DropoutTest extends TestCase
         self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
     }
 
-    #[Test]
     #[TestDox('It returns correct string representation')]
     public function testToString() : void
     {

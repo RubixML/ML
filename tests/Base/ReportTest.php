@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Report;
 use Rubix\ML\Encoding;
@@ -25,7 +26,8 @@ class ReportTest extends TestCase
         ]);
     }
 
-    public function testToArray() : void
+    #[Test]
+    public function toArray() : void
     {
         $expected = [
             'accuracy' => 0.9,
@@ -36,7 +38,8 @@ class ReportTest extends TestCase
         $this->assertEquals($expected, $this->results->toArray());
     }
 
-    public function testToJSON() : void
+    #[Test]
+    public function toJSON() : void
     {
         $expected = '{"accuracy":0.9,"f1_score":0.75,"cardinality":5}';
 
@@ -46,7 +49,8 @@ class ReportTest extends TestCase
         $this->assertEquals($expected, (string) $encoding);
     }
 
-    public function testArrayAccess() : void
+    #[Test]
+    public function arrayAccess() : void
     {
         $this->assertEquals(0.9, $this->results['accuracy']);
         $this->assertEquals(0.75, $this->results['f1_score']);

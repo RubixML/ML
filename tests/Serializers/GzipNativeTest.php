@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Persisters\Serializers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -26,7 +27,8 @@ class GzipNativeTest extends TestCase
         $this->persistable = new GaussianNB();
     }
 
-    public function testSerializeDeserialize() : void
+    #[Test]
+    public function serializeDeserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
 

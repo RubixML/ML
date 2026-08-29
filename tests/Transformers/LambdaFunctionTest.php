@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\LambdaFunction;
@@ -25,7 +26,8 @@ class LambdaFunctionTest extends TestCase
         $this->transformer = new LambdaFunction(callback: $callback, context: 'context');
     }
 
-    public function testTransform() : void
+    #[Test]
+    public function transform() : void
     {
         $dataset = new Unlabeled(samples: [
             [1, 2, 3, 4],

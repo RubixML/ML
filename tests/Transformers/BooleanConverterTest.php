@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\BooleanConverter;
@@ -21,7 +22,8 @@ class BooleanConverterTest extends TestCase
         $this->transformer = new BooleanConverter(trueValue: '!true!', falseValue: '!false!');
     }
 
-    public function testTransform() : void
+    #[Test]
+    public function transform() : void
     {
         $dataset = new Unlabeled([
             [true, 'true', '1', 1],

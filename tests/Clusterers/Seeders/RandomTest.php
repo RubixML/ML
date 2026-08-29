@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Clusterers\Seeders;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\Seeders\Random;
@@ -42,7 +43,8 @@ class RandomTest extends TestCase
         $this->seeder = new Random();
     }
 
-    public function testSeed() : void
+    #[Test]
+    public function seed() : void
     {
         $dataset = $this->generator->generate(100);
 

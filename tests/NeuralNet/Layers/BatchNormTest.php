@@ -168,7 +168,6 @@ class BatchNormTest extends TestCase
         );
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -181,7 +180,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Initializes width and returns fan out')]
     #[DataProvider('initializeProvider')]
-    public function testInitialize(int $fanIn) : void
+    public function initialize(int $fanIn) : void
     {
         $fanOut = $this->layer->initialize($fanIn);
         self::assertEquals($fanIn, $fanOut);
@@ -191,7 +190,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Computes forward pass')]
     #[DataProvider('forwardProvider')]
-    public function testForward(array $expected) : void
+    public function forward(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -203,7 +202,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Backpropagates and returns gradient for previous layer')]
     #[DataProvider('backProvider')]
-    public function testBack(array $expected) : void
+    public function back(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
         $this->layer->forward($this->input);
@@ -220,7 +219,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Infers using running statistics')]
     #[DataProvider('inferProvider')]
-    public function testInfer(array $expected) : void
+    public function infer(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
         // Perform a forward pass to set running mean/variance
@@ -234,7 +233,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Computes forward pass (row-wise) with zero mean and unit variance per sample for various batch sizes')]
     #[DataProvider('batchInputsProvider')]
-    public function testForwardStatsMultipleBatches(array $input) : void
+    public function forwardStatsMultipleBatches(array $input) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -248,7 +247,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Infers (row-wise) with zero mean and unit variance per sample for various batch sizes')]
     #[DataProvider('batchInputsProvider')]
-    public function testInferStatsMultipleBatches(array $input) : void
+    public function inferStatsMultipleBatches(array $input) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -263,7 +262,7 @@ class BatchNormTest extends TestCase
 
     #[Test]
     #[TestDox('Throws when width is requested before initialization')]
-    public function testWidthThrowsBeforeInitialize() : void
+    public function widthThrowsBeforeInitialize() : void
     {
         $layer = new BatchNorm();
         $this->expectException(RubixRuntimeException::class);
@@ -273,7 +272,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Constructor rejects invalid decay values')]
     #[DataProvider('badDecayProvider')]
-    public function testConstructorRejectsInvalidDecay(float $decay) : void
+    public function constructorRejectsInvalidDecay(float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
         new BatchNorm(decay: $decay);
@@ -281,7 +280,7 @@ class BatchNormTest extends TestCase
 
     #[Test]
     #[TestDox('Yields trainable parameters beta and gamma')]
-    public function testParameters() : void
+    public function parameters() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -298,7 +297,7 @@ class BatchNormTest extends TestCase
 
     #[Test]
     #[TestDox('Restores parameters from array')]
-    public function testRestore() : void
+    public function restore() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -320,7 +319,7 @@ class BatchNormTest extends TestCase
     #[Test]
     #[TestDox('Computes gradient for previous layer directly')]
     #[DataProvider('gradientProvider')]
-    public function testGradient(array $expected) : void
+    public function gradient(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 

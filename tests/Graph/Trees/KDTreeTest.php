@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Trees;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Datasets\Labeled;
@@ -53,12 +54,14 @@ class KDTreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertEquals(0, $this->tree->height());
     }
 
-    public function testGrowNeighborsRange() : void
+    #[Test]
+    public function growNeighborsRange() : void
     {
         $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
 
@@ -83,7 +86,8 @@ class KDTreeTest extends TestCase
         $this->assertCount(2, array_unique($labels));
     }
 
-    public function testGrowWithSameSamples() : void
+    #[Test]
+    public function growWithSameSamples() : void
     {
         $generator = new Agglomerate(generators: [
             'east' => new Blob(center: [5, -2, 10], stdDev: 0.0),
@@ -96,9 +100,7 @@ class KDTreeTest extends TestCase
         $this->assertEquals(2, $this->tree->height());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nearestMatchesBruteForce() : void
     {
         $samples = [
@@ -126,9 +128,7 @@ class KDTreeTest extends TestCase
         $this->assertEqualsWithDelta(4.06078810084939, $distances[0], 1e-6);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rangeMatchesBruteForce() : void
     {
         $samples = [];
@@ -155,28 +155,32 @@ class KDTreeTest extends TestCase
         $this->assertEqualsWithDelta(5.09901951359278, $distances[1], 1e-6);
     }
 
-    public function testRejectCosineKernel() : void
+    #[Test]
+    public function rejectCosineKernel() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new KDTree(kernel: new Cosine());
     }
 
-    public function testRejectSparseCosineKernel() : void
+    #[Test]
+    public function rejectSparseCosineKernel() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new KDTree(kernel: new SparseCosine());
     }
 
-    public function testRejectJaccardKernel() : void
+    #[Test]
+    public function rejectJaccardKernel() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new KDTree(kernel: new Jaccard());
     }
 
-    public function testCompatibleKernels() : void
+    #[Test]
+    public function compatibleKernels() : void
     {
         $kernels = [
             new Euclidean(),

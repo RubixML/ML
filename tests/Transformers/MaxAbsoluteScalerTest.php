@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -30,7 +31,8 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->transformer = new MaxAbsoluteScaler();
     }
 
-    public function testFitUpdateTransformReverse() : void
+    #[Test]
+    public function fitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -62,7 +64,8 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
-    public function testTransformUnfitted() : void
+    #[Test]
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 
@@ -71,7 +74,8 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->transformer->transform($samples);
     }
 
-    public function testReverseTransformUnfitted() : void
+    #[Test]
+    public function reverseTransformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 
@@ -80,7 +84,8 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->transformer->reverseTransform($samples);
     }
 
-    public function testSkipsNonFinite() : void
+    #[Test]
+    public function skipsNonFinite() : void
     {
         $samples = Unlabeled::build(samples: [
             [0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001],

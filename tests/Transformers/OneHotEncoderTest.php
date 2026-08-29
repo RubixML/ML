@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\OneHotEncoder;
@@ -21,7 +22,8 @@ class OneHotEncoderTest extends TestCase
         $this->transformer = new OneHotEncoder();
     }
 
-    public function testFitTransform() : void
+    #[Test]
+    public function fitTransform() : void
     {
         $dataset = new Unlabeled(samples: [
             ['nice', 'furry', 'friendly'],
@@ -52,9 +54,7 @@ class OneHotEncoderTest extends TestCase
         $this->assertEquals($expected, $dataset->samples());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fitTransformWithExcluded() : void
     {
         $dataset = new Unlabeled([
@@ -74,7 +74,7 @@ class OneHotEncoderTest extends TestCase
 
         $this->assertIsArray($categories);
         $this->assertCount(3, $categories);
-        $this->assertContainsOnly('array', $categories);
+        $this->assertContainsOnlyArray($categories);
 
         $dataset->apply($this->transformer);
 

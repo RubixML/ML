@@ -88,7 +88,6 @@ class BinaryTest extends TestCase
         $this->layer = new Binary(classes: ['hot', 'cold'], costFn: new BinaryCrossEntropy());
     }
 
-    #[Test]
     #[TestDox('Returns string representation')]
     public function testToString() : void
     {
@@ -99,7 +98,7 @@ class BinaryTest extends TestCase
 
     #[Test]
     #[TestDox('Initializes and reports width')]
-    public function testInitializeWidth() : void
+    public function initializeWidth() : void
     {
         $this->layer->initialize(1);
         self::assertEquals(1, $this->layer->width());
@@ -108,7 +107,7 @@ class BinaryTest extends TestCase
     #[Test]
     #[TestDox('Constructor rejects invalid classes arrays')]
     #[DataProvider('badClassesProvider')]
-    public function testConstructorRejectsInvalidClasses(array $classes) : void
+    public function constructorRejectsInvalidClasses(array $classes) : void
     {
         $this->expectException(InvalidArgumentException::class);
         new Binary(classes: $classes, costFn: new BinaryCrossEntropy());
@@ -116,7 +115,7 @@ class BinaryTest extends TestCase
 
     #[Test]
     #[TestDox('Constructor accepts classes arrays that dedupe to exactly 2 labels')]
-    public function testConstructorAcceptsDuplicateClassesThatDedupeToTwo() : void
+    public function constructorAcceptsDuplicateClassesThatDedupeToTwo() : void
     {
         $layer = new Binary(classes: ['hot', 'cold', 'hot'], costFn: new BinaryCrossEntropy());
         // Should initialize without throwing and report correct width
@@ -127,7 +126,7 @@ class BinaryTest extends TestCase
     #[Test]
     #[TestDox('Computes forward pass')]
     #[DataProvider('forwardProvider')]
-    public function testForward(array $expected) : void
+    public function forward(array $expected) : void
     {
         $this->layer->initialize(1);
 
@@ -138,7 +137,7 @@ class BinaryTest extends TestCase
     #[Test]
     #[TestDox('Backpropagates and returns gradient for previous layer')]
     #[DataProvider('backProvider')]
-    public function testBack(array $expectedGradient) : void
+    public function back(array $expectedGradient) : void
     {
         $this->layer->initialize(1);
         $this->layer->forward($this->input);
@@ -157,7 +156,7 @@ class BinaryTest extends TestCase
     #[Test]
     #[TestDox('Computes gradient directly given input, output and expected')]
     #[DataProvider('backProvider')]
-    public function testGradient(array $expectedGradient) : void
+    public function gradient(array $expectedGradient) : void
     {
         $this->layer->initialize(1);
 
@@ -181,7 +180,7 @@ class BinaryTest extends TestCase
     #[Test]
     #[TestDox('Computes inference activations')]
     #[DataProvider('forwardProvider')]
-    public function testInfer(array $expected) : void
+    public function infer(array $expected) : void
     {
         $this->layer->initialize(1);
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\TextNormalizer;
@@ -21,7 +22,8 @@ class TextNormalizerTest extends TestCase
         $this->transformer = new TextNormalizer(true);
     }
 
-    public function testTransform() : void
+    #[Test]
+    public function transform() : void
     {
         $dataset = Unlabeled::quick(samples: [
             ['The quick brown fox jumped over the lazy man sitting at a bus'

@@ -59,7 +59,6 @@ class MomentumTest extends TestCase
         $this->optimizer = new Momentum(rate: 0.001, decay: 0.1, lookahead: false);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -73,7 +72,7 @@ class MomentumTest extends TestCase
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate, float $decay) : void
+    public function invalidConstructorParams(float $rate, float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -82,7 +81,7 @@ class MomentumTest extends TestCase
 
     #[Test]
     #[TestDox('Warm initializes a zeroed velocity cache with the parameter\'s shape')]
-    public function testWarmInitializesZeroedCache() : void
+    public function warmInitializesZeroedCache() : void
     {
         $param = new Parameter(NumPower::array([
             [1.0, 2.0, 3.0],
@@ -115,7 +114,7 @@ class MomentumTest extends TestCase
     #[Test]
     #[DataProvider('stepProvider')]
     #[TestDox('Can compute the step')]
-    public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
+    public function step(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 

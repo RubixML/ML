@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Base;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\GridSearch;
@@ -111,22 +112,26 @@ class GridSearchTest extends TestCase
         $this->backend?->shutdown();
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $this->assertEquals(DataType::all(), $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'class' => KNearestNeighbors::class,
@@ -144,7 +149,8 @@ class GridSearchTest extends TestCase
      * @param Backend $backend
      */
     #[DataProvider('provideBackends')]
-    public function testTrainPredictBest(Backend $backend) : void
+    #[Test]
+    public function trainPredictBest(Backend $backend) : void
     {
         $this->backend = $backend;
 

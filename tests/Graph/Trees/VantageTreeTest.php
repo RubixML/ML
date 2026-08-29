@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Trees;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\VantageTree;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -50,12 +51,14 @@ class VantageTreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertEquals(0, $this->tree->height());
     }
 
-    public function testGrowNeighborsRange() : void
+    #[Test]
+    public function growNeighborsRange() : void
     {
         $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
 
@@ -80,7 +83,8 @@ class VantageTreeTest extends TestCase
         $this->assertCount(1, array_unique($labels));
     }
 
-    public function testGrowWithSameSamples() : void
+    #[Test]
+    public function growWithSameSamples() : void
     {
         $generator = new Agglomerate(generators: [
             'east' => new Blob(center: [5, -2, 10], stdDev: 0.0),
@@ -93,21 +97,24 @@ class VantageTreeTest extends TestCase
         $this->assertEquals(2, $this->tree->height());
     }
 
-    public function testRejectCosineKernel() : void
+    #[Test]
+    public function rejectCosineKernel() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new VantageTree(kernel: new Cosine());
     }
 
-    public function testRejectSparseCosineKernel() : void
+    #[Test]
+    public function rejectSparseCosineKernel() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new VantageTree(kernel: new SparseCosine());
     }
 
-    public function testCompatibleKernels() : void
+    #[Test]
+    public function compatibleKernels() : void
     {
         $kernels = [
             new Euclidean(),

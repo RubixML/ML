@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Helpers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Helpers\CPU;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +14,8 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(CPU::class)]
 class CPUTest extends TestCase
 {
-    public function testEpsilon() : void
+    #[Test]
+    public function epsilon() : void
     {
         $epsilon = CPU::epsilon();
 

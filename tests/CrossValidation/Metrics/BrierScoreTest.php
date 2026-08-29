@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\CrossValidation\Metrics\BrierScore;
@@ -89,7 +90,8 @@ class BrierScoreTest extends TestCase
         $this->metric = new BrierScore();
     }
 
-    public function testRange() : void
+    #[Test]
+    public function range() : void
     {
         $tuple = $this->metric->range();
 
@@ -104,7 +106,8 @@ class BrierScoreTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('scoreProvider')]
-    public function testScore(array $probabilities, array $labels, float $expected) : void
+    #[Test]
+    public function score(array $probabilities, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range()->list();
 

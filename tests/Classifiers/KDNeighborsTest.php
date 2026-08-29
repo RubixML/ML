@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Classifiers;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -92,24 +93,28 @@ class KDNeighborsTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadK() : void
+    #[Test]
+    public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new KDNeighbors(0);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -118,7 +123,8 @@ class KDNeighborsTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'k' => 5,
@@ -130,7 +136,8 @@ class KDNeighborsTest extends TestCase
     }
 
     #[DataProvider('trainPredictProvider')]
-    public function testTrainPredict(Spatial $tree) : void
+    #[Test]
+    public function trainPredict(Spatial $tree) : void
     {
         $estimator = new KDNeighbors(
             k: 5,
@@ -155,14 +162,16 @@ class KDNeighborsTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: ['green']));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

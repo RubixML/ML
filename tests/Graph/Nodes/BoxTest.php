@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
@@ -52,24 +53,28 @@ class BoxTest extends TestCase
         );
     }
 
-    public function testSplit() : void
+    #[Test]
+    public function split() : void
     {
         $node = Box::split(Labeled::quick(samples: self::SAMPLES, labels: self::LABELS));
 
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
-    public function testColumn() : void
+    #[Test]
+    public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    public function testValue() : void
+    #[Test]
+    public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }
 
-    public function testSubsets() : void
+    #[Test]
+    public function subsets() : void
     {
         $expected = [
             Labeled::quick(samples: [self::SAMPLES[0]], labels: [self::LABELS[0]]),
@@ -79,12 +84,14 @@ class BoxTest extends TestCase
         $this->assertEquals($expected, $this->node->subsets());
     }
 
-    public function testSides() : void
+    #[Test]
+    public function sides() : void
     {
         $this->assertEquals(self::BOX, iterator_to_array($this->node->sides()));
     }
 
-    public function testCleanup() : void
+    #[Test]
+    public function cleanup() : void
     {
         $this->node->cleanup();
 

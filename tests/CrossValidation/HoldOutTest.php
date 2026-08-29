@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\CrossValidation;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -50,7 +51,8 @@ class HoldOutTest extends TestCase
         $this->metric = new Accuracy();
     }
 
-    public function testTestEstimator() : void
+    #[Test]
+    public function estimator() : void
     {
         [$min, $max] = $this->metric->range()->list();
 

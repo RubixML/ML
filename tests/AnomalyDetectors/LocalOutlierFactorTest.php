@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -90,24 +91,28 @@ class LocalOutlierFactorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadK() : void
+    #[Test]
+    public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new LocalOutlierFactor(k: 0);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -116,7 +121,8 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'k' => 60,
@@ -129,7 +135,8 @@ class LocalOutlierFactorTest extends TestCase
     }
 
     #[DataProvider('trainPredictProvider')]
-    public function testTrainPredict(Spatial $tree) : void
+    #[Test]
+    public function trainPredict(Spatial $tree) : void
     {
         $estimator = new LocalOutlierFactor(
             k: 60,
@@ -156,7 +163,8 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

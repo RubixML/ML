@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Datasets\Generators;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -37,12 +38,14 @@ class AgglomerateTest extends TestCase
         );
     }
 
-    public function testDimensions() : void
+    #[Test]
+    public function dimensions() : void
     {
         $this->assertEquals(2, $this->generator->dimensions());
     }
 
-    public function testGenerate() : void
+    #[Test]
+    public function generate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

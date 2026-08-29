@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\SparseRandomProjector;
@@ -36,7 +37,8 @@ class SparseRandomProjectorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testFitTransform() : void
+    #[Test]
+    public function fitTransform() : void
     {
         $this->assertCount(10, $this->generator->generate(1)->sample(0));
 
@@ -59,7 +61,8 @@ class SparseRandomProjectorTest extends TestCase
         $this->assertEqualsWithDelta($expected, $sample, 1e-8);
     }
 
-    public function testTransformUnfitted() : void
+    #[Test]
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

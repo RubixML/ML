@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Strategies;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Strategies\Prior;
@@ -21,12 +22,14 @@ class PriorTest extends TestCase
         $this->strategy = new Prior();
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(DataType::categorical(), $this->strategy->type());
     }
 
-    public function testFitGuess() : void
+    #[Test]
+    public function fitGuess() : void
     {
         $values = ['a', 'a', 'b', 'a', 'c'];
 

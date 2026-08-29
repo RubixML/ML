@@ -83,29 +83,25 @@ class Informedness implements Metric
 
         $classes = array_unique(array_merge($predictions, $labels));
 
-        $truePos = $trueNeg = $falsePos = $falseNeg = array_fill_keys($classes, 0);
+        $n = count($predictions);
+
+        $truePos = $falsePos = $falseNeg = array_fill_keys($classes, 0);
 
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
 
             if ($prediction == $label) {
                 ++$truePos[$prediction];
-
-                foreach ($classes as $class) {
-                    if ($class != $prediction) {
-                        ++$trueNeg[$class];
-                    }
-                }
             } else {
                 ++$falsePos[$prediction];
                 ++$falseNeg[$label];
-
-                foreach ($classes as $class) {
-                    if ($class != $prediction and $class != $label) {
-                        ++$trueNeg[$class];
-                    }
-                }
             }
+        }
+
+        $trueNeg = [];
+
+        foreach ($classes as $class) {
+            $trueNeg[$class] = $n - $truePos[$class] - $falsePos[$class] - $falseNeg[$class];
         }
 
         $scores = array_map([self::class, 'compute'], $truePos, $trueNeg, $falsePos, $falseNeg);

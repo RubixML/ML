@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Neighborhood;
@@ -40,20 +41,23 @@ class NeighborhoodTest extends TestCase
         $this->node = new Neighborhood(dataset: $dataset, min: self::MIN, max: self::MAX);
     }
 
-    public function testTerminate() : void
+    #[Test]
+    public function terminate() : void
     {
         $node = Neighborhood::terminate(Labeled::quick(samples: self::SAMPLES, labels: self::LABELS));
 
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
-    public function testDataset() : void
+    #[Test]
+    public function dataset() : void
     {
         $this->assertEquals(self::SAMPLES, $this->node->dataset()->samples());
         $this->assertEquals(self::LABELS, $this->node->dataset()->labels());
     }
 
-    public function testSides() : void
+    #[Test]
+    public function sides() : void
     {
         $this->assertEquals(self::BOX, iterator_to_array($this->node->sides()));
     }

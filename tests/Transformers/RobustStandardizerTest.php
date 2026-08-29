@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\RobustStandardizer;
@@ -29,7 +30,8 @@ class RobustStandardizerTest extends TestCase
         $this->transformer = new RobustStandardizer(true);
     }
 
-    public function testFitUpdateTransformReverse() : void
+    #[Test]
+    public function fitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -66,7 +68,8 @@ class RobustStandardizerTest extends TestCase
         $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
-    public function testTransformUnfitted() : void
+    #[Test]
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

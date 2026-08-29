@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Classifiers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -86,24 +87,28 @@ class SoftmaxClassifierTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadBatchSize() : void
+    #[Test]
+    public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new SoftmaxClassifier(batchSize: -100);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -112,7 +117,8 @@ class SoftmaxClassifierTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'batch size' => 10,
@@ -126,7 +132,8 @@ class SoftmaxClassifierTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPartialPredict() : void
+    #[Test]
+    public function trainPartialPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -159,14 +166,16 @@ class SoftmaxClassifierTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: ['green']));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

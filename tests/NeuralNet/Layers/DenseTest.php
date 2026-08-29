@@ -130,7 +130,7 @@ class DenseTest extends TestCase
 
     #[Test]
     #[TestDox('Throws an exception for invalid constructor arguments')]
-    public function testConstructorValidation() : void
+    public function constructorValidation() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -146,7 +146,7 @@ class DenseTest extends TestCase
     #[Test]
     #[TestDox('Computes forward activations for fixed weights and biases')]
     #[DataProvider('forwardProvider')]
-    public function testForward(array $weights, array $biases, array $expected) : void
+    public function forward(array $weights, array $biases, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
         self::assertEquals(2, $this->layer->width());
@@ -163,7 +163,7 @@ class DenseTest extends TestCase
 
     #[Test]
     #[TestDox('Method weights() returns the restored weight matrix')]
-    public function testWeightsReturnsExpectedValues() : void
+    public function weightsReturnsExpectedValues() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -184,7 +184,7 @@ class DenseTest extends TestCase
 
     #[Test]
     #[TestDox('width() returns the number of neurons')]
-    public function testWidthReturnsNeuronsCount() : void
+    public function widthReturnsNeuronsCount() : void
     {
         // Layer is constructed in setUp() with neurons: 2
         self::assertSame(2, $this->layer->width());
@@ -193,7 +193,7 @@ class DenseTest extends TestCase
     #[Test]
     #[TestDox('Computes backpropagated gradients for previous layer')]
     #[DataProvider('backProvider')]
-    public function testBack(array $weights, array $biases, array $prevGrad, array $expected) : void
+    public function back(array $weights, array $biases, array $prevGrad, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -219,7 +219,7 @@ class DenseTest extends TestCase
     #[Test]
     #[TestDox('Computes inference activations equal to forward for fixed parameters')]
     #[DataProvider('forwardProvider')]
-    public function testInfer(array $weights, array $biases, array $expected) : void
+    public function infer(array $weights, array $biases, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -235,7 +235,7 @@ class DenseTest extends TestCase
 
     #[Test]
     #[TestDox('Method restore() correctly replaces layer parameters')]
-    public function testRestoreReplacesParameters() : void
+    public function restoreReplacesParameters() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -264,7 +264,7 @@ class DenseTest extends TestCase
 
     #[Test]
     #[TestDox('Method parameters() yields restored weights and biases')]
-    public function testParametersReturnsRestoredParameters() : void
+    public function parametersReturnsRestoredParameters() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -297,7 +297,7 @@ class DenseTest extends TestCase
 
     #[Test]
     #[TestDox('It returns correct string representation')]
-    public function testToStringReturnsCorrectValue() : void
+    public function toStringReturnsCorrectValue() : void
     {
         $expected = 'Dense (neurons: 2, l2 penalty: 0, bias: true, weight initializer: He Uniform, bias initializer: Constant (value: 0))';
 

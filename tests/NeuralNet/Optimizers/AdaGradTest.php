@@ -55,7 +55,6 @@ class AdaGradTest extends TestCase
         $this->optimizer = new AdaGrad(0.001);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -68,7 +67,7 @@ class AdaGradTest extends TestCase
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate) : void
+    public function invalidConstructorParams(float $rate) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -83,7 +82,7 @@ class AdaGradTest extends TestCase
     #[Test]
     #[DataProvider('stepProvider')]
     #[TestDox('Can compute the step')]
-    public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
+    public function step(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 

@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Specifications;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\L1Normalizer;
@@ -70,7 +71,8 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
      * @param bool $expected
      */
     #[DataProvider('passesProvider')]
-    public function testPasses(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void
+    #[Test]
+    public function passes(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void
     {
         $this->assertSame($expected, $specification->passes());
     }

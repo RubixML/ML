@@ -132,7 +132,6 @@ class BinaryCrossEntropyTest extends TestCase
         $this->costFn = new BinaryCrossEntropy();
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -141,7 +140,7 @@ class BinaryCrossEntropyTest extends TestCase
 
     #[Test]
     #[TestDox('Throws exception when output and target shapes do not match in compute')]
-    public function testComputeThrowsExceptionOnShapeMismatch() : void
+    public function computeThrowsExceptionOnShapeMismatch() : void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
@@ -154,7 +153,7 @@ class BinaryCrossEntropyTest extends TestCase
 
     #[Test]
     #[TestDox('Throws exception when output and target shapes do not match in differentiate')]
-    public function testDifferentiateThrowsExceptionOnShapeMismatch() : void
+    public function differentiateThrowsExceptionOnShapeMismatch() : void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
@@ -168,7 +167,7 @@ class BinaryCrossEntropyTest extends TestCase
     #[Test]
     #[TestDox('Compute loss score')]
     #[DataProvider('computeProvider')]
-    public function testCompute(NDArray $output, NDArray $target, float $expected) : void
+    public function compute(NDArray $output, NDArray $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
@@ -182,7 +181,7 @@ class BinaryCrossEntropyTest extends TestCase
     #[Test]
     #[TestDox('Calculate gradient of cost function')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $output, NDArray $target, array $expected) : void
+    public function differentiate(NDArray $output, NDArray $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target);
 

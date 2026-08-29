@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Backends;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Backends\Swoole as SwooleBackend;
@@ -35,7 +36,8 @@ class SwooleTest extends TestCase
         Event::wait();
     }
 
-    public function testEnqueueProcess() : void
+    #[Test]
+    public function enqueueProcess() : void
     {
         for ($i = 0; $i < 10; ++$i) {
             $this->backend->enqueue(

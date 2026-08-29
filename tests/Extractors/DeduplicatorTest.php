@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Extractors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\Deduplicator;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +31,8 @@ class DeduplicatorTest extends TestCase
         $this->extractor = new Deduplicator(iterator: $iterator);
     }
 
-    public function testExtract() : void
+    #[Test]
+    public function extract() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],

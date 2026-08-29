@@ -164,7 +164,6 @@ class ThresholdedReLUTest extends TestCase
         $this->activationFn = new ThresholdedReLU($this->threshold);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -173,7 +172,7 @@ class ThresholdedReLUTest extends TestCase
 
     #[Test]
     #[TestDox('It throws an exception when threshold is negative')]
-    public function testInvalidThresholdException() : void
+    public function invalidThresholdException() : void
     {
         $this->expectException(InvalidThresholdException::class);
 
@@ -183,7 +182,7 @@ class ThresholdedReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
-    public function testActivate(NDArray $input, array $expected) : void
+    public function activate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -193,7 +192,7 @@ class ThresholdedReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function differentiate(NDArray $input, array $expected) : void
     {
         $output = $this->activationFn->activate($input);
         $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
@@ -204,7 +203,7 @@ class ThresholdedReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly handles different threshold values')]
     #[DataProvider('thresholdValuesProvider')]
-    public function testThresholdValues(float $threshold, NDArray $input, array $expectedActivation, array $expectedDerivative) : void
+    public function thresholdValues(float $threshold, NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
         $activationFn = new ThresholdedReLU($threshold);
 
@@ -219,7 +218,7 @@ class ThresholdedReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly handles values around zero')]
     #[DataProvider('zeroRegionProvider')]
-    public function testZeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
+    public function zeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
         $output = $this->activationFn->activate($input);
         $activations = $output->toArray();
@@ -232,7 +231,7 @@ class ThresholdedReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly handles extreme values')]
     #[DataProvider('extremeValuesProvider')]
-    public function testExtremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
+    public function extremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
         $output = $this->activationFn->activate($input);
         $activations = $output->toArray();

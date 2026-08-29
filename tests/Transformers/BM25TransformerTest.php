@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\BM25Transformer;
@@ -21,7 +22,8 @@ class BM25TransformerTest extends TestCase
         $this->transformer = new BM25Transformer(dampening: 1.2, normalization: 0.75);
     }
 
-    public function testFitTransform() : void
+    #[Test]
+    public function fitTransform() : void
     {
         $dataset = new Unlabeled([
             [1, 3, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 4, 1, 0, 1],

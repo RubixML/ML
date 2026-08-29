@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Loggers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Loggers\Screen;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +22,8 @@ class ScreenTest extends TestCase
         $this->logger = new Screen(channel: 'default');
     }
 
-    public function testLog() : void
+    #[Test]
+    public function log() : void
     {
         $this->expectOutputRegex('/\b(default.INFO: test)\b/');
 

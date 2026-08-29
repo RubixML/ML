@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,8 @@ class EncodingTest extends TestCase
         $this->encoding = new Encoding(json_encode(self::TEST_DATA) ?: '');
     }
 
-    public function testData() : void
+    #[Test]
+    public function data() : void
     {
         $expected = '{"breakfast":"pancakes","lunch":"croque monsieur","dinner":"new york strip steak"}';
 

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Strategies;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Strategies\WildGuess;
@@ -21,17 +22,20 @@ class WildGuessTest extends TestCase
         $this->strategy = new WildGuess();
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->strategy->fitted());
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(DataType::continuous(), $this->strategy->type());
     }
 
-    public function testFitGuess() : void
+    #[Test]
+    public function fitGuess() : void
     {
         $this->strategy->fit([1, 2, 3, 4, 5]);
 

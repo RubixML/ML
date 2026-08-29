@@ -130,7 +130,7 @@ class LeakyReLUTest extends TestCase
 
     #[Test]
     #[TestDox('Can be constructed with valid leakage parameter')]
-    public function testConstructorWithValidLeakage() : void
+    public function constructorWithValidLeakage() : void
     {
         $activationFn = new LeakyReLU(0.2);
 
@@ -140,14 +140,13 @@ class LeakyReLUTest extends TestCase
 
     #[Test]
     #[TestDox('Throws exception when constructed with invalid leakage parameter')]
-    public function testConstructorWithInvalidLeakage() : void
+    public function constructorWithInvalidLeakage() : void
     {
         $this->expectException(InvalidLeakageException::class);
 
         new LeakyReLU(1.5);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -157,7 +156,7 @@ class LeakyReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
-    public function testActivate(NDArray $input, array $expected) : void
+    public function activate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -167,7 +166,7 @@ class LeakyReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly handles boundary values during activation')]
     #[DataProvider('boundaryProvider')]
-    public function testBoundaryActivate(NDArray $input, array $expected) : void
+    public function boundaryActivate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -177,7 +176,7 @@ class LeakyReLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function differentiate(NDArray $input, array $expected) : void
     {
         $output = $this->activationFn->activate($input);
         $derivatives = $this->activationFn->differentiate($input, $output)->toArray();

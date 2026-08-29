@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use PHPUnit\Framework\TestCase;
@@ -20,27 +21,32 @@ class EstimatorTypeTest extends TestCase
         $this->type = new EstimatorType(EstimatorType::CLUSTERER);
     }
 
-    public function testCode() : void
+    #[Test]
+    public function code() : void
     {
         $this->assertSame(EstimatorType::CLUSTERER, $this->type->code());
     }
 
-    public function testIsClassifier() : void
+    #[Test]
+    public function isClassifier() : void
     {
         $this->assertFalse($this->type->isClassifier());
     }
 
-    public function testIsRegressor() : void
+    #[Test]
+    public function isRegressor() : void
     {
         $this->assertFalse($this->type->isRegressor());
     }
 
-    public function testIsClusterer() : void
+    #[Test]
+    public function isClusterer() : void
     {
         $this->assertTrue($this->type->isClusterer());
     }
 
-    public function testIsAnomalyDetector() : void
+    #[Test]
+    public function isAnomalyDetector() : void
     {
         $this->assertFalse($this->type->isAnomalyDetector());
     }

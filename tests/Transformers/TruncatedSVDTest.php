@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -31,7 +32,8 @@ class TruncatedSVDTest extends TestCase
         $this->transformer = new TruncatedSVD(2);
     }
 
-    public function testFitTransform() : void
+    #[Test]
+    public function fitTransform() : void
     {
         $this->assertEquals(4, $this->generator->dimensions());
 
@@ -46,7 +48,8 @@ class TruncatedSVDTest extends TestCase
         $this->assertCount(2, $sample);
     }
 
-    public function testTransformUnfitted() : void
+    #[Test]
+    public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

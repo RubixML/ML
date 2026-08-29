@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Deferred;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +26,8 @@ class DeferredTest extends TestCase
         );
     }
 
-    public function testCompute() : void
+    #[Test]
+    public function compute() : void
     {
         $this->assertEquals(3, $this->deferred->compute());
     }

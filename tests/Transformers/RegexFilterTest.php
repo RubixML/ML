@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\RegexFilter;
@@ -30,7 +31,8 @@ class RegexFilterTest extends TestCase
         ]);
     }
 
-    public function testTransform() : void
+    #[Test]
+    public function transform() : void
     {
         $dataset = Unlabeled::quick([
             ['I was not proud of what I had learned, but I never doubted that it was worth $$$ knowing..'],

@@ -21,14 +21,20 @@
     - Add per-class smoothing to Gaussian Naive Bayes
     - You can now exclude certain categories from one-hot encoding
     - Remove Word Stemmer tokenizer
+    - Fix SVC save/load using class map sidecar
     
 - 2.5.10
+    - Optimize N-gram and K-skip N-gram tokenizers
+    - Optimize Adaboost, defer weight renormalization
+    - Optimize true-negative counting
     - Added even more numerical stability to SoftPlus
 
 - 2.5.9
     - Symmetrize TSNE affinities matrix, fixes optimization
     - Add numerical stability to SoftPlus activation function
     - Fix Extra Tree leaf node entropy
+    - Fix SVC save/load dropping the class label map
+    - Validate the SVC class label map class count against the model on load
     - Add numerical stability to BM25 Transformer
 
 - 2.5.8

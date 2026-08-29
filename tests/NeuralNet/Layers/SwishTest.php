@@ -97,7 +97,8 @@ class SwishTest extends TestCase
     }
 
     #[DataProvider('initializeForwardBackInferProvider')]
-    public function testInitializeForwardBackInfer(
+    #[Test]
+    public function initializeForwardBackInfer(
         array $forwardExpected,
         array $backExpected,
         array $inferExpected,
@@ -131,7 +132,8 @@ class SwishTest extends TestCase
         self::assertSame($expected, (string) $layer);
     }
 
-    public function testWidthThrowsIfNotInitialized() : void
+    #[Test]
+    public function widthThrowsIfNotInitialized() : void
     {
         $layer = new Swish();
 
@@ -141,7 +143,8 @@ class SwishTest extends TestCase
         $layer->width();
     }
 
-    public function testInitializeReturnsFanOutAndSetsWidth() : void
+    #[Test]
+    public function initializeReturnsFanOutAndSetsWidth() : void
     {
         $fanIn = 4;
         $layer = new Swish(new Constant(1.0));
@@ -152,7 +155,8 @@ class SwishTest extends TestCase
         self::assertSame($fanIn, $layer->width());
     }
 
-    public function testParametersAndRestore() : void
+    #[Test]
+    public function parametersAndRestore() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -179,7 +183,8 @@ class SwishTest extends TestCase
         self::assertEquals($originalBeta, $restoredBeta);
     }
 
-    public function testGradientMatchesBackpropagatedGradient() : void
+    #[Test]
+    public function gradientMatchesBackpropagatedGradient() : void
     {
         $this->layer->initialize($this->fanIn);
 

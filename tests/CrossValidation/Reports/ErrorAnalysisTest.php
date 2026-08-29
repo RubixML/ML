@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ErrorAnalysis;
@@ -78,7 +79,8 @@ class ErrorAnalysisTest extends TestCase
         $this->report = new ErrorAnalysis();
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             EstimatorType::regressor(),
@@ -93,7 +95,8 @@ class ErrorAnalysisTest extends TestCase
      * @param (int|float)[] $expected
      */
     #[DataProvider('generateProvider')]
-    public function testGenerate(array $predictions, array $labels, array $expected) : void
+    #[Test]
+    public function generate(array $predictions, array $labels, array $expected) : void
     {
         $results = $this->report->generate(
             predictions: $predictions,

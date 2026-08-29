@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Unlabeled;
@@ -26,7 +27,8 @@ class TokenHashingVectorizerTest extends TestCase
         );
     }
 
-    public function testTransform() : void
+    #[Test]
+    public function transform() : void
     {
         $dataset = Unlabeled::quick(samples: [
             ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],

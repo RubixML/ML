@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Tokenizers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\KSkipNGram;
 use Rubix\ML\Tokenizers\Tokenizer;
@@ -59,12 +60,27 @@ class KSkipNGramTest extends TestCase
         ];
     }
 
-    protected function setUp() : void
+    /**
+     * @return Generator<mixed[]>
+     */
+    public static function minThreeProvider() : Generator
     {
-        $this->tokenizer = new KSkipNGram(2, 3, 2);
+        yield [
+            'a b c d e',
+            [
+                'a b c', 'a c d', 'a b c d', 'a c d e', 'b c d',
+                'b d e', 'b c d e', 'c d e',
+            ],
+        ];
     }
 
-    public function testBuild() : void
+    protected function setUp() : void
+    {
+        $this->tokenizer = new KSkipNGram(min: 2, max: 3, skip: 2);
+    }
+
+    #[Test]
+    public function build() : void
     {
         $this->assertInstanceOf(KSkipNGram::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
@@ -75,7 +91,8 @@ class KSkipNGramTest extends TestCase
      * @param list<string> $expected
      */
     #[DataProvider('tokenizeProvider')]
-    public function testTokenize(string $text, array $expected) : void
+    #[Test]
+    public function tokenize(string $text, array $expected) : void
     {
         $tokens = $this->tokenizer->tokenize($text);
 
@@ -87,9 +104,25 @@ class KSkipNGramTest extends TestCase
      * @param list<string> $expected
      */
     #[DataProvider('tokenizeUnigramProvider')]
-    public function testTokenizeUnigrams(string $text, array $expected) : void
+    #[Test]
+    public function tokenizeUnigrams(string $text, array $expected) : void
     {
-        $tokenizer = new KSkipNGram(1, 1, 2);
+        $tokenizer = new KSkipNGram(min: 1, max: 1, skip: 2);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('minThreeProvider')]
+    #[Test]
+    public function tokenizeMinThree(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(min: 3, max: 4, skip: 1);
 
         $tokens = $tokenizer->tokenize($text);
 

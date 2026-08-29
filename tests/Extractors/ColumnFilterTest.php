@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Extractors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Extractors\ColumnFilter;
@@ -26,7 +27,8 @@ class ColumnFilterTest extends TestCase
         );
     }
 
-    public function testExtract() : void
+    #[Test]
+    public function extract() : void
     {
         $expected = [
             ['attitude' => 'nice', 'class' => 'not monster', 'rating' => '4', 'sociability' => 'friendly'],

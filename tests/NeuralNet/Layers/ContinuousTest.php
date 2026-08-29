@@ -75,7 +75,6 @@ class ContinuousTest extends TestCase
         $this->layer = new Continuous(new LeastSquares());
     }
 
-    #[Test]
     #[TestDox('Returns string representation')]
     public function testToString() : void
     {
@@ -86,7 +85,7 @@ class ContinuousTest extends TestCase
 
     #[Test]
     #[TestDox('Initializes and reports width')]
-    public function testInitializeWidth() : void
+    public function initializeWidth() : void
     {
         $this->layer->initialize(1);
         self::assertEquals(1, $this->layer->width());
@@ -94,7 +93,7 @@ class ContinuousTest extends TestCase
 
     #[Test]
     #[TestDox('Initialize rejects fan-in not equal to 1')]
-    public function testInitializeRejectsInvalidFanIn() : void
+    public function initializeRejectsInvalidFanIn() : void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->layer->initialize(2);
@@ -103,7 +102,7 @@ class ContinuousTest extends TestCase
     #[Test]
     #[TestDox('Computes forward pass')]
     #[DataProvider('forwardProvider')]
-    public function testForward(array $expected) : void
+    public function forward(array $expected) : void
     {
         $this->layer->initialize(1);
 
@@ -114,7 +113,7 @@ class ContinuousTest extends TestCase
     #[Test]
     #[TestDox('Backpropagates and returns gradient for previous layer')]
     #[DataProvider('gradientProvider')]
-    public function testBack(array $expectedGradient) : void
+    public function back(array $expectedGradient) : void
     {
         $this->layer->initialize(1);
         $this->layer->forward($this->input);
@@ -133,7 +132,7 @@ class ContinuousTest extends TestCase
     #[Test]
     #[TestDox('Computes gradient directly given input and expected')]
     #[DataProvider('gradientProvider')]
-    public function testGradient(array $expectedGradient) : void
+    public function gradient(array $expectedGradient) : void
     {
         $this->layer->initialize(1);
 
@@ -149,7 +148,7 @@ class ContinuousTest extends TestCase
     #[Test]
     #[TestDox('Computes inference activations')]
     #[DataProvider('forwardProvider')]
-    public function testInfer(array $expected) : void
+    public function infer(array $expected) : void
     {
         $this->layer->initialize(1);
 

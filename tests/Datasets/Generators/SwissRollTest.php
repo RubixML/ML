@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Datasets\Generators;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -24,12 +25,14 @@ class SwissRollTest extends TestCase
         $this->generator = new SwissRoll(x: 0.0, y: 0.0, z: 0.0, scale: 1.0, depth: 12.0, noise: 0.3);
     }
 
-    public function testDimensions() : void
+    #[Test]
+    public function dimensions() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    public function testGenerate() : void
+    #[Test]
+    public function generate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

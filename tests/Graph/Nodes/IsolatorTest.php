@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\Isolator;
@@ -40,17 +41,20 @@ class IsolatorTest extends TestCase
         );
     }
 
-    public function testColumn() : void
+    #[Test]
+    public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    public function testValue() : void
+    #[Test]
+    public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }
 
-    public function testCleanup() : void
+    #[Test]
+    public function cleanup() : void
     {
         $this->node->cleanup();
 

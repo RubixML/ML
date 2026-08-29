@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Persisters;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persisters\Filesystem;
@@ -39,7 +40,8 @@ class FilesystemTest extends TestCase
         }
     }
 
-    public function testSaveLoad() : void
+    #[Test]
+    public function saveLoad() : void
     {
         $encoding = new Encoding("Bitch, I'm for real!");
 

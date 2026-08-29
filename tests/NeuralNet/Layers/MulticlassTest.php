@@ -103,7 +103,7 @@ class MulticlassTest extends TestCase
 
     #[Test]
     #[TestDox('Constructor rejects invalid number of classes')]
-    public function testConstructorRejectsInvalidClasses() : void
+    public function constructorRejectsInvalidClasses() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -112,7 +112,7 @@ class MulticlassTest extends TestCase
 
     #[Test]
     #[TestDox('Method width() returns number of classes')]
-    public function testWidthReturnsNumberOfClasses() : void
+    public function widthReturnsNumberOfClasses() : void
     {
         self::assertSame(3, $this->layer->width());
     }
@@ -120,7 +120,7 @@ class MulticlassTest extends TestCase
     #[Test]
     #[TestDox('Initializes and returns correct fan out')]
     #[DataProvider('initializeProvider')]
-    public function testInitializeReturnsFanOut(int $fanIn) : void
+    public function initializeReturnsFanOut(int $fanIn) : void
     {
         $fanOut = $this->layer->initialize($fanIn);
 
@@ -131,7 +131,7 @@ class MulticlassTest extends TestCase
     #[Test]
     #[TestDox('Computes forward softmax probabilities')]
     #[DataProvider('forwardProvider')]
-    public function testForward(array $expected) : void
+    public function forward(array $expected) : void
     {
         $this->layer->initialize(3);
 
@@ -145,7 +145,7 @@ class MulticlassTest extends TestCase
     #[Test]
     #[TestDox('Backpropagates and returns output gradient')]
     #[DataProvider('backProvider')]
-    public function testBack(array $expected) : void
+    public function back(array $expected) : void
     {
         $this->layer->initialize(3);
 
@@ -169,7 +169,7 @@ class MulticlassTest extends TestCase
     #[Test]
     #[TestDox('Computes gradient for previous layer directly')]
     #[DataProvider('backProvider')]
-    public function testGradient(array $expectedGradient) : void
+    public function gradient(array $expectedGradient) : void
     {
         $this->layer->initialize(3);
 
@@ -198,7 +198,7 @@ class MulticlassTest extends TestCase
 
     #[Test]
     #[TestDox('Computes exact Softmax Jacobian-vector product for losses other than Cross Entropy')]
-    public function testGradientWithRelativeEntropy() : void
+    public function gradientWithRelativeEntropy() : void
     {
         $expectedGradient = [
             [-0.0920019936, 0.0055337012, 0.0691078631],
@@ -237,7 +237,7 @@ class MulticlassTest extends TestCase
     #[Test]
     #[TestDox('Computes infer softmax probabilities')]
     #[DataProvider('inferProvider')]
-    public function testInfer(array $expected) : void
+    public function infer(array $expected) : void
     {
         $this->layer->initialize(3);
 
@@ -248,7 +248,7 @@ class MulticlassTest extends TestCase
 
     #[Test]
     #[TestDox('It returns correct string representation')]
-    public function testToStringReturnsCorrectValue() : void
+    public function toStringReturnsCorrectValue() : void
     {
         $expected = 'Multiclass (cost function: Multiclass Cross Entropy)';
 

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Datasets\Generators;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -22,12 +23,14 @@ class HyperplaneTest extends TestCase
         $this->generator = new Hyperplane(coefficients: [0.001, -4.0, 12], intercept: 5.0);
     }
 
-    public function testDimensions() : void
+    #[Test]
+    public function dimensions() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    public function testGenerate() : void
+    #[Test]
+    public function generate() : void
     {
         $dataset = $this->generator->generate(30);
 

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Report;
@@ -27,7 +28,8 @@ class AggregateReportTest extends TestCase
         ]);
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             EstimatorType::classifier(),
@@ -37,7 +39,8 @@ class AggregateReportTest extends TestCase
         $this->assertEquals($expected, $this->report->compatibility());
     }
 
-    public function testGenerate() : void
+    #[Test]
+    public function generate() : void
     {
         $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
@@ -24,7 +25,8 @@ class ImageVectorizerTest extends TestCase
         $this->transformer = new ImageVectorizer(false);
     }
 
-    public function testFitTransform() : void
+    #[Test]
+    public function fitTransform() : void
     {
         $dataset = Unlabeled::quick([
             [imagecreatefrompng('tests/test.png'), 'something else'],

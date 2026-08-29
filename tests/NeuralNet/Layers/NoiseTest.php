@@ -91,7 +91,6 @@ class NoiseTest extends TestCase
         $this->layer = new Noise(0.1);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -100,7 +99,7 @@ class NoiseTest extends TestCase
 
     #[Test]
     #[TestDox('Constructor rejects invalid standard deviation')]
-    public function testConstructorRejectsInvalidStdDev() : void
+    public function constructorRejectsInvalidStdDev() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -110,7 +109,7 @@ class NoiseTest extends TestCase
 
     #[Test]
     #[TestDox('Forward throws if layer is not initialized')]
-    public function testForwardThrowsIfNotInitialized() : void
+    public function forwardThrowsIfNotInitialized() : void
     {
         $layer = new Noise(0.1);
 
@@ -121,7 +120,7 @@ class NoiseTest extends TestCase
 
     #[Test]
     #[TestDox('Initializes width equal to fan-in')]
-    public function testInitializeSetsWidth() : void
+    public function initializeSetsWidth() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -130,7 +129,7 @@ class NoiseTest extends TestCase
 
     #[Test]
     #[TestDox('Computes forward pass that adds Gaussian noise with correct shape and scale')]
-    public function testForwardAddsNoiseWithCorrectProperties() : void
+    public function forwardAddsNoiseWithCorrectProperties() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -184,7 +183,7 @@ class NoiseTest extends TestCase
     #[Test]
     #[TestDox('Backpropagates and returns previous gradient unchanged')]
     #[DataProvider('backProvider')]
-    public function testBackReturnsPrevGradient(array $expected) : void
+    public function backReturnsPrevGradient(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
         $this->layer->forward($this->input);
@@ -201,7 +200,7 @@ class NoiseTest extends TestCase
     #[Test]
     #[TestDox('Infer returns input unchanged')]
     #[DataProvider('inferProvider')]
-    public function testInferIdentity(array $expected) : void
+    public function inferIdentity(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 

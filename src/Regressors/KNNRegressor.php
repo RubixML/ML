@@ -21,8 +21,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-
-use function array_slice;
+use SplMaxHeap;
 
 /**
  * KNN Regressor
@@ -231,23 +230,39 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      */
     protected function nearest(array $sample) : array
     {
-        $distances = [];
+        $heap = new SplMaxHeap();
 
-        foreach ($this->samples as $neighbor) {
-            $distances[] = $this->kernel->compute($sample, $neighbor);
+        foreach ($this->samples as $index => $neighbor) {
+            $distance = $this->kernel->compute($sample, $neighbor);
+
+            if (is_nan($distance)) {
+                continue;
+            }
+
+            if ($heap->count() < $this->k) {
+                $heap->insert([$distance, $index]);
+
+                continue;
+            }
+
+            if ($distance >= $heap->top()[0]) {
+                continue;
+            }
+
+            $heap->extract();
+
+            $heap->insert([$distance, $index]);
         }
 
-        asort($distances);
+        $labels = $distances = [];
 
-        $distances = array_slice($distances, 0, $this->k, true);
+        foreach ($heap as [$distance, $index]) {
+            $labels[] = $this->labels[$index];
 
-        $labels = [];
-
-        foreach ($distances as $i => $distance) {
-            $labels[] = $this->labels[$i];
+            $distances[] = $distance;
         }
 
-        return [$labels, array_values($distances)];
+        return [$labels, $distances];
     }
 
     /**

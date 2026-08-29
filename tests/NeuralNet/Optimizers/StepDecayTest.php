@@ -58,7 +58,6 @@ class StepDecayTest extends TestCase
         $this->optimizer = new StepDecay(rate: 0.001);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -73,7 +72,7 @@ class StepDecayTest extends TestCase
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate, int $losses, float $decay) : void
+    public function invalidConstructorParams(float $rate, int $losses, float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -88,7 +87,7 @@ class StepDecayTest extends TestCase
     #[Test]
     #[DataProvider('stepProvider')]
     #[TestDox('Can compute the step')]
-    public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
+    public function step(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
 
