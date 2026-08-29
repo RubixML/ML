@@ -11,7 +11,7 @@ A Vantage Point Tree is a binary spatial tree that divides samples by their dist
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | max leaf size | 30 | int | The maximum number of samples that each leaf node can contain. |
-| 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
+| 2 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. Must satisfy the `Subadditive` interface. |
 
 ## Example
 ```php

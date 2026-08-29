@@ -8,6 +8,7 @@ use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Graph\Nodes\VantagePoint;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Subadditive;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use SplObjectStorage;
 
@@ -65,6 +66,11 @@ class VantageTree implements BinaryTree, Spatial
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('Max leaf size must be'
                 . " greater than 0, $maxLeafSize given.");
+        }
+
+        if ($kernel and !$kernel instanceof Subadditive) {
+            throw new InvalidArgumentException('Distance kernel must implement'
+                . ' the Subadditive interface.');
         }
 
         $this->maxLeafSize = $maxLeafSize;

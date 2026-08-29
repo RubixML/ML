@@ -8,7 +8,18 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\VantageTree;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Kernels\Distance\Canberra;
+use Rubix\ML\Kernels\Distance\Cosine;
+use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Gower;
+use Rubix\ML\Kernels\Distance\Hamming;
+use Rubix\ML\Kernels\Distance\Jaccard;
+use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
+use Rubix\ML\Kernels\Distance\SparseCosine;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
@@ -80,5 +91,40 @@ class VantageTreeTest extends TestCase
         $this->tree->grow($dataset);
 
         $this->assertEquals(2, $this->tree->height());
+    }
+
+    public function testRejectCosineKernel() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new VantageTree(kernel: new Cosine());
+    }
+
+    public function testRejectSparseCosineKernel() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new VantageTree(kernel: new SparseCosine());
+    }
+
+    public function testCompatibleKernels() : void
+    {
+        $kernels = [
+            new Euclidean(),
+            new Manhattan(),
+            new Minkowski(),
+            new SafeEuclidean(),
+            new Diagonal(),
+            new Canberra(),
+            new Gower(),
+            new Hamming(),
+            new Jaccard(),
+        ];
+
+        foreach ($kernels as $kernel) {
+            new VantageTree(kernel: $kernel);
+        }
+
+        $this->assertTrue(true);
     }
 }

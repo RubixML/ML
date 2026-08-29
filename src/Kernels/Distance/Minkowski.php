@@ -16,7 +16,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Minkowski implements Distance, BoxPrunable
+class Minkowski implements Distance, Subadditive, Monotonic
 {
     /**
      * This parameter controls the *roundedness* of the metric. There are

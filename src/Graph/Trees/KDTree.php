@@ -7,7 +7,7 @@ use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;
-use Rubix\ML\Kernels\Distance\BoxPrunable;
+use Rubix\ML\Kernels\Distance\Monotonic;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -75,9 +75,9 @@ class KDTree implements BinaryTree, Spatial
                 . ' compatible with continuous features.');
         }
 
-        if ($kernel and !$kernel instanceof BoxPrunable) {
+        if ($kernel and !$kernel instanceof Monotonic) {
             throw new InvalidArgumentException('Distance kernel must implement the'
-                . ' BoxPrunable interface.');
+                . ' Monotonic interface.');
         }
 
         $this->maxLeafSize = $maxLeafSize;
