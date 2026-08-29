@@ -19,7 +19,7 @@ class NGramBench
 
     public function setUp() : void
     {
-        $this->tokenizer = new NGram(1, 2);
+        $this->tokenizer = new NGram(1, 8);
     }
 
     /**
