@@ -9,7 +9,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -158,9 +157,9 @@ class DBSCAN implements Estimator
                 continue;
             }
 
-            [$samples, $indices, $distances] = $this->tree->range($sample, $this->radius);
+            [, $indices] = $this->tree->range($sample, $this->radius);
 
-            if (count($samples) < $this->minDensity) {
+            if (count($indices) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
 
                 continue;
@@ -168,9 +167,23 @@ class DBSCAN implements Estimator
 
             $queue = new SplQueue();
 
-            $queue->enqueue($i);
-
             $predictions[$i] = $cluster;
+
+            foreach ($indices as $index) {
+                $index = (int) $index;
+
+                if (isset($predictions[$index])) {
+                    if ($predictions[$index] === self::NOISE) {
+                        $predictions[$index] = $cluster;
+                    }
+
+                    continue;
+                }
+
+                $predictions[$index] = $cluster;
+
+                $queue->enqueue($index);
+            }
 
             while (!$queue->isEmpty()) {
                 $index = $queue->dequeue();
