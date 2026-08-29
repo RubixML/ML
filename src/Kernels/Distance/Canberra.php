@@ -21,7 +21,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Canberra implements Distance, BoxPrunable
+class Canberra implements Distance, Subadditive, Monotonic
 {
     /**
      * Return the data types that this kernel is compatible with.
