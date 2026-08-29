@@ -3,7 +3,6 @@
 namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
-use Tensor\Vector;
 use Rubix\ML\DataType;
 use Rubix\ML\Verbose;
 use Rubix\ML\Helpers\Params;
@@ -393,7 +392,7 @@ class TSNE implements Transformer, Verbose
 
         return $dots->multiplyScalar(-2.0)
             ->addColumnVector($norms)
-            ->add(Vector::quick($norms->asArray()));
+            ->addVector($norms->transpose());
     }
 
     /**
