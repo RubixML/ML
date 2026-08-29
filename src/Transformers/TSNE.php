@@ -303,7 +303,7 @@ class TSNE implements Transformer, Verbose
 
         $m = count($samples);
 
-        $distances = $this->squaredPairwiseDistances(Matrix::quick($samples));
+        $distances = $this->pairwiseDistances(Matrix::quick($samples));
 
         $p = Matrix::quick($this->affinities($distances))
             ->multiply($this->exaggeration);
@@ -319,7 +319,7 @@ class TSNE implements Transformer, Verbose
         $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $distances = $this->squaredPairwiseDistances($y);
+            $distances = $this->pairwiseDistances($y);
 
             $gradient = $this->gradient($p, $y, $distances);
 
@@ -384,7 +384,7 @@ class TSNE implements Transformer, Verbose
      * @param Matrix $samples
      * @return Matrix
      */
-    protected function squaredPairwiseDistances(Matrix $samples) : Matrix
+    protected function pairwiseDistances(Matrix $samples) : Matrix
     {
         $norms = $samples->square()->sum();
 
