@@ -1,6 +1,7 @@
 # Changelog
 
 - 2.5.10
+    - Optimize brute-force nearest neighbors operations
     - Optimize N-gram and K-skip N-gram tokenizers
     - Optimize Adaboost, defer weight renormalization
     - Optimize true-negative counting
