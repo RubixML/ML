@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -47,9 +48,9 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
     /**
      * The transposed right singular vectors of the decomposition.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $components = null;
+    protected ?NDArray $components = null;
 
     /**
      * The proportion of information lost due to the transformation.
@@ -65,8 +66,8 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
     public function __construct(int $dimensions)
     {
         SpecificationChain::with([
-            new ExtensionIsLoaded('tensor'),
-            new ExtensionMinimumVersion('tensor', '2.2.0'),
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
         ])->check();
 
         if ($dimensions < 1) {
@@ -121,17 +122,17 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $svd = Matrix::build($dataset->samples())->svd();
+        $svd = NumPower::svd(NumPower::array($dataset->samples(), 'float32'));
 
-        $singularValues = $svd->singularValues();
-        $components = $svd->vT()->asArray();
+        $singularValues = $svd[1]->toArray();
+        $components = $svd[2]->toArray();
 
         $totalStdDev = array_sum($singularValues);
 
         $singularValues = array_slice($singularValues, 0, $this->dimensions);
         $components = array_slice($components, 0, $this->dimensions);
 
-        $components = Matrix::quick($components)->transpose();
+        $components = NumPower::transpose(NumPower::array($components, 'float32'), [1, 0]);
 
         $noiseStdDev = $totalStdDev - array_sum($singularValues);
         $lossiness = $noiseStdDev / ($totalStdDev ?: EPSILON);
@@ -152,9 +153,10 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
-            ->matmul($this->components)
-            ->asArray();
+        $samples = NumPower::matmul(
+            NumPower::array($samples, 'float32'),
+            $this->components
+        )->toArray();
     }
 
     /**

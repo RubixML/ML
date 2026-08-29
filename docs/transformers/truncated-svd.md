@@ -4,7 +4,7 @@
 Truncated Singular Value Decomposition (SVD) is a matrix factorization and dimensionality reduction technique that generalizes eigendecomposition to general matrices. When applied to datasets of document term frequency vectors, the technique is called Latent Semantic Analysis (LSA) and computes a statistical model of relationships between words.
 
 !!! note
-    Note that the [Tensor extension](https://pecl.php.net/package/Tensor) is required to use this transformer.
+    Note that the [NumPower extension](https://numpower.github.io/numpower-docs) is required to use this transformer.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 

@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -14,6 +15,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function array_map;
 use function array_slice;
 use function array_multisort;
 use function array_sum;
@@ -51,9 +53,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     /**
      * The matrix of eigenvectors computed at fitting.
      *
-     * @var Matrix|null
+     * @var NDArray|null
      */
-    protected ?Matrix $eigenvectors = null;
+    protected ?NDArray $eigenvectors = null;
 
     /**
      * The percentage of information lost due to the transformation.
@@ -65,9 +67,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     /**
      * The centers (means) of the input feature columns.
      *
-     * @var \Tensor\Vector|null
+     * @var NDArray|null
      */
-    protected ?\Tensor\Vector $mean = null;
+    protected ?NDArray $mean = null;
 
     /**
      * @param int $dimensions
@@ -76,8 +78,8 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     public function __construct(int $dimensions)
     {
         SpecificationChain::with([
-            new ExtensionIsLoaded('tensor'),
-            new ExtensionMinimumVersion('tensor', '2.1.4'),
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
         ])->check();
 
         if ($dimensions < 1) {
@@ -132,12 +134,25 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $xT = Matrix::quick($dataset->samples())->transpose();
+        $samples = $dataset->samples();
 
-        $eig = $xT->covariance()->eig(true);
+        $m = count($samples);
 
-        $eigenvalues = $eig->eigenvalues();
-        $eigenvectors = $eig->eigenvectors()->asArray();
+        $x = NumPower::array($samples, 'float32');
+
+        $mean = NumPower::divide(NumPower::sum($x, axis: 0), $m);
+
+        $centered = NumPower::subtract($x, $mean);
+
+        $covariance = NumPower::divide(
+            NumPower::matmul(NumPower::transpose($centered, [1, 0]), $centered),
+            $m
+        );
+
+        $eig = NumPower::eig($covariance);
+
+        $eigenvalues = $eig[0]->toArray();
+        $eigenvectors = array_map(null, ...$eig[1]->toArray());
 
         $totalVariance = array_sum($eigenvalues);
 
@@ -146,13 +161,12 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
+        $eigenvectors = NumPower::transpose(NumPower::array($eigenvectors, 'float32'), [1, 0]);
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
-        $this->mean = $xT->mean()->transpose();
-
+        $this->mean = $mean;
         $this->eigenvectors = $eigenvectors;
         $this->lossiness = $lossiness;
     }
@@ -169,10 +183,10 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
-            ->subtract($this->mean)
-            ->matmul($this->eigenvectors)
-            ->asArray();
+        $samples = NumPower::matmul(
+            NumPower::subtract(NumPower::array($samples, 'float32'), $this->mean),
+            $this->eigenvectors
+        )->toArray();
     }
 
     /**

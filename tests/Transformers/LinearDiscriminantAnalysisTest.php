@@ -15,7 +15,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
-#[RequiresPhpExtension('tensor')]
+#[RequiresPhpExtension('RubixNumPower')]
 #[CoversClass(LinearDiscriminantAnalysis::class)]
 class LinearDiscriminantAnalysisTest extends TestCase
 {

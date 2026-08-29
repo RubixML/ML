@@ -14,7 +14,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
-#[RequiresPhpExtension('tensor')]
+#[RequiresPhpExtension('RubixNumPower')]
 #[CoversClass(PrincipalComponentAnalysis::class)]
 class PrincipalComponentAnalysisTest extends TestCase
 {
