@@ -99,14 +99,18 @@ class NGram implements Tokenizer
             foreach ($words as $i => $word) {
                 $p = min($n - $i, $this->max);
 
-                for ($j = $this->min; $j <= $p; ++$j) {
-                    $nGram = $word;
+                if ($this->min === 1) {
+                    $nGrams[] = $word;
+                }
 
-                    for ($k = 1; $k < $j; ++$k) {
-                        $nGram .= self::SEPARATOR . $words[$i + $k];
+                $nGram = $word;
+
+                for ($j = 2; $j <= $p; ++$j) {
+                    $nGram .= self::SEPARATOR . $words[$i + $j - 1];
+
+                    if ($j >= $this->min) {
+                        $nGrams[] = $nGram;
                     }
-
-                    $nGrams[] = $nGram;
                 }
             }
         }

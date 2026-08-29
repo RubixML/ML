@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.10
+    - Added even more numerical stability to SoftPlus
+
 - 2.5.9
     - Symmetrize TSNE affinities matrix, fixes optimization
     - Add numerical stability to SoftPlus activation function

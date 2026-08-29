@@ -57,7 +57,9 @@ class SoftPlus implements ActivationFunction
      */
     public function _activate(float $input) : float
     {
-        return log1p(exp($input));
+        return $input > 0.0
+            ? $input + log1p(exp(-$input))
+            : log1p(exp($input));
     }
 
     /**
