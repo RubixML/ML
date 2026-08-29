@@ -23,7 +23,7 @@
     - Removed Word Stemmer tokenizer
     - Fixed SVC save/load using class map sidecar
     - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
-    - Added He Normal, Le Cun Normal, Truncated Normal, Xavier1/2 Normal initializers
+    - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
     - Cross Entropy loss function now split into Binary and Multiclass
     
 - 2.5.10
