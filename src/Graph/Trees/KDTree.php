@@ -4,18 +4,17 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Graph\Nodes\Box;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use SplMaxHeap;
 use SplObjectStorage;
 
-use function count;
-use function array_slice;
 use function in_array;
+use function is_nan;
 
 /**
  * K-d Tree
@@ -189,13 +188,13 @@ class KDTree implements BinaryTree, Spatial
     {
         $visited = new SplObjectStorage();
 
-        $samples = $labels = $distances = [];
+        $heap = new SplMaxHeap();
 
         $stack = $this->path($sample);
 
         while ($current = array_pop($stack)) {
             if ($current instanceof Box) {
-                $radius = $distances[$k - 1] ?? INF;
+                $radius = $heap->count() === $k ? $heap->top()[0] : INF;
 
                 foreach ($current->children() as $child) {
                     if (!$visited->contains($child)) {
@@ -221,25 +220,40 @@ class KDTree implements BinaryTree, Spatial
             }
 
             if ($current instanceof Neighborhood) {
-                $dataset = $current->dataset();
+                $labels = $current->dataset()->labels();
 
-                foreach ($dataset->samples() as $neighbor) {
-                    $distances[] = $this->kernel->compute($sample, $neighbor);
-                }
+                foreach ($current->dataset()->samples() as $i => $neighbor) {
+                    $distance = $this->kernel->compute($sample, $neighbor);
 
-                $samples = array_merge($samples, $dataset->samples());
-                $labels = array_merge($labels, $dataset->labels());
+                    if (is_nan($distance)) {
+                        continue;
+                    }
 
-                array_multisort($distances, $samples, $labels);
+                    if ($heap->count() < $k) {
+                        $heap->insert([$distance, $neighbor, $labels[$i]]);
 
-                if (count($samples) > $k) {
-                    $samples = array_slice($samples, 0, $k);
-                    $labels = array_slice($labels, 0, $k);
-                    $distances = array_slice($distances, 0, $k);
+                        continue;
+                    }
+
+                    if ($distance >= $heap->top()[0]) {
+                        continue;
+                    }
+
+                    $heap->extract();
+
+                    $heap->insert([$distance, $neighbor, $labels[$i]]);
                 }
 
                 $visited->attach($current);
             }
+        }
+
+        $samples = $labels = $distances = [];
+
+        foreach ($heap as [$distance, $neighbor, $label]) {
+            $samples[] = $neighbor;
+            $labels[] = $label;
+            $distances[] = $distance;
         }
 
         return [$samples, $labels, $distances];

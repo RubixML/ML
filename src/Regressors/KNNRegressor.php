@@ -21,8 +21,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-
-use function array_slice;
+use SplMaxHeap;
 
 /**
  * KNN Regressor
@@ -226,22 +225,42 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     /**
      * Find the K nearest neighbors to the given sample vector using the brute force method.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @return array{list<string|int|float>,list<float>}
      */
     protected function nearest(array $sample) : array
     {
-        $distances = [];
+        $heap = new SplMaxHeap();
 
-        foreach ($this->samples as $neighbor) {
-            $distances[] = $this->kernel->compute($sample, $neighbor);
+        foreach ($this->samples as $index => $neighbor) {
+            $distance = $this->kernel->compute($sample, $neighbor);
+
+            if (is_nan($distance)) {
+                continue;
+            }
+
+            if ($heap->count() < $this->k) {
+                $heap->insert([$distance, $index]);
+
+                continue;
+            }
+
+            if ($distance >= $heap->top()[0]) {
+                continue;
+            }
+
+            $heap->extract();
+
+            $heap->insert([$distance, $index]);
         }
 
-        asort($distances);
+        $labels = $distances = [];
 
-        $distances = array_slice($distances, 0, $this->k, true);
+        foreach ($heap as [$distance, $index]) {
+            $labels[] = $this->labels[$index];
 
-        $labels = array_intersect_key($this->labels, $distances);
+            $distances[] = $distance;
+        }
 
         return [$labels, $distances];
     }

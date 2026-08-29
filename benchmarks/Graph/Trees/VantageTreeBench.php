@@ -44,6 +44,21 @@ class VantageTreeBench
      */
     public function grow() : void
     {
+        $this->tree->destroy();
+
         $this->tree->grow($this->dataset);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(3)
+     * @OutputTimeUnit("seconds", precision=4)
+     * @beforeMethods({"setUp", "grow"})
+     */
+    public function nearest() : void
+    {
+        for ($i = 0; $i < 100; ++$i) {
+            $this->tree->nearest($this->dataset->sample($i), 1000);
+        }
     }
 }
