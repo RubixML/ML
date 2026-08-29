@@ -55,6 +55,22 @@ class NGramTest extends TestCase
         $this->tokenizer = new NGram(min: 1, max: 2);
     }
 
+    /**
+     * @test
+     * @dataProvider trigramProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenizeTrigrams(string $text, array $expected) : void
+    {
+        $tokenizer = new NGram(2, 3);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
     public function testBuild() : void
     {
         $this->assertInstanceOf(NGram::class, $this->tokenizer);

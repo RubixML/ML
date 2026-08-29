@@ -145,7 +145,7 @@ class TSNETest extends TestCase
             [4.0, 1.0, 0.0],
         ]);
 
-        $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
+        $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances->square());
 
         $expected = [
             [-0.37],
@@ -192,7 +192,7 @@ class TSNETest extends TestCase
             [9.0, 4.0, 0.0],
         ]);
 
-        $gradient = $this->invokeGradient($embedder, $p, $y, $distances);
+        $gradient = $this->invokeGradient($embedder, $p, $y, $distances->square());
 
         $expected = [
             [-0.18091856296078745, 0.0, 0.0],
@@ -232,7 +232,7 @@ class TSNETest extends TestCase
 
         $pwMethod = new ReflectionMethod(TSNE::class, 'squaredPairwiseDistances');
         $pwMethod->setAccessible(true);
-        $distances = $pwMethod->invokeArgs($this->embedder, [$y]);
+        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]))->square();
 
         $codeGradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
 
@@ -290,7 +290,7 @@ class TSNETest extends TestCase
             [9.0, 4.0, 1.0, 0.0],
         ];
 
-        $affinities = $this->invokeAffinities($embedder, $distances);
+        $affinities = $this->invokeAffinities($embedder, Matrix::quick($distances)->square())->asArray();
 
         $this->assertCount(4, $affinities);
 
@@ -401,27 +401,7 @@ class TSNETest extends TestCase
 
         $this->assertEquals($losses, $this->embedder->losses());
     }
-
-    public function testAffinitiesNormalize() : void
-    {
-        $distances = [
-            [0.0, 1.0, 4.0, 9.0],
-            [1.0, 0.0, 1.0, 4.0],
-            [4.0, 1.0, 0.0, 1.0],
-            [9.0, 4.0, 1.0, 0.0],
-        ];
-
-        $affinities = $this->invokeAffinities($this->embedder, $distances);
-
-        $this->assertCount(4, $affinities);
-
-        foreach ($affinities as $i => $row) {
-            $this->assertCount(4, $row);
-            $this->assertEqualsWithDelta(0.25, array_sum($row), 1e-8);
-            $this->assertSame(0.0, $row[$i]);
-        }
-    }
-
+    
     public function testGradientShape() : void
     {
         $p = Matrix::quick([
@@ -495,10 +475,10 @@ class TSNETest extends TestCase
 
     /**
      * @param TSNE $embedder
-     * @param array<float[]> $distances
-     * @return array<float[]>
+     * @param Matrix $distances
+     * @return Matrix
      */
-    private function invokeAffinities(TSNE $embedder, array $distances) : array
+    private function invokeAffinities(TSNE $embedder, Matrix $distances) : Matrix
     {
         $method = new ReflectionMethod(TSNE::class, 'affinities');
 

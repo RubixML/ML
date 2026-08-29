@@ -78,6 +78,22 @@ class KSkipNGramTest extends TestCase
         $this->tokenizer = new KSkipNGram(min: 2, max: 3, skip: 2);
     }
 
+    /**
+     * @test
+     * @dataProvider minThreeProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenizeMinThree(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(3, 4, 1);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
     public function testBuild() : void
     {
         $this->assertInstanceOf(KSkipNGram::class, $this->tokenizer);

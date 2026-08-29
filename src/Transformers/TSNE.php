@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
+use Tensor\ColumnVector;
 use Rubix\ML\DataType;
 use Rubix\ML\Verbose;
 use Rubix\ML\Helpers\Params;
@@ -305,7 +306,7 @@ class TSNE implements Transformer, Verbose
 
         $distances = $this->pairwiseDistances(Matrix::quick($samples));
 
-        $p = Matrix::quick($this->affinities($distances))
+        $p = $this->affinities($distances)
             ->multiply($this->exaggeration);
 
         $y = Matrix::gaussian($m, $this->dimensions)
@@ -396,108 +397,114 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
+     * Calculate the squared pairwise distances for each sample using the
+     * gram matrix trick. The resulting matrix is symmetric with a zero
+     * diagonal.
+     *
+     * @param Matrix $samples
+     * @return Matrix
+     */
+    protected function squaredDistances(Matrix $samples) : Matrix
+    {
+        $gram = $samples->matmul($samples->transpose());
+
+        $diag = $gram->diagonalAsVector();
+
+        return $gram->multiplyScalar(-2.0)
+            ->addColumnVector(ColumnVector::quick($diag->asArray()))
+            ->addVector($diag)
+            ->clipLower(0.0);
+    }
+
+    /**
      * Compute the joint probabilities from the squared distance matrix such
      * that they approximately match the desired perplexity. The resulting
      * matrix is symmetric and globally normalized (total sum equals 1).
      *
      * @param Matrix $distances
-     * @return array<float[]>
+     * @return Matrix
      */
-    protected function affinities(Matrix $distances) : array
+    protected function affinities(Matrix $distances) : Matrix
     {
-        $affinities = [];
+        $m = $distances->m();
 
-        foreach ($distances->asVectors() as $i => $vector) {
-            $row = $vector->asArray();
+        if ($m === 0) {
+            return Matrix::quick([]);
+        }
 
-            $candidate = [];
-            $maxBeta = INF;
-            $minBeta = -INF;
-            $beta = 1.0;
+        $mask = Matrix::ones($m, $m)
+            ->subtract(Matrix::identity($m));
 
-            for ($j = 0; $j < self::MAX_BINARY_PRECISION; ++$j) {
-                $candidate = [];
-                $pSigma = 0.0;
+        $betas = array_fill(0, $m, 1.0);
+        $minBetas = array_fill(0, $m, -INF);
+        $maxBetas = array_fill(0, $m, INF);
 
-                foreach ($row as $k => $distance) {
-                    if ($i !== $k) {
-                        $affinity = exp(-$distance * $beta);
+        $converged = array_fill(0, $m, false);
 
-                        $candidate[] = $affinity;
-                        $pSigma += $affinity;
-                    } else {
-                        $candidate[] = 0.0;
-                    }
+        $active = $m;
+
+        $candidate = Matrix::zeros($m, $m);
+
+        for ($j = 0; $j < self::MAX_BINARY_PRECISION; ++$j) {
+            if ($active === 0) {
+                break;
+            }
+
+            $candidate = $distances->multiplyColumnVector(ColumnVector::quick($betas))
+                ->negate()
+                ->exp()
+                ->multiply($mask);
+
+            $sigma = $candidate->sum();
+
+            $sigma = $sigma->add($sigma->equalScalar(0.0)->multiplyScalar(EPSILON));
+
+            $candidate = $candidate->divideColumnVector($sigma);
+
+            $diff = $sigma->log()
+                ->add($distances->multiply($candidate)->sum()->multiply(ColumnVector::quick($betas)))
+                ->subtractScalar($this->entropy)
+                ->negate()
+                ->asArray();
+
+            for ($i = 0; $i < $m; ++$i) {
+                if ($converged[$i]) {
+                    continue;
                 }
 
-                $pSigma = $pSigma ?: EPSILON;
+                if (abs($diff[$i]) < self::PERPLEXITY_TOLERANCE) {
+                    $converged[$i] = true;
 
-                $distSigma = 0.0;
+                    --$active;
 
-                foreach ($candidate as $k => &$affinity) {
-                    $affinity /= $pSigma;
-
-                    $distSigma += $row[$k] * $affinity;
+                    continue;
                 }
 
-                unset($affinity);
+                if ($diff[$i] < 0.0) {
+                    $minBetas[$i] = $betas[$i];
 
-                $entropy = log($pSigma) + $beta * $distSigma;
-
-                $diff = $this->entropy - $entropy;
-
-                if (abs($diff) < self::PERPLEXITY_TOLERANCE) {
-                    break;
-                }
-
-                if ($diff < 0.0) {
-                    $minBeta = $beta;
-
-                    if ($maxBeta === INF) {
-                        $beta *= 2.0;
-                    } else {
-                        $beta = 0.5 * ($beta + $maxBeta);
-                    }
+                    $betas[$i] = $maxBetas[$i] === INF
+                        ? $betas[$i] * 2.0
+                        : 0.5 * ($betas[$i] + $maxBetas[$i]);
                 } else {
-                    $maxBeta = $beta;
+                    $maxBetas[$i] = $betas[$i];
 
-                    if ($minBeta === -INF) {
-                        $beta /= 2.0;
-                    } else {
-                        $beta = 0.5 * ($beta + $minBeta);
-                    }
+                    $betas[$i] = $minBetas[$i] === -INF
+                        ? $betas[$i] / 2.0
+                        : 0.5 * ($betas[$i] + $minBetas[$i]);
                 }
             }
-
-            $affinities[] = $candidate;
         }
 
-        $n = count($affinities);
+        $scale = 1.0 / (2.0 * $m);
 
-        if ($n === 0) {
-            return [];
-        }
-
-        $scale = 1.0 / (2.0 * $n);
-
-        $symmetric = [];
-
-        for ($i = 0; $i < $n; ++$i) {
-            $row = [];
-
-            for ($j = 0; $j < $n; ++$j) {
-                $row[] = ($affinities[$i][$j] + $affinities[$j][$i]) * $scale;
-            }
-
-            $symmetric[] = $row;
-        }
-
-        return $symmetric;
+        return $candidate->add($candidate->transpose())
+            ->multiplyScalar($scale);
     }
 
     /**
-     * Compute the gradient of the KL Divergence cost function with respect to
-     * the embedding.
+     * Compute the gradient of the KL Divergence cost function with respect
+     * to the embedding.
      *
      * @param Matrix $p
      * @param Matrix $y
@@ -506,9 +513,7 @@ class TSNE implements Transformer, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $base = $this->dofs === 1
-            ? $distances->add(1.0)
-            : $distances->divide($this->dofs)->add(1.0);
+        $base = $distances->divide($this->dofs)->add(1.0);
 
         $weights = $base->reciprocal();
 
@@ -522,11 +527,9 @@ class TSNE implements Transformer, Verbose
 
         $pqd = $p->subtract($q)->multiply($weights);
 
-        $rowSums = $pqd->sum();
-
-        return $y->multiplyColumnVector($rowSums)
+        return $y->multiplyColumnVector($pqd->sum())
             ->subtract($pqd->matmul($y))
-            ->multiply($this->c);
+            ->multiplyScalar($this->c);
     }
 
     /**
