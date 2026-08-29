@@ -11,6 +11,7 @@ debug.log
 pyvenv.cfg
 .venv
 .idea
+.opencode
 .vscode
 .vs
 .phpbench
