@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 use function array_values;
@@ -37,7 +38,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     /**
      * The categories that should be ignored.
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected array $excluded = [];
 
@@ -49,13 +50,13 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     protected ?array $categories = null;
 
     /**
-     * @param list<string> $excluded The categories to drop during encoding.
+     * @param array<mixed> $excluded
      */
     public function __construct(array $excluded = [])
     {
         foreach ($excluded as $category) {
             if (!is_string($category)) {
-                throw new \Rubix\ML\Exceptions\InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'Excluded category must be a string, ' . gettype($category) . ' found.'
                 );
             }
