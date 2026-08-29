@@ -140,7 +140,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @internal
      *
-     * @return array
+     * @return mixed[]
      */
     public function params() : array
     {
@@ -209,7 +209,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return array
+     * @return list<string|int|float>
      */
     public function predict(Dataset $dataset) : array
     {

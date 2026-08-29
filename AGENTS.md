@@ -9,7 +9,7 @@ High-level machine learning and deep learning library for **PHP 8.3+**. Namespac
 | Command | Action |
 | --- | --- |
 | `composer test` | Run PHPUnit tests |
-| `composer analyze` | PHPStan static analysis (level 8) |
+| `composer analyze` | PHPStan static analysis (level 6) |
 | `composer check` | PHP-CS-Fixer dry-run (style check) |
 | `composer fix` | PHP-CS-Fixer auto-fix |
 | `composer phplint` | PHP syntax lint |

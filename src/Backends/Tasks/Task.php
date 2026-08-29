@@ -14,6 +14,8 @@ use Amp\Sync\Channel;
  *
  * @internal
  *
+ * @implements AmpTask<mixed, mixed, mixed>
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -23,7 +25,7 @@ class Task extends Deferred implements AmpTask
     /**
      * Run the task in a worker process.
      *
-     * @param Channel $channel
+     * @param Channel<mixed, mixed> $channel
      * @param Cancellation $cancellation
      * @return mixed
      */
