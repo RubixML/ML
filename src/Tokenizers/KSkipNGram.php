@@ -113,22 +113,22 @@ class KSkipNGram implements Tokenizer
             $n = count($words);
 
             foreach ($words as $i => $word) {
+                if ($this->min === 1) {
+                    $skipGrams[] = $word;
+                }
+
                 $partialGrams = [];
 
-                for ($j = $this->min; $j <= $this->max; ++$j) {
-                    if ($j === 1) {
-                        $skipGrams[] = $word;
-
-                        continue;
-                    }
-
+                for ($j = 2; $j <= $this->max; ++$j) {
                     $p = min($n - ($i + $j), $this->skip);
 
                     for ($k = 0; $k <= $p; ++$k) {
                         $partialGrams[$k] = ($partialGrams[$k] ?? $word)
                             . self::SEPARATOR . $words[$i + $k + $j - 1];
 
-                        $skipGrams[] = $partialGrams[$k];
+                        if ($j >= $this->min) {
+                            $skipGrams[] = $partialGrams[$k];
+                        }
                     }
                 }
             }

@@ -50,6 +50,22 @@ class NGramTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider trigramProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenizeTrigrams(string $text, array $expected) : void
+    {
+        $tokenizer = new NGram(2, 3);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
      * @return Generator<mixed[]>
      */
     public function tokenizeProvider() : Generator
@@ -63,6 +79,20 @@ class NGramTest extends TestCase
                 "I'd", "I'd like", 'like', 'like to', 'to', 'to die', 'die',
                 'die on', 'on', 'on Mars', 'Mars', 'Mars just', 'just', 'just not', 'not', 'not on',
                 'on', 'on impact', 'impact', 'The', 'The end', 'end',
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function trigramProvider() : Generator
+    {
+        yield [
+            'the quick brown fox jumps',
+            [
+                'the quick', 'the quick brown', 'quick brown', 'quick brown fox',
+                'brown fox', 'brown fox jumps', 'fox jumps',
             ],
         ];
     }
