@@ -75,7 +75,7 @@ jobs:
         run: composer install
 
       - name: Static Analysis
-       run: composer analyze
+        run: composer analyze
 
       - name: Unit Tests
         run: composer test
