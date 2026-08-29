@@ -421,6 +421,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                         $weight /= $total;
                     }
 
+                    unset($weight);
+
                     $total = 1.0;
                 }
 
