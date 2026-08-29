@@ -8,7 +8,7 @@
 
 **Interfaces:** [Transformer](../transformers/api.md#transformer), [Verbose](../verbose.md)
 
-**Data Type Compatibility:** Depends on distance kernel
+**Data Type Compatibility:** Continuous
 
 ## Parameters
 | # | Name | Default | Type | Description |
@@ -19,14 +19,12 @@
 | 4 | exaggeration | 12.0 | float | The factor to exaggerate the distances between samples during the early stage of embedding. |
 | 5 | epochs | 1000 | int | The maximum number of times to iterate over the embedding. |
 | 6 | minGradient | 1e-7 | float | The minimum norm of the gradient necessary to continue embedding. |
-| 7 | kernel | Euclidean | Distance | The distance kernel to use when measuring distances between samples. |
 
 ## Example
 ```php
 use Rubix\ML\Transformers\TSNE;
-use Rubix\ML\Kernels\Distance\Manhattan;
 
-$transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, new Manhattan());
+$transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
 ```
 
 ## Additional Methods

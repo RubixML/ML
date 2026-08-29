@@ -3,12 +3,11 @@
 namespace Rubix\ML\Transformers;
 
 use Tensor\Matrix;
+use Rubix\ML\DataType;
 use Rubix\ML\Verbose;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;
@@ -179,13 +178,6 @@ class TSNE implements Transformer, Verbose
     protected float $minGradient;
 
     /**
-     * The distance metric used to measure distances between samples in both high and low dimensions.
-     *
-     * @var Distance
-     */
-    protected Distance $kernel;
-
-    /**
      * The loss at each epoch from the last embedding.
      *
      * @var float[]|null
@@ -199,7 +191,6 @@ class TSNE implements Transformer, Verbose
      * @param float $exaggeration
      * @param int $epochs
      * @param float $minGradient
-     * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -208,8 +199,7 @@ class TSNE implements Transformer, Verbose
         int $perplexity = 30,
         float $exaggeration = 12.0,
         int $epochs = 1000,
-        float $minGradient = 1e-7,
-        ?Distance $kernel = null
+        float $minGradient = 1e-7
     ) {
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
@@ -253,7 +243,6 @@ class TSNE implements Transformer, Verbose
         $this->epochs = $epochs;
         $this->early = min(self::MAX_EARLY_EPOCHS, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
-        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
@@ -261,11 +250,13 @@ class TSNE implements Transformer, Verbose
      *
      * @internal
      *
-     * @return list<\Rubix\ML\DataType>
+     * @return list<DataType>
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::continuous(),
+        ];
     }
 
     /**
@@ -312,7 +303,7 @@ class TSNE implements Transformer, Verbose
 
         $m = count($samples);
 
-        $distances = $this->pairwiseDistances($samples);
+        $distances = $this->pairwiseDistances(Matrix::quick($samples));
 
         $p = Matrix::quick($this->affinities($distances))
             ->multiply($this->exaggeration);
@@ -328,9 +319,9 @@ class TSNE implements Transformer, Verbose
         $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $distances = $this->pairwiseDistances($y->asArray());
+            $distances = $this->pairwiseDistances($y);
 
-            $gradient = $this->gradient($p, $y, Matrix::quick($distances));
+            $gradient = $this->gradient($p, $y, $distances);
 
             $directions = $velocity->multiply($gradient)->asArray();
 
@@ -386,41 +377,39 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
-     * Calculate the pairwise distances for each sample and return them in a 2-d array.
+     * Calculate the squared pairwise distances for each sample using the
+     * ||a - b||^2 = ||a||^2 + ||b||^2 - 2a.b identity and return them as a
+     * matrix.
      *
-     * @param array<mixed[]> $samples
-     * @return array<float[]>
+     * @param Matrix $samples
+     * @return Matrix
      */
-    protected function pairwiseDistances(array $samples) : array
+    protected function pairwiseDistances(Matrix $samples) : Matrix
     {
-        $distances = [];
+        $norms = $samples->square()->sum();
 
-        foreach ($samples as $i => $sampleA) {
-            $row = [];
+        $dots = $samples->matmul($samples->transpose());
 
-            foreach ($samples as $j => $sampleB) {
-                $row[] = $i !== $j ? $this->kernel->compute($sampleA, $sampleB) : 0.0;
-            }
-
-            $distances[] = $row;
-        }
-
-        return $distances;
+        return $dots->multiplyScalar(-2.0)
+            ->addColumnVector($norms)
+            ->addVector($norms->transpose());
     }
 
     /**
-     * Compute the joint probabilities from the distance matrix such that they
-     * approximately match the desired perplexity. The resulting matrix is
-     * symmetric and globally normalized (total sum equals 1).
+     * Compute the joint probabilities from the squared distance matrix such
+     * that they approximately match the desired perplexity. The resulting
+     * matrix is symmetric and globally normalized (total sum equals 1).
      *
-     * @param array<float[]> $distances
+     * @param Matrix $distances
      * @return array<float[]>
      */
-    protected function affinities(array $distances) : array
+    protected function affinities(Matrix $distances) : array
     {
         $affinities = [];
 
-        foreach ($distances as $i => $row) {
+        foreach ($distances->asVectors() as $i => $vector) {
+            $row = $vector->asArray();
+
             $candidate = [];
             $maxBeta = INF;
             $minBeta = -INF;
@@ -432,7 +421,7 @@ class TSNE implements Transformer, Verbose
 
                 foreach ($row as $k => $distance) {
                     if ($i !== $k) {
-                        $affinity = exp(-$distance ** 2 * $beta);
+                        $affinity = exp(-$distance * $beta);
 
                         $candidate[] = $affinity;
                         $pSigma += $affinity;
@@ -448,7 +437,7 @@ class TSNE implements Transformer, Verbose
                 foreach ($candidate as $k => &$affinity) {
                     $affinity /= $pSigma;
 
-                    $distSigma += $row[$k] ** 2 * $affinity;
+                    $distSigma += $row[$k] * $affinity;
                 }
 
                 unset($affinity);
@@ -507,7 +496,8 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
-     * Compute the gradient of the KL Divergence cost function with respect to the embedding.
+     * Compute the gradient of the KL Divergence cost function with respect to
+     * the embedding.
      *
      * @param Matrix $p
      * @param Matrix $y
@@ -516,13 +506,15 @@ class TSNE implements Transformer, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $base = $distances->square()
-            ->divide($this->dofs)
-            ->add(1.0);
+        $base = $this->dofs === 1
+            ? $distances->add(1.0)
+            : $distances->divide($this->dofs)->add(1.0);
 
-        $kernel = $base->pow((1.0 + $this->dofs) / -2.0);
+        $weights = $base->reciprocal();
 
-        $weights = $base->pow(-1.0);
+        $kernel = $this->dofs === 1
+            ? $weights
+            : $weights->pow((1.0 + $this->dofs) * 0.5);
 
         $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
 
@@ -530,15 +522,10 @@ class TSNE implements Transformer, Verbose
 
         $pqd = $p->subtract($q)->multiply($weights);
 
-        $gradient = [];
+        $rowSums = $pqd->sum();
 
-        foreach ($pqd->asVectors() as $i => $vector) {
-            $yHat = $y->rowAsVector($i)->subtract($y);
-
-            $gradient[] = current($vector->matmul($yHat)->asArray()) ?: [];
-        }
-
-        return Matrix::quick($gradient)
+        return $y->multiplyColumnVector($rowSums)
+            ->subtract($pqd->matmul($y))
             ->multiply($this->c);
     }
 
@@ -574,7 +561,6 @@ class TSNE implements Transformer, Verbose
             'exaggeration' => $this->exaggeration,
             'epochs' => $this->epochs,
             'min gradient' => $this->minGradient,
-            'kernel' => $this->kernel,
         ]) . ')';
     }
 }
