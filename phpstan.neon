@@ -1,5 +1,5 @@
 parameters:
-    level: 5
+    level: 6
     phpVersion: 80400
     bootstrapFiles:
         - phpstan-bootstrap.php
