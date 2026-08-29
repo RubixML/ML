@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Datasets\Generators;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
@@ -25,7 +26,8 @@ class BlobTest extends TestCase
         $this->generator = new Blob(center: [0, 0, 0], stdDev: 1.0);
     }
 
-    public function testSimulate() : void
+    #[Test]
+    public function simulate() : void
     {
         $dataset = $this->generator->generate(100);
 
@@ -35,17 +37,20 @@ class BlobTest extends TestCase
         $this->assertInstanceOf(Generator::class, $generator);
     }
 
-    public function testCenter() : void
+    #[Test]
+    public function center() : void
     {
         $this->assertEquals([0, 0, 0], $this->generator->center());
     }
 
-    public function testDimensions() : void
+    #[Test]
+    public function dimensions() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    public function testGenerate() : void
+    #[Test]
+    public function generate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 

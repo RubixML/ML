@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -77,24 +78,28 @@ class IsolationForestTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadNumEstimators() : void
+    #[Test]
+    public function badNumEstimators() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new IsolationForest(estimators: -100);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::categorical(),
@@ -104,7 +109,8 @@ class IsolationForestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'estimators' => 300,
@@ -115,7 +121,8 @@ class IsolationForestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPredict() : void
+    #[Test]
+    public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -136,7 +143,8 @@ class IsolationForestTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

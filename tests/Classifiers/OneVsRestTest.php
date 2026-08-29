@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Classifiers;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -118,17 +119,20 @@ class OneVsRestTest extends TestCase
         $this->backend?->shutdown();
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -137,7 +141,8 @@ class OneVsRestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'base' => new GaussianNB(),
@@ -147,7 +152,8 @@ class OneVsRestTest extends TestCase
     }
 
     #[DataProvider('provideBackends')]
-    public function testTrainPredictProba(Backend $backend) : void
+    #[Test]
+    public function trainPredictProba(Backend $backend) : void
     {
         $this->backend = $backend;
 
@@ -170,7 +176,8 @@ class OneVsRestTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Helpers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Classifiers\KNearestNeighbors;
@@ -63,7 +64,8 @@ class ParamsTest extends TestCase
         ini_set('precision', $this->originalPrecision);
     }
 
-    public function testInts() : void
+    #[Test]
+    public function ints() : void
     {
         $values = Params::ints(min: 0, max: 100, n: 5);
 
@@ -79,7 +81,8 @@ class ParamsTest extends TestCase
         }
     }
 
-    public function testFloats() : void
+    #[Test]
+    public function floats() : void
     {
         $values = Params::floats(min: 0.0, max: 100.0, n: 5);
 
@@ -93,7 +96,8 @@ class ParamsTest extends TestCase
         }
     }
 
-    public function testGrid() : void
+    #[Test]
+    public function grid() : void
     {
         $values = Params::grid(min: 0, max: 100, n: 5);
 
@@ -111,7 +115,8 @@ class ParamsTest extends TestCase
         $this->assertEquals($expected, Params::stringify(params: $params, separator: $separator));
     }
 
-    public function testSortName() : void
+    #[Test]
+    public function sortName() : void
     {
         $this->assertEquals('KNearestNeighbors', Params::shortName(KNearestNeighbors::class));
     }

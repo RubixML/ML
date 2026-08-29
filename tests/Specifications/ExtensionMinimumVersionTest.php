@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Specifications;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
@@ -40,7 +41,8 @@ class ExtensionMinimumVersionTest extends TestCase
      * @param bool $expected
      */
     #[DataProvider('passesProvider')]
-    public function testPasses(ExtensionMinimumVersion $specification, bool $expected) : void
+    #[Test]
+    public function passes(ExtensionMinimumVersion $specification, bool $expected) : void
     {
         $this->assertSame($expected, $specification->passes());
     }

@@ -90,7 +90,6 @@ class HyperbolicTangentTest extends TestCase
         $this->activationFn = new HyperbolicTangent();
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -100,7 +99,7 @@ class HyperbolicTangentTest extends TestCase
     #[Test]
     #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
-    public function testActivate(NDArray $input, array $expected) : void
+    public function activate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -110,7 +109,7 @@ class HyperbolicTangentTest extends TestCase
     #[Test]
     #[TestDox('Correctly differentiates the output')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $output, array $expected) : void
+    public function differentiate(NDArray $output, array $expected) : void
     {
         $input = NumPower::zeros($output->shape());
         $derivatives = $this->activationFn->differentiate($input, $output)->toArray();

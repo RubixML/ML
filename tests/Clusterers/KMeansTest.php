@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Clusterers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -87,24 +88,28 @@ class KMeansTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadK() : void
+    #[Test]
+    public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new KMeans(k: 0);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -113,7 +118,8 @@ class KMeansTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'k' => 3,
@@ -127,7 +133,8 @@ class KMeansTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPartialPredict() : void
+    #[Test]
+    public function trainPartialPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -174,9 +181,7 @@ class KMeansTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function onlineLearning() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -198,7 +203,7 @@ class KMeansTest extends TestCase
         $sizes = $this->estimator->sizes();
 
         $this->assertCount(3, $sizes);
-        $this->assertContainsOnly('int', $sizes);
+        $this->assertContainsOnlyInt($sizes);
         $this->assertSame(self::TRAIN_SIZE + $batch->numSamples(), array_sum($sizes));
         $this->assertGreaterThanOrEqual(0, min($sizes));
 
@@ -209,9 +214,7 @@ class KMeansTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function onlineLearningKeepsSizesValid() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -230,15 +233,13 @@ class KMeansTest extends TestCase
             $sizes = $this->estimator->sizes();
 
             $this->assertCount(3, $sizes);
-            $this->assertContainsOnly('int', $sizes);
+            $this->assertContainsOnlyInt($sizes);
             $this->assertSame($total, array_sum($sizes));
             $this->assertGreaterThanOrEqual(0, min($sizes));
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function partialWithoutTrain() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -250,14 +251,12 @@ class KMeansTest extends TestCase
         $sizes = $this->estimator->sizes();
 
         $this->assertCount(3, $sizes);
-        $this->assertContainsOnly('int', $sizes);
+        $this->assertContainsOnlyInt($sizes);
         $this->assertSame(self::TRAIN_SIZE, array_sum($sizes));
         $this->assertGreaterThanOrEqual(0, min($sizes));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -265,7 +264,8 @@ class KMeansTest extends TestCase
         $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

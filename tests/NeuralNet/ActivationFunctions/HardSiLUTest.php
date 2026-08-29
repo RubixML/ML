@@ -157,7 +157,6 @@ class HardSiLUTest extends TestCase
         $this->activationFn = new HardSiLU();
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -167,7 +166,7 @@ class HardSiLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
-    public function testActivate(NDArray $input, array $expected) : void
+    public function activate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -177,7 +176,7 @@ class HardSiLUTest extends TestCase
     #[Test]
     #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function differentiate(NDArray $input, array $expected) : void
     {
         $output = $this->activationFn->activate($input);
         $derivatives = $this->activationFn->differentiate($input, $output)->toArray();

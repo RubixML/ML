@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Extractors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\NDJSON;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +21,8 @@ class NDJSONTest extends TestCase
         $this->extractor = new NDJSON('tests/test.ndjson');
     }
 
-    public function testExtractExport() : void
+    #[Test]
+    public function extractExport() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4, 'class' => 'not monster'],

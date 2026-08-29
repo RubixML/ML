@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Classifiers;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -93,24 +94,28 @@ class RadiusNeighborsTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadRadius() : void
+    #[Test]
+    public function badRadius() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new RadiusNeighbors(radius: 0.0);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -119,7 +124,8 @@ class RadiusNeighborsTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'radius' => 60.0,
@@ -132,7 +138,8 @@ class RadiusNeighborsTest extends TestCase
     }
 
     #[DataProvider('trainPredictProvider')]
-    public function testTrainPredict(Spatial $tree) : void
+    #[Test]
+    public function trainPredict(Spatial $tree) : void
     {
         $estimator = new RadiusNeighbors(
             radius: 60.0,
@@ -158,14 +165,16 @@ class RadiusNeighborsTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: ['green']));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

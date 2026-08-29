@@ -135,9 +135,7 @@ class ExtraTreeRegressorTest extends TestCase
         self::assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(ExtraTreeRegressor::class, $this->estimator);
@@ -147,9 +145,7 @@ class ExtraTreeRegressorTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMaxHeight() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -157,9 +153,7 @@ class ExtraTreeRegressorTest extends TestCase
         new ExtraTreeRegressor(0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMaxLeafSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -167,9 +161,7 @@ class ExtraTreeRegressorTest extends TestCase
         new ExtraTreeRegressor(30, 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMinPurityIncrease() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -177,9 +169,7 @@ class ExtraTreeRegressorTest extends TestCase
         new ExtraTreeRegressor(30, 3, -1.0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMaxFeatures() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -187,9 +177,7 @@ class ExtraTreeRegressorTest extends TestCase
         new ExtraTreeRegressor(30, 3, 1e-7, 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function type() : void
     {
         self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
@@ -307,9 +295,7 @@ class ExtraTreeRegressorTest extends TestCase
         $this->estimator->predict(Unlabeled::quick());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainHeightBalance() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -330,9 +316,7 @@ class ExtraTreeRegressorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -340,9 +324,7 @@ class ExtraTreeRegressorTest extends TestCase
         $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5, 0.5]], ['ok']));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function predictIncompatible() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -358,9 +340,8 @@ class ExtraTreeRegressorTest extends TestCase
      * Train on two distinct constant feature groups with a constant label, so that
      * the root split produces two non-empty but pure subsets that must be
      * terminated by the purity guard rather than further splitting.
-     *
-     * @test
      */
+    #[Test]
     public function trainPureChildren() : void
     {
         $groupA = (new Blob([32.0, 32.0, 0.0, 0.0], 0.0))->generate(self::TRAIN_SIZE / 2);

@@ -171,7 +171,6 @@ class SELUTest extends TestCase
         $this->activationFn = new SELU();
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -181,7 +180,7 @@ class SELUTest extends TestCase
     #[Test]
     #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
-    public function testActivate(NDArray $input, array $expected) : void
+    public function activate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -191,7 +190,7 @@ class SELUTest extends TestCase
     #[Test]
     #[TestDox('Correctly differentiates the input')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function differentiate(NDArray $input, array $expected) : void
     {
         $output = $this->activationFn->activate($input);
         $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
@@ -202,7 +201,7 @@ class SELUTest extends TestCase
     #[Test]
     #[TestDox('Correctly handles values around zero')]
     #[DataProvider('zeroRegionProvider')]
-    public function testZeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
+    public function zeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
         $output = $this->activationFn->activate($input);
         $activations = $output->toArray();

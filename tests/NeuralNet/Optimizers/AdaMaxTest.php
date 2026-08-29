@@ -67,7 +67,6 @@ class AdaMaxTest extends TestCase
         );
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -82,7 +81,7 @@ class AdaMaxTest extends TestCase
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate, float $momentumDecay, float $normDecay) : void
+    public function invalidConstructorParams(float $rate, float $momentumDecay, float $normDecay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -97,7 +96,7 @@ class AdaMaxTest extends TestCase
     #[Test]
     #[DataProvider('stepProvider')]
     #[TestDox('Can compute the step')]
-    public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
+    public function step(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 

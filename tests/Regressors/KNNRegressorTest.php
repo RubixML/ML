@@ -67,24 +67,28 @@ class KNNRegressorTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadK() : void
+    #[Test]
+    public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new KNNRegressor(k: 0);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -93,7 +97,8 @@ class KNNRegressorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'k' => 10,
@@ -104,7 +109,8 @@ class KNNRegressorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPartialPredict() : void
+    #[Test]
+    public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -129,9 +135,7 @@ class KNNRegressorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function weightedPredictionAlignsLabelsAndWeights() : void
     {
         // Samples in a different input order than their ranking by proximity,
@@ -148,9 +152,7 @@ class KNNRegressorTest extends TestCase
         $this->assertEqualsWithDelta([12.5], $predictions, 1e-8);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function weightedPredictionAlignsLabelsAndWeightsAtBoundary() : void
     {
         $this->estimator = new KNNRegressor(3, true);
@@ -165,9 +167,7 @@ class KNNRegressorTest extends TestCase
         $this->assertEqualsWithDelta(79.605263158, $predictions[0], 1e-8);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function weightedPredictionWithKLimit() : void
     {
         $this->estimator = new KNNRegressor(2, true);
@@ -187,9 +187,7 @@ class KNNRegressorTest extends TestCase
         $this->assertEqualsWithDelta($expected, $predictions[0], 1e-8);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -197,7 +195,8 @@ class KNNRegressorTest extends TestCase
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
@@ -205,7 +204,8 @@ class KNNRegressorTest extends TestCase
     }
 
     #[DataProvider('trainedStateCases')]
-    public function testBecomesTrainedAfterPartialFitting(int $trainSize, int $folds) : void
+    #[Test]
+    public function becomesTrainedAfterPartialFitting(int $trainSize, int $folds) : void
     {
         $training = $this->generator->generate($trainSize);
 

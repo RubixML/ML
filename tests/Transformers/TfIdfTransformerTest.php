@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Transformers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\TfIdfTransformer;
@@ -21,7 +22,8 @@ class TfIdfTransformerTest extends TestCase
         $this->transformer = new TfIdfTransformer(smoothing: 1.0, sublinear: false);
     }
 
-    public function testFitTransformReverse() : void
+    #[Test]
+    public function fitTransformReverse() : void
     {
         $dataset = new Unlabeled(samples: [
             [1, 3, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 4, 1, 0, 1],

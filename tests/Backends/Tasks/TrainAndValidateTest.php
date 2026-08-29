@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Backends\Tasks;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -17,7 +18,8 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(TrainAndValidate::class)]
 class TrainAndValidateTest extends TestCase
 {
-    public function testCompute() : void
+    #[Test]
+    public function compute() : void
     {
         $estimator = new GaussianNB();
 

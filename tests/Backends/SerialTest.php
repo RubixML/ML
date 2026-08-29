@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Backends;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Tasks\Task;
@@ -30,7 +31,8 @@ class SerialTest extends TestCase
         $this->backend = new Serial();
     }
 
-    public function testEnqueueProcess() : void
+    #[Test]
+    public function enqueueProcess() : void
     {
         for ($i = 0; $i < 10; ++$i) {
             $this->backend->enqueue(

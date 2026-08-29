@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Classifiers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Encoding;
@@ -116,24 +117,28 @@ class MultilayerPerceptronTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadBatchSize() : void
+    #[Test]
+    public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new MultilayerPerceptron(hiddenLayers: [], batchSize: -100);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -142,7 +147,8 @@ class MultilayerPerceptronTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'hidden layers' => [
@@ -169,7 +175,8 @@ class MultilayerPerceptronTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPartialPredict() : void
+    #[Test]
+    public function trainPartialPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -214,7 +221,8 @@ class MultilayerPerceptronTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testSnapshotPathIsTransientAndResolvedLazily() : void
+    #[Test]
+    public function snapshotPathIsTransientAndResolvedLazily() : void
     {
         $this->estimator->setLogger(new BlackHole());
 
@@ -243,21 +251,24 @@ class MultilayerPerceptronTest extends TestCase
         $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
     }
 
-    public function testSnapshotPathRejectsDirectory() : void
+    #[Test]
+    public function snapshotPathRejectsDirectory() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->setSnapshotPath(sys_get_temp_dir());
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']], labels: ['green']));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

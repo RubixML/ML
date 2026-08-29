@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
@@ -48,7 +49,8 @@ class MeanSquaredErrorTest extends TestCase
         $this->metric = new MeanSquaredError();
     }
 
-    public function testRange() : void
+    #[Test]
+    public function range() : void
     {
         $tuple = $this->metric->range();
 
@@ -57,7 +59,8 @@ class MeanSquaredErrorTest extends TestCase
         $this->assertGreaterThan($tuple[0], $tuple[1]);
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             EstimatorType::regressor(),
@@ -72,7 +75,8 @@ class MeanSquaredErrorTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('scoreProvider')]
-    public function testScore(array $predictions, array $labels, float $expected) : void
+    #[Test]
+    public function score(array $predictions, array $labels, float $expected) : void
     {
         [$min, $max] = $this->metric->range()->list();
 

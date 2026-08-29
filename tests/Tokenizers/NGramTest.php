@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Tokenizers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\NGram;
 use Rubix\ML\Tokenizers\Tokenizer;
@@ -55,23 +56,8 @@ class NGramTest extends TestCase
         $this->tokenizer = new NGram(min: 1, max: 2);
     }
 
-    /**
-     * @test
-     * @dataProvider trigramProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenizeTrigrams(string $text, array $expected) : void
-    {
-        $tokenizer = new NGram(2, 3);
-
-        $tokens = $tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    public function testBuild() : void
+    #[Test]
+    public function build() : void
     {
         $this->assertInstanceOf(NGram::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
@@ -82,7 +68,8 @@ class NGramTest extends TestCase
      * @param list<string> $expected
      */
     #[DataProvider('tokenizeProvider')]
-    public function testTokenize(string $text, array $expected) : void
+    #[Test]
+    public function tokenize(string $text, array $expected) : void
     {
         $tokens = $this->tokenizer->tokenize($text);
 
@@ -94,7 +81,8 @@ class NGramTest extends TestCase
      * @param list<string> $expected
      */
     #[DataProvider('trigramProvider')]
-    public function testTokenizeTrigrams(string $text, array $expected) : void
+    #[Test]
+    public function tokenizeTrigrams(string $text, array $expected) : void
     {
         $tokenizer = new NGram(min: 2, max: 3);
 

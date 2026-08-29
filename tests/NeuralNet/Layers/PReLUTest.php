@@ -171,7 +171,6 @@ class PReLUTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -180,7 +179,7 @@ class PReLUTest extends TestCase
 
     #[Test]
     #[TestDox('Initializes width equal to fan-in')]
-    public function testInitializeSetsWidth() : void
+    public function initializeSetsWidth() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -190,7 +189,7 @@ class PReLUTest extends TestCase
     #[Test]
     #[TestDox('Initializes and returns fan out equal to fan-in')]
     #[DataProvider('initializeProvider')]
-    public function testInitializeReturnsFanOut(int $fanIn) : void
+    public function initializeReturnsFanOut(int $fanIn) : void
     {
         $fanOut = $this->layer->initialize($fanIn);
 
@@ -201,7 +200,7 @@ class PReLUTest extends TestCase
     #[Test]
     #[TestDox('Computes forward activations')]
     #[DataProvider('forwardProvider')]
-    public function testForward(array $expected) : void
+    public function forward(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -213,7 +212,7 @@ class PReLUTest extends TestCase
     #[Test]
     #[TestDox('Backpropagates and returns gradient for previous layer')]
     #[DataProvider('backProvider')]
-    public function testBack(array $expected) : void
+    public function back(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -232,7 +231,7 @@ class PReLUTest extends TestCase
     #[Test]
     #[TestDox('Computes gradient for previous layer directly')]
     #[DataProvider('gradientProvider')]
-    public function testGradient(array $expected) : void
+    public function gradient(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -247,7 +246,7 @@ class PReLUTest extends TestCase
     #[Test]
     #[TestDox('Computes inference activations')]
     #[DataProvider('inferProvider')]
-    public function testInfer(array $expected) : void
+    public function infer(array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -258,7 +257,7 @@ class PReLUTest extends TestCase
 
     #[Test]
     #[TestDox('Yields trainable alpha parameter')]
-    public function testParameters() : void
+    public function parameters() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -270,7 +269,7 @@ class PReLUTest extends TestCase
 
     #[Test]
     #[TestDox('Restores alpha parameter from array')]
-    public function testRestore() : void
+    public function restore() : void
     {
         $this->layer->initialize($this->fanIn);
 

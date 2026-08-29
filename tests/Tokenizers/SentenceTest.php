@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Tokenizers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Sentence;
 use PHPUnit\Framework\TestCase;
@@ -214,7 +215,8 @@ class SentenceTest extends TestCase
      * @param list<string> $expected
      */
     #[DataProvider('tokenizeProvider')]
-    public function testTokenize(string $text, array $expected) : void
+    #[Test]
+    public function tokenize(string $text, array $expected) : void
     {
         $tokens = $this->tokenizer->tokenize($text);
 

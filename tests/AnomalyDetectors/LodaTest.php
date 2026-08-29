@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -77,38 +78,44 @@ class LodaTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadContamination() : void
+    #[Test]
+    public function badContamination() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new Loda(contamination: -1);
     }
 
-    public function testBadEstimators() : void
+    #[Test]
+    public function badEstimators() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new Loda(contamination: 0.2, estimators: 0);
     }
 
-    public function testBadBins() : void
+    #[Test]
+    public function badBins() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new Loda(contamination: 0.2, estimators: 2, bins: 1);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -117,7 +124,8 @@ class LodaTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'estimators' => 100,
@@ -128,7 +136,8 @@ class LodaTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPartialPredict() : void
+    #[Test]
+    public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -153,7 +162,8 @@ class LodaTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 

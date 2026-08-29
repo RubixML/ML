@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\NeuralNet;
 
 use NDArray;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Labeled;
@@ -57,7 +58,8 @@ class SnapshotTest extends TestCase
         }
     }
 
-    public function testTake() : void
+    #[Test]
+    public function take() : void
     {
         $network = $this->createNetwork();
 
@@ -73,7 +75,8 @@ class SnapshotTest extends TestCase
         $snapshot->clean();
     }
 
-    public function testRestore() : void
+    #[Test]
+    public function restore() : void
     {
         $network = $this->createNetwork();
 
@@ -130,7 +133,8 @@ class SnapshotTest extends TestCase
         $snapshot->clean();
     }
 
-    public function testClean() : void
+    #[Test]
+    public function clean() : void
     {
         $network = $this->createNetwork();
 
@@ -143,7 +147,8 @@ class SnapshotTest extends TestCase
         $this->assertFileDoesNotExist($this->testPath);
     }
 
-    public function testRestoreMismatchedCount() : void
+    #[Test]
+    public function restoreMismatchedCount() : void
     {
         $network = $this->createNetwork();
 
@@ -163,7 +168,8 @@ class SnapshotTest extends TestCase
         $snapshot->restore();
     }
 
-    public function testRestoreTruncatedData() : void
+    #[Test]
+    public function restoreTruncatedData() : void
     {
         $network = $this->createNetwork();
 
@@ -202,7 +208,8 @@ class SnapshotTest extends TestCase
         $snapshot->restore();
     }
 
-    public function testRestoreIsAtomic() : void
+    #[Test]
+    public function restoreIsAtomic() : void
     {
         $network = $this->createNetwork();
 

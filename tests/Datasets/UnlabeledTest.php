@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Datasets;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Unlabeled;
@@ -47,7 +48,8 @@ class UnlabeledTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testStack() : void
+    #[Test]
+    public function stack() : void
     {
         $dataset1 = new Unlabeled(samples: [['sample1']]);
         $dataset2 = new Unlabeled(samples: [['sample2']]);
@@ -59,30 +61,35 @@ class UnlabeledTest extends TestCase
         $this->assertSame(1, $dataset->numFeatures());
     }
 
-    public function testSamples() : void
+    #[Test]
+    public function samples() : void
     {
         $this->assertSame(self::SAMPLES, $this->dataset->samples());
     }
 
-    public function testSample() : void
+    #[Test]
+    public function sample() : void
     {
         $this->assertSame(self::SAMPLES[2], $this->dataset->sample(2));
         $this->assertSame(self::SAMPLES[5], $this->dataset->sample(5));
     }
 
-    public function testNumSamples() : void
+    #[Test]
+    public function numSamples() : void
     {
         $this->assertSame(6, $this->dataset->numSamples());
     }
 
-    public function testFeature() : void
+    #[Test]
+    public function feature() : void
     {
         $expected = array_column(self::SAMPLES, 2);
 
         $this->assertSame($expected, $this->dataset->feature(2));
     }
 
-    public function testDropFeature() : void
+    #[Test]
+    public function dropFeature() : void
     {
         $expected = [
             ['nice', 'friendly', 4.0],
@@ -98,12 +105,14 @@ class UnlabeledTest extends TestCase
         $this->assertSame($expected, $this->dataset->samples());
     }
 
-    public function testNumFeatures() : void
+    #[Test]
+    public function numFeatures() : void
     {
         $this->assertSame(4, $this->dataset->numFeatures());
     }
 
-    public function testFeatureType() : void
+    #[Test]
+    public function featureType() : void
     {
         $this->assertEquals(DataType::categorical(), $this->dataset->featureType(0));
         $this->assertEquals(DataType::categorical(), $this->dataset->featureType(1));
@@ -111,7 +120,8 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(DataType::continuous(), $this->dataset->featureType(3));
     }
 
-    public function testFeatureTypes() : void
+    #[Test]
+    public function featureTypes() : void
     {
         $expected = [
             DataType::categorical(),
@@ -123,17 +133,20 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->featureTypes());
     }
 
-    public function testUniqueTypes() : void
+    #[Test]
+    public function uniqueTypes() : void
     {
         $this->assertCount(2, $this->dataset->uniqueTypes());
     }
 
-    public function testHomogeneous() : void
+    #[Test]
+    public function homogeneous() : void
     {
         $this->assertFalse($this->dataset->homogeneous());
     }
 
-    public function testShape() : void
+    #[Test]
+    public function shape() : void
     {
         $this->assertSame([6, 4], $this->dataset->shape());
     }
@@ -143,14 +156,16 @@ class UnlabeledTest extends TestCase
         $this->assertSame(24, $this->dataset->size());
     }
 
-    public function testFeatures() : void
+    #[Test]
+    public function features() : void
     {
         $expected = array_transpose(self::SAMPLES);
 
         $this->assertSame($expected, $this->dataset->features());
     }
 
-    public function testTypes() : void
+    #[Test]
+    public function types() : void
     {
         $expected = [
             DataType::categorical(),
@@ -162,7 +177,8 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->types());
     }
 
-    public function testFilter() : void
+    #[Test]
+    public function filter() : void
     {
         $isFriendly = function ($record) {
             return $record[2] === 'friendly';
@@ -180,7 +196,8 @@ class UnlabeledTest extends TestCase
         $this->assertSame($expected, $filtered->samples());
     }
 
-    public function testSort() : void
+    #[Test]
+    public function sort() : void
     {
         $dataset = $this->dataset->sort(function ($recordA, $recordB) {
             return $recordA[3] > $recordB[3];
@@ -198,7 +215,8 @@ class UnlabeledTest extends TestCase
         $this->assertSame($expected, $dataset->samples());
     }
 
-    public function testFeaturesByType() : void
+    #[Test]
+    public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
@@ -207,12 +225,14 @@ class UnlabeledTest extends TestCase
         $this->assertSame($expected, $columns);
     }
 
-    public function testEmpty() : void
+    #[Test]
+    public function empty() : void
     {
         $this->assertFalse($this->dataset->empty());
     }
 
-    public function testRandomize() : void
+    #[Test]
+    public function randomize() : void
     {
         $samples = $this->dataset->samples();
 
@@ -221,21 +241,24 @@ class UnlabeledTest extends TestCase
         $this->assertNotEquals($samples, $this->dataset->samples());
     }
 
-    public function testHead() : void
+    #[Test]
+    public function head() : void
     {
         $subset = $this->dataset->head(3);
 
         $this->assertCount(3, $subset);
     }
 
-    public function testTail() : void
+    #[Test]
+    public function tail() : void
     {
         $subset = $this->dataset->tail(3);
 
         $this->assertCount(3, $subset);
     }
 
-    public function testTake() : void
+    #[Test]
+    public function take() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -245,7 +268,8 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $this->dataset);
     }
 
-    public function testLeave() : void
+    #[Test]
+    public function leave() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -255,7 +279,8 @@ class UnlabeledTest extends TestCase
         $this->assertCount(1, $this->dataset);
     }
 
-    public function testSlice() : void
+    #[Test]
+    public function slice() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -265,7 +290,8 @@ class UnlabeledTest extends TestCase
         $this->assertCount(6, $this->dataset);
     }
 
-    public function testSplice() : void
+    #[Test]
+    public function splice() : void
     {
         $this->assertCount(6, $this->dataset);
 
@@ -275,7 +301,8 @@ class UnlabeledTest extends TestCase
         $this->assertCount(4, $this->dataset);
     }
 
-    public function testSplit() : void
+    #[Test]
+    public function split() : void
     {
         [$left, $right] = $this->dataset->split();
 
@@ -283,7 +310,8 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $right);
     }
 
-    public function testFold() : void
+    #[Test]
+    public function fold() : void
     {
         $folds = $this->dataset->fold(2);
 
@@ -292,7 +320,8 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $folds[1]);
     }
 
-    public function testBatch() : void
+    #[Test]
+    public function batch() : void
     {
         $batches = $this->dataset->batch(2);
 
@@ -302,7 +331,8 @@ class UnlabeledTest extends TestCase
         $this->assertCount(2, $batches[2]);
     }
 
-    public function testPartition() : void
+    #[Test]
+    public function partition() : void
     {
         [$left, $right] = $this->dataset->splitByFeature(column: 2, value: 'loner');
 
@@ -310,28 +340,32 @@ class UnlabeledTest extends TestCase
         $this->assertCount(4, $right);
     }
 
-    public function testRandomSubset() : void
+    #[Test]
+    public function randomSubset() : void
     {
         $subset = $this->dataset->randomSubset(3);
 
         $this->assertCount(3, array_unique($subset->samples(), SORT_REGULAR));
     }
 
-    public function testRandomSubsetWithReplacement() : void
+    #[Test]
+    public function randomSubsetWithReplacement() : void
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);
 
         $this->assertCount(3, $subset);
     }
 
-    public function testRandomWeightedSubsetWithReplacement() : void
+    #[Test]
+    public function randomWeightedSubsetWithReplacement() : void
     {
         $subset = $this->dataset->randomWeightedSubsetWithReplacement(n: 3, weights: self::WEIGHTS);
 
         $this->assertCount(3, $subset);
     }
 
-    public function testMerge() : void
+    #[Test]
+    public function merge() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
@@ -344,7 +378,8 @@ class UnlabeledTest extends TestCase
         $this->assertSame(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
     }
 
-    public function testJoin() : void
+    #[Test]
+    public function join() : void
     {
         $this->assertEquals(count(current(self::SAMPLES)), $this->dataset->numFeatures());
 
@@ -365,7 +400,8 @@ class UnlabeledTest extends TestCase
         $this->assertSame(['nice', 'rough', 'friendly', 2.6, 3], $joined->sample(2));
     }
 
-    public function testDescribe() : void
+    #[Test]
+    public function describe() : void
     {
         $results = $this->dataset->describe();
 
@@ -417,7 +453,8 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $results->toArray());
     }
 
-    public function testDeduplicate() : void
+    #[Test]
+    public function deduplicate() : void
     {
         $dataset = $this->dataset->deduplicate();
 
@@ -430,14 +467,16 @@ class UnlabeledTest extends TestCase
         $this->assertCount(6, $this->dataset);
     }
 
-    public function testArrayAccess() : void
+    #[Test]
+    public function arrayAccess() : void
     {
         $expected = ['mean', 'furry', 'loner', -1.5];
 
         $this->assertSame($expected, $this->dataset[1]);
     }
 
-    public function testIterate() : void
+    #[Test]
+    public function iterate() : void
     {
         $expected = [
             ['nice', 'furry', 'friendly', 4.0],

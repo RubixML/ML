@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Classifiers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\DataType;
@@ -105,17 +106,20 @@ class SVCTest extends TestCase
         }
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -124,7 +128,8 @@ class SVCTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'c' => 1.0,
@@ -137,7 +142,8 @@ class SVCTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainSaveLoadPredict() : void
+    #[Test]
+    public function trainSaveLoadPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -173,7 +179,8 @@ class SVCTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testSaveOverwritesPreviousPair() : void
+    #[Test]
+    public function saveOverwritesPreviousPair() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -215,7 +222,8 @@ class SVCTest extends TestCase
         $this->assertSame(['cat', 'dog'], json_decode($data, true));
     }
 
-    public function testSaveWithInvalidUTF8LabelThrewBeforeWriting() : void
+    #[Test]
+    public function saveWithInvalidUTF8LabelThrewBeforeWriting() : void
     {
         $badLabel = "caf\xE9";
 
@@ -253,7 +261,8 @@ class SVCTest extends TestCase
         $this->assertFileDoesNotExist($sidecar);
     }
 
-    public function testSaveFailedWithInvalidUTF8DidNotClobberExistingPair() : void
+    #[Test]
+    public function saveFailedWithInvalidUTF8DidNotClobberExistingPair() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -299,7 +308,8 @@ class SVCTest extends TestCase
         }
     }
 
-    public function testLoadEmptySidecarThrew() : void
+    #[Test]
+    public function loadEmptySidecarThrew() : void
     {
         $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
@@ -312,7 +322,8 @@ class SVCTest extends TestCase
         (new SVC(1.0, new RBF(), true, 1e-3))->load('svc.model');
     }
 
-    public function testLoadSidecarWithTooManyClassesThrows() : void
+    #[Test]
+    public function loadSidecarWithTooManyClassesThrows() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -349,7 +360,8 @@ class SVCTest extends TestCase
         }
     }
 
-    public function testLoadSidecarWithTooFewClassesThrows() : void
+    #[Test]
+    public function loadSidecarWithTooFewClassesThrows() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -374,7 +386,8 @@ class SVCTest extends TestCase
         $this->assertFalse($estimator->trained());
     }
 
-    public function testFailedSaveLeavesExistingPairUntouched() : void
+    #[Test]
+    public function failedSaveLeavesExistingPairUntouched() : void
     {
         if (function_exists('posix_geteuid') and posix_geteuid() === 0) {
             $this->markTestSkipped('Permission failures cannot be simulated as root.');
@@ -439,7 +452,8 @@ class SVCTest extends TestCase
         $this->assertCount(0, $leftovers === false ? [] : $leftovers);
     }
 
-    public function testLoadWithoutClassMap() : void
+    #[Test]
+    public function loadWithoutClassMap() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -458,7 +472,8 @@ class SVCTest extends TestCase
         (new SVC(1.0, new RBF(), true, 1e-3))->load('svc.model');
     }
 
-    public function testLoadFailureLeavesEstimatorUntouched() : void
+    #[Test]
+    public function loadFailureLeavesEstimatorUntouched() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -508,14 +523,16 @@ class SVCTest extends TestCase
         $this->assertEquals($before, $otherEstimator->predict($otherDataset));
     }
 
-    public function testTrainIncompatible() : void
+    #[Test]
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Labeled::quick(samples: [['bad']]));
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

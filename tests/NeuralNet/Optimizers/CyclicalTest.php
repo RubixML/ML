@@ -62,7 +62,6 @@ class CyclicalTest extends TestCase
         $this->optimizer = new Cyclical(lower: 0.001, upper: 0.006, losses: 2000);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -78,7 +77,7 @@ class CyclicalTest extends TestCase
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testConstructorInvalidArgs(float $lower, float $upper, int $losses, ?float $decay) : void
+    public function constructorInvalidArgs(float $lower, float $upper, int $losses, ?float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -97,7 +96,7 @@ class CyclicalTest extends TestCase
     #[Test]
     #[DataProvider('stepProvider')]
     #[TestDox('Can compute the step')]
-    public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
+    public function step(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
 

@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\CrossValidation;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -74,7 +75,8 @@ class KFoldTest extends TestCase
     }
 
     #[DataProvider('provideBackends')]
-    public function testTestEstimator(Backend $backend) : void
+    #[Test]
+    public function estimator(Backend $backend) : void
     {
         $this->backend = $backend;
 

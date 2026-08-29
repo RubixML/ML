@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Report;
@@ -274,7 +275,8 @@ class MulticlassBreakdownTest extends TestCase
         $this->report = new MulticlassBreakdown();
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             EstimatorType::classifier(),
@@ -290,7 +292,8 @@ class MulticlassBreakdownTest extends TestCase
      * @param array $expected
      */
     #[DataProvider('generateProvider')]
-    public function testGenerate(array $predictions, array $labels, array $expected) : void
+    #[Test]
+    public function generate(array $predictions, array $labels, array $expected) : void
     {
         $results = $this->report->generate(
             predictions: $predictions,

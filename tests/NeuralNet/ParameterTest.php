@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\NeuralNet;
 
 use NumPower;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Parameter;
@@ -30,7 +31,8 @@ class ParameterTest extends TestCase
         $this->optimizer = new Stochastic();
     }
 
-    public function testUpdate() : void
+    #[Test]
+    public function update() : void
     {
         $gradient = NumPower::array([
             [2, 1],

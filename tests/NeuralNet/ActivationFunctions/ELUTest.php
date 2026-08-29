@@ -93,7 +93,7 @@ class ELUTest extends TestCase
 
     #[Test]
     #[TestDox('Can be constructed with valid alpha parameter')]
-    public function testConstructorWithValidAlpha() : void
+    public function constructorWithValidAlpha() : void
     {
         $activationFn = new ELU(2.0);
 
@@ -103,14 +103,13 @@ class ELUTest extends TestCase
 
     #[Test]
     #[TestDox('Throws exception when constructed with invalid alpha parameter')]
-    public function testConstructorWithInvalidAlpha() : void
+    public function constructorWithInvalidAlpha() : void
     {
         $this->expectException(InvalidAlphaException::class);
 
         new ELU(-346);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -120,7 +119,7 @@ class ELUTest extends TestCase
     #[Test]
     #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
-    public function testActivate(NDArray $input, array $expected) : void
+    public function activate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -130,7 +129,7 @@ class ELUTest extends TestCase
     #[Test]
     #[TestDox('Correctly differentiates the input using buffered output')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $input, array $expected) : void
+    public function differentiate(NDArray $input, array $expected) : void
     {
         $output = $this->activationFn->activate($input);
         $derivatives = $this->activationFn->differentiate($input, $output)->toArray();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Datasets\Unlabeled;
@@ -31,7 +32,8 @@ class DepthTest extends TestCase
         $this->node = new Depth(self::C);
     }
 
-    public function testC() : void
+    #[Test]
+    public function c() : void
     {
         $this->assertEquals(3.748880484475505, Depth::c(10));
         $this->assertEquals(8.364671030072245, Depth::c(100));
@@ -40,7 +42,8 @@ class DepthTest extends TestCase
         $this->assertEquals(22.180282259643523, Depth::c(100000));
     }
 
-    public function testTerminate() : void
+    #[Test]
+    public function terminate() : void
     {
         $dataset = Unlabeled::quick(samples: self::SAMPLES);
 
@@ -49,7 +52,8 @@ class DepthTest extends TestCase
         $this->assertEquals(self::C, $node->depth());
     }
 
-    public function testDepth() : void
+    #[Test]
+    public function depth() : void
     {
         $this->assertEquals(self::C, $this->node->depth());
     }

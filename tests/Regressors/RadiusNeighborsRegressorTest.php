@@ -80,7 +80,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
     #[Test]
     #[TestDox('Estimator is untrained before fitting')]
-    public function testAssertPreConditions() : void
+    public function preConditions() : void
     {
         self::assertFalse($this->estimator->trained());
     }

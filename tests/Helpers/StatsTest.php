@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Helpers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Helpers\Stats;
 use PHPUnit\Framework\TestCase;
@@ -60,7 +61,8 @@ class StatsTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('meanProvider')]
-    public function testMean(array $values, float $expected) : void
+    #[Test]
+    public function mean(array $values, float $expected) : void
     {
         $this->assertSame($expected, Stats::mean(values: $values));
     }
@@ -71,17 +73,20 @@ class StatsTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('weightedMeanProvider')]
-    public function testWeightedMean(array $values, array $weights, float $expected) : void
+    #[Test]
+    public function weightedMean(array $values, array $weights, float $expected) : void
     {
         $this->assertSame($expected, Stats::weightedMean(values: $values, weights: $weights));
     }
 
-    public function testVariance() : void
+    #[Test]
+    public function variance() : void
     {
         $this->assertSame(21.1125, Stats::variance(values: self::TEST_VALUES));
     }
 
-    public function testMedian() : void
+    #[Test]
+    public function median() : void
     {
         $this->assertSame(9.75, Stats::median(values: self::TEST_VALUES));
     }
@@ -92,17 +97,20 @@ class StatsTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('quantileProvider')]
-    public function testQuantile(array $values, float $q, float $expected) : void
+    #[Test]
+    public function quantile(array $values, float $q, float $expected) : void
     {
         $this->assertSame($expected, Stats::quantile(values: $values, q: $q));
     }
 
-    public function testMad() : void
+    #[Test]
+    public function mad() : void
     {
         $this->assertEquals(3.5, Stats::mad(values: self::TEST_VALUES));
     }
 
-    public function testSkewness() : void
+    #[Test]
+    public function skewness() : void
     {
         $this->assertEquals(-0.31891556974589724, Stats::skewness(values: self::TEST_VALUES));
     }
@@ -113,17 +121,20 @@ class StatsTest extends TestCase
      * @param float $expected
      */
     #[DataProvider('centralMomentProvider')]
-    public function testCentralMoment(array $values, int $moment, float $expected) : void
+    #[Test]
+    public function centralMoment(array $values, int $moment, float $expected) : void
     {
         $this->assertEquals($expected, Stats::centralMoment(values: $values, moment: $moment));
     }
 
-    public function testKurtosis() : void
+    #[Test]
+    public function kurtosis() : void
     {
         $this->assertEquals(-1.3235426808299866, Stats::kurtosis(values: self::TEST_VALUES));
     }
 
-    public function testMeanVar() : void
+    #[Test]
+    public function meanVar() : void
     {
         [$mean, $variance] = Stats::meanVar(values: self::TEST_VALUES);
 
@@ -131,7 +142,8 @@ class StatsTest extends TestCase
         $this->assertEquals(21.1125, $variance);
     }
 
-    public function testMedMad() : void
+    #[Test]
+    public function medMad() : void
     {
         [$median, $mad] = Stats::medianMad(values: self::TEST_VALUES);
 

@@ -182,7 +182,6 @@ class SoftmaxTest extends TestCase
         $this->activationFn = new Softmax();
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -192,7 +191,7 @@ class SoftmaxTest extends TestCase
     #[Test]
     #[TestDox('Correctly activates the input')]
     #[DataProvider('computeProvider')]
-    public function testActivate(NDArray $input, array $expected) : void
+    public function activate(NDArray $input, array $expected) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -202,7 +201,7 @@ class SoftmaxTest extends TestCase
     #[Test]
     #[TestDox('Correctly differentiates the activation')]
     #[DataProvider('differentiateProvider')]
-    public function testDifferentiate(NDArray $output, array $expected) : void
+    public function differentiate(NDArray $output, array $expected) : void
     {
         $input = NumPower::zeros($output->shape());
         $derivatives = $this->activationFn->differentiate($input, $output);
@@ -215,7 +214,7 @@ class SoftmaxTest extends TestCase
     #[Test]
     #[TestDox('Output values always sum to 1')]
     #[DataProvider('sumToOneProvider')]
-    public function testSumToOne(NDArray $input) : void
+    public function sumToOne(NDArray $input) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 
@@ -235,7 +234,7 @@ class SoftmaxTest extends TestCase
     #[Test]
     #[TestDox('Output values are always between 0 and 1')]
     #[DataProvider('sumToOneProvider')]
-    public function testOutputRange(NDArray $input) : void
+    public function outputRange(NDArray $input) : void
     {
         $activations = $this->activationFn->activate($input)->toArray();
 

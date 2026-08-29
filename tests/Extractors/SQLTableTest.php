@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Extractors;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Extractors\SQLTable;
@@ -25,10 +26,8 @@ class SQLTableTest extends TestCase
         $this->extractor = new SQLTable(connection: $connection, table: 'test', batchSize: 3);
     }
 
-    /**
-     * @test
-     */
-    public function testExtract() : void
+    #[Test]
+    public function extract() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => 4.0, 'class' => 'not monster'],

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Split;
@@ -48,17 +49,20 @@ class SplitTest extends TestCase
         );
     }
 
-    public function testColumn() : void
+    #[Test]
+    public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    public function testValue() : void
+    #[Test]
+    public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }
 
-    public function testSubsets() : void
+    #[Test]
+    public function subsets() : void
     {
         $expected = [
             Labeled::quick(samples: self::SAMPLES, labels: self::LABELS),
@@ -68,12 +72,14 @@ class SplitTest extends TestCase
         $this->assertEquals($expected, $this->node->subsets());
     }
 
-    public function testImpurity() : void
+    #[Test]
+    public function impurity() : void
     {
         $this->assertSame(self::IMPURITY, $this->node->impurity());
     }
 
-    public function testPurityIncrease() : void
+    #[Test]
+    public function purityIncrease() : void
     {
         $this->node->attachLeft(new Split(
             column: 2,
@@ -93,12 +99,14 @@ class SplitTest extends TestCase
         $this->assertSame(237.5, $this->node->purityIncrease());
     }
 
-    public function testN() : void
+    #[Test]
+    public function n() : void
     {
         $this->assertSame(self::N, $this->node->n());
     }
 
-    public function testCleanup() : void
+    #[Test]
+    public function cleanup() : void
     {
         $this->node->cleanup();
 

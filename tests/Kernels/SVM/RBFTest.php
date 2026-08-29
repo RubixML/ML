@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Kernels\SVM;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Kernels\SVM\RBF;
@@ -22,7 +23,8 @@ class RBFTest extends TestCase
         $this->kernel = new RBF(1e-3);
     }
 
-    public function testOptions() : void
+    #[Test]
+    public function options() : void
     {
         $options = [
             102 => 2,

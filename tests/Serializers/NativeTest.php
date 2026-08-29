@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Persisters\Serializers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
@@ -43,7 +44,8 @@ class NativeTest extends TestCase
         $this->persistable = new GaussianNB();
     }
 
-    public function testSerializeDeserialize() : void
+    #[Test]
+    public function serializeDeserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
 
@@ -56,7 +58,8 @@ class NativeTest extends TestCase
      * @param int|object $obj
      */
     #[DataProvider('deserializeInvalidData')]
-    public function testDeserializeBadData(mixed $obj) : void
+    #[Test]
+    public function deserializeBadData(mixed $obj) : void
     {
         $data = new Encoding(serialize($obj));
 

@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Classifiers;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\Encoding;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Learner;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
@@ -87,14 +93,13 @@ class ClassificationTreeTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
@@ -105,9 +110,7 @@ class ClassificationTreeTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMaxHeight() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -115,9 +118,7 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(maxHeight: 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMaxLeafSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -125,9 +126,7 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMinPurityIncrease() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -135,9 +134,7 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 32, -1.0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMaxFeatures() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -145,9 +142,7 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 32, 1e-7, 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badMaxBins() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -155,15 +150,14 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 32, 1e-7, 3, 1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::categorical(),
@@ -173,7 +167,8 @@ class ClassificationTreeTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'max height' => 10,
@@ -186,7 +181,8 @@ class ClassificationTreeTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testTrainPredictImportancesExportGraphvizContinuous() : void
+    #[Test]
+    public function trainPredictImportancesExportGraphvizContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -220,7 +216,8 @@ class ClassificationTreeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testTrainPredictCategoricalExportGraphviz() : void
+    #[Test]
+    public function trainPredictCategoricalExportGraphviz() : void
     {
         $training = $this->generator
             ->generate(self::TRAIN_SIZE + self::TEST_SIZE)
@@ -251,9 +248,7 @@ class ClassificationTreeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainPredictProba() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -297,9 +292,7 @@ class ClassificationTreeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainHeightBalance() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -320,9 +313,7 @@ class ClassificationTreeTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -330,9 +321,7 @@ class ClassificationTreeTest extends TestCase
         $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5]], [1]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function predictIncompatible() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -344,9 +333,7 @@ class ClassificationTreeTest extends TestCase
         $this->estimator->predict(Unlabeled::quick([[0.5, 0.5]]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
@@ -358,9 +345,8 @@ class ClassificationTreeTest extends TestCase
      * Train on two distinct constant feature groups with different labels, so that
      * the root split produces two non-empty but pure subsets that must be
      * terminated by the purity guard rather than further splitting.
-     *
-     * @test
      */
+    #[Test]
     public function trainPureChildren() : void
     {
         $training = (new Agglomerate([

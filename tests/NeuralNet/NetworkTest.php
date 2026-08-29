@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\NeuralNet;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Labeled;
@@ -72,7 +73,8 @@ class NetworkTest extends TestCase
         );
     }
 
-    public function testLayers() : void
+    #[Test]
+    public function layers() : void
     {
         $count = 0;
 
@@ -83,17 +85,20 @@ class NetworkTest extends TestCase
         self::assertSame(7, $count);
     }
 
-    public function testInput() : void
+    #[Test]
+    public function input() : void
     {
         self::assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
-    public function testHidden() : void
+    #[Test]
+    public function hidden() : void
     {
         self::assertCount(5, $this->network->hidden());
     }
 
-    public function testNumParams() : void
+    #[Test]
+    public function numParams() : void
     {
         $this->network->initialize();
 

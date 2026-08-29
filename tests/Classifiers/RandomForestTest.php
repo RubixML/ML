@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Classifiers;
 use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -124,24 +125,28 @@ class RandomForestTest extends TestCase
         $this->backend?->shutdown();
     }
 
-    public function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function testBadNumEstimators() : void
+    #[Test]
+    public function badNumEstimators() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new RandomForest(base: null, estimators: -100);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::categorical(),
@@ -151,7 +156,8 @@ class RandomForestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'base' => new ClassificationTree(3),
@@ -164,7 +170,8 @@ class RandomForestTest extends TestCase
     }
 
     #[DataProvider('provideBackends')]
-    public function testTrainPredictImportances(Backend $backend) : void
+    #[Test]
+    public function trainPredictImportances(Backend $backend) : void
     {
         $this->backend = $backend;
 
@@ -193,7 +200,8 @@ class RandomForestTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function testPredictUntrained() : void
+    #[Test]
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\DataType;
@@ -51,13 +52,15 @@ class DataTypeTest extends TestCase
      * @param DataType $expected
      */
     #[DataProvider('determineProvider')]
-    public function testDetermine(mixed $value, DataType $expected) : void
+    #[Test]
+    public function determine(mixed $value, DataType $expected) : void
     {
         $this->assertEquals($expected, DataType::detect($value));
     }
 
     #[RequiresPhpExtension('gd')]
-    public function testDetermineImage() : void
+    #[Test]
+    public function determineImage() : void
     {
         $value = imagecreatefrompng('tests/test.png');
 
@@ -69,27 +72,32 @@ class DataTypeTest extends TestCase
      * @param int $expected
      */
     #[DataProvider('codeProvider')]
-    public function testCode(DataType $type, int $expected) : void
+    #[Test]
+    public function code(DataType $type, int $expected) : void
     {
         $this->assertSame($expected, $type->code());
     }
 
-    public function testIsCategorical() : void
+    #[Test]
+    public function isCategorical() : void
     {
         $this->assertFalse(DataType::continuous()->isCategorical());
     }
 
-    public function testIsContinuous() : void
+    #[Test]
+    public function isContinuous() : void
     {
         $this->assertTrue(DataType::continuous()->isContinuous());
     }
 
-    public function testIsImage() : void
+    #[Test]
+    public function isImage() : void
     {
         $this->assertFalse(DataType::continuous()->isImage());
     }
 
-    public function testIsOther() : void
+    #[Test]
+    public function isOther() : void
     {
         $this->assertFalse(DataType::continuous()->isOther());
     }

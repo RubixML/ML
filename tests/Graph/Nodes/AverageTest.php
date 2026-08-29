@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Average;
 use PHPUnit\Framework\TestCase;
@@ -30,17 +31,20 @@ class AverageTest extends TestCase
         );
     }
 
-    public function testOutcome() : void
+    #[Test]
+    public function outcome() : void
     {
         $this->assertSame(self::OUTCOME, $this->node->outcome());
     }
 
-    public function testImpurity() : void
+    #[Test]
+    public function impurity() : void
     {
         $this->assertSame(self::IMPURITY, $this->node->impurity());
     }
 
-    public function testN() : void
+    #[Test]
+    public function n() : void
     {
         $this->assertSame(self::N, $this->node->n());
     }

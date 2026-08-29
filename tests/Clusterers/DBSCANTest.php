@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Clusterers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -59,19 +60,22 @@ class DBSCANTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    public function testBadRadius() : void
+    #[Test]
+    public function badRadius() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new DBSCAN(radius: 0.0);
     }
 
-    public function testType() : void
+    #[Test]
+    public function type() : void
     {
         $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
-    public function testCompatibility() : void
+    #[Test]
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -80,7 +84,8 @@ class DBSCANTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    public function testParams() : void
+    #[Test]
+    public function params() : void
     {
         $expected = [
             'radius' => 1.2,
@@ -91,7 +96,8 @@ class DBSCANTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    public function testPredict() : void
+    #[Test]
+    public function predict() : void
     {
         $testing = $this->generator->generate(self::TEST_SIZE);
 

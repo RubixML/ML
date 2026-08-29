@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Clusterers\Seeders;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -43,7 +44,8 @@ class KMC2Test extends TestCase
         $this->seeder = new KMC2(m: 50, kernel: new Euclidean());
     }
 
-    public function testSeed() : void
+    #[Test]
+    public function seed() : void
     {
         $dataset = $this->generator->generate(100);
 

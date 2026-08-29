@@ -55,7 +55,6 @@ class Placeholder1DTest extends TestCase
         $this->layer = new Placeholder1D(3);
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -64,14 +63,14 @@ class Placeholder1DTest extends TestCase
 
     #[Test]
     #[TestDox('Returns width equal to number of inputs')]
-    public function testWidth() : void
+    public function width() : void
     {
         self::assertEquals(3, $this->layer->width());
     }
 
     #[Test]
     #[TestDox('Constructor rejects invalid number of inputs')]
-    public function testConstructorRejectsInvalidInputs() : void
+    public function constructorRejectsInvalidInputs() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -80,7 +79,7 @@ class Placeholder1DTest extends TestCase
 
     #[Test]
     #[TestDox('Initialize returns fan out equal to inputs without changing width')]
-    public function testInitialize() : void
+    public function initialize() : void
     {
         $fanOut = $this->layer->initialize(5);
 
@@ -91,7 +90,7 @@ class Placeholder1DTest extends TestCase
     #[Test]
     #[TestDox('Computes forward pass')]
     #[DataProvider('inputProvider')]
-    public function testForward(NDArray $input, array $expected) : void
+    public function forward(NDArray $input, array $expected) : void
     {
         self::assertEquals(3, $this->layer->width());
 
@@ -103,7 +102,7 @@ class Placeholder1DTest extends TestCase
     #[Test]
     #[TestDox('Computes inference pass')]
     #[DataProvider('inputProvider')]
-    public function testInfer(NDArray $input, array $expected) : void
+    public function infer(NDArray $input, array $expected) : void
     {
         self::assertEquals(3, $this->layer->width());
 

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\VantagePoint;
@@ -42,7 +43,8 @@ class VantagePointTest extends TestCase
         );
     }
 
-    public function testSplit() : void
+    #[Test]
+    public function split() : void
     {
         $dataset = Labeled::quick(samples: self::SAMPLES, labels: self::LABELS);
 
@@ -52,17 +54,20 @@ class VantagePointTest extends TestCase
         $this->assertEquals(self::RADIUS, $node->radius());
     }
 
-    public function testCenter() : void
+    #[Test]
+    public function center() : void
     {
         $this->assertSame(self::CENTER, $this->node->center());
     }
 
-    public function testRadius() : void
+    #[Test]
+    public function radius() : void
     {
         $this->assertSame(self::RADIUS, $this->node->radius());
     }
 
-    public function testSubsets() : void
+    #[Test]
+    public function subsets() : void
     {
         $expected = [
             Labeled::quick(samples: [self::SAMPLES[0]], labels: [self::LABELS[0]]),

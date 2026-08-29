@@ -262,7 +262,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
             $distances[] = $distance;
         }
 
-        return [$labels, array_values($distances)];
+        return [$labels, $distances];
     }
 
     /**

@@ -110,7 +110,7 @@ final class TruncatedNormalTest extends TestCase
 
     #[Test]
     #[TestDox('The initializer object is created correctly')]
-    public function testConstructorSucceedsWithDefaultStdDev() : void
+    public function constructorSucceedsWithDefaultStdDev() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -122,7 +122,7 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('The initializer object is throw an exception when stdDev less than 0')]
     #[DataProvider('invalidStandardDeviationProvider')]
-    public function testConstructorThrowsForInvalidStdDev(float $stdDev) : void
+    public function constructorThrowsForInvalidStdDev(float $stdDev) : void
     {
         //expect
         $this->expectException(InvalidStandardDeviationException::class);
@@ -134,7 +134,7 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('The result matrix has correct shape')]
     #[DataProvider('validFanInFanOutCombinationsProvider')]
-    public function testInitializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
+    public function initializedMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
         $w = (new TruncatedNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -149,7 +149,7 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('The resulting values matches distribution Truncated Normal')]
     #[DataProvider('truncatedNormalDistributionInitializationProvider')]
-    public function testValuesFollowTruncatedNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
+    public function valuesFollowTruncatedNormalDistribution(int $fanIn, int $fanOut, float $stdDev) : void
     {
         //given
         $w = (new TruncatedNormal($stdDev))->initialize(fanIn: $fanIn, fanOut:  $fanOut);
@@ -192,7 +192,7 @@ final class TruncatedNormalTest extends TestCase
     #[Test]
     #[TestDox('An exception is thrown during initialization')]
     #[DataProvider('invalidFanInFanOutProvider')]
-    public function testInitializationThrowsForInvalidFanValues(int $fanIn, int $fanOut) : void
+    public function initializationThrowsForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
@@ -209,7 +209,7 @@ final class TruncatedNormalTest extends TestCase
 
     #[Test]
     #[TestDox('String representation is correct')]
-    public function testToStringReturnsExpectedFormat() : void
+    public function toStringReturnsExpectedFormat() : void
     {
         //when
         $string = (string) new TruncatedNormal();

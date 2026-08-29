@@ -73,7 +73,6 @@ class AdamTest extends TestCase
         );
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -83,7 +82,7 @@ class AdamTest extends TestCase
 
     #[Test]
     #[TestDox('Warm initializes zeroed velocity and norm caches with the parameter\'s shape')]
-    public function testWarmInitializesZeroedCache() : void
+    public function warmInitializesZeroedCache() : void
     {
         $param = new Parameter(NumPower::array([
             [1.0, 2.0, 3.0],
@@ -116,7 +115,7 @@ class AdamTest extends TestCase
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function testInvalidConstructorParams(float $rate, float $momentumDecay, float $normDecay) : void
+    public function invalidConstructorParams(float $rate, float $momentumDecay, float $normDecay) : void
     {
         $this->expectException(InvalidArgumentException::class);
         new Adam(rate: $rate, momentumDecay: $momentumDecay, normDecay: $normDecay);
@@ -130,7 +129,7 @@ class AdamTest extends TestCase
     #[Test]
     #[DataProvider('stepProvider')]
     #[TestDox('Can compute the step')]
-    public function testStep(Parameter $param, NDArray $gradient, array $expected) : void
+    public function step(Parameter $param, NDArray $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 

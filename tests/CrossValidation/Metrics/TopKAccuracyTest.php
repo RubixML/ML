@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\CrossValidation\Metrics\TopKAccuracy;
@@ -61,7 +62,8 @@ class TopKAccuracyTest extends TestCase
         $this->metric = new TopKAccuracy(2);
     }
 
-    public function testRange() : void
+    #[Test]
+    public function range() : void
     {
         $tuple = $this->metric->range();
 

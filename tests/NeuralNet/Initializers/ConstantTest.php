@@ -63,7 +63,7 @@ class ConstantTest extends TestCase
     #[Test]
     #[TestDox('It constructs the initializer with valid values')]
     #[DataProvider('validConstructorValuesProvider')]
-    public function testConstructorWithValidValues(float $value) : void
+    public function constructorWithValidValues(float $value) : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -75,7 +75,7 @@ class ConstantTest extends TestCase
     #[Test]
     #[TestDox('It initializes a matrix with correct shape')]
     #[DataProvider('validFanInAndFanOutProvider')]
-    public function testMatrixHasCorrectShape(int $fanIn, int $fanOut) : void
+    public function matrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
         $w = (new Constant(4.8))->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -89,7 +89,7 @@ class ConstantTest extends TestCase
 
     #[Test]
     #[TestDox('It initializes a matrix filled with the constant value')]
-    public function testMatrixFilledWithConstantValue() : void
+    public function matrixFilledWithConstantValue() : void
     {
         //given
         $w = (new Constant(4.5))->initialize(3, 4);
@@ -104,7 +104,7 @@ class ConstantTest extends TestCase
     #[Test]
     #[TestDox('It throws an exception when fanIn or fanOut is invalid')]
     #[DataProvider('invalidFanValuesProvider')]
-    public function testExceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
+    public function exceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
@@ -121,7 +121,7 @@ class ConstantTest extends TestCase
 
     #[Test]
     #[TestDox('String representation is correct')]
-    public function testReturnsCorrectStringRepresentation() : void
+    public function returnsCorrectStringRepresentation() : void
     {
         //when
         $string = (string) new Constant();

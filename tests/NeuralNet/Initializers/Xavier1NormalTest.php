@@ -89,7 +89,7 @@ final class Xavier1NormalTest extends TestCase
 
     #[Test]
     #[TestDox('The initializer object is created correctly')]
-    public function testConstructor() : void
+    public function constructor() : void
     {
         //expect
         $this->expectNotToPerformAssertions();
@@ -101,7 +101,7 @@ final class Xavier1NormalTest extends TestCase
     #[Test]
     #[TestDox('The result matrix has correct shape')]
     #[DataProvider('validShapeDimensionsProvider')]
-    public function testMatrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
+    public function matrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
         $w = (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
@@ -116,7 +116,7 @@ final class Xavier1NormalTest extends TestCase
     #[Test]
     #[TestDox('The resulting values matches distribution Xavier (normal distribution)')]
     #[DataProvider('xavier1NormalDistributionValidationProvider')]
-    public function testDistributionStatisticsMatchXavier1Normal(int $fanIn, int $fanOut) : void
+    public function distributionStatisticsMatchXavier1Normal(int $fanIn, int $fanOut) : void
     {
         //given
         // truncatedNormal truncates near ±2σ, so sample std ≈ 0.88 * scale (not scale itself)
@@ -152,7 +152,7 @@ final class Xavier1NormalTest extends TestCase
     #[Test]
     #[TestDox('An exception is thrown during initialization')]
     #[DataProvider('invalidFanValuesProvider')]
-    public function testExceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
+    public function exceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
     {
         //expect
         if ($fanIn < 1) {
@@ -169,7 +169,7 @@ final class Xavier1NormalTest extends TestCase
 
     #[Test]
     #[TestDox('String representation is correct')]
-    public function testToStringReturnsCorrectValue() : void
+    public function toStringReturnsCorrectValue() : void
     {
         //when
         $string = (string) new Xavier1Normal();

@@ -105,7 +105,6 @@ class ActivationTest extends TestCase
         $this->layer = new Activation(new ReLU());
     }
 
-    #[Test]
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
@@ -114,7 +113,7 @@ class ActivationTest extends TestCase
 
     #[Test]
     #[TestDox('Initializes width equal to fan-in')]
-    public function testInitializeSetsWidth() : void
+    public function initializeSetsWidth() : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -124,7 +123,7 @@ class ActivationTest extends TestCase
     #[Test]
     #[TestDox('Computes forward activations')]
     #[DataProvider('forwardProvider')]
-    public function testForward(NDArray $input, array $expected) : void
+    public function forward(NDArray $input, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -135,7 +134,7 @@ class ActivationTest extends TestCase
     #[Test]
     #[TestDox('Computes backpropagated gradients after forward pass')]
     #[DataProvider('backProvider')]
-    public function testBack(NDArray $input, NDArray $prevGrad, array $expected) : void
+    public function back(NDArray $input, NDArray $prevGrad, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -152,7 +151,7 @@ class ActivationTest extends TestCase
     #[Test]
     #[TestDox('Computes inference activations')]
     #[DataProvider('forwardProvider')]
-    public function testInfer(NDArray $input, array $expected) : void
+    public function infer(NDArray $input, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 
@@ -163,7 +162,7 @@ class ActivationTest extends TestCase
     #[Test]
     #[TestDox('Computes gradient correctly given input, output, and previous gradient')]
     #[DataProvider('backProvider')]
-    public function testGradient(NDArray $input, NDArray $prevGrad, array $expected) : void
+    public function gradient(NDArray $input, NDArray $prevGrad, array $expected) : void
     {
         $this->layer->initialize($this->fanIn);
 

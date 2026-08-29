@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rubix\ML\Tests\Clusterers\Seeders;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Seeders\Preset;
@@ -25,7 +26,8 @@ class PresetTest extends TestCase
         ]);
     }
 
-    public function testSeed() : void
+    #[Test]
+    public function seed() : void
     {
         $expected = [
             ['foo', 14, 0.72],
