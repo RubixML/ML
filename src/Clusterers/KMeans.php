@@ -34,7 +34,6 @@ use function is_nan;
 use function array_fill;
 use function array_map;
 use function get_object_vars;
-use function min;
 
 use const Rubix\ML\EPSILON;
 
@@ -350,13 +349,23 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             foreach ($batches as $i => &$batch) {
                 $samples = $batch->samples();
 
-                $distances = array_map([$this, 'centroidDistances'], $samples);
-
-                $assignments = array_map('Rubix\ML\argmin', $distances);
-
                 $labels = $batch->labels();
 
-                foreach ($assignments as $j => $cluster) {
+                foreach ($samples as $j => $sample) {
+                    $bestDistance = INF;
+                    $cluster = 0;
+
+                    $distances = $this->centroidDistances($sample);
+
+                    foreach ($distances as $c => $distance) {
+                        if ($distance < $bestDistance) {
+                            $bestDistance = $distance;
+                            $cluster = $c;
+                        }
+                    }
+
+                    $loss += $bestDistance;
+
                     $expected = $labels[$j];
 
                     if ($cluster !== $expected) {
@@ -368,8 +377,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 }
 
                 $batch = Labeled::quick($samples, $labels);
-
-                $loss += $this->inertia($distances);
 
                 foreach ($batch->stratifyByLabel() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
@@ -533,24 +540,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         }
 
         return $distances;
-    }
-
-    /**
-     * Calculate the average sum of distances between all samples and their closest
-     * centroid.
-     *
-     * @param list<list<float>> $distances
-     * @return float
-     */
-    protected function inertia(array $distances) : float
-    {
-        $inertia = 0.0;
-
-        foreach ($distances as $row) {
-            $inertia += min($row);
-        }
-
-        return $inertia;
     }
 
     /**
