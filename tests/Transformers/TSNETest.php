@@ -522,7 +522,7 @@ class TSNETest extends TestCase
 
         $dofs = (int) $prop->getValue($this->embedder);
 
-        $pwMethod = new ReflectionMethod(TSNE::class, 'squaredPairwiseDistances');
+        $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
 
         $pwMethod->setAccessible(true);
 
