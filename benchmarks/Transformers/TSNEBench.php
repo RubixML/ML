@@ -39,7 +39,6 @@ class TSNEBench
 
     /**
      * @Subject
-     * @Skip
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
      */
