@@ -11,7 +11,6 @@ use ReflectionProperty;
 use Rubix\ML\DataType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Transformers\TSNE;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -53,8 +52,7 @@ class TSNETest extends TestCase
             perplexity: 10,
             exaggeration: 12.0,
             epochs: 500,
-            minGradient: 1e-7,
-            kernel: new Euclidean()
+            minGradient: 0.0
         );
 
         $this->embedder->setLogger(new BlackHole());
@@ -110,7 +108,7 @@ class TSNETest extends TestCase
 
         $this->assertEquals(
             't-SNE (dimensions: 2, rate: 100, perplexity: 30, exaggeration: 12, epochs: 1000, '
-            . 'min gradient: 1.0E-7, kernel: Euclidean)',
+            . 'min gradient: 1.0E-7)',
             (string) $tsne
         );
     }
@@ -142,9 +140,9 @@ class TSNETest extends TestCase
         ]);
 
         $distances = Matrix::quick([
-            [0.0, 1.0, 2.0],
+            [0.0, 1.0, 4.0],
             [1.0, 0.0, 1.0],
-            [2.0, 1.0, 0.0],
+            [4.0, 1.0, 0.0],
         ]);
 
         $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
@@ -167,7 +165,14 @@ class TSNETest extends TestCase
      */
     public function gradientWeight() : void
     {
-        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(
+            dimensions: 3,
+            rate: 10.0,
+            perplexity: 10,
+            exaggeration: 12.0,
+            epochs: 500,
+            minGradient: 1e-7
+        );
 
         $p = Matrix::quick([
             [0.0, 0.3, 0.2],
@@ -182,9 +187,9 @@ class TSNETest extends TestCase
         ]);
 
         $distances = Matrix::quick([
-            [0.0, 1.0, 3.0],
-            [1.0, 0.0, 2.0],
-            [3.0, 2.0, 0.0],
+            [0.0, 1.0, 9.0],
+            [1.0, 0.0, 4.0],
+            [9.0, 4.0, 0.0],
         ]);
 
         $gradient = $this->invokeGradient($embedder, $p, $y, $distances);
@@ -225,9 +230,9 @@ class TSNETest extends TestCase
             [0.0, -1.0],
         ]);
 
-        $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
+        $pwMethod = new ReflectionMethod(TSNE::class, 'squaredPairwiseDistances');
         $pwMethod->setAccessible(true);
-        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]));
+        $distances = $pwMethod->invokeArgs($this->embedder, [$y]);
 
         $codeGradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
 
@@ -269,13 +274,20 @@ class TSNETest extends TestCase
      */
     public function affinities() : void
     {
-        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(
+            dimensions: 1,
+            rate: 10.0,
+            perplexity: 2,
+            exaggeration: 12.0,
+            epochs: 500,
+            minGradient: 1e-7
+        );
 
         $distances = [
-            [0.0, 1.0, 2.0, 3.0],
-            [1.0, 0.0, 1.0, 2.0],
-            [2.0, 1.0, 0.0, 1.0],
-            [3.0, 2.0, 1.0, 0.0],
+            [0.0, 1.0, 4.0, 9.0],
+            [1.0, 0.0, 1.0, 4.0],
+            [4.0, 1.0, 0.0, 1.0],
+            [9.0, 4.0, 1.0, 0.0],
         ];
 
         $affinities = $this->invokeAffinities($embedder, $distances);
@@ -393,10 +405,10 @@ class TSNETest extends TestCase
     public function testAffinitiesNormalize() : void
     {
         $distances = [
-            [0.0, 1.0, 2.0, 3.0],
-            [1.0, 0.0, 1.0, 2.0],
-            [2.0, 1.0, 0.0, 1.0],
-            [3.0, 2.0, 1.0, 0.0],
+            [0.0, 1.0, 4.0, 9.0],
+            [1.0, 0.0, 1.0, 4.0],
+            [4.0, 1.0, 0.0, 1.0],
+            [9.0, 4.0, 1.0, 0.0],
         ];
 
         $affinities = $this->invokeAffinities($this->embedder, $distances);
@@ -425,9 +437,9 @@ class TSNETest extends TestCase
         ]);
 
         $distances = Matrix::quick([
-            [0.0, 1.0, 2.0],
+            [0.0, 1.0, 4.0],
             [1.0, 0.0, 1.0],
-            [2.0, 1.0, 0.0],
+            [4.0, 1.0, 0.0],
         ]);
 
         $rows = $this->invokeGradient($this->embedder, $p, $y, $distances)->asArray();
@@ -454,9 +466,9 @@ class TSNETest extends TestCase
         ]);
 
         $distances = Matrix::quick([
-            [0.0, 1.0, 2.0],
+            [0.0, 1.0, 4.0],
             [1.0, 0.0, 1.0],
-            [2.0, 1.0, 0.0],
+            [4.0, 1.0, 0.0],
         ]);
 
         $this->assertGreaterThan(
@@ -492,7 +504,7 @@ class TSNETest extends TestCase
 
         $method->setAccessible(true);
 
-        return $method->invokeArgs($embedder, [$distances]);
+        return $method->invokeArgs($embedder, [Matrix::quick($distances)]);
     }
 
     /**
@@ -510,14 +522,13 @@ class TSNETest extends TestCase
 
         $dofs = (int) $prop->getValue($this->embedder);
 
-        $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
+        $pwMethod = new ReflectionMethod(TSNE::class, 'squaredPairwiseDistances');
 
         $pwMethod->setAccessible(true);
 
-        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]));
+        $distances = $pwMethod->invokeArgs($this->embedder, [$y]);
 
-        $base = $distances->square()
-            ->divide($dofs)
+        $base = $distances->divide($dofs)
             ->add(1.0);
 
         $kernel = $base->pow((1.0 + $dofs) / -2.0);

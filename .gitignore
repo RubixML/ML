@@ -13,6 +13,7 @@ pyvenv.cfg
 .idea
 .vscode
 .vs
+.phpbench
 Dockerfile
 /runtime/
 /docker/
