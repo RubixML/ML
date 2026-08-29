@@ -104,7 +104,7 @@ class RegexFilter implements Transformer
     protected array $patterns;
 
     /**
-     * @param string[] $patterns
+     * @param mixed[] $patterns
      * @throws InvalidArgumentException
      */
     public function __construct(array $patterns)

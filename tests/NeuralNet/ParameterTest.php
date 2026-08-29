@@ -1,34 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet;
 
-use Tensor\Matrix;
+use NumPower;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group NeuralNet
- * @covers \Rubix\ML\NeuralNet\Parameter
- */
+#[Group('Parameters')]
+#[CoversClass(Parameter::class)]
 class ParameterTest extends TestCase
 {
-    /**
-     * @var Parameter
-     */
     protected Parameter $param;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
+    protected Optimizer $optimizer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->param = new Parameter(Matrix::quick([
+        $this->param = new Parameter(NumPower::array([
             [5, 4],
             [-2, 6],
         ]));
@@ -36,28 +30,9 @@ class ParameterTest extends TestCase
         $this->optimizer = new Stochastic();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testUpdate() : void
     {
-        $this->assertInstanceOf(Parameter::class, $this->param);
-    }
-
-    /**
-     * @test
-     */
-    public function id() : void
-    {
-        $this->assertIsInt($this->param->id());
-    }
-
-    /**
-     * @test
-     */
-    public function update() : void
-    {
-        $gradient = Matrix::quick([
+        $gradient = NumPower::array([
             [2, 1],
             [1, -2],
         ]);
@@ -67,8 +42,8 @@ class ParameterTest extends TestCase
             [-2.01, 6.02],
         ];
 
-        $this->param->update($gradient, $this->optimizer);
+        $this->param->update(gradient: $gradient, optimizer: $this->optimizer);
 
-        $this->assertEquals($expected, $this->param->param()->asArray());
+        self::assertEqualsWithDelta($expected, $this->param->param()->toArray(), 1e-7);
     }
 }

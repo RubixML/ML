@@ -15,7 +15,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Jaccard implements Distance
+class Jaccard implements Distance, Subadditive
 {
     /**
      * Return the data types that this kernel is compatible with.

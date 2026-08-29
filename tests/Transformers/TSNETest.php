@@ -1,91 +1,119 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use ReflectionMethod;
 use ReflectionProperty;
-use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Tensor\Matrix;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\TSNE
- */
+#[Group('Transformers')]
+#[CoversClass(TSNE::class)]
 class TSNETest extends TestCase
 {
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 30;
+    protected const int TEST_SIZE = 30;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var TSNE
-     */
-    protected $embedder;
+    protected TSNE $embedder;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 30.0),
-            'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 20.0),
-        ], [2, 3, 4]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'red' => new Blob([255, 32, 0], 30.0),
+                'green' => new Blob([0, 128, 0], 10.0),
+                'blue' => new Blob([0, 32, 255], 20.0),
+            ],
+            weights: [2, 3, 4]
+        );
 
-        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+        $this->embedder = new TSNE(
+            dimensions: 1,
+            rate: 10.0,
+            perplexity: 10,
+            exaggeration: 12.0,
+            epochs: 500,
+            minGradient: 0.0
+        );
 
         $this->embedder->setLogger(new BlackHole());
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(TSNE::class, $this->embedder);
-        $this->assertInstanceOf(Verbose::class, $this->embedder);
-    }
-
-    /**
-     * @test
-     */
-    public function badNumDimensions() : void
+    public function testBadNumDimensions() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new TSNE(0);
+        new TSNE(dimensions: 0);
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testBadRate() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(rate: 0.0);
+    }
+
+    public function testBadPerplexity() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(perplexity: 0);
+    }
+
+    public function testBadExaggeration() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(exaggeration: 0.5);
+    }
+
+    public function testBadEpochs() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(epochs: 0);
+    }
+
+    public function testBadMinGradient() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(minGradient: -1.0);
+    }
+
+    public function testDefaults() : void
+    {
+        $tsne = new TSNE();
+
+        $this->assertEquals(
+            't-SNE (dimensions: 2, rate: 100, perplexity: 30, exaggeration: 12, epochs: 1000, '
+            . 'min gradient: 1.0E-7)',
+            (string) $tsne
+        );
+    }
+
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -112,9 +140,9 @@ class TSNETest extends TestCase
         ]);
 
         $distances = Matrix::quick([
-            [0.0, 1.0, 2.0],
+            [0.0, 1.0, 4.0],
             [1.0, 0.0, 1.0],
-            [2.0, 1.0, 0.0],
+            [4.0, 1.0, 0.0],
         ]);
 
         $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
@@ -137,7 +165,14 @@ class TSNETest extends TestCase
      */
     public function gradientWeight() : void
     {
-        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(
+            dimensions: 3,
+            rate: 10.0,
+            perplexity: 10,
+            exaggeration: 12.0,
+            epochs: 500,
+            minGradient: 1e-7
+        );
 
         $p = Matrix::quick([
             [0.0, 0.3, 0.2],
@@ -152,9 +187,9 @@ class TSNETest extends TestCase
         ]);
 
         $distances = Matrix::quick([
-            [0.0, 1.0, 3.0],
-            [1.0, 0.0, 2.0],
-            [3.0, 2.0, 0.0],
+            [0.0, 1.0, 9.0],
+            [1.0, 0.0, 4.0],
+            [9.0, 4.0, 0.0],
         ]);
 
         $gradient = $this->invokeGradient($embedder, $p, $y, $distances);
@@ -195,9 +230,9 @@ class TSNETest extends TestCase
             [0.0, -1.0],
         ]);
 
-        $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
+        $pwMethod = new ReflectionMethod(TSNE::class, 'squaredPairwiseDistances');
         $pwMethod->setAccessible(true);
-        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]));
+        $distances = $pwMethod->invokeArgs($this->embedder, [$y]);
 
         $codeGradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
 
@@ -239,13 +274,20 @@ class TSNETest extends TestCase
      */
     public function affinities() : void
     {
-        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(
+            dimensions: 1,
+            rate: 10.0,
+            perplexity: 2,
+            exaggeration: 12.0,
+            epochs: 500,
+            minGradient: 1e-7
+        );
 
         $distances = [
-            [0.0, 1.0, 2.0, 3.0],
-            [1.0, 0.0, 1.0, 2.0],
-            [2.0, 1.0, 0.0, 1.0],
-            [3.0, 2.0, 1.0, 0.0],
+            [0.0, 1.0, 4.0, 9.0],
+            [1.0, 0.0, 1.0, 4.0],
+            [4.0, 1.0, 0.0, 1.0],
+            [9.0, 4.0, 1.0, 0.0],
         ];
 
         $affinities = $this->invokeAffinities($embedder, $distances);
@@ -284,7 +326,155 @@ class TSNETest extends TestCase
         $losses = $this->embedder->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
+    }
+
+    public function testTransformDefaultDimensions() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TEST_SIZE);
+
+        $embedder = new TSNE();
+
+        $embedder->setLogger(new BlackHole());
+
+        $dataset->apply($embedder);
+
+        $this->assertCount(self::TEST_SIZE, $dataset);
+        $this->assertCount(2, $dataset->sample(0));
+
+        $this->assertIsArray($embedder->losses());
+    }
+
+    public function testEarlyStopOnMinGradient() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $earlyStop = new TSNE(
+            dimensions: 1,
+            epochs: 200,
+            minGradient: 1e9
+        );
+
+        $earlyStop->setLogger(new BlackHole());
+
+        $this->generator->generate(self::TEST_SIZE)->apply($earlyStop);
+
+        $this->assertCount(1, $earlyStop->losses());
+
+        $steps = iterator_to_array($earlyStop->steps());
+
+        $this->assertCount(1, $steps);
+    }
+
+    public function testRunsAllEpochs() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $this->generator->generate(self::TEST_SIZE)->apply($this->embedder);
+
+        $this->assertCount(500, $this->embedder->losses());
+    }
+
+    public function testSteps() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $this->generator->generate(self::TEST_SIZE)->apply($this->embedder);
+
+        $steps = iterator_to_array($this->embedder->steps());
+
+        $this->assertCount(500, $steps);
+
+        $epoch = 0;
+
+        $losses = [];
+
+        foreach ($steps as $step) {
+            $this->assertSame($epoch, $step['epoch']);
+            $this->assertIsFloat($step['loss']);
+            $this->assertGreaterThanOrEqual(0.0, $step['loss']);
+            $losses[] = $step['loss'];
+            ++$epoch;
+        }
+
+        $this->assertEquals($losses, $this->embedder->losses());
+    }
+
+    public function testAffinitiesNormalize() : void
+    {
+        $distances = [
+            [0.0, 1.0, 4.0, 9.0],
+            [1.0, 0.0, 1.0, 4.0],
+            [4.0, 1.0, 0.0, 1.0],
+            [9.0, 4.0, 1.0, 0.0],
+        ];
+
+        $affinities = $this->invokeAffinities($this->embedder, $distances);
+
+        $this->assertCount(4, $affinities);
+
+        foreach ($affinities as $i => $row) {
+            $this->assertCount(4, $row);
+            $this->assertEqualsWithDelta(0.25, array_sum($row), 1e-8);
+            $this->assertSame(0.0, $row[$i]);
+        }
+    }
+
+    public function testGradientShape() : void
+    {
+        $p = Matrix::quick([
+            [0.5, 0.3, 0.2],
+            [0.2, 0.5, 0.3],
+            [0.2, 0.3, 0.5],
+        ]);
+
+        $y = Matrix::quick([
+            [0.0, 1.0],
+            [1.0, -1.0],
+            [-1.0, 0.0],
+        ]);
+
+        $distances = Matrix::quick([
+            [0.0, 1.0, 4.0],
+            [1.0, 0.0, 1.0],
+            [4.0, 1.0, 0.0],
+        ]);
+
+        $rows = $this->invokeGradient($this->embedder, $p, $y, $distances)->asArray();
+
+        $this->assertCount(3, $rows);
+
+        foreach ($rows as $row) {
+            $this->assertCount(2, $row);
+        }
+    }
+
+    public function testGradientNonZero() : void
+    {
+        $p = Matrix::quick([
+            [0.9, 0.05, 0.05],
+            [0.5, 0.4, 0.1],
+            [0.1, 0.2, 0.7],
+        ]);
+
+        $y = Matrix::quick([
+            [0.0, 1.0],
+            [1.0, -1.0],
+            [-1.0, 0.0],
+        ]);
+
+        $distances = Matrix::quick([
+            [0.0, 1.0, 4.0],
+            [1.0, 0.0, 1.0],
+            [4.0, 1.0, 0.0],
+        ]);
+
+        $this->assertGreaterThan(
+            0.0,
+            $this->invokeGradient($this->embedder, $p, $y, $distances)->l2Norm()
+        );
     }
 
     /**
@@ -314,7 +504,7 @@ class TSNETest extends TestCase
 
         $method->setAccessible(true);
 
-        return $method->invokeArgs($embedder, [$distances]);
+        return $method->invokeArgs($embedder, [Matrix::quick($distances)]);
     }
 
     /**
@@ -336,10 +526,9 @@ class TSNETest extends TestCase
 
         $pwMethod->setAccessible(true);
 
-        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]));
+        $distances = $pwMethod->invokeArgs($this->embedder, [$y]);
 
-        $base = $distances->square()
-            ->divide($dofs)
+        $base = $distances->divide($dofs)
             ->add(1.0);
 
         $kernel = $base->pow((1.0 + $dofs) / -2.0);

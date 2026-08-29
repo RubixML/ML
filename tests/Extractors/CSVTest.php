@@ -1,55 +1,37 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Extractors;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\CSV;
-use Rubix\ML\Extractors\Exporter;
-use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use IteratorAggregate;
-use Traversable;
 
 use function sys_get_temp_dir;
 use function tempnam;
 use function file_put_contents;
 use function unlink;
 
-/**
- * @group Extractors
- * @covers \Rubix\ML\Extractors\CSV
- */
+#[Group('Extractors')]
+#[CoversClass(CSV::class)]
 class CSVTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Extractors\CSV;
-     */
-    protected $extractor;
+    protected CSV $extractor;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->extractor = new CSV('tests/test.csv', true, ',', '"');
+        $this->extractor = new CSV(
+            path: 'tests/test.csv',
+            header: true,
+            delimiter: ',',
+            enclosure: '"'
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(CSV::class, $this->extractor);
-        $this->assertInstanceOf(Extractor::class, $this->extractor);
-        $this->assertInstanceOf(Exporter::class, $this->extractor);
-        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
-        $this->assertInstanceOf(Traversable::class, $this->extractor);
-    }
-
-    /**
-     * @test
-     */
-    public function header() : void
+    public function testHeader() : void
     {
         $expected = [
             'attitude', 'texture', 'sociability', 'rating', 'class',
@@ -58,10 +40,7 @@ class CSVTest extends TestCase
         $this->assertEquals($expected, $this->extractor->header());
     }
 
-    /**
-     * @test
-     */
-    public function extractExport() : void
+    public function testExtractExport() : void
     {
         $expected = [
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'friendly', 'rating' => '4', 'class' => 'not monster'],
@@ -84,7 +63,7 @@ class CSVTest extends TestCase
 
         $this->assertEquals($expected, $header);
 
-        $this->extractor->export($records);
+        $this->extractor->export(iterator: $records, overwrite: true);
 
         $this->assertFileExists('tests/test.csv');
     }

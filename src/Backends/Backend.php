@@ -23,7 +23,7 @@ interface Backend extends Stringable
      * @param callable(mixed,mixed):void $after
      * @param mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null, $context = null) : void;
+    public function enqueue(Task $task, ?callable $after = null, mixed $context = null) : void;
 
     /**
      * Process the queue and return the results.
@@ -40,4 +40,11 @@ interface Backend extends Stringable
      * @internal
      */
     public function flush() : void;
+
+    /**
+     * Gracefully shut down the backend and release any resources.
+     *
+     * @internal
+     */
+    public function shutdown() : void;
 }

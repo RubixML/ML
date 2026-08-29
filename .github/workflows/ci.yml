@@ -2,26 +2,71 @@ name: "Code Checks"
 
 on: [push, pull_request]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   Build:
     name: PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}
     runs-on: ${{ matrix.operating-system }}
     strategy:
+      fail-fast: false
       matrix:
-        operating-system: [ubuntu-latest, macos-latest]
-        php-versions: ['8.0', '8.1', '8.2']
-
+        #operating-system: [windows-latest, ubuntu-latest, macos-latest]
+        operating-system: [ubuntu-latest]
+        php-versions: ['8.4']
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
           tools: composer, pecl
-          extensions: svm, mbstring, gd, fileinfo
+          extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
+
+      - name: Install OpenBLAS
+        if: matrix.operating-system == 'ubuntu-latest'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -qy libopenblas-dev liblapacke-dev
+
+      - name: Install OpenBLAS/LAPACK (macOS)
+        if: matrix.operating-system == 'macos-latest'
+        run: |
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          export HOMEBREW_NO_ANALYTICS=1
+          brew install pkg-config autoconf automake libtool openblas lapack
+          echo "OPENBLAS_PREFIX=$(brew --prefix openblas)" >> "$GITHUB_ENV"
+          echo "LAPACK_PREFIX=$(brew --prefix lapack)" >> "$GITHUB_ENV"
+          echo "CPPFLAGS=-I$(brew --prefix openblas)/include -I$(brew --prefix lapack)/include" >> "$GITHUB_ENV"
+          echo "LDFLAGS=-L$(brew --prefix openblas)/lib -L$(brew --prefix lapack)/lib" >> "$GITHUB_ENV"
+          echo "PKG_CONFIG_PATH=$(brew --prefix openblas)/lib/pkgconfig" >> "$GITHUB_ENV"
+
+      - name: Install NumPower
+        run: |
+          if [ "${{ matrix.operating-system }}" = "macos-latest" ]; then
+            git clone --branch mac4 --single-branch https://github.com/RubixML/numpower.git
+            cd numpower
+            phpize
+            # Work around Apple clang/libc math portability: isnanf() is not available on macos-latest
+            perl -pi -e 's/\bisnanf\(/isnan(/g' src/ndmath/calculation.c
+          else 
+            git clone https://github.com/RubixML/numpower.git
+            cd numpower
+            phpize
+          fi
+          ./configure
+          make
+          sudo make install
+          ini_dir="$(php -r 'echo PHP_CONFIG_FILE_SCAN_DIR;')"
+          if [ -z "$ini_dir" ] || [ "$ini_dir" = "(none)" ]; then
+            loaded_ini="$(php --ini | sed -n 's|^Loaded Configuration File:\s*||p')"
+            ini_dir="$(dirname "$loaded_ini")"
+          fi
+          echo "extension=ndarray.so" | sudo tee "$ini_dir/99-ndarray.ini" > /dev/null
 
       - name: Validate composer.json
         run: composer validate

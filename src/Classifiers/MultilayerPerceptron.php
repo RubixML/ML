@@ -15,23 +15,25 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -43,6 +45,10 @@ use function is_nan;
 use function count;
 use function get_object_vars;
 use function number_format;
+use function array_map;
+use function is_dir;
+use function uniqid;
+use function sys_get_temp_dir;
 
 /**
  * Multilayer Perceptron
@@ -88,13 +94,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected Optimizer $optimizer;
 
     /**
-     * The amount of L2 regularization applied to the weights of the output layer.
-     *
-     * @var float
-     */
-    protected float $l2Penalty;
-
-    /**
      * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
      *
      * @var int<0,max>
@@ -107,6 +106,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var float
      */
     protected float $minChange;
+
+    /**
+     * The number of epochs to train before evaluating the model with the holdout set.
+     *
+     * @var int
+     */
+    protected $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -165,12 +171,19 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected ?array $losses = null;
 
     /**
-     * @param Hidden[] $hiddenLayers
+     * The file path to store the snapshot on disk during training.
+     *
+     * @var string|null
+     */
+    protected ?string $snapshotPath = null;
+
+    /**
+     * @param mixed[] $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
-     * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
+     * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
@@ -178,17 +191,22 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @throws InvalidArgumentException
      */
     public function __construct(
-        array $hiddenLayers = [],
+        array $hiddenLayers,
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
-        float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
+        int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null
     ) {
+        if (empty($hiddenLayers)) {
+            throw new InvalidArgumentException('At least one hidden layer'
+                . ' must be specified.');
+        }
+
         foreach ($hiddenLayers as $layer) {
             if (!$layer instanceof Hidden) {
                 throw new InvalidArgumentException('Hidden layer'
@@ -201,11 +219,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($l2Penalty < 0.0) {
-            throw new InvalidArgumentException('L2 Penalty must be'
-                . " greater than 0, $l2Penalty given.");
-        }
-
         if ($epochs < 0) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
@@ -214,6 +227,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
+        }
+
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Eval interval must be'
+                . " greater than 0, $evalInterval given.");
         }
 
         if ($window < 1) {
@@ -226,6 +244,10 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " between 0 and 0.5, $holdOut given.");
         }
 
+        if ($costFn and $costFn instanceof BinaryCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
+        }
+
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -233,12 +255,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
-        $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->evalInterval = $evalInterval;
         $this->window = $window;
         $this->holdOut = $holdOut;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
     }
 
@@ -281,9 +303,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
-            'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
+            'eval interval' => $this->evalInterval,
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
@@ -344,11 +366,26 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return FeedForward|null
+     * @return Network|null
      */
-    public function network() : ?FeedForward
+    public function network() : ?Network
     {
         return $this->network;
+    }
+
+    /**
+     * Set the file path to store the snapshot on disk during training.
+     *
+     * @param string|null $path
+     * @throws InvalidArgumentException
+     */
+    public function setSnapshotPath(?string $path) : void
+    {
+        if (isset($path) && is_dir($path)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
+        $this->snapshotPath = $path;
     }
 
     /**
@@ -364,11 +401,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        /** @var list<string> $classes */
         $classes = $dataset->possibleOutcomes();
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), $this->l2Penalty, true, new Xavier1());
+        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1Uniform());
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
@@ -423,6 +461,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $snapshot = null;
         $prevLoss = INF;
 
+        $snapshotPath = $this->snapshotPath;
+
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
+
         if ($testing->empty() and $this->logger) {
             $this->logger->notice('Insufficient validation data, '
                 . 'some features are disabled');
@@ -453,7 +497,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break;
             }
 
-            if (!$testing->empty()) {
+            if ($epoch % $this->evalInterval === 0 && !$testing->empty()) {
                 $predictions = $this->predict($testing);
 
                 $score = $this->metric->score($predictions, $testing->labels());
@@ -462,12 +506,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             }
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+                $message = "Epoch: $epoch, {$this->costFn}: $loss";
 
-                $message = "Epoch: $epoch, "
-                    . "{$this->costFn}: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}, "
-                    . "{$this->metric}: " . ($score ?? 'N/A');
+                if (isset($score)) {
+                    $message .= ", {$this->metric}: $score";
+                }
 
                 $this->logger->info($message);
             }
@@ -481,7 +524,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $snapshot = Snapshot::take($this->network);
+                    if ($snapshot) {
+                        $snapshot->clean();
+                    }
+
+                    $snapshot = Snapshot::take($this->network, $snapshotPath);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -491,6 +538,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
+
+                unset($score);
             }
 
             if ($lossChange < $this->minChange) {
@@ -500,12 +549,16 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $prevLoss = $loss;
         }
 
-        if ($snapshot and (end($this->scores) < $bestScore or is_nan($loss))) {
-            $snapshot->restore();
+        if ($snapshot) {
+            if (end($this->scores) < $bestScore or is_nan($loss)) {
+                $snapshot->restore();
 
-            if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+                if ($this->logger) {
+                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                }
             }
+
+            $snapshot->clean();
         }
 
         if ($this->logger) {
@@ -543,7 +596,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $probabilities = [];
 
-        foreach ($activations->asArray() as $dist) {
+        foreach ($activations->toArray() as $dist) {
             $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 
@@ -574,7 +627,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset(
+            $properties['losses'],
+            $properties['scores'],
+            $properties['logger'],
+            $properties['snapshotPath']
+        );
 
         return $properties;
     }

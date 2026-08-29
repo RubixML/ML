@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Tensor\Tensor;
+use NDArray;
 use Rubix\ML\NeuralNet\Parameter;
 use Stringable;
 
@@ -12,6 +12,7 @@ use Stringable;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Optimizer extends Stringable
 {
@@ -21,8 +22,8 @@ interface Optimizer extends Stringable
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @param NDArray $gradient
+     * @return NDArray
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor;
+    public function step(Parameter $param, NDArray $gradient) : NDArray;
 }

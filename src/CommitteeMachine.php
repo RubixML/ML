@@ -99,10 +99,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $compatibilities = [];
 
         foreach ($experts as $expert) {
-            if (!$expert instanceof Learner) {
-                throw new InvalidArgumentException('Expert must implement the Learner interface.');
-            }
-
             if (!in_array($expert->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
                 throw new InvalidArgumentException('Committee only supports'
                     . ' classifiers, regressors, and anomaly detectors, '
@@ -165,6 +161,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      */
     public function type() : EstimatorType
     {
+        if ($this->experts === []) {
+            throw new RuntimeException('Committee has no experts.');
+        }
+
         return $this->experts[array_key_first($this->experts)]->type();
     }
 
@@ -311,7 +311,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      * @param list<int|string> $votes
      * @return string|int
      */
-    protected function decideDiscrete(array $votes)
+    protected function decideDiscrete(array $votes) : string|int
     {
         $scores = $this->classes;
 

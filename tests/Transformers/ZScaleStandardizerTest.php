@@ -1,60 +1,35 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Persistable;
-use Rubix\ML\Transformers\Elastic;
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Reversible;
-use Rubix\ML\Transformers\Transformer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\ZScaleStandardizer
- */
+#[Group('Transformers')]
+#[CoversClass(ZScaleStandardizer::class)]
 class ZScaleStandardizerTest extends TestCase
 {
-    /**
-     * @var Blob
-     */
-    protected $generator;
+    protected Blob $generator;
 
-    /**
-     * @var ZScaleStandardizer
-     */
-    protected $transformer;
+    protected ZScaleStandardizer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Blob([0.0, 3000.0, -6.0], [1.0, 30.0, 0.001]);
+        $this->generator = new Blob(
+            center: [0.0, 3000.0, -6.0],
+            stdDev: [1.0, 30.0, 0.001]
+        );
 
         $this->transformer = new ZScaleStandardizer(true);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ZScaleStandardizer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-        $this->assertInstanceOf(Elastic::class, $this->transformer);
-        $this->assertInstanceOf(Reversible::class, $this->transformer);
-        $this->assertInstanceOf(Persistable::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
-    public function fitUpdateTransformReverse() : void
+    public function testFitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
 
@@ -66,13 +41,13 @@ class ZScaleStandardizerTest extends TestCase
 
         $this->assertIsArray($means);
         $this->assertCount(3, $means);
-        $this->assertContainsOnly('float', $means);
+        $this->assertContainsOnlyFloat($means);
 
         $variances = $this->transformer->variances();
 
         $this->assertIsArray($variances);
         $this->assertCount(3, $variances);
-        $this->assertContainsOnly('float', $variances);
+        $this->assertContainsOnlyFloat($variances);
 
         $dataset = $this->generator->generate(1);
 
@@ -93,10 +68,7 @@ class ZScaleStandardizerTest extends TestCase
         $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
-    /**
-     * @test
-     */
-    public function transformUnfitted() : void
+    public function testTransformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
 

@@ -77,11 +77,6 @@ class Unlabeled extends Dataset
         $samples = [];
 
         foreach ($datasets as $i => $dataset) {
-            if (!$dataset instanceof Dataset) {
-                throw new InvalidArgumentException('Dataset must implement'
-                    . ' the Dataset interface.');
-            }
-
             if ($dataset->empty()) {
                 continue;
             }
@@ -321,7 +316,7 @@ class Unlabeled extends Dataset
      * @throws InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByFeature(int $column, $value) : array
+    public function splitByFeature(int $column, string|int|float $value) : array
     {
         $left = $right = [];
 

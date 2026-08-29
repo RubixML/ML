@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 use function array_values;
@@ -35,11 +36,34 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     use AutotrackRevisions;
 
     /**
+     * The categories that should be ignored.
+     *
+     * @var list<string>
+     */
+    protected array $excluded = [];
+
+    /**
      * The set of unique possible categories per feature column of the training set.
      *
      * @var array<int[]>|null
      */
     protected ?array $categories = null;
+
+    /**
+     * @param array<mixed> $excluded
+     */
+    public function __construct(array $excluded = [])
+    {
+        foreach ($excluded as $category) {
+            if (!is_string($category)) {
+                throw new InvalidArgumentException(
+                    'Excluded category must be a string, ' . gettype($category) . ' found.'
+                );
+            }
+        }
+
+        $this->excluded = array_values($excluded);
+    }
 
     /**
      * Return the data types that this transformer is compatible with.
@@ -87,6 +111,10 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isCategorical()) {
                 $values = $dataset->feature($column);
+
+                if ($this->excluded) {
+                    $values = array_diff($values, $this->excluded);
+                }
 
                 $categories = array_values(array_unique($values));
 

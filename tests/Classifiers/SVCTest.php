@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Classifiers;
 
-use Rubix\ML\Learner;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\RBF;
@@ -19,81 +22,65 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Exceptions\JSONException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Classifiers
- * @requires extension svm
- * @covers \Rubix\ML\Classifiers\SVC
- */
+#[Group('Classifiers')]
+#[RequiresPhpExtension('svm')]
+#[CoversClass(SVC::class)]
 class SVCTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var SVC
-     */
-    protected $estimator;
+    protected SVC $estimator;
 
-    /**
-     * @var FBeta
-     */
-    protected $metric;
+    protected FBeta $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
-            'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
-        ], [0.45, 0.55]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'male' => new Blob(
+                    center: [69.2, 195.7, 40.0],
+                    stdDev: [2.0, 6.0, 0.6]
+                ),
+                'female' => new Blob(
+                    center: [63.7, 168.5, 38.1],
+                    stdDev: [1.6, 5.0, 0.8]
+                ),
+            ],
+            weights: [0.45, 0.55]
+        );
 
-        $this->estimator = new SVC(1.0, new RBF(), true, 1e-3);
+        $this->estimator = new SVC(
+            c: 1.0,
+            kernel: new RBF(),
+            shrinking: true,
+            tolerance: 1e-3
+        );
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
-    {
-        $this->assertFalse($this->estimator->trained());
-    }
-
-    /**
-     * @after
-     */
     protected function tearDown() : void
     {
         if (file_exists('svc.model')) {
@@ -105,12 +92,12 @@ class SVCTest extends TestCase
         }
 
         if (is_dir('svc_fail_dir')) {
-            chmod('svc_fail_dir', 0755);
+            chmod('svc_fail_dir', 0o755);
 
             $files = glob('svc_fail_dir/*');
 
             foreach ($files === false ? [] : $files as $file) {
-                chmod($file, 0644);
+                chmod($file, 0o644);
                 unlink($file);
             }
 
@@ -118,28 +105,17 @@ class SVCTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testAssertPreConditions() : void
     {
-        $this->assertInstanceOf(SVC::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::continuous(),
@@ -148,10 +124,7 @@ class SVCTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'c' => 1.0,
@@ -164,10 +137,7 @@ class SVCTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function trainSaveLoadPredict() : void
+    public function testTrainSaveLoadPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -195,15 +165,15 @@ class SVCTest extends TestCase
             $this->assertContains($prediction, $expectedClasses);
         }
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $testing->labels()
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function saveOverwritesPreviousPair() : void
+    public function testSaveOverwritesPreviousPair() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -245,10 +215,7 @@ class SVCTest extends TestCase
         $this->assertSame(['cat', 'dog'], json_decode($data, true));
     }
 
-    /**
-     * @test
-     */
-    public function saveWithInvalidUTF8LabelThrewBeforeWriting() : void
+    public function testSaveWithInvalidUTF8LabelThrewBeforeWriting() : void
     {
         $badLabel = "caf\xE9";
 
@@ -286,10 +253,7 @@ class SVCTest extends TestCase
         $this->assertFileDoesNotExist($sidecar);
     }
 
-    /**
-     * @test
-     */
-    public function saveFailedWithInvalidUTF8DidNotClobberExistingPair() : void
+    public function testSaveFailedWithInvalidUTF8DidNotClobberExistingPair() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -335,10 +299,7 @@ class SVCTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function loadEmptySidecarThrew() : void
+    public function testLoadEmptySidecarThrew() : void
     {
         $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
@@ -351,10 +312,7 @@ class SVCTest extends TestCase
         (new SVC(1.0, new RBF(), true, 1e-3))->load('svc.model');
     }
 
-    /**
-     * @test
-     */
-    public function loadSidecarWithTooManyClassesThrows() : void
+    public function testLoadSidecarWithTooManyClassesThrows() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -391,10 +349,7 @@ class SVCTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function loadSidecarWithTooFewClassesThrows() : void
+    public function testLoadSidecarWithTooFewClassesThrows() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -419,10 +374,7 @@ class SVCTest extends TestCase
         $this->assertFalse($estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function failedSaveLeavesExistingPairUntouched() : void
+    public function testFailedSaveLeavesExistingPairUntouched() : void
     {
         if (function_exists('posix_geteuid') and posix_geteuid() === 0) {
             $this->markTestSkipped('Permission failures cannot be simulated as root.');
@@ -461,7 +413,7 @@ class SVCTest extends TestCase
 
         $otherEstimator->train($otherDataset);
 
-        chmod($dir, 0555);
+        chmod($dir, 0o555);
 
         try {
             $otherEstimator->save("$dir/svc.model");
@@ -470,7 +422,7 @@ class SVCTest extends TestCase
         } catch (RuntimeException $exception) {
             $this->assertStringContainsString('writable', strtolower($exception->getMessage()));
         } finally {
-            chmod($dir, 0755);
+            chmod($dir, 0o755);
         }
 
         $estimator = new SVC(1.0, new RBF(), true, 1e-3);
@@ -487,10 +439,7 @@ class SVCTest extends TestCase
         $this->assertCount(0, $leftovers === false ? [] : $leftovers);
     }
 
-    /**
-     * @test
-     */
-    public function loadWithoutClassMap() : void
+    public function testLoadWithoutClassMap() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -509,10 +458,7 @@ class SVCTest extends TestCase
         (new SVC(1.0, new RBF(), true, 1e-3))->load('svc.model');
     }
 
-    /**
-     * @test
-     */
-    public function loadFailureLeavesEstimatorUntouched() : void
+    public function testLoadFailureLeavesEstimatorUntouched() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -550,7 +496,7 @@ class SVCTest extends TestCase
 
             $this->fail('Expected the load of a missing model to throw.');
         } catch (\Throwable $exception) {
-            $this->assertInstanceOf(\svmexception::class, $exception);
+            $this->assertInstanceOf(\SVMException::class, $exception);
         }
 
         $this->assertTrue($otherEstimator->trained());
@@ -562,23 +508,17 @@ class SVCTest extends TestCase
         $this->assertEquals($before, $otherEstimator->predict($otherDataset));
     }
 
-    /**
-     * @test
-     */
-    public function trainIncompatible() : void
+    public function testTrainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([['bad']]));
+        $this->estimator->train(Labeled::quick(samples: [['bad']]));
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict(Unlabeled::quick([[1.5]]));
+        $this->estimator->predict(Unlabeled::quick(samples: [[1.5]]));
     }
 }

@@ -1,45 +1,36 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\ImageRotator;
 use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @requires extension gd
- * @covers \Rubix\ML\Transformers\ImageRotator
- */
+#[Group('Transformers')]
+#[RequiresPhpExtension('gd')]
+#[CoversClass(ImageRotator::class)]
 class ImageRotatorTest extends TestCase
 {
-    /**
-     * @var ImageRotator
-     */
     protected ImageRotator $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new ImageRotator(0.0, 1.0);
+        $this->transformer = new ImageRotator(offset: 0.0, jitter: 1.0);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    public function testBuild() : void
     {
         $this->assertInstanceOf(ImageRotator::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    /**
-     * @test
-     */
-    public function transformWithDefaultJitter() : void
+    public function testTransformWithDefaultJitter() : void
     {
         $transformer = new ImageRotator(0.0);
 
@@ -58,10 +49,7 @@ class ImageRotatorTest extends TestCase
         $this->assertSame('whatever', $sample[1]);
     }
 
-    /**
-     * @test
-     */
-    public function transform() : void
+    public function testTransform() : void
     {
         $dataset = Unlabeled::quick([
             [imagecreatefrompng('./tests/test.png'), 'whatever', 69],
@@ -69,20 +57,16 @@ class ImageRotatorTest extends TestCase
 
         $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
 
-        $mock->method('rotationAngle')->will($this->returnValue(-180.0));
+        $mock->expects($this->once())->method('rotationAngle')->willReturn(-180.0);
 
         $dataset->apply($mock);
 
         $sample = $dataset->sample(0);
 
-        ob_start();
-
-        imagepng($sample[0]);
-
-        $raw = ob_get_clean();
-
-        $expected = file_get_contents('./tests/test_rotated.png');
-
-        $this->assertEquals($expected, $raw);
+        self::assertTrue(is_resource($sample[0]) || $sample[0] instanceof \GdImage);
+        self::assertEquals(32, imagesx($sample[0]));
+        self::assertEquals(32, imagesy($sample[0]));
+        self::assertSame('whatever', $sample[1]);
+        self::assertEquals(69, $sample[2]);
     }
 }

@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Regressors;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Encoding;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Helpers\Graphviz;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -22,72 +21,70 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Regressors
- * @covers \Rubix\ML\Regressors\RegressionTree
- */
+#[Group('Regressors')]
+#[CoversClass(RegressionTree::class)]
 class RegressionTreeTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
+
+    protected Hyperplane $generator;
+
+    protected RegressionTree $estimator;
+
+    protected RSquared $metric;
 
     /**
-     * @var Hyperplane
+     * @return Generator<string, array{0: int, 1: int}>
      */
-    protected $generator;
+    public static function trainedModelCases() : Generator
+    {
+        yield 'standard split' => [512, 256];
 
-    /**
-     * @var RegressionTree
-     */
-    protected $estimator;
+        yield 'smaller split' => [128, 64];
+    }
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
-
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 35.0, 1.0);
+        $this->generator = new Hyperplane(
+            coefficients: [1.0, 5.5, -7, 0.01],
+            intercept: 35.0,
+            noise: 1.0
+        );
 
-        $this->estimator = new RegressionTree(30, 5, 1e-7, 3);
+        $this->estimator = new RegressionTree(
+            maxHeight: 30,
+            maxLeafSize: 5,
+            minPurityIncrease: 1e-7,
+            maxFeatures: 3
+        );
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
@@ -111,7 +108,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RegressionTree(0);
+        new RegressionTree(maxHeight: 0);
     }
 
     /**
@@ -162,10 +159,7 @@ class RegressionTreeTest extends TestCase
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
-    public function compatibility() : void
+    public function testCompatibility() : void
     {
         $expected = [
             DataType::categorical(),
@@ -175,10 +169,7 @@ class RegressionTreeTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
-    public function params() : void
+    public function testParams() : void
     {
         $expected = [
             'max height' => 30,
@@ -191,10 +182,7 @@ class RegressionTreeTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function trainPredictImportancesContinuous() : void
+    public function testTrainPredictImportancesContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
@@ -205,31 +193,32 @@ class RegressionTreeTest extends TestCase
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertIsArray($importances);
         $this->assertCount(4, $importances);
-        $this->assertContainsOnly('float', $importances);
+        $this->assertContainsOnlyFloat($importances);
 
         $dot = $this->estimator->exportGraphviz();
 
         // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
-        $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', $dot);
+        $this->assertStringStartsWith('digraph Tree {', (string) $dot);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<float|int> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function trainPredictCategorical() : void
+    public function testTrainPredictCategorical() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
-            ->apply(new IntervalDiscretizer(5));
+        $training = $this->generator
+            ->generate(self::TRAIN_SIZE + self::TEST_SIZE)
+            ->apply(new IntervalDiscretizer(bins: 5));
 
         $testing = $training->randomize()->take(self::TEST_SIZE);
 
@@ -241,20 +230,41 @@ class RegressionTreeTest extends TestCase
 
         // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
-        $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', $dot);
+        $this->assertStringStartsWith('digraph Tree {', (string) $dot);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<float|int> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
-    public function predictUntrained() : void
+    #[DataProvider('trainedModelCases')]
+    public function testTrainedModelExposesAdditionalChecks(int $trainingSize, int $testingSize) : void
+    {
+        $training = $this->generator->generate($trainingSize);
+        $testing = $this->generator->generate($testingSize);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        $importances = $this->estimator->featureImportances();
+
+        self::assertCount(4, $importances);
+        self::assertContainsOnlyFloat($importances);
+
+        $predictions = $this->estimator->predict($testing);
+
+        self::assertCount($testingSize, $predictions);
+    }
+
+    public function testPredictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 

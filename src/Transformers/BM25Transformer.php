@@ -155,9 +155,9 @@ class BM25Transformer implements Transformer, Stateful, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->dfs = array_fill(0, $dataset->numFeatures(), 1);
+        $this->dfs = array_fill(0, $dataset->numFeatures(), 0);
         $this->totalTokens = 0;
-        $this->n = 1;
+        $this->n = 0;
 
         $this->update($dataset);
     }

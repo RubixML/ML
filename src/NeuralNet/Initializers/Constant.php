@@ -1,9 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use Tensor\Matrix;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use NumPower;
+use NDArray;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
 
 /**
  * Constant
@@ -13,50 +19,40 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
 class Constant implements Initializer
 {
-    /**
-     * The value to initialize the parameter to.
-     *
-     * @var float
-     */
-    protected float $value;
+    use AssertsShapes;
 
     /**
-     * @param float $value
-     * @throws InvalidArgumentException
+     * @param float $value The value to initialize the parameter to
      */
-    public function __construct(float $value = 0.0)
+    public function __construct(protected float $value = 0.0)
     {
-        if (is_nan($value)) {
-            throw new InvalidArgumentException('Cannot initialize'
-                . ' weight values to NaN.');
-        }
-
-        $this->value = $value;
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**
-     * Initialize a weight matrix W in the dimensions fan in x fan out.
-     *
-     * @internal
-     *
-     * @param int<0,max> $fanIn
-     * @param int<0,max> $fanOut
-     * @return Matrix
+     * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix
+    public function initialize(int $fanIn, int $fanOut) : NDArray
     {
-        return Matrix::fill($this->value, $fanOut, $fanIn);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
+
+        return NumPower::full(
+            shape: [$fanOut, $fanIn],
+            fill_value: $this->value
+        );
     }
 
     /**
-     * Return the string representation of the object.
+     * Return the string representation of the initializer.
      *
-     * @internal
-     *
-     * @return string
+     * @return string String representation
      */
     public function __toString() : string
     {

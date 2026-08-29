@@ -14,7 +14,7 @@ class SplittingBench
     protected const DATASET_SIZE = 25000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled;
+     * @var \Rubix\ML\Datasets\Labeled
      */
     protected $dataset;
 

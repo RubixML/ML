@@ -1,131 +1,244 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
-use Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
-use PHPUnit\Framework\TestCase;
 use Generator;
+use NDArray;
+use NumPower;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
+use Rubix\ML\Exceptions\InvalidThresholdException;
 
-/**
- * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU
- */
+#[Group('ActivationFunctions')]
+#[CoversClass(ThresholdedReLU::class)]
 class ThresholdedReLUTest extends TestCase
 {
     /**
      * @var ThresholdedReLU
      */
-    protected $activationFn;
+    protected ThresholdedReLU $activationFn;
 
     /**
-     * @before
+     * @var float
+     */
+    protected float $threshold = 1.0;
+
+    /**
+     * @return Generator<array>
+     */
+    public static function computeProvider() : Generator
+    {
+        yield [
+            NumPower::array([
+                [2.0, 1.0, 0.5, 0.0, -1.0, 1.5, -0.5],
+            ]),
+            [
+                [2.0, 0.0, 0.0, 0.0, 0.0, 1.5, 0.0],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [1.2, 0.31, 1.49],
+                [0.99, 1.08, 0.03],
+                [1.05, 0.52, 1.54],
+            ]),
+            [
+                [1.2, 0.0, 1.49],
+                [0.0, 1.08, 0.0],
+                [1.05, 0.0, 1.54],
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<array>
+     */
+    public static function differentiateProvider() : Generator
+    {
+        yield [
+            NumPower::array([
+                [2.0, 1.0, 0.5, 0.0, -1.0, 1.5, -0.5],
+            ]),
+            [
+                [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+            ],
+        ];
+
+        yield [
+            NumPower::array([
+                [1.2, 0.31, 1.49],
+                [0.99, 1.08, 0.03],
+                [1.05, 0.52, 1.54],
+            ]),
+            [
+                [1.0, 0.0, 1.0],
+                [0.0, 1.0, 0.0],
+                [1.0, 0.0, 1.0],
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<array>
+     */
+    public static function thresholdValuesProvider() : Generator
+    {
+        yield [
+            0.5,
+            NumPower::array([
+                [2.0, 1.0, 0.5, 0.0, -1.0],
+            ]),
+            [
+                [2.0, 1.0, 0.0, 0.0, 0.0],
+            ],
+            [
+                [1.0, 1.0, 0.0, 0.0, 0.0],
+            ],
+        ];
+
+        yield [
+            2.0,
+            NumPower::array([
+                [2.0, 1.0, 3.0, 0.0, 2.5],
+            ]),
+            [
+                [0.0, 0.0, 3.0, 0.0, 2.5],
+            ],
+            [
+                [0.0, 0.0, 1.0, 0.0, 1.0],
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<array>
+     */
+    public static function zeroRegionProvider() : Generator
+    {
+        yield [
+            NumPower::array([[0.0]]),
+            [[0.0]],
+            [[0.0]],
+        ];
+
+        yield [
+            NumPower::array([[0.5, 0.9, 0.99, 1.0, 1.01]]),
+            [[0.0, 0.0, 0.0, 0.0, 1.01]],
+            [[0.0, 0.0, 0.0, 0.0, 1.0]],
+        ];
+    }
+
+    /**
+     * @return Generator<array>
+     */
+    public static function extremeValuesProvider() : Generator
+    {
+        yield [
+            NumPower::array([[10.0, 100.0, 1000.0]]),
+            [[10.0, 100.0, 1000.0]],
+            [[1.0, 1.0, 1.0]],
+        ];
+
+        yield [
+            NumPower::array([[-10.0, -100.0, -1000.0]]),
+            [[0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0]],
+        ];
+    }
+
+    /**
+     * Set up the test case.
      */
     protected function setUp() : void
     {
-        $this->activationFn = new ThresholdedReLU(0.1);
+        parent::setUp();
+
+        $this->activationFn = new ThresholdedReLU($this->threshold);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    #[Test]
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
     {
-        $this->assertInstanceOf(ThresholdedReLU::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
+        static::assertEquals('Thresholded ReLU (threshold: 1)', (string) $this->activationFn);
     }
 
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    public function activate(Matrix $input, array $expected) : void
+    #[Test]
+    #[TestDox('It throws an exception when threshold is negative')]
+    public function testInvalidThresholdException() : void
     {
-        $activations = $this->activationFn->activate($input)->asArray();
+        $this->expectException(InvalidThresholdException::class);
 
-        $this->assertEquals($expected, $activations);
+        new ThresholdedReLU(-1.0);
     }
 
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function computeProvider() : Generator
+    #[Test]
+    #[TestDox('Correctly activates the input')]
+    #[DataProvider('computeProvider')]
+    public function testActivate(NDArray $input, array $expected) : void
     {
-        yield [
-            Matrix::quick([
-                [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            [
-                [1.0, 0.0, 0.0, 20.0, 0.0],
-            ],
-        ];
+        $activations = $this->activationFn->activate($input)->toArray();
 
-        yield [
-            Matrix::quick([
-                [-0.12, 0.31, -0.49],
-                [0.99, 0.08, -0.03],
-                [0.05, -0.52, 0.54],
-            ]),
-            [
-                [0.0, 0.31, 0.0],
-                [0.99, 0.0, 0.0],
-                [0.0, 0.0, 0.54],
-            ],
-        ];
+        static::assertEqualsWithDelta($expected, $activations, 1e-7);
     }
 
-    /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    #[Test]
+    #[TestDox('Correctly differentiates the input')]
+    #[DataProvider('differentiateProvider')]
+    public function testDifferentiate(NDArray $input, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+        $output = $this->activationFn->activate($input);
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
 
-        $this->assertEquals($expected, $derivatives);
+        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function differentiateProvider() : Generator
+    #[Test]
+    #[TestDox('Correctly handles different threshold values')]
+    #[DataProvider('thresholdValuesProvider')]
+    public function testThresholdValues(float $threshold, NDArray $input, array $expectedActivation, array $expectedDerivative) : void
     {
-        yield [
-            Matrix::quick([
-                [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            Matrix::quick([
-                [1.0, 0.0, 0.0, 20.0, 0.0],
-            ]),
-            [
-                [1, 0, 0, 1, 0],
-            ],
-        ];
+        $activationFn = new ThresholdedReLU($threshold);
 
-        yield [
-            Matrix::quick([
-                [-0.12, 0.31, -0.49],
-                [0.99, 0.08, -0.03],
-                [0.05, -0.52, 0.54],
-            ]),
-            Matrix::quick([
-                [0.0, 0.31, 0.0],
-                [0.99, 0.0, 0.0],
-                [0.0, 0.0, 0.54],
-            ]),
-            [
-                [0, 1, 0],
-                [1, 0, 0],
-                [0, 0, 1],
-            ],
-        ];
+        $output = $activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $activationFn->differentiate($input, $output)->toArray();
+
+        static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
+        static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Correctly handles values around zero')]
+    #[DataProvider('zeroRegionProvider')]
+    public function testZeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
+    {
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
+
+        static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
+        static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Correctly handles extreme values')]
+    #[DataProvider('extremeValuesProvider')]
+    public function testExtremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
+    {
+        $output = $this->activationFn->activate($input);
+        $activations = $output->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
+
+        static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
+        static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
     }
 }

@@ -1,57 +1,37 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Strategies;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Strategies\Constant;
-use Rubix\ML\Strategies\Strategy;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Strategies
- * @covers \Rubix\ML\Strategies\Constant
- */
+#[Group('Strategies')]
+#[CoversClass(Constant::class)]
 class ConstantTest extends TestCase
 {
-    /**
-     * @var Constant
-     */
-    protected $strategy;
+    protected Constant $strategy;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->strategy = new Constant(42);
     }
 
-    protected function assertPreConditions() : void
+    public function testAssertPreConditions() : void
     {
         $this->assertTrue($this->strategy->fitted());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Constant::class, $this->strategy);
-        $this->assertInstanceOf(Strategy::class, $this->strategy);
-    }
-
-    /**
-     * @test
-     */
-    public function type() : void
+    public function testType() : void
     {
         $this->assertEquals(DataType::continuous(), $this->strategy->type());
     }
 
-    /**
-     * @test
-     */
-    public function fitGuess() : void
+    public function testFitGuess() : void
     {
         $this->strategy->fit([]);
 

@@ -39,6 +39,8 @@ use function strlen;
 use svmmodel;
 use svm;
 
+use function array_map;
+
 /**
  * SVC
  *
@@ -113,7 +115,7 @@ class SVC implements Estimator, Learner
                 . " than 0, $c given.");
         }
 
-        $kernel = $kernel ?? new RBF();
+        $kernel ??= new RBF();
 
         if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance must be'
@@ -259,7 +261,7 @@ class SVC implements Estimator, Learner
             $sampleWithOffset[$key + 1] = $value;
         }
 
-        $index = $this->model->predict($sampleWithOffset);
+        $index = (int) $this->model->predict($sampleWithOffset);
 
         if (!isset($this->classes[$index])) {
             throw new RuntimeException("Unknown class index: $index.");

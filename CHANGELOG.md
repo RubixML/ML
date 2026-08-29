@@ -1,5 +1,27 @@
 # Changelog
 
+- 3.0.0
+    - Neural Network subsystem now powered by NumPower
+    - Dropped support for PHP 7.4
+    - Renamed TF-IDF dampening parameter to sublinear
+    - Update to PSR-3 Log version 3
+    - Added Emoji preset to Regex Filter
+    - Exportable Extractors now append by default with option to overwrite
+    - Added validation interval parameter to MLPs and GBM Learners
+    - Removed output layer L2 Penalty parameter from MLP Learners
+    - RBX Serializer only tracks major library version number
+    - Removed window (early stopping) hyper-parameter from TSNE
+    - Add Class/Cluster Purity clustering metrics
+    - V-measure, Completeness, and Homogeneity now use entropy-based formula
+    - Fix KDTree edge pruning + optimize traversal
+    - Optimize Dataset sort(), sorting is now unstable
+    - Remove loss-based window early stopping
+    - Add disk-based neural network snapshotting
+    - Update Amp Backend to Amp version 2.0
+    - Add per-class smoothing to Gaussian Naive Bayes
+    - You can now exclude certain categories from one-hot encoding
+    - Remove Word Stemmer tokenizer
+    
 - 2.5.10
     - Added even more numerical stability to SoftPlus
 
@@ -63,8 +85,8 @@
     - Added Vantage Point Spatial tree
     - Blob Generator can now `simulate()` a Dataset object
     - Added Wrapper interface
+    - Added Swoole Backend
     - Plus Plus added check for min number of sample seeds
-    - LOF prevent div by 0 local reachability density
 
 - 2.4.1
     - Sentence Tokenizer fix Arabic and Farsi language support

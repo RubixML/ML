@@ -21,6 +21,7 @@ use function Rubix\ML\iterator_filter;
 use function Rubix\ML\array_transpose;
 use function count;
 use function is_array;
+use function usort;
 
 /**
  * Dataset
@@ -275,7 +276,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
             throw new RuntimeException('Cannot determine data types of empty dataset.');
         }
 
-        return array_map([DataType::class, 'detect'], $this->samples[0] ?? []);
+        return array_map([DataType::class, 'detect'], $this->samples[0]);
     }
 
     /**
@@ -436,27 +437,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     {
         $records = iterator_to_array($this);
 
-        $nHat = count($records) - 1;
-
-        for ($i = 0; $i < $nHat; ++$i) {
-            $swapped = false;
-
-            for ($j = 0; $j < $nHat - $i; ++$j) {
-                $recordA = $records[$j];
-                $recordB = $records[$j + 1];
-
-                if ($callback($recordA, $recordB)) {
-                    $records[$j] = $recordB;
-                    $records[$j + 1] = $recordA;
-
-                    $swapped = true;
-                }
+        usort($records, function ($recordA, $recordB) use ($callback) : int {
+            if ($callback($recordA, $recordB)) {
+                return 1;
             }
 
-            if (!$swapped) {
-                break;
+            if ($callback($recordB, $recordA)) {
+                return -1;
             }
-        }
+
+            return 0;
+        });
 
         return static::fromIterator($records);
     }
@@ -475,10 +466,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * Write the dataset to the location and format given by a writable extractor.
      *
      * @param Exporter $extractor
+     * @param bool $overwrite
      */
-    public function exportTo(Exporter $extractor) : void
+    public function exportTo(Exporter $extractor, bool $overwrite = false) : void
     {
-        $extractor->export($this);
+        $extractor->export($this, $overwrite);
     }
 
     /**
@@ -590,10 +582,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @internal
      *
      * @param int $offset
-     * @param mixed $value
+     * @param string|int|float $value
      * @return array{self,self}
      */
-    abstract public function splitByFeature(int $offset, $value) : array;
+    abstract public function splitByFeature(int $offset, string|int|float $value) : array;
 
     /**
      * Partition the dataset into left and right subsets based on the samples' distances from two centroids.
