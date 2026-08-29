@@ -20,6 +20,7 @@
     - Update Amp Backend to Amp version 2.0
     - Add per-class smoothing to Gaussian Naive Bayes
     - You can now exclude certain categories from one-hot encoding
+    - Remove Word Stemmer tokenizer
     
 - 2.5.10
     - Added even more numerical stability to SoftPlus
