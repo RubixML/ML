@@ -66,6 +66,22 @@ class KSkipNGramTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider minThreeProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenizeMinThree(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(3, 4, 1);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
      * @return Generator<mixed[]>
      */
     public function tokenizeProvider() : Generator
@@ -102,6 +118,20 @@ class KSkipNGramTest extends TestCase
             [
                 'I', 'would', 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on', 'impact',
                 'The', 'end',
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function minThreeProvider() : Generator
+    {
+        yield [
+            'a b c d e',
+            [
+                'a b c', 'a c d', 'a b c d', 'a c d e', 'b c d',
+                'b d e', 'b c d e', 'c d e',
             ],
         ];
     }
