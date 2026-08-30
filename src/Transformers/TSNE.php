@@ -397,26 +397,6 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
-     * Calculate the squared pairwise distances for each sample using the
-     * gram matrix trick. The resulting matrix is symmetric with a zero
-     * diagonal.
-     *
-     * @param Matrix $samples
-     * @return Matrix
-     */
-    protected function squaredDistances(Matrix $samples) : Matrix
-    {
-        $gram = $samples->matmul($samples->transpose());
-
-        $diag = $gram->diagonalAsVector();
-
-        return $gram->multiplyScalar(-2.0)
-            ->addColumnVector(ColumnVector::quick($diag->asArray()))
-            ->addVector($diag)
-            ->clipLower(0.0);
-    }
-
-    /**
      * Compute the joint probabilities from the squared distance matrix such
      * that they approximately match the desired perplexity. The resulting
      * matrix is symmetric and globally normalized (total sum equals 1).
@@ -461,8 +441,10 @@ class TSNE implements Transformer, Verbose
 
             $candidate = $candidate->divideColumnVector($sigma);
 
+            $dcb = $distances->multiply($candidate)->sum()->multiply(ColumnVector::quick($betas));
+
             $diff = $sigma->log()
-                ->add($distances->multiply($candidate)->sum()->multiply(ColumnVector::quick($betas)))
+                ->add($dcb)
                 ->subtractScalar($this->entropy)
                 ->negate()
                 ->asArray();
@@ -498,8 +480,10 @@ class TSNE implements Transformer, Verbose
 
         $scale = 1.0 / (2.0 * $m);
 
-        return $candidate->add($candidate->transpose())
+        $symmetric = $candidate->add($candidate->transpose())
             ->multiplyScalar($scale);
+
+        return $symmetric;
     }
 
     /**

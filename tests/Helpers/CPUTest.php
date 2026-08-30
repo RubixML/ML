@@ -15,6 +15,12 @@ use PHPUnit\Framework\TestCase;
 class CPUTest extends TestCase
 {
     #[Test]
+    public function cores() : void
+    {
+        $this->assertGreaterThan(0, CPU::cores());
+    }
+
+    #[Test]
     public function epsilon() : void
     {
         $epsilon = CPU::epsilon();

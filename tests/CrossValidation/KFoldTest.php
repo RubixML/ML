@@ -17,6 +17,9 @@ use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[Group('Validators')]
 #[CoversClass(KFold::class)]
@@ -44,6 +47,14 @@ class KFoldTest extends TestCase
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
         ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
     }
 
     protected function setUp() : void
@@ -51,8 +62,8 @@ class KFoldTest extends TestCase
         $this->generator = new Agglomerate(
             generators: [
                 'male' => new Blob(
-                    center: [69.2, 195.7, 40.],
-                    stdDev: [1., 3., 0.3]
+                    center: [69.2, 195.7, 40.0],
+                    stdDev: [1.0, 3.0, 0.3]
                 ),
                 'female' => new Blob(
                     center: [63.7, 168.5, 38.1],
@@ -76,6 +87,7 @@ class KFoldTest extends TestCase
 
     #[DataProvider('provideBackends')]
     #[Test]
+    #[RunInSeparateProcess]
     public function estimator(Backend $backend) : void
     {
         $this->backend = $backend;

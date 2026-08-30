@@ -8,6 +8,8 @@ $$
 Euclidean\left(a,b\right) = \sqrt {\sum _{i=1}^{n}  \left( a_{i}-b_{i}\right)^2}
 $$
 
+**Interfaces:** Monotonic, Subadditive
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

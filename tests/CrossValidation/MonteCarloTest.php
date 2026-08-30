@@ -17,6 +17,9 @@ use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[Group('Validators')]
 #[CoversClass(MonteCarlo::class)]
@@ -44,6 +47,14 @@ class MonteCarloTest extends TestCase
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
         ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
     }
 
     protected function setUp() : void
@@ -76,6 +87,7 @@ class MonteCarloTest extends TestCase
 
     #[DataProvider('provideBackends')]
     #[Test]
+    #[RunInSeparateProcess]
     public function estimator(Backend $backend) : void
     {
         $this->backend = $backend;

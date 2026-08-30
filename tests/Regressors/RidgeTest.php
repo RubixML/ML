@@ -426,15 +426,15 @@ class RidgeTest extends TestCase
         $predictions = $regression->predict(new Unlabeled([$prediction]));
         $coefficients = $regression->coefficients();
 
-        self::assertEqualsWithDelta($expectedPrediction, $predictions[0], 0.2);
+        self::assertEqualsWithDelta($expectedPrediction, $predictions[0], 1e-8);
         self::assertIsArray($coefficients);
         self::assertCount(count($expectedCoefficients), $coefficients);
 
         foreach ($expectedCoefficients as $i => $expectedCoefficient) {
-            self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 0.2);
+            self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 1e-8);
         }
 
-        self::assertEqualsWithDelta($expectedBias, $regression->bias(), 0.2);
+        self::assertEqualsWithDelta($expectedBias, $regression->bias(), 1e-8);
     }
 
     #[Test]
