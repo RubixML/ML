@@ -1,14 +1,16 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Datasets/Labeled.php">[source]</a></span>
 
 # Labeled
+
 A Labeled dataset is used to train supervised learners and for testing a model by providing the ground-truth. In addition to the standard dataset API, a labeled dataset can perform operations such as stratification and sorting the dataset using the label column.
 
 !!! note
     Since PHP silently converts integer strings (ex. `'1'`) to integers in some circumstances, you should not use integer strings as class labels. Instead, use an appropriate non-integer string class name such as `'class 1'`, `'#1'`, or `'first'`.
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to each sample in the dataset. |
 | 2 | verify | true | bool | Should we verify the data? |
@@ -32,17 +34,21 @@ $dataset = new Labeled($samples, $labels);
 ## Additional Methods
 
 ### Selectors
+
 Return the labels of the dataset in an array:
+
 ```php
 public labels() : array
 ```
 
 Return a single label at the given row offset:
+
 ```php
 public label(int $offset) : mixed
 ```
 
 Return all of the possible outcomes i.e. the unique labels in an array:
+
 ```php
 public possibleOutcomes() : array
 ```
@@ -60,7 +66,9 @@ Array
 ```
 
 ### Data Types
+
 Return the data type of the label:
+
 ```php
 public labelType() : Rubix\ML\DataType
 ```
@@ -74,7 +82,9 @@ continuous
 ```
 
 ### Stratification
+
 Group samples by their class label and return them in their own dataset:
+
 ```php
 public stratifyByLabel() : array
 ```
@@ -84,6 +94,7 @@ $strata = $dataset->stratifyByLabel();
 ```
 
 Split the dataset into left and right subsets such that the proportions of class labels remain intact:
+
 ```php
 public stratifiedSplit($ratio = 0.5) : array
 ```
@@ -93,6 +104,7 @@ public stratifiedSplit($ratio = 0.5) : array
 ```
 
 Return *k* equal size subsets of the dataset such that class proportions remain intact:
+
 ```php
 public stratifiedFold($k = 10) : array
 ```
@@ -102,7 +114,9 @@ $folds = $dataset->stratifiedFold(3);
 ```
 
 ### Transform Labels
+
 Transform the labels in the dataset using a callback function and return self for method chaining:
+
 ```php
 public transformLabels(callable $fn) : self
 ```
@@ -116,12 +130,14 @@ $dataset->transformLabels('intval');
 //
 
 $dataset->transformLabels(function ($label) {
-	return $label > 0.5 ? 'yes' : 'no';
+    return $label > 0.5 ? 'yes' : 'no';
 });
 ```
 
 ### Describe by Label
+
 Describe the features of the dataset broken down by categorical label:
+
 ```php
 public describeByLabel() : Report
 ```

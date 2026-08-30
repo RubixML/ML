@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/SoftmaxClassifier.php">[source]</a></span>
 
 # Softmax Classifier
+
 A multiclass generalization of [Logistic Regression](logistic-regression.md) using a single layer neural network with a [Softmax](../neural-network/activation-functions/softmax.md) output layer.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
@@ -8,8 +9,9 @@ A multiclass generalization of [Logistic Regression](logistic-regression.md) usi
 **Data Type Compatibility:** Continuous
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | batchSize | 256 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
@@ -18,6 +20,7 @@ A multiclass generalization of [Logistic Regression](logistic-regression.md) usi
 | 6 | costFn | BinaryCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 
 ## Example
+
 ```php
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
@@ -27,7 +30,9 @@ $estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, ne
 ```
 
 ## Additional Methods
+
 Return an iterable progress table with the steps from the last training session:
+
 ```php
 public steps() : iterable
 ```
@@ -41,11 +46,13 @@ $extractor->export($estimator->steps());
 ```
 
 Return the loss for each epoch from the last training session:
+
 ```php
 public losses() : float[]|null
 ```
 
 Return the underlying neural network instance or `null` if untrained:
+
 ```php
 public network() : Network|null
 ```

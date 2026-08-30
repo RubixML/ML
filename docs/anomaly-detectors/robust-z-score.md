@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/AnomalyDetectors/RobustZScore.php">[source]</a></span>
 
 # Robust Z-Score
+
 A statistical anomaly detector that uses modified Z-Scores that are robust to preexisting outliers in the training set. The modified Z-Score is defined as the feature value minus the median over the median absolute deviation (MAD). Anomalies are flagged if their final weighted Z-Score exceeds a user-defined threshold.
 
 !!! note
@@ -11,13 +12,15 @@ A statistical anomaly detector that uses modified Z-Scores that are robust to pr
 **Data Type Compatibility:** Continuous
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | threshold | 3.5 | float | The minimum Z-Score to be flagged as an anomaly. |
 | 2 | beta | 0.5 | float | The weight of the maximum Z-Score in the overall anomaly score. |
 | 3 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the MAD of each feature. |
 
 ## Example
+
 ```php
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 
@@ -25,15 +28,19 @@ $estimator = new RobustZScore(3.5, 0.25, 1e-6);
 ```
 
 ## Additional Methods
+
 Return the median of each feature column in the training set:
+
 ```php
 public medians() : float[]|null
 ```
 
 Return the median absolute deviation (MAD) of each feature column in the training set:
+
 ```php
 public mads() : float[]|null
 ```
 
 ## References
+
 [^1]: B. Iglewicz et al. (1993). How to Detect and Handle Outliers.

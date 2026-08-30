@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/SVC.php">[source]</a></span>
 
 # SVC
+
 The multiclass Support Vector Machine (SVM) Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high-dimensional feature space using the *kernel trick*.
 
 !!! note
@@ -11,8 +12,9 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 **Data Type Compatibility:** Continuous
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
 | 2 | kernel | RBF | Kernel | The kernel function used to operate in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
@@ -20,6 +22,7 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 | 5 | cache size | 100.0 | float | The size of the kernel cache in MB. |
 
 ## Example
+
 ```php
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\Linear;
@@ -28,7 +31,9 @@ $estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.0);
 ```
 
 ## Additional Methods
+
 Save the model data to the filesystem:
+
 ```php
 public save(string $path) : void
 ```
@@ -37,9 +42,11 @@ public save(string $path) : void
     An additional class map in JSON format will be saved alongside the model weights.
 
 Load the model data from the filesystem:
+
 ```php
 public load(string $path) : void
 ```
 
 ## References
+
 [^1]: C. Chang et al. (2011). LIBSVM: A library for support vector machines.

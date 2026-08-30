@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/GradientBoost.php">[source]</a></span>
 
 # Gradient Boost
+
 Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Descent boosting scheme for training boosters (Decision Trees) to correct the error residuals of a base learner.
 
 !!! note
@@ -14,8 +15,9 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 **Data Type Compatibility:** Categorical and Continuous
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | booster | RegressionTree | Learner | The regressor used to up the error residuals of the base learner. |
 | 2 | rate | 0.1 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
@@ -27,6 +29,7 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 | 9 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\SMAPE;
 use Rubix\ML\Regressors\GradientBoost;
@@ -36,7 +39,9 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 3, 1
 ```
 
 ## Additional Methods
+
 Return an iterable progress table with the steps from the last training session:
+
 ```php
 public steps() : iterable
 ```
@@ -50,16 +55,19 @@ $extractor->export($estimator->steps());
 ```
 
 Return the validation score for each epoch from the last training session:
+
 ```php
 public scores() : float[]|null
 ```
 
 Return the loss for each epoch from the last training session:
+
 ```php
 public losses() : float[]|null
 ```
 
 ## References
+
 [^1]: J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
 [^2]: J. H. Friedman. (1999). Stochastic Gradient Boosting.
 [^3]: Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.

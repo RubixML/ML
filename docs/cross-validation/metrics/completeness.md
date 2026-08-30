@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Metrics/Completeness.php">[source]</a></span>
 
 # Completeness
+
 A ground-truth clustering metric that measures how well all the samples of a class are grouped into a single cluster. A clustering is said to be *complete* when every sample of a class is contained in one cluster. Formally, it is one minus the conditional entropy of the cluster assignments given the classes normalized by the marginal entropy of the cluster assignments.
 
 $$
@@ -20,9 +21,11 @@ Assigning every sample its own cluster keeps the clusters perfectly pure (homoge
 **Score Range:** 0 to 1
 
 ## Parameters
+
 This metric does not have any parameters.
 
 ## Example
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\Completeness;
 
@@ -33,6 +36,6 @@ $score = $metric->score([0, 1, 2, 3, 4], ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'
 echo $score;
 ```
 
-```
+```text
 0.41816566007905
 ```

@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CommitteeMachine.php">[source]</a></span>
 
 # Committee Machine
+
 A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence scheme to weight the final predictions.
 
 !!! note
@@ -11,12 +12,14 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 **Data Type Compatibility:** Depends on the base learners
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
 | 2 | influences | null | array | The influence values for each expert in the committee. If null, each expert will be weighted equally. |
 
 ## Example
+
 ```php
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -36,15 +39,19 @@ $estimator = new CommitteeMachine([
 ```
 
 ## Additional Methods
+
 Return the learner instances of the committee:
+
 ```php
 public experts() : array
 ```
 
 Return the normalized influence scores of each expert in the committee:
+
 ```php
 public influences() : array
 ```
 
 ## References
+
 [^1]: H. Drucker. (1997). Fast Committee Machines for Regression and Classification.
