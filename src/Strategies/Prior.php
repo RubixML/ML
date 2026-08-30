@@ -60,7 +60,7 @@ class Prior implements Strategy
      *
      * @internal
      *
-     * @param list<string> $values
+     * @param list<string|int> $values
      * @throws InvalidArgumentException
      */
     public function fit(array $values) : void

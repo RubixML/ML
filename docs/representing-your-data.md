@@ -46,7 +46,7 @@ Categorical or *nominal* variables specify which category a sample belongs to am
 
 ### Ordinals
 
-Numeric strings such as `'1'` and `'2'` are considered categorical variables in our high-level type system. This conveniently allows you to represent ordinals as *ordered categories* in which the distances between the levels could be arbitrary.
+Integers such as `1` and `2` are considered categorical variables in our high-level type system. This conveniently allows you to represent ordinals as *ordered categories* in which the distances between the levels could be arbitrary.
 
 ### Booleans
 
