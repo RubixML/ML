@@ -29,12 +29,19 @@ class SwooleTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->backend = new SwooleBackend();
+        $this->backend = new SwooleBackend(4);
     }
 
     protected function tearDown() : void
     {
         Event::wait();
+    }
+
+    #[Test]
+    #[RunInSeparateProcess]
+    public function workers() : void
+    {
+        $this->assertEquals(4, $this->backend->workers());
     }
 
     #[Test]

@@ -43,6 +43,18 @@ class Serial implements Backend
     }
 
     /**
+     * Return the number of concurrent worker processes.
+     *
+     * @internal
+     *
+     * @return int
+     */
+    public function workers() : int
+    {
+        return 1;
+    }
+
+    /**
      * Process the queue and return the results.
      *
      * @return mixed[]
@@ -75,12 +87,13 @@ class Serial implements Backend
     }
 
     /**
-     * Shut down the backend. No-op for the serial backend.
+     * Shut down the backend.
      *
      * @internal
      */
     public function shutdown() : void
     {
+        // No-op for the serial backend.
     }
 
     /**

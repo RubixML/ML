@@ -7,7 +7,7 @@ A brute-force distance-based learning algorithm that locates the *k* nearest sam
 !!! note
     For a faster spatial tree-accelerated version of KNN, see [KD Neighbors](kd-neighbors.md).
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 

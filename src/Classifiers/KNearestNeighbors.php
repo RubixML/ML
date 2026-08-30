@@ -5,12 +5,16 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
+use Rubix\ML\Parallel;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\Multiprocessing;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -24,9 +28,11 @@ use Rubix\ML\Exceptions\RuntimeException;
 use SplMaxHeap;
 
 use function Rubix\ML\argmax;
-use function array_map;
 use function array_count_values;
 use function array_fill_keys;
+use function array_map;
+use function array_merge;
+use function ceil;
 
 /**
  * K Nearest Neighbors
@@ -42,9 +48,9 @@ use function array_fill_keys;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
+class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Parallel, Persistable
 {
-    use AutotrackRevisions;
+    use Multiprocessing, AutotrackRevisions;
 
     /**
      * The number of neighbors to consider when making a prediction.
@@ -95,6 +101,34 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     ];
 
     /**
+     * Infer a chunk of samples.
+     *
+     * @internal
+     *
+     * @param self $estimator
+     * @param Dataset $chunk
+     * @return array
+     */
+    public static function predictChunk(self $estimator, Dataset $chunk) : array
+    {
+        return array_map([$estimator, 'predictSample'], $chunk->samples());
+    }
+
+    /**
+     * Estimate the joint probabilities for each possible outcome in a chunk of samples.
+     *
+     * @internal
+     *
+     * @param self $estimator
+     * @param Dataset $chunk
+     * @return list<array<string,float>>
+     */
+    public static function probaChunk(self $estimator, Dataset $chunk) : array
+    {
+        return array_map([$estimator, 'probaSample'], $chunk->samples());
+    }
+
+    /**
      * @param int $k
      * @param bool $weighted
      * @param Distance|null $kernel
@@ -110,6 +144,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         $this->k = $k;
         $this->weighted = $weighted;
         $this->kernel = $kernel ?? new Euclidean();
+        $this->backend = new Serial();
     }
 
     /**
@@ -213,7 +248,24 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        return array_map([$this, 'predictSample'], $dataset->samples());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend->workers());
+
+        $this->backend->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([self::class, 'predictChunk'], [$this, $chunk]);
+
+            $this->backend->enqueue($task);
+        }
+
+        $predictions = [];
+
+        foreach ($this->backend->process() as $output) {
+            /** @var list<string> $output */
+            $predictions = array_merge($predictions, $output);
+        }
+
+        return $predictions;
     }
 
     /**
@@ -258,7 +310,24 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        return array_map([$this, 'probaSample'], $dataset->samples());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend->workers());
+
+        $this->backend->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([self::class, 'probaChunk'], [$this, $chunk]);
+
+            $this->backend->enqueue($task);
+        }
+
+        $probabilities = [];
+
+        foreach ($this->backend->process() as $output) {
+            /** @var list<array<string,float>> $output */
+            $probabilities = array_merge($probabilities, $output);
+        }
+
+        return $probabilities;
     }
 
     /**

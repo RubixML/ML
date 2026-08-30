@@ -8,6 +8,7 @@ use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -19,6 +20,11 @@ use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Regressors')]
@@ -51,9 +57,37 @@ class KNNRegressorTest extends TestCase
 
     protected RSquared $metric;
 
+    protected ?Backend $backend = null;
+
     public static function trainedStateCases() : Generator
     {
         yield 'three-fold partial fit' => [self::TRAIN_SIZE, 3];
+    }
+
+    /**
+     * @return Generator<string, array{backend: Backend}>
+     */
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        $ampBackend = new Amp(4);
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
     }
 
     protected function setUp() : void
@@ -65,6 +99,11 @@ class KNNRegressorTest extends TestCase
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
+    }
+
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
     }
 
     #[Test]
@@ -107,6 +146,62 @@ class KNNRegressorTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    #[DataProvider('provideBackends')]
+    #[Test]
+    #[RunInSeparateProcess]
+    public function trainPredict(Backend $backend) : void
+    {
+        $this->backend = $backend;
+
+        $this->estimator->setBackend($backend);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $predictions = $this->estimator->predict($testing);
+
+        /** @var list<int|float> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[RunInSeparateProcess]
+    public function predictionsAgreeAcrossBackends() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $serial = new KNNRegressor(k: 10, weighted: true, kernel: new Minkowski(3.0));
+
+        $serial->train($training);
+
+        $serialPredictions = $serial->predict($testing);
+
+        $ampBackend = new Amp(4);
+
+        $this->backend = $ampBackend;
+
+        $amp = new KNNRegressor(k: 10, weighted: true, kernel: new Minkowski(3.0));
+
+        $amp->setBackend($ampBackend);
+
+        $amp->train($training);
+
+        $ampPredictions = $amp->predict($testing);
+
+        $this->assertEquals($serialPredictions, $ampPredictions);
     }
 
     #[Test]

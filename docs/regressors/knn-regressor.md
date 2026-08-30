@@ -7,7 +7,7 @@ K Nearest Neighbors (KNN) is a brute-force distance-based learner that locates t
 !!! note
     For a faster spatial tree-accelerated version of KNN, see [KD Neighbors Regressor](kd-neighbors-regressor.md).
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Parallel](../parallel.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 

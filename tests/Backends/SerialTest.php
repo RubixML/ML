@@ -32,6 +32,12 @@ class SerialTest extends TestCase
     }
 
     #[Test]
+    public function workers() : void
+    {
+        $this->assertEquals(1, $this->backend->workers());
+    }
+
+    #[Test]
     public function enqueueProcess() : void
     {
         for ($i = 0; $i < 10; ++$i) {

@@ -5,12 +5,16 @@ namespace Rubix\ML\Regressors;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
+use Rubix\ML\Parallel;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\Multiprocessing;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -38,9 +42,10 @@ use SplMaxHeap;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNRegressor implements Estimator, Learner, Online, Persistable
+class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
 {
     use AutotrackRevisions;
+    use Multiprocessing;
 
     /**
      * The number of neighbors to consider when making a prediction.
@@ -82,6 +87,20 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     ];
 
     /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $dataset
+     * @param self $estimator
+     * @return list<int|float>
+     */
+    public static function predictChunk(self $estimator, Dataset $dataset) : array
+    {
+        return array_map([$estimator, 'predictSample'], $dataset->samples());
+    }
+
+    /**
      * @param int $k
      * @param bool $weighted
      * @param Distance|null $kernel
@@ -97,6 +116,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
         $this->k = $k;
         $this->weighted = $weighted;
         $this->kernel = $kernel ?? new Euclidean();
+        $this->backend = new Serial();
     }
 
     /**
@@ -194,7 +214,24 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        return array_map([$this, 'predictSample'], $dataset->samples());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend->workers());
+
+        $this->backend->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([self::class, 'predictChunk'], [$this, $chunk]);
+
+            $this->backend->enqueue($task);
+        }
+
+        $predictions = [];
+
+        foreach ($this->backend->process() as $output) {
+            /** @var list<int|float> $output */
+            $predictions = array_merge($predictions, $output);
+        }
+
+        return $predictions;
     }
 
     /**

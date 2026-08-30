@@ -4,7 +4,6 @@ namespace Rubix\ML\Backends;
 
 use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Helpers\CPU;
-use Rubix\ML\Helpers\Params;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use RuntimeException;
@@ -86,6 +85,18 @@ class Swoole implements Backend
     }
 
     /**
+     * Return the number of concurrent worker processes.
+     *
+     * @internal
+     *
+     * @return int
+     */
+    public function workers() : int
+    {
+        return $this->workers;
+    }
+
+    /**
      * Process the queue and return the results.
      *
      * @internal
@@ -140,13 +151,13 @@ class Swoole implements Backend
                 $status = $workerProcess->wait();
 
                 if (0 !== $status['code']) {
-                    throw new RuntimeException('Worker process exited with an error');
+                    throw new RuntimeException('Worker process exited with an error.');
                 }
 
                 $socket = $workerProcess->exportSocket();
 
                 if ($socket->isClosed()) {
-                    throw new RuntimeException('Coroutine socket is closed');
+                    throw new RuntimeException('Coroutine socket is closed.');
                 }
 
                 $maxMessageLengthValue = $maxMessageLength->get();

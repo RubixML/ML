@@ -16,3 +16,11 @@ use Rubix\ML\Backends\Swoole;
 
 $backend = new Swoole();
 ```
+
+## Additional Methods
+
+Return the number of concurrent worker processes:
+
+```php
+public workers() : int
+```
