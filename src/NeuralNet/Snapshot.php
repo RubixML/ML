@@ -187,7 +187,7 @@ class Snapshot
     /**
      * Remove the snapshot file from disk.
      */
-    public function clean() : void
+    public function destroy() : void
     {
         if (is_file($this->file)) {
             @unlink($this->file);
