@@ -5,8 +5,8 @@ The library makes it easy to work with your data via the [Dataset](datasets/api.
 ```php
 $samples = [
     [0.1, 21.5, 'furry'],
-    [2.0, -5, 'rough'],
-    [0.001, -10, 'rough'],
+    [2.0, -5.0, 'rough'],
+    [0.001, -10.0, 'rough'],
 ];
 ```
 
@@ -16,13 +16,13 @@ The library comes with a higher-order type system that distinguishes types that 
 
 | Library Type | PHP Type |
 | --- | --- |
-| Continuous | Integer or floating point number |
-| Categorical | String |
+| Continuous | Floating point number |
+| Categorical | String or integer |
 | Image | GD Image object or resource |
 
 ## Continuous Features
 
-Continuous features represent some *quantitative* property of the sample and are represented as natural, integer, or real (floating point) numbers. They can be broken down into intervals, ratios, and counts each with their own properties and constraints. One property they all share, however, is that the distances between adjacent values are equal and consistent.
+Continuous features represent some *quantitative* property of the sample and are represented as real (floating point) numbers. They can be broken down into intervals, ratios, and counts each with their own properties and constraints. One property they all share, however, is that the distances between adjacent values are equal and consistent. Because the library treats integers as [categorical](#categorical-features), express continuous values as floats — cast whole numbers to a float (`5` to `5.0`) when a feature is quantitative rather than ordinal.
 
 ### Intervals
 
@@ -38,7 +38,7 @@ Count variables are limited to the set of natural (or *counting*) numbers and th
 
 ## Categorical Features
 
-Categories are discrete values that describe a qualitative property of a sample such as texture, genre, or political party. They are represented as strings and, unlike continuous features, have no numerical relationship between the values.
+Categories are discrete values that describe a qualitative property of a sample such as texture, genre, or political party. They are represented as strings or integers and, unlike continuous features, have no numerical relationship between the values.
 
 ### Categories
 

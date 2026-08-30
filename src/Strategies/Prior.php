@@ -80,9 +80,9 @@ class Prior implements Strategy
      * @internal
      *
      * @throws RuntimeException
-     * @return string
+     * @return string|int
      */
-    public function guess() : string
+    public function guess() : string|int
     {
         if (!$this->counts or !$this->n) {
             throw new RuntimeException('Strategy has not been fitted.');
@@ -90,7 +90,7 @@ class Prior implements Strategy
 
         $r = rand(0, $this->n - 1);
 
-        /** @var string $class */
+        /** @var string|int $class */
         foreach ($this->counts as $class => $count) {
             $r -= $count;
 
@@ -99,7 +99,7 @@ class Prior implements Strategy
             }
         }
 
-        return (string) key($this->counts);
+        return key($this->counts);
     }
 
     /**

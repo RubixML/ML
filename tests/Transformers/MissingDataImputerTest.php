@@ -32,11 +32,11 @@ class MissingDataImputerTest extends TestCase
     public function fitTransform() : void
     {
         $dataset = new Unlabeled(samples: [
-            [30, 'friendly'],
+            [30.0, 'friendly'],
             [NAN, 'mean'],
-            [50, 'friendly'],
-            [60, '?'],
-            [10, 'mean'],
+            [50.0, 'friendly'],
+            [60.0, '?'],
+            [10.0, 'mean'],
         ]);
 
         $this->transformer->fit($dataset);

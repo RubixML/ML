@@ -29,7 +29,7 @@ class KMostFrequent implements Strategy
     /**
      * The k most frequent classes.
      *
-     * @var list<string>
+     * @var list<string|int>
      */
     protected array $classes = [
         //
@@ -101,9 +101,9 @@ class KMostFrequent implements Strategy
      * @internal
      *
      * @throws RuntimeException
-     * @return string
+     * @return string|int
      */
-    public function guess() : string
+    public function guess() : string|int
     {
         if (!$this->classes) {
             throw new RuntimeException('Strategy has not been fitted.');

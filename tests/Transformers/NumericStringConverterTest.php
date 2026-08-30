@@ -26,9 +26,9 @@ class NumericStringConverterTest extends TestCase
     public function transformReverse() : void
     {
         $dataset = new Unlabeled(samples: [
-            ['1', '2', 3, 4, 'NAN'],
+            ['1', '2', 3.0, 4.0, 'NAN'],
             ['4.0', '2.0', 3.0, 1.0, 'INF'],
-            ['100', '3.0', 200, 2.5, '-INF'],
+            ['100', '3.0', 200.0, 2.5, '-INF'],
         ]);
 
         $dataset->apply($this->transformer);
