@@ -1,5 +1,9 @@
 # Changelog
 
+- 2.5.11
+    - Optimize DBSCAN inference
+    - Optimize K-means and FCM training
+
 - 2.5.10
     - Optimize brute-force nearest neighbors operations
     - Optimize N-gram and K-skip N-gram tokenizers
