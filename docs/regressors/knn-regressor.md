@@ -30,7 +30,7 @@ $estimator = new KNNRegressor(5, false, new SafeEuclidean());
 
 ## Parallel
 
-This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up training:
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up inference:
 
 ```php
 use Rubix\ML\Backends\Swoole;
