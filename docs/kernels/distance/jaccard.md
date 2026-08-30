@@ -4,6 +4,8 @@
 
 The *generalized* Jaccard distance is a measure of distance with a range from 0 to 1 and can be thought of as the size of the intersection divided by the size of the union of two points if they were consisted only of binary random variables.
 
+**Interfaces:** Subadditive
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

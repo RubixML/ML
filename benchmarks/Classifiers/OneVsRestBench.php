@@ -13,8 +13,8 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
 /**
  * @Groups({"Classifiers"})
@@ -50,8 +50,10 @@ class OneVsRestBench
         ];
 
         if (
-            SwooleExtensionIsLoaded::create()->passes()
-            && ExtensionIsLoaded::with('igbinary')->passes()
+            SpecificationChain::with([
+                new ExtensionIsLoaded('swoole'),
+                new ExtensionIsLoaded('igbinary'),
+            ])->passes()
         ) {
             $swooleBackend = new Swoole();
 

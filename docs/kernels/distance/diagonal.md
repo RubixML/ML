@@ -8,6 +8,8 @@ $$
 {\displaystyle Diagonal(a,b)=\max _{i}(|a_{i}-b_{i}|)}
 $$
 
+**Interfaces:** Monotonic, Subadditive
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters
