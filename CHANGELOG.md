@@ -25,6 +25,7 @@
     - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
     - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
     - Cross Entropy loss function now split into Binary and Multiclass
+    - Parallel Backends now default to max physical cores not logical
     
 - 2.5.11
     - Optimize DBSCAN inference

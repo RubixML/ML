@@ -6,6 +6,7 @@ use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use RuntimeException;
 use Swoole\Atomic;
 use Swoole\Process;
@@ -28,11 +29,11 @@ class Swoole implements Backend
     protected array $queue = [];
 
     /**
-     * The number of CPU cores available to the backend.
+     * The number of workers available to the backend.
      *
      * @var int
      */
-    protected int $numCpus;
+    protected int $workers;
 
     /**
      * Whether the igbinary extension is loaded.
@@ -41,15 +42,24 @@ class Swoole implements Backend
      */
     protected bool $hasIgbinary;
 
-    public function __construct()
+    /**
+     * @param int|null $workers
+     * @throws InvalidArgumentException
+     */
+    public function __construct(?int $workers = null)
     {
+        if (isset($workers) and $workers < 1) {
+            throw new InvalidArgumentException('Number of workers'
+                . " must be greater than 0, $workers given.");
+        }
+
         ExtensionIsLoaded::with('swoole')->check();
 
-        $numCpus = function_exists('swoole_cpu_num') ? swoole_cpu_num() : CPU::cores();
+        $workers ??= function_exists('swoole_cpu_num') ? swoole_cpu_num() : CPU::cores();
 
         $hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
 
-        $this->numCpus = $numCpus;
+        $this->workers = $workers;
         $this->hasIgbinary = $hasIgbinary;
     }
 
@@ -122,7 +132,7 @@ class Swoole implements Backend
 
             $workerProcesses[$index] = $workerProcess;
 
-            $currentCpu = ($currentCpu + 1) % $this->numCpus;
+            $currentCpu = ($currentCpu + 1) % $this->workers;
         }
 
         run(function () use ($maxMessageLength, &$results, $workerProcesses) {
@@ -205,6 +215,6 @@ class Swoole implements Backend
      */
     public function __toString() : string
     {
-        return "Swoole (cpus: {$this->numCpus}, igbinary: " . Params::toString($this->hasIgbinary) . ')';
+        return "Swoole (workers: {$this->workers})";
     }
 }
