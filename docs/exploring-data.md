@@ -1,7 +1,9 @@
 # Exploring Data
+
 Exploratory Data Analysis (EDA) is an approach to modeling data that produces insights into the characteristics of a dataset. EDA is useful for feature engineering as well as model selection and can save time and lead to better modes when included in your machine learning lifecycle. In general, there are two types of Exploratory Data Analysis - quantitative and graphical. Quantitative data analysis summarizes the data using statistical or probabilistic methods. Graphical analysis uses techniques such as scatterplots and histograms to glean information from the structure and shape of the data and can incorporate [Manifold Learning](#manifold-learning) to reduce the dimensionality of the samples.
 
 ## Describe a Dataset
+
 The Dataset API has a handy method named `describe()` that computes statistics for each continuous feature of the dataset such as the column median, standard deviation, and skewness. In addition, it provides the probabilities of each category for categorical feature columns. In the example below, we'll echo the Report object returned by the `describe()` method to get a better understanding for how the values of our features are distributed.
 
 ```php
@@ -47,6 +49,7 @@ $report->toJSON()->saveTo(new Filesystem('report.json'));
 ```
 
 ### Describe by Label
+
 You can also describe the dataset in terms of the classes each sample belongs to by calling the `describeByLabel()` method on a Labeled dataset object with categorical labels.
 
 ```php
@@ -54,9 +57,11 @@ $report = $dataset->describeByLabel();
 ```
 
 ## Visualization
+
 Another technique used in data analysis is plotting one or more of its dimensions in a chart such as a scatterplot or histogram. Visualizing the data gives us an understanding as to the shape of the data and can aid in discovering outliers or for choosing features to train our model with. Since the library works with common data formats, you are free to use your favorite 3rd party plotting software to visualize the data copied from Rubix ML. If you are looking for a place to start, the free Plotly online [Chart Studio](https://plotly.com/chart-studio/) or a modern spreadsheet application should work well for most visualization tasks.
 
 ### Exporting Data
+
 Before importing a dataset into your plotting software, you may need to export it in a format that can be recognized. For this, the library provides the [Writable](extractors/api.md) Extractor API to handle exporting dataset objects to various formats including [CSV](extractors/csv.md) and [NDJSON](extractors/ndjson.md). For example, to export a dataset in CSV format pass the CSV extractor to the `exportTo()` method on the dataset object.
 
 ```php
@@ -66,6 +71,7 @@ $dataset->exportTo(new CSV('dataset.csv'));
 ```
 
 ### Converting Formats
+
 You may want to convert a dataset stored in one format to another format. To convert formats, pass an extractor object to the `export()` method on a target extractor that implements the [Writable](extractors/api.md) interface. In the example below, we'll convert a data table from CSV format to NDJSON, saving it to a new file.
 
 ```php
@@ -78,16 +84,19 @@ $extractor->export(new CSV('dataset.csv'));
 ```
 
 ### 1D Histogram
+
 One way to visualize the categorical features of a dataset is to put each sample into a bin corresponding to the particular category it belongs to. We can then count the number of samples and display them in a histogram so they can be visually compared. In the following example, we'll bin the samples of the [Housing](https://github.com/RubixML/Housing) dataset according to building type.
 
 ![Housing Dataset 1D Histogram](https://github.com/RubixML/ML/blob/master/docs/images/housing-dataset-1d-histogram.png?raw=true)
 
 ### 2D Scatterplot
+
 A common way to visualize the continuous features of a dataset is to plot two features as X and Y axis of a scatterplot. In the example below, we'll plot the `petal width` and `petal length` features of the [Iris](https://github.com/RubixML/Iris) dataset. Notice that we can distinguish 3 clusters corresponding to each class label - therefore, these features will do a pretty good job of informing the learner at training time.
 
 ![Iris Dataset 2D Scatterplot](https://github.com/RubixML/ML/blob/master/docs/images/iris-dataset-2d-scatterplot.png?raw=true)
 
 ## Manifold Learning
+
 Manifold Learning is a type of dimensionality reduction that aims to produce a faithful low-dimensional (1 - 3) representation of a whole dataset for visualization. Unlike the example above in which we isolated a fixed number of features, Manifold Learning allows us to plot a representation of *all* the features. This representation is referred to as an *embedding* because the high-dimensional features are embedded into a lower-dimensional manifold.
 
 In the first example, we'll use a dimensionality reduction method called [Truncated SVD](transformers/truncated-svd.md) to project the Iris dataset down into 2 dimensions and then export the data to a [CSV](extractors/csv.md) file using the `exportTo()` method so we can import it into our plotting software.

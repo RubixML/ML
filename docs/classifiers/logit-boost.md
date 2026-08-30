@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Classifiers/LogitBoost.php">[source]</a></span>
 
 # Logit Boost
+
 A stage-wise additive ensemble that uses regression trees to iteratively learn a Logistic Regression model for binary classification problems. Unlike standard [Logistic Regression](logistic-regression.md), Logit Boost has the ability to learn a smooth non-linear decision surface by training decision trees to follow the gradient of the cross entropy loss function. In addition, Logit Boost concentrates more effort on classifying samples that it is less certain about.
 
 !!! note
@@ -11,8 +12,9 @@ A stage-wise additive ensemble that uses regression trees to iteratively learn a
 **Data Type Compatibility:** Depends on base learners
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | booster | RegressionTree | Learner | The regressor used to fix up the error residuals of the base learner. |
 | 2 | rate | 0.1 | float | The learning rate of the ensemble i.e. the *shrinkage* applied to each step. |
 | 3 | ratio | 0.5 | float | The ratio of samples to subsample from the training set to train each booster. |
@@ -23,6 +25,7 @@ A stage-wise additive ensemble that uses regression trees to iteratively learn a
 | 8 | metric | F Beta | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
+
 ```php
 use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Regressors\RegressionTree;
@@ -32,7 +35,9 @@ $estimator = new LogitBoost(new RegressionTree(4), 0.1, 0.5, 1000, 1e-4, 5, 0.1,
 ```
 
 ## Additional Methods
+
 Return an iterable progress table with the steps from the last training session:
+
 ```php
 public steps() : iterable
 ```
@@ -46,16 +51,19 @@ $extractor->export($estimator->steps());
 ```
 
 Return the validation score for each epoch from the last training session:
+
 ```php
 public scores() : float[]|null
 ```
 
 Return the loss for each epoch from the last training session:
+
 ```php
 public losses() : float[]|null
 ```
 
 ## References
+
 [^1]: J. H. Friedman et al. (2000). Additive Logistic Regression: A Statistical View of Boosting.
 [^2]: J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
 [^3]: J. H. Friedman. (1999). Stochastic Gradient Boosting.

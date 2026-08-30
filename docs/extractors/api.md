@@ -1,7 +1,9 @@
 # Extractors
+
 Extractors are data table iterators that help you import data from various source formats such as CSV, NDJSON, and SQL in an efficient way. They implement one of the standard PHP [Traversable](https://www.php.net/manual/en/class.traversable.php) interfaces and are compatible anywhere the iterable pseudotype is accepted. Extractors that implement the Writable interface can be used to save other iterators such as dataset objects and other extractors.
 
 ## Iterate
+
 Calling `foreach` on an extractor object iterates over the rows of the data table. In the example below, we'll use the [CSV](csv.md) extractor to print out the rows of the dataset to the console.
 
 ```php
@@ -22,6 +24,7 @@ $dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
 ```
 
 ## Export
+
 Extractors that implement the Exporter interface have an additional `export()` method that takes an iterable type and exports the data to storage.
 
 ```php
@@ -36,7 +39,9 @@ $extractor->export($dataset);
     The extractor will overwrite any existing data if the file or database already exists.
 
 ## Return an Iterator
+
 To return the underlying iterator wrapped by the extractor object:
+
 ```php
 public getIterator() : Traversable
 ```

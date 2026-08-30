@@ -1,10 +1,12 @@
 # Metrics
+
 Validation metrics are for used evaluating the generalization performance of an estimator. They output a score based on the predictions and known ground-truth labels.
 
 !!! note
     Some regression metrics output the negative of their value to maintain the convention that scores get better as they *increase*.
 
-### Scoring Predictions
+## Scoring Predictions
+
 To compute a validation score, pass in the predictions from an estimator along with their expected labels.
 
 ```php
@@ -23,11 +25,12 @@ $score = $metric->score($predictions, $dataset->labels());
 echo $score;
 ```
 
-```
+```text
 0.88
 ```
 
-### Scoring Probabilities
+## Scoring Probabilities
+
 Metrics that implement the ProbabilisticMetric interface calculate a validation score derived from the estimated probabilities of a [Probabilistic](../../probabilistic.md) estimator and their corresponding ground-truth labels.
 
 ```php
@@ -47,7 +50,8 @@ $metric = new ProbabilisticAccuracy;
 $score = $metric->score($probabilities, $dataset->labels());
 ```
 
-### Score Range
+## Score Range
+
 Output the minimum and maximum value the validation score can take in a [2-tuple](../../faq.md#what-is-a-tuple).
 
 ```php
@@ -60,6 +64,6 @@ public range() : Rubix\ML\Tuple{float, float}
 echo "min: $min, max: $max";
 ```
 
-```
+```text
 min: 0.0, max: 1.0
 ```

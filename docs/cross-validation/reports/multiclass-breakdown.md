@@ -1,14 +1,17 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/CrossValidation/Reports/MulticlassBreakdown.php">[source]</a></span>
 
 # Multi-class Breakdown
+
 A multiclass classification report that computes a number of metrics (Accuracy, Precision, Recall, etc.) derived from their confusion matrix on an overall and individual class basis.
 
 **Estimator Compatibility:** Classifier, Anomaly Detector
 
 ## Parameters
+
 This report does not have any parameters.
 
 ## Example
+
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 

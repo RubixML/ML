@@ -1,17 +1,19 @@
 # Basic Introduction
+
 In this basic introduction to machine learning in Rubix ML, you'll learn how to structure a project, train a learner to predict successful marriages, and then test the model for accuracy. We assume that you already have a basic understanding of the different types of machine learning such as classification and regression. If not, we recommend the section on [What is Machine Learning?](what-is-machine-learning.md) to start with.
 
 ## Obtaining Data
+
 Machine learning (ML) projects typically begin with a question. For example, you might want to answer the question of "who of my friends are most likely to stay married to their partner?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use the answers they gave you to build a model to predict successful relationships. In machine learning terms, the answers you collect are the values of the *features* that constitute measurements of the phenomena being observed - in this case, the response to a question. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 10 features is said to be *10-dimensional*.
 
 Suppose that you went out and asked 4 couples (2 married and 2 divorced) to respond to 3 features - their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You would structure the data in PHP like in the example below. You'll notice that the samples are represented in a 2-d array (or *matrix*) and the labels are represented as a 1-d array.
 
 ```php
 $samples = [
-	[3, 4, 50.5],
-	[1, 5, 24.7],
-	[4, 4, 62.0],
-	[3, 2, 31.1],
+    [3, 4, 50.5],
+    [1, 5, 24.7],
+    [4, 4, 62.0],
+    [3, 2, 31.1],
 ];
 
 $labels = ['married', 'divorced', 'married', 'divorced'];
@@ -21,6 +23,7 @@ $labels = ['married', 'divorced', 'married', 'divorced'];
     See the [Representing your Data](representing-your-data.md) section for an in-depth description of how the library treats various forms of data.
 
 ## The Dataset Object
+
 In Rubix ML, data are passed in specialized containers called [Dataset objects](datasets/api.md). Dataset objects handle selecting, subsampling, splitting, randomizing, and sorting of the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during testing. Unlabeled datasets are used for unsupervised learning and for making predictions.
 
 You could construct a [Labeled](datasets/labeled.md) dataset from the data we collected earlier by passing the samples and their labels into the constructor like in the example below.
@@ -35,6 +38,7 @@ $dataset = new Labeled($samples, $labels);
     See the [Extracting Data](extracting-data.md) section to learn more about extracting data from different formats and storage mediums.
 
 ## Choosing an Estimator
+
 [Estimators](estimator.md) make up the core of the Rubix ML library. They provide the `predict()` API and are responsible for making predictions on unknown samples. Estimators that can be trained with data are called [Learners](learner.md) and must be trained before making predictions.
 
 In practice, one will experiment with a number of estimators to find the one that works best for their dataset. For our example, we'll focus on an intuitable distance-based supervised learner called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). KNN is a *classifier* because it takes unknown samples and assigns them a class label. In our example, the output of KNN will either be `married` or `divorced` since those are the class labels that we'll train it with.
@@ -53,6 +57,7 @@ $estimator = new KNearestNeighbors(3);
     See the [Choosing an Estimator](choosing-an-estimator.md) section for an in-depth look at the estimators available to you in the library.
 
 ## Training
+
 Training is the process of feeding the learning algorithm data so that it can build an internal representation (or *model*) of the task its trying to learn. This representation consists of all of the parameters (except hyper-parameters) that are required to make a prediction.
 
 To start training, pass the training dataset as a argument to the `train()` method on the learner instance.
@@ -67,7 +72,7 @@ We can verify that the learner has been trained by calling the `trained()` metho
 var_dump($estimator->trained());
 ```
 
-```
+```text
 bool(true)
 ```
 
@@ -77,6 +82,7 @@ For our small training set, the training process should only take a matter of mi
     See the [Training](training.md) section of the docs for a closer look at training a learner.
 
 ## Making Predictions
+
 Suppose that we went out and collected 4 new data points from different friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married to their spouse by taking their answers and passing them in an [Unlabeled](datasets/unlabeled.md) dataset to the `predict()` method on our newly trained estimator. This process of making predictions is called *inference* because the estimator uses the model constructed during training to infer the label of the unknown samples.
 
 !!! note
@@ -86,10 +92,10 @@ Suppose that we went out and collected 4 new data points from different friends 
 use Rubix\ML\Datasets\Unlabeled;
 
 $samples = [
-	[4, 3, 44.2],
-	[2, 2, 16.7],
-	[2, 4, 19.5],
-	[3, 3, 55.0],
+    [4, 3, 44.2],
+    [2, 2, 16.7],
+    [2, 4, 19.5],
+    [3, 3, 55.0],
 ];
 
 $dataset = new Unlabeled($samples);
@@ -115,6 +121,7 @@ The output of the estimator are the predicted class labels of the unknown sample
     Check out the section on [Inference](inference.md) for more info on making predictions.
 
 ## Model Evaluation
+
 Let's imagine we went out and collected enough data from our married and divorced friends to build a  dataset consisting of 50 samples with their corresponding labels. We could use the entire dataset to train the learner or we could set some of the data aside to use for testing. By setting some data aside we are able to test the model on data it has never seen before. This technique is referred to as cross validation and its goal is to test an estimator's ability to generalize its training.
 
 For the purposes of the introduction, we'll use a simple [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The Hold Out validator requires the user to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
@@ -143,7 +150,7 @@ $score = $validator->test($estimator, $dataset, new Accuracy());
 echo $score;
 ```
 
-```
+```text
 0.88
 ```
 
@@ -153,4 +160,5 @@ The return value is the accuracy score which can be interpreted as the degree to
     More info can be found in the [Cross Validation](cross-validation.md) section of the docs.
 
 ## Next Steps
+
 Congratulations! You've completed the basic introduction to machine learning in PHP with Rubix ML. For a more in-depth tutorial using the K Nearest Neighbors classifier and a real dataset, check out the [Divorce Predictor](https://github.com/RubixML/Divorce) tutorial and example project. Have fun!

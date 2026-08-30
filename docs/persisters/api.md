@@ -1,8 +1,11 @@
 # Persisters
+
 Persisters are responsible for persisting Encoding objects to storage and are also used by the [Persistent Model](../persistent-model.md) meta-estimator to save and restore models that have been serialized.
 
-### Save
+## Save
+
 To save an encoding:
+
 ```php
 public save(Encoding $encoding) : void
 ```
@@ -11,8 +14,10 @@ public save(Encoding $encoding) : void
 $persister->save($encoding);
 ```
 
-### Load
+## Load
+
 To load an encoding from persistence:
+
 ```php
 public load() : Encoding
 ```
