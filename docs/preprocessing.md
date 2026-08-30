@@ -1,10 +1,13 @@
 # Preprocessing
+
 Sometimes, one or more preprocessing steps may need to be taken before handing a dataset off to a Learner. In some cases, data may not be in the correct format and in others you may want to process the data to aid in training.
 
 ## Transformers
+
 [Transformers](transformers/api.md) are objects that perform various preprocessing steps to the samples in a dataset. They take a dataset object as input and transform it in place. [Stateful](transformers/api.md#stateful) transformers are a type of transformer that must be *fitted* to a dataset. Fitting a dataset to a transformer is much like training a learner but in the context of preprocessing rather than inference. After fitting a stateful transformer, it will expect the features to be present in the same order when transforming subsequent datasets. A few transformers are *supervised* meaning they must be fitted with a [Labeled](datasets/labeled.md) dataset. [Elastic](transformers/api.md#elastic) transformers can have their fittings updated with new data after an initial fitting.
 
 ### Transform a Dataset
+
 An example of a transformation is one that converts the categorical features of a dataset to continuous ones using a [*one hot*](https://en.wikipedia.org/wiki/One-hot) encoding. To accomplish this with the library, pass a [One Hot Encoder](transformers/one-hot-encoder.md) instance as an argument to the [Dataset](datasets/api.md) object's `apply()` method. Note that the `apply()` method also handles fitting a Stateful transformer automatically.
 
 ```php
@@ -26,6 +29,7 @@ $dataset->apply(new HotDeckImputer(5))
 ```
 
 ### Transforming the Labels
+
 Transformers do not alter the labels in a dataset. For that we can pass a callback function to the `transformLabels()` method on a [Labeled](datasets/labeled.md#transform-labels) dataset instance. The callback accepts a single argument that is the value of the label to be transformed. In this example, we'll convert the categorical labels of a dataset to integer ordinals.
 
 ```php
@@ -33,6 +37,7 @@ $dataset->transformLabels('intval');
 ```
 
 ### Manually Fitting
+
 If you need to fit a [Stateful](transformers/api.md#stateful) transformer to a dataset other than the one it was meant to transform, you can fit the transformer manually by calling the `fit()` method before applying the transformation.
 
 ```php
@@ -46,6 +51,7 @@ $dataset2->apply($transformer);
 ```
 
 ### Update Fitting
+
 To update the fitting of an [Elastic](transformers/api.md#elastic) transformer call the `update()` method with a new dataset.
 
 ```php
@@ -53,13 +59,15 @@ $transformer->update($dataset);
 ```
 
 ## Types of Preprocessing
+
 Here we dive into the different types of data preprocessing that Transformers are capable of.
 
 ### Standardization and Normalization
+
 Oftentimes, the continuous features of a dataset will be on different scales because they were measured by different methods. For example, age (0 - 100) and income (0 - 9,999,999) are on two widely different scales. Standardization is the processes of transforming a dataset such that the features are all on one common scale. Normalization is the special case where the transformed features have a range between 0 and 1. Depending on the transformer, it may operate on the columns or the rows of the dataset.
 
 | Transformer | Operates | Output Range | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | [L1 Normalizer](transformers/l1-normalizer.md) | Row-wise | [0, 1] | | |
 | [L2 Normalizer](transformers/l2-normalizer.md) | Row-wise | [0, 1] | | |
 | [Max Absolute Scaler](transformers/max-absolute-scaler.md) | Column-wise | [-1, 1] | ● | ● |
@@ -68,20 +76,22 @@ Oftentimes, the continuous features of a dataset will be on different scales bec
 | [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Column-wise | [-∞, ∞] | ● | ● |
 
 ### Feature Conversion
+
 Feature converters are transformers that convert feature columns of one data type to another by changing their representation.
 
 | Transformer | From | To | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | ● | |
 | [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
 | [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | |
 | [Boolean Converter](transformers/boolean-converter.md) | Other | Categorical or Continuous | | |
 
 ### Dimensionality Reduction
+
 Dimensionality reduction is a preprocessing technique for projecting a dataset onto a lower dimensional vector space. It allows a learner to train and infer quicker by producing a training set with fewer but more informative features. Dimensionality reducers can also be used to visualize datasets by outputting low (1 - 3) dimensionality embeddings for use in plotting software.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | [Gaussian Random Projector](transformers/gaussian-random-projector.md) | | ● | |
 | [Linear Discriminant Analysis](transformers/linear-discriminant-analysis.md) | ● | ● | |
 | [Principal Component Analysis](transformers/principal-component-analysis.md) | | ● | |
@@ -90,26 +100,29 @@ Dimensionality reduction is a preprocessing technique for projecting a dataset o
 | [t-SNE](transformers/t-sne.md) | | | |
 
 ### Feature Expansion
+
 Feature expansion aims to add flexibility to a model by deriving additional features from a dataset. It can be thought of as the opposite of dimensionality reduction.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | [Polynomial Expander](transformers/polynomial-expander.md) | | | |
 
 ### Imputation
+
 Imputation is a technique for handling missing values in a dataset by replacing them with a pretty good guess.
 
 | Transformer | Compatibility | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | [KNN Imputer](transformers/knn-imputer.md) | Depends on distance kernel | | ● | |
 | [Missing Data Imputer](transformers/missing-data-imputer.md) | Categorical, Continuous | | ● | |
 | [Hot Deck Imputer](transformers/hot-deck-imputer.md) | Depends on distance kernel | | ● | |
 
 ### Natural Language
+
 The library provides a number of transformers for Natural Language Processing (NLP) and Information Retrieval (IR) tasks such as text cleaning, feature extraction, and term weighting.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | [BM25 Transformer](transformers/bm25-transformer.md) | | ● | ● |
 | [Regex Filter](transformers/regex-filter.md) | | | |
 | [Text Normalizer](transformers/text-normalizer.md) | | | |
@@ -120,15 +133,17 @@ The library provides a number of transformers for Natural Language Processing (N
 | [Word Count Vectorizer](transformers/word-count-vectorizer.md) | | ● | |
 
 ### Images
+
 These transformers operate on the high-level image data type.
 
 | Transformer | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | [Image Resizer](transformers/image-resizer.md) | | | |
 | [Image Rotator](transformers/image-rotator.md) | | | |
 | [Image Vectorizer](transformers/image-vectorizer.md) | | ● | |
 
 ## Custom Transformations
+
 In additional to providing specialized Transformers for common preprocessing tasks, the library includes a [Lambda Function](transformers/lambda-function.md) transformer that allows you to apply custom data transformations using a callback. The callback function accepts a sample passed by reference so that the transformation occurs in-place. In the following example, let's write a callback to *binarize* the continuous features just at column offset 3 of the dataset.
 
 ```php
@@ -155,6 +170,7 @@ $dataset->apply(new LambdaFunction($crossFeatures));
 ```
 
 ## Advanced Preprocessing
+
 In some cases, certain features of a dataset may require a different set of preprocessing steps than the others. In such a case, we can extract a certain set of features, preprocess them, and then join them with the rest of the dataset later. In the example below, we'll extract just the text reviews and their sentiment labels into a dataset object and put the sample's category, number of clicks, and ratings into another one using two [Column Pickers](extractors/column-picker.md). Then, we can apply a separate set of transformations to each set of features and use the `join()` method to combine them into a single dataset. We can even apply another set of transformations to the joined dataset after that.
 
 ```php
@@ -189,6 +205,7 @@ $dataset = $dataset1->join($dataset2)
 ```
 
 ## Transformer Pipelines
+
 The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
 
 ```php
@@ -220,11 +237,12 @@ $predictions = $estimator->predict($dataset); // Dataset transformed automatical
 ```
 
 ## Filtering Records
+
 In some cases, you may want to remove entire rows from the dataset. For example, you may want to remove records that contain features with abnormally low/high values as these samples can be interpreted as noise. The `filter()` method on the dataset object uses a callback function to determine if a row should be included in the return dataset. In this example, we'll filter all the samples whose value for feature at offset 3 is greater than some amount.
 
 ```php
 $tallPeople = function ($record) {
-	return $record[3] > 178.5;
+    return $record[3] > 178.5;
 };
 
 $dataset = $dataset->filter($tallPeople);
@@ -262,6 +280,7 @@ $complete = $dataset->filter($noMissingValues);
     The standard PHP library function `in_array()` does not handle `NAN` comparisons.
 
 ## De-duplication
+
 When it is undesirable for a dataset to contain duplicate records, you can remove all duplicates by calling the `deduplicate()` method on the dataset object.
 
 ```php

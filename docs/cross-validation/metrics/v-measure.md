@@ -18,11 +18,13 @@ $$
 **Score Range:** 0 to 1
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | beta | 1.0 | float | The ratio of weight given to homogeneity over completeness. |
 
 ## Example
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 
@@ -38,4 +40,5 @@ echo $score;
 ```
 
 ## References
+
 [^1]: A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based external cluster evaluation measure.

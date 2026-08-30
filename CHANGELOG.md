@@ -4,24 +4,27 @@
     - Neural Network subsystem now powered by NumPower
     - Dropped support for PHP 7.4
     - Renamed TF-IDF dampening parameter to sublinear
-    - Update to PSR-3 Log version 3
+    - Updated to PSR-3 Log version 3
     - Added Emoji preset to Regex Filter
     - Exportable Extractors now append by default with option to overwrite
     - Added validation interval parameter to MLPs and GBM Learners
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer only tracks major library version number
     - Removed window (early stopping) hyper-parameter from TSNE
-    - Add Class/Cluster Purity clustering metrics
+    - Added Class/Cluster Purity clustering metrics
     - V-measure, Completeness, and Homogeneity now use entropy-based formula
-    - Fix KDTree edge pruning + optimize traversal
+    - Fixed KDTree edge pruning + optimize traversal
     - Optimize Dataset sort(), sorting is now unstable
-    - Remove loss-based window early stopping
-    - Add disk-based neural network snapshotting
+    - Removed loss-based window early stopping
+    - Added disk-based neural network snapshotting
     - Update Amp Backend to Amp version 2.0
-    - Add per-class smoothing to Gaussian Naive Bayes
+    - Added per-class smoothing to Gaussian Naive Bayes
     - You can now exclude certain categories from one-hot encoding
-    - Remove Word Stemmer tokenizer
-    - Fix SVC save/load using class map sidecar
+    - Removed Word Stemmer tokenizer
+    - Fixed SVC save/load using class map sidecar
+    - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
+    - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
+    - Cross Entropy loss function now split into Binary and Multiclass
     
 - 2.5.10
     - Optimize brute-force nearest neighbors operations

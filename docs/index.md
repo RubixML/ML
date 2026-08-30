@@ -8,12 +8,15 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **Open Source** and free to use commercially
 
 ## What is Rubix ML?
+
 Rubix ML is a free open-source machine learning (ML) library that allows you to build programs that learn from your data using the PHP language. We provide tools for the entire machine learning life cycle from ETL to training, cross-validation, and production with over 40 supervised and unsupervised learning algorithms. In addition, we provide tutorials and other educational content to help you get started using ML in your projects.
 
 ## Getting Started
+
 If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](what-is-machine-learning.md) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](basic-introduction.md) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
 
 ### Tutorials & Example Projects
+
 Check out these example projects using the Rubix ML library. Many come with instructions and a pre-cleaned dataset.
 
 - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
@@ -35,7 +38,9 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Join Our Telegram Channel](https://t.me/RubixML)
 
 ## Contributing
+
 See [CONTRIBUTING.md](https://github.com/RubixML/ML/blob/master/CONTRIBUTING.md) for guidelines.
 
 ## License
+
 The code is licensed [MIT](https://github.com/RubixML/ML/blob/master/LICENSE.md) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).

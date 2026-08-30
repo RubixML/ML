@@ -279,7 +279,14 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $distances = $memberships = [];
+            $sums = $totals = [];
+
+            foreach ($this->centroids as $cluster => $centroid) {
+                $sums[$cluster] = array_fill(0, $numFeatures, 0.0);
+                $totals[$cluster] = 0.0;
+            }
+
+            $loss = 0.0;
 
             foreach ($dataset->samples() as $sample) {
                 $row = [];
@@ -288,12 +295,30 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                     $row[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
                 }
 
-                $distances[] = $row;
+                $weights = [];
+                $sigma = 0.0;
 
-                $memberships[] = $this->membershipsFromDistances($row);
+                foreach ($row as $cluster => $distance) {
+                    $weights[$cluster] = $distance ** -$this->rho;
+                    $sigma += $weights[$cluster];
+                }
+
+                $invSigma = 1.0 / $sigma;
+
+                foreach ($weights as $cluster => $weight) {
+                    $membership = $weight * $invSigma;
+
+                    $loss += $membership * $row[$cluster];
+
+                    $membershipWeight = $membership ** $this->fuzz;
+
+                    $totals[$cluster] += $membershipWeight;
+
+                    foreach ($sample as $j => $value) {
+                        $sums[$cluster][$j] += $membershipWeight * $value;
+                    }
+                }
             }
-
-            $loss = $this->inertia($distances, $memberships);
 
             $loss /= $dataset->numSamples();
 
@@ -309,25 +334,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                     . "Loss Change: {$lossDirection}{$lossChange}";
 
                 $this->logger->info($message);
-            }
-
-            $sums = $totals = [];
-
-            foreach ($this->centroids as $cluster => $centroid) {
-                $sums[$cluster] = array_fill(0, $numFeatures, 0.0);
-                $totals[$cluster] = 0.0;
-            }
-
-            foreach ($dataset->samples() as $i => $sample) {
-                foreach ($memberships[$i] as $cluster => $membership) {
-                    $weight = $membership ** $this->fuzz;
-
-                    $totals[$cluster] += $weight;
-
-                    foreach ($sample as $j => $value) {
-                        $sums[$cluster][$j] += $weight * $value;
-                    }
-                }
             }
 
             foreach ($sums as $cluster => $sigmas) {
@@ -440,39 +446,23 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     protected function membershipsFromDistances(array $distances) : array
     {
+        $weights = [];
+        $sigma = 0.0;
+
+        foreach ($distances as $cluster => $distance) {
+            $weights[$cluster] = $distance ** -$this->rho;
+            $sigma += $weights[$cluster];
+        }
+
+        $invSigma = 1.0 / $sigma;
+
         $memberships = [];
 
-        foreach ($distances as $distanceA) {
-            $sigma = 0.0;
-
-            foreach ($distances as $distanceB) {
-                $sigma += ($distanceA / $distanceB) ** $this->rho;
-            }
-
-            $memberships[] = 1.0 / $sigma;
+        foreach ($weights as $cluster => $weight) {
+            $memberships[$cluster] = $weight * $invSigma;
         }
 
         return $memberships;
-    }
-
-    /**
-     * Calculate the sum of the membership weighted distances between all samples and each centroid.
-     *
-     * @param list<list<float>> $distances
-     * @param list<list<float>> $memberships
-     * @return float
-     */
-    protected function inertia(array $distances, array $memberships) : float
-    {
-        $inertia = 0.0;
-
-        foreach ($distances as $i => $row) {
-            foreach ($row as $cluster => $distance) {
-                $inertia += $memberships[$i][$cluster] * $distance;
-            }
-        }
-
-        return $inertia;
     }
 
     /**
