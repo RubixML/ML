@@ -3,8 +3,9 @@
 namespace Rubix\ML\Backends;
 
 use Rubix\ML\Backends\Tasks\Task;
+use Rubix\ML\Helpers\CPU;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 use RuntimeException;
 use Swoole\Atomic;
 use Swoole\Process;
@@ -26,16 +27,30 @@ class Swoole implements Backend
      */
     protected array $queue = [];
 
-    private int $cpus;
+    /**
+     * The number of CPU cores available to the backend.
+     *
+     * @var int
+     */
+    protected int $numCpus;
 
-    private int $hasIgbinary;
+    /**
+     * Whether the igbinary extension is loaded.
+     *
+     * @var bool
+     */
+    protected bool $hasIgbinary;
 
     public function __construct()
     {
-        SwooleExtensionIsLoaded::create()->check();
+        ExtensionIsLoaded::with('swoole')->check();
 
-        $this->cpus = swoole_cpu_num();
-        $this->hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
+        $numCpus = function_exists('swoole_cpu_num') ? swoole_cpu_num() : CPU::cores();
+
+        $hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
+
+        $this->numCpus = $numCpus;
+        $this->hasIgbinary = $hasIgbinary;
     }
 
     /**
@@ -107,11 +122,11 @@ class Swoole implements Backend
 
             $workerProcesses[$index] = $workerProcess;
 
-            $currentCpu = ($currentCpu + 1) % $this->cpus;
+            $currentCpu = ($currentCpu + 1) % $this->numCpus;
         }
 
         run(function () use ($maxMessageLength, &$results, $workerProcesses) {
-            foreach ($workerProcesses as $index => $workerProcess) {
+            foreach ($workerProcesses as $workerProcess) {
                 $status = $workerProcess->wait();
 
                 if (0 !== $status['code']) {
@@ -127,6 +142,7 @@ class Swoole implements Backend
                 $maxMessageLengthValue = $maxMessageLength->get();
 
                 $receivedData = $socket->recv($maxMessageLengthValue);
+
                 $unserialized = $this->unserialize($receivedData);
 
                 $results[] = $unserialized;
@@ -145,30 +161,39 @@ class Swoole implements Backend
     }
 
     /**
-     * Shut down the backend. No-op for the Swoole backend.
+     * Shut down the backend.
      *
      * @internal
      */
     public function shutdown() : void
     {
+        // No-op for the Swoole backend.
     }
 
-    private function serialize(mixed $data) : string
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
+     *
+     * @param mixed $data
+     * @return string
+     */
+    protected function serialize(mixed $data) : string
     {
-        if ($this->hasIgbinary) {
-            return igbinary_serialize($data);
-        }
-
-        return serialize($data);
+        return $this->hasIgbinary ? igbinary_serialize($data) : serialize($data);
     }
 
-    private function unserialize(string $serialized) : mixed
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
+     *
+     * @param string $serialized
+     * @return mixed
+     */
+    protected function unserialize(string $serialized) : mixed
     {
-        if ($this->hasIgbinary) {
-            return igbinary_unserialize($serialized);
-        }
-
-        return unserialize($serialized);
+        return $this->hasIgbinary ? igbinary_unserialize($serialized) : unserialize($serialized);
     }
 
     /**
@@ -180,6 +205,6 @@ class Swoole implements Backend
      */
     public function __toString() : string
     {
-        return 'Swoole';
+        return "Swoole (cpus: {$this->numCpus}, igbinary: " . Params::toString($this->hasIgbinary) . ')';
     }
 }
