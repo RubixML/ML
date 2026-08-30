@@ -2,12 +2,19 @@
 
 - 3.0.0
     - Neural Network subsystem now powered by NumPower
+    - LDA, PCA, SVD now powered by NumPower
     - Dropped support for PHP 7.4
+    - Update Amp Backend to Amp version 2.0
+    - Added disk-based neural network snapshotting
+    - Added validation interval parameter to MLPs and GBM Learners
+    - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
+    - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
+    - Cross Entropy loss function now split into Binary and Multiclass
+    - Logistic Regression, Softmax, and Adaline now use validation set
     - Renamed TF-IDF dampening parameter to sublinear
     - Updated to PSR-3 Log version 3
     - Added Emoji preset to Regex Filter
     - Exportable Extractors now append by default with option to overwrite
-    - Added validation interval parameter to MLPs and GBM Learners
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer only tracks major library version number
     - Removed window (early stopping) hyper-parameter from TSNE
@@ -15,18 +22,10 @@
     - V-measure, Completeness, and Homogeneity now use entropy-based formula
     - Fixed KDTree edge pruning + optimize traversal
     - Optimize Dataset sort(), sorting is now unstable
-    - Removed loss-based window early stopping
-    - Added disk-based neural network snapshotting
-    - Update Amp Backend to Amp version 2.0
     - Added per-class smoothing to Gaussian Naive Bayes
     - You can now exclude certain categories from one-hot encoding
     - Removed Word Stemmer tokenizer
     - Fixed SVC save/load using class map sidecar
-    - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
-    - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
-    - Cross Entropy loss function now split into Binary and Multiclass
-    - LDA, PCA, SVD now powered by NumPower
-    - Added windowed early stopping with validation holdout
     - Parallel Backends now default to max physical cores not logical
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and scoring is now parallelized
