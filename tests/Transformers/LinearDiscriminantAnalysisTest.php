@@ -13,6 +13,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\LinearDiscriminantAnalysis;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -72,6 +73,14 @@ class LinearDiscriminantAnalysisTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new LinearDiscriminantAnalysis(0);
+    }
+
+    #[Test]
+    public function fitEmptyDataSet() : void
+    {
+        $this->expectException(EmptyDataset::class);
+
+        $this->transformer->fit(Labeled::quick([], []));
     }
 
     #[Test]

@@ -9,7 +9,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\TruncatedSVD;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -65,6 +67,14 @@ class TruncatedSVDTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new TruncatedSVD(0);
+    }
+
+    #[Test]
+    public function fitEmptyDataSet() : void
+    {
+        $this->expectException(EmptyDataset::class);
+
+        $this->transformer->fit(Unlabeled::quick());
     }
 
     #[Test]

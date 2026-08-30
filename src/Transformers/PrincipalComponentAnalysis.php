@@ -8,6 +8,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
@@ -132,7 +133,10 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
      */
     public function fit(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithTransformer($dataset, $this),
+        ])->check();
 
         $samples = $dataset->samples();
 

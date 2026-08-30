@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
@@ -127,7 +128,10 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
                 . ' Labeled training set.');
         }
 
-        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithTransformer($dataset, $this),
+        ])->check();
 
         if ($dataset->labelType() != DataType::categorical()) {
             throw new InvalidArgumentException('Transformer requires'
