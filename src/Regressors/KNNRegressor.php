@@ -91,8 +91,8 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
      *
      * @internal
      *
-     * @param Dataset $dataset
      * @param self $estimator
+     * @param Dataset $dataset
      * @return list<int|float>
      */
     public static function predictChunk(self $estimator, Dataset $dataset) : array

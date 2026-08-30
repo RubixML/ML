@@ -17,7 +17,7 @@ use Rubix\ML\Backends\Swoole;
 $backend = new Swoole();
 ```
 
-Any estimator that implements the [Parallel](parallel.md) interface can utilize the Swoole backend by passing it to the `setBackend()` method:
+Any estimator that implements the [Parallel](../parallel.md) interface can utilize the Swoole backend by passing it to the `setBackend()` method:
 
 ```php
 use Rubix\ML\Classifiers\RandomForest;
