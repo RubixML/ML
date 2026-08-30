@@ -367,7 +367,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      */
     public function setSnapshotPath(?string $path) : void
     {
-        if (isset($path) && is_dir($path)) {
+        if (isset($path) and is_dir($path)) {
             throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
         }
 

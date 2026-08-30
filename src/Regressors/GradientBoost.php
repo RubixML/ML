@@ -418,7 +418,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
 
-            if ($evalThisStep && isset($outTest)) {
+            if ($evalThisStep and isset($outTest)) {
                 $score = $this->metric->score($outTest, $testing->labels());
 
                 $this->scores[$epoch] = $score;

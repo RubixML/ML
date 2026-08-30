@@ -364,7 +364,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      */
     public function setSnapshotPath(?string $path) : void
     {
-        if (isset($path) && is_dir($path)) {
+        if (isset($path) and is_dir($path)) {
             throw new InvalidArgumentException('Snapshot path must be a file path; directory given.');
         }
 
