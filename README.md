@@ -12,13 +12,14 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 ## Installation
 
 Install Rubix ML into your project using [Composer](https://getcomposer.org/):
+
 ```sh
 composer require rubix/ml
 ```
 
 ### Requirements
 
-- [PHP](https://php.net/manual/en/install.php) 8.0 or above.
+- [PHP](https://php.net/manual/en/install.php) 8.3 or above.
 
 #### Recommended
 
