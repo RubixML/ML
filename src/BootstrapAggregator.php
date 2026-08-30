@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -108,7 +109,6 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->backend = new Serial();
     }
 
     /**
@@ -187,7 +187,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $dataset->numSamples()));
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         for ($i = 0; $i < $this->estimators; ++$i) {
             $estimator = clone $this->base;
@@ -196,11 +196,11 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
             $task = new TrainLearner($estimator, $subset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
         /** @var list<Learner> $process */
-        $process = $this->backend->process();
+        $process = $this->backend()->process();
         $this->ensemble = $process;
     }
 
@@ -217,15 +217,15 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($this->ensemble as $estimator) {
             $task = new Predict($estimator, $dataset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $aggregate = array_transpose($this->backend->process());
+        $aggregate = array_transpose($this->backend()->process());
 
         switch ($this->type()) {
             case EstimatorType::classifier():
@@ -235,6 +235,17 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             default:
                 return array_map([Stats::class, 'mean'], $aggregate);
         }
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**
@@ -249,6 +260,32 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $counts = array_count_values($votes);
 
         return argmax($counts);
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

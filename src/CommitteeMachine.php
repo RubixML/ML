@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -149,7 +150,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $this->experts = array_values($experts);
         $this->influences = $influences;
         $this->compatibility = $compatibility;
-        $this->backend = new Serial();
     }
 
     /**
@@ -248,15 +248,15 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
 
         SpecificationChain::with($specifications)->check();
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($this->experts as $estimator) {
             $task = new TrainLearner($estimator, $dataset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $this->experts = $this->backend->process();
+        $this->experts = $this->backend()->process();
 
         switch ($this->type()) {
             case EstimatorType::classifier():
@@ -285,15 +285,15 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($this->experts as $estimator) {
             $task = new Predict($estimator, $dataset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $aggregate = array_transpose($this->backend->process());
+        $aggregate = array_transpose($this->backend()->process());
 
         switch ($this->type()) {
             case EstimatorType::classifier():
@@ -303,6 +303,17 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
             default:
                 return array_map([$this, 'decideContinuous'], $aggregate);
         }
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**
@@ -331,6 +342,32 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     protected function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

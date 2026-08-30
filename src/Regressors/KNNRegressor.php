@@ -13,6 +13,7 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\Multiprocessing;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -116,7 +117,6 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
         $this->k = $k;
         $this->weighted = $weighted;
         $this->kernel = $kernel ?? new Euclidean();
-        $this->backend = new Serial();
     }
 
     /**
@@ -214,19 +214,19 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend->workers());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
             $task = new Task([self::class, 'predictChunk'], [$this, $chunk]);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
         $predictions = [];
 
-        foreach ($this->backend->process() as $output) {
+        foreach ($this->backend()->process() as $output) {
             /** @var list<int|float> $output */
             $predictions = array_merge($predictions, $output);
         }
@@ -257,6 +257,17 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
         }
 
         return Stats::mean($labels);
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**
@@ -300,6 +311,32 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
         }
 
         return [$labels, $distances];
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

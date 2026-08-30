@@ -13,6 +13,7 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\Multiprocessing;
@@ -194,7 +195,6 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->contamination = $contamination;
-        $this->backend = new Serial();
     }
 
     /**
@@ -270,15 +270,15 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
 
         $maxHeight = (int) max(1, round(log($p, 2.0)));
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         for ($i = 0; $i < $this->estimators; ++$i) {
             $subset = $dataset->randomSubset($p);
 
-            $this->backend->enqueue(new Task([self::class, 'growTree'], [$subset, $maxHeight]));
+            $this->backend()->enqueue(new Task([self::class, 'growTree'], [$subset, $maxHeight]));
         }
 
-        $this->trees = $this->backend->process();
+        $this->trees = $this->backend()->process();
 
         $this->delta = $this->estimators * Depth::c($p);
 
@@ -343,6 +343,17 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Return the isolation score of a sample.
      *
      * @param list<string|int|float> $sample
@@ -371,17 +382,17 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
      */
     protected function predictions(Dataset $dataset) : array
     {
-        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend->workers());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend->enqueue(new Task([self::class, 'predictChunk'], [$this, $chunk]));
+            $this->backend()->enqueue(new Task([self::class, 'predictChunk'], [$this, $chunk]));
         }
 
         $predictions = [];
 
-        foreach ($this->backend->process() as $output) {
+        foreach ($this->backend()->process() as $output) {
             /** @var list<int> $output */
             $predictions = array_merge($predictions, $output);
         }
@@ -397,22 +408,48 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
      */
     protected function scores(Dataset $dataset) : array
     {
-        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend->workers());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend->enqueue(new Task([self::class, 'scoreChunk'], [$this, $chunk]));
+            $this->backend()->enqueue(new Task([self::class, 'scoreChunk'], [$this, $chunk]));
         }
 
         $scores = [];
 
-        foreach ($this->backend->process() as $output) {
+        foreach ($this->backend()->process() as $output) {
             /** @var list<float> $output */
             $scores = array_merge($scores, $output);
         }
 
         return $scores;
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

@@ -11,6 +11,7 @@ use Swoole\Atomic;
 use Swoole\Process;
 
 use function Swoole\Coroutine\run;
+use function method_exists;
 use function serialize;
 use function unserialize;
 use function strlen;
@@ -201,7 +202,9 @@ class Swoole implements Backend
      */
     protected function serialize(mixed $data) : string
     {
-        return $this->hasIgbinary ? igbinary_serialize($data) : serialize($data);
+        return $this->hasIgbinary
+            ? igbinary_serialize($data)
+            : serialize($data);
     }
 
     /**
@@ -214,7 +217,9 @@ class Swoole implements Backend
      */
     protected function unserialize(string $serialized) : mixed
     {
-        return $this->hasIgbinary ? igbinary_unserialize($serialized) : unserialize($serialized);
+        return $this->hasIgbinary
+            ? igbinary_unserialize($serialized)
+            : unserialize($serialized);
     }
 
     /**

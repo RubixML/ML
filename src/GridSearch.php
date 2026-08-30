@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
@@ -174,7 +175,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(3);
         $this->base = $proxy;
-        $this->backend = new Serial();
     }
 
     /**
@@ -261,7 +261,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         $combinations = self::combine($this->params);
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($combinations as $params) {
             /** @var Learner $estimator */
@@ -274,14 +274,14 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 $this->metric
             );
 
-            $this->backend->enqueue(
+            $this->backend()->enqueue(
                 $task,
                 [$this, 'afterScore'],
                 $estimator->params()
             );
         }
 
-        $scores = $this->backend->process();
+        $scores = $this->backend()->process();
 
         array_multisort($scores, SORT_DESC, $combinations);
 
@@ -331,6 +331,17 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Allow methods to be called on the estimator from the wrapper.
      *
      * @param string $name
@@ -340,6 +351,32 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     public function __call(string $name, array $arguments) : mixed
     {
         return $this->base->$name(...$arguments);
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

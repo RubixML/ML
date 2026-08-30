@@ -10,6 +10,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Backends\Tasks\Proba;
@@ -151,7 +152,6 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->balanced = $balanced;
-        $this->backend = new Serial();
     }
 
     /**
@@ -233,7 +233,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
             }
         }
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         for ($i = 0; $i < $this->estimators; ++$i) {
             $estimator = clone $this->base;
@@ -244,10 +244,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
                 $subset = $dataset->randomSubsetWithReplacement($p);
             }
 
-            $this->backend->enqueue(new TrainLearner($estimator, $subset));
+            $this->backend()->enqueue(new TrainLearner($estimator, $subset));
         }
 
-        $this->trees = $this->backend->process();
+        $this->trees = $this->backend()->process();
 
         $this->classes = array_fill_keys(array_map('strval', $dataset->possibleOutcomes()), 0.0);
 
@@ -269,13 +269,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($this->trees as $estimator) {
-            $this->backend->enqueue(new Predict($estimator, $dataset));
+            $this->backend()->enqueue(new Predict($estimator, $dataset));
         }
 
-        $aggregate = array_transpose($this->backend->process());
+        $aggregate = array_transpose($this->backend()->process());
 
         $predictions = [];
 
@@ -305,13 +305,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         $probabilities = array_fill(0, $dataset->numSamples(), $this->classes);
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($this->trees as $estimator) {
-            $this->backend->enqueue(new Proba($estimator, $dataset));
+            $this->backend()->enqueue(new Proba($estimator, $dataset));
         }
 
-        $aggregate = $this->backend->process();
+        $aggregate = $this->backend()->process();
 
         foreach ($aggregate as $proba) {
             /** @var int $i */
@@ -356,6 +356,43 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         }
 
         return $importances;
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

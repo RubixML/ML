@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Backends\Tasks\Proba;
@@ -86,7 +87,6 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
         }
 
         $this->base = $base;
-        $this->backend = new Serial();
     }
 
     /**
@@ -153,7 +153,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($classes as $class) {
             $estimator = clone $this->base;
@@ -167,10 +167,10 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
             $task = new TrainLearner($estimator, $subset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $classifiers = $this->backend->process();
+        $classifiers = $this->backend()->process();
 
         $classifiers = array_combine($classes, $classifiers) ?: [];
 
@@ -206,16 +206,16 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         /** @var Probabilistic $estimator */
         foreach ($this->classifiers as $estimator) {
             $task = new Proba($estimator, $dataset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $aggregate = $this->backend->process();
+        $aggregate = $this->backend()->process();
 
         $aggregate = array_transpose($aggregate);
 
@@ -240,6 +240,43 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
@@ -313,5 +314,31 @@ class KNNRegressorTest extends TestCase
         }
 
         $this->assertTrue($this->estimator->trained());
+    }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(KNNRegressor::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount(self::TRAIN_SIZE, $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

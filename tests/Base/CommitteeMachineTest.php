@@ -201,4 +201,30 @@ class CommitteeMachineTest extends TestCase
 
         $this->estimator->predict(Unlabeled::quick());
     }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(CommitteeMachine::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount($training->numSamples(), $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
+    }
 }

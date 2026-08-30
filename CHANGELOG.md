@@ -31,6 +31,7 @@
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and scoring is now parallelized
     - Added workers() method to the Backend interface (Serial returns 1)
+    - No longer save/load Backend state
     
 - 2.5.11
     - Optimize DBSCAN inference
