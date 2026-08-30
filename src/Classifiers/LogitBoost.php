@@ -439,7 +439,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 and !$testing->empty();
+            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
 
             if ($evalThisStep && isset($zTest)) {
                 $predictions = [];
