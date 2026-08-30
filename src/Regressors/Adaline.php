@@ -34,6 +34,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
+
 use function count;
 use function get_object_vars;
 use function is_nan;
