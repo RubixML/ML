@@ -464,7 +464,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 break;
             }
 
-            if ($epoch % $this->evalInterval === 0 && !$testing->empty()) {
+            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+
+            if ($evalThisStep) {
                 $predictions = $this->predict($testing);
 
                 $score = $this->metric->score($predictions, $testing->labels());
@@ -473,13 +475,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             }
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+                $message = "Epoch: $epoch, {$this->costFn}: $loss";
 
-                $message = "Epoch: $epoch, "
-                    . "{$this->costFn}: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
-
-                if (isset($score)) {
+                if ($evalThisStep && isset($score)) {
                     $message .= ", {$this->metric}: $score";
                 }
 
@@ -496,7 +494,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                     $bestEpoch = $epoch;
 
                     if ($snapshot) {
-                        $snapshot->clean();
+                        $snapshot->destroy();
                     }
 
                     $snapshot = Snapshot::take($this->network, $snapshotPath);
@@ -529,7 +527,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 }
             }
 
-            $snapshot->clean();
+            $snapshot->destroy();
         }
 
         if ($this->logger) {
