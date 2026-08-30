@@ -49,11 +49,12 @@
         "swoole/ide-helper": "^5.1"
     },
     "suggest": {
-        "ext-tensor": "For fast Matrix/Vector computing",
-        "ext-gd": "For image support",
-        "ext-mbstring": "For fast multibyte string manipulation",
-        "ext-svm": "For support Vector Machine engine (libsvm)",
-        "ext-swoole": "For support Swoole runner"
+        "ext-numpower": "For tensor computing on CPU and GPU.",
+        "ext-tensor": "For fast Matrix/Vector computing.",
+        "ext-gd": "For image support.",
+        "ext-mbstring": "For fast multibyte string manipulation.",
+        "ext-svm": "For support Vector Machine engine (libsvm).",
+        "ext-swoole": "For multiprocessing support."
     },
     "autoload": {
         "psr-4": {
