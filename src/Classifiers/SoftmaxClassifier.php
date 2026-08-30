@@ -499,7 +499,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -522,8 +522,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

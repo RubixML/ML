@@ -517,7 +517,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -540,8 +540,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

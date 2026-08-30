@@ -490,7 +490,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -513,8 +513,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

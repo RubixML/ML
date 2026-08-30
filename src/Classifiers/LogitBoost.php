@@ -439,7 +439,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 break;
             }
 
-            if ($epoch % $this->evalInterval === 0 && isset($zTest)) {
+            $evalThisStep = $epoch % $this->evalInterval === 0 and !$testing->empty();
+
+            if ($evalThisStep && isset($zTest)) {
                 $predictions = [];
 
                 foreach ($zTest as $value) {
@@ -454,14 +456,14 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             if ($this->logger) {
                 $message = "Epoch: $epoch, Cross Entropy: $loss";
 
-                if (isset($score)) {
+                if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
                 }
 
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -478,8 +480,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

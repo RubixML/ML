@@ -484,7 +484,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -507,8 +507,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

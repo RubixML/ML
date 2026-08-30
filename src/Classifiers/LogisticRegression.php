@@ -498,7 +498,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -521,8 +521,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {
