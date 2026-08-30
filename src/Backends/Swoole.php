@@ -6,7 +6,7 @@ use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use RuntimeException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Swoole\Atomic;
 use Swoole\Process;
 
