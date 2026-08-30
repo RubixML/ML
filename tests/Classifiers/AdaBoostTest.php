@@ -75,7 +75,11 @@ class AdaBoostTest extends TestCase
             rate: 1.0,
             ratio: 0.5,
             epochs: 100,
-            minChange: 1e-4
+            minChange: 1e-4,
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            metric: new FBeta()
         );
 
         $this->metric = new FBeta();
@@ -123,6 +127,10 @@ class AdaBoostTest extends TestCase
             'ratio' => 0.5,
             'epochs' => 100,
             'min change' => 0.0001,
+            'eval interval' => 3,
+            'window' => 5,
+            'hold out' => 0.1,
+            'metric' => new FBeta(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -144,6 +152,11 @@ class AdaBoostTest extends TestCase
 
         $this->assertIsArray($losses);
         $this->assertContainsOnlyFloat($losses);
+
+        $scores = $this->estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertContainsOnlyFloat($scores);
 
         $predictions = $this->estimator->predict($testing);
 
