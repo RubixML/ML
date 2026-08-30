@@ -24,6 +24,8 @@ class Swoole implements Backend
 {
     /**
      * The queue of tasks to be processed in parallel.
+     *
+     * @var array<callable():mixed>
      */
     protected array $queue = [];
 
