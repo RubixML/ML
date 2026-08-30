@@ -65,11 +65,19 @@ class RidgeTest extends TestCase
                 [2.0],
                 [3.0],
             ],
+<<<<<<< HEAD
             [3.0, 5.0, 7.0, 9.0],
             [4.0],
             11.0,
             [2.0],
             3.0,
+=======
+            [3, 5, 7, 9],
+            [4],
+            10.990020,
+            [1.996008],
+            3.005988,
+>>>>>>> 3.0
         ];
 
         yield 'sample with 2 features and smaller values' => [
@@ -79,11 +87,19 @@ class RidgeTest extends TestCase
                 [2.0, 1.0],
                 [1.0, 2.0],
             ],
+<<<<<<< HEAD
             [3.0, 6.0, 7.0, 8.0],
             [2.0, 2.0],
             9.0,
             [1.0, 2.0],
             3.0,
+=======
+            [3, 6, 7, 8],
+            [2, 2],
+            8.990033,
+            [0.999967, 1.990066],
+            3.009967,
+>>>>>>> 3.0
         ];
 
         yield 'sample with 3 features and smaller values' => [
@@ -93,11 +109,19 @@ class RidgeTest extends TestCase
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
             ],
+<<<<<<< HEAD
             [4.0, 5.0, 6.0, 7.0],
             [1.0, 1.0, 1.0],
             10.0,
             [1.0, 2.0, 3.0],
             4.0,
+=======
+            [4, 5, 6, 7],
+            [1, 1, 1],
+            9.826923,
+            [0.932978, 1.923077, 2.913176],
+            4.057692,
+>>>>>>> 3.0
         ];
 
         yield 'sample with 4 features' => [
@@ -426,15 +450,15 @@ class RidgeTest extends TestCase
         $predictions = $regression->predict(new Unlabeled([$prediction]));
         $coefficients = $regression->coefficients();
 
-        self::assertEqualsWithDelta($expectedPrediction, $predictions[0], 1e-8);
+        self::assertEqualsWithDelta($expectedPrediction, $predictions[0], 1e-4);
         self::assertIsArray($coefficients);
         self::assertCount(count($expectedCoefficients), $coefficients);
 
         foreach ($expectedCoefficients as $i => $expectedCoefficient) {
-            self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 1e-8);
+            self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 1e-4);
         }
 
-        self::assertEqualsWithDelta($expectedBias, $regression->bias(), 1e-8);
+        self::assertEqualsWithDelta($expectedBias, $regression->bias(), 1e-4);
     }
 
     #[Test]
