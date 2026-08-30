@@ -9,16 +9,13 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use SplQueue;
 
 use function count;
-use function array_unique;
-use function array_merge;
-use function array_pop;
 
 /**
  * DBSCAN
@@ -160,18 +157,20 @@ class DBSCAN implements Estimator
                 continue;
             }
 
-            [$samples, $indices, $distances] = $this->tree->range($sample, $this->radius);
+            [, $indices] = $this->tree->range($sample, $this->radius);
 
-            if (count($samples) < $this->minDensity) {
+            if (count($indices) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
 
                 continue;
             }
 
+            $queue = new SplQueue();
+
             $predictions[$i] = $cluster;
 
-            while ($indices) {
-                $index = (int) array_pop($indices);
+            foreach ($indices as $index) {
+                $index = (int) $index;
 
                 if (isset($predictions[$index])) {
                     if ($predictions[$index] === self::NOISE) {
@@ -183,12 +182,28 @@ class DBSCAN implements Estimator
 
                 $predictions[$index] = $cluster;
 
-                $neighbor = $dataset->sample($index);
+                $queue->enqueue($index);
+            }
 
-                [$samples, $seeds, $distances] = $this->tree->range($neighbor, $this->radius);
+            while (!$queue->isEmpty()) {
+                $index = $queue->dequeue();
 
-                if (count($seeds) >= $this->minDensity) {
-                    $indices = array_unique(array_merge($indices, $seeds));
+                [, $seeds] = $this->tree->range($dataset->sample($index), $this->radius);
+
+                if (count($seeds) < $this->minDensity) {
+                    continue;
+                }
+
+                foreach ($seeds as $seed) {
+                    $seed = (int) $seed;
+
+                    if (!isset($predictions[$seed])) {
+                        $predictions[$seed] = $cluster;
+
+                        $queue->enqueue($seed);
+                    } elseif ($predictions[$seed] === self::NOISE) {
+                        $predictions[$seed] = $cluster;
+                    }
                 }
             }
 

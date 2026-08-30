@@ -34,7 +34,7 @@ class DBSCANBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new DBSCAN(0.1);
+        $this->estimator = new DBSCAN(0.25);
     }
 
     /**
