@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
 use Rubix\ML\GridSearch;
 use Rubix\ML\EstimatorType;
@@ -26,9 +27,7 @@ use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
 #[Group('MetaEstimators')]
 #[CoversClass(GridSearch::class)]
@@ -67,12 +66,7 @@ class GridSearchTest extends TestCase
             'backend' => $ampBackend,
         ];
 
-        if (
-            SpecificationChain::with([
-                new SwooleExtensionIsLoaded(),
-                new ExtensionIsLoaded('igbinary'),
-            ])->passes()
-        ) {
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
             $swooleBackend = new Swoole();
 
             yield (string) $swooleBackend => [
@@ -153,6 +147,7 @@ class GridSearchTest extends TestCase
      */
     #[DataProvider('provideBackends')]
     #[Test]
+    #[RunInSeparateProcess]
     public function trainPredictBest(Backend $backend) : void
     {
         $this->backend = $backend;

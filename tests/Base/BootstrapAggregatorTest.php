@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
@@ -22,9 +23,7 @@ use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
 #[Group('MetaEstimators')]
 #[CoversClass(BootstrapAggregator::class)]
@@ -63,12 +62,7 @@ class BootstrapAggregatorTest extends TestCase
             'backend' => $ampBackend,
         ];
 
-        if (
-            SpecificationChain::with([
-                new SwooleExtensionIsLoaded(),
-                new ExtensionIsLoaded('igbinary'),
-            ])->passes()
-        ) {
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
             $swooleBackend = new Swoole();
 
             yield (string) $swooleBackend => [
@@ -139,6 +133,7 @@ class BootstrapAggregatorTest extends TestCase
      * @param Backend $backend
      */
     #[DataProvider('provideBackends')]
+    #[RunInSeparateProcess]
     public function trainPredict(Backend $backend) : void
     {
         $this->backend = $backend;

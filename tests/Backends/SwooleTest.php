@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\Backends\Swoole as SwooleBackend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +38,7 @@ class SwooleTest extends TestCase
     }
 
     #[Test]
+    #[RunInSeparateProcess]
     public function enqueueProcess() : void
     {
         for ($i = 0; $i < 10; ++$i) {
