@@ -30,7 +30,7 @@ class Amp implements Backend
     /**
      * A 3-tuple of executions and their optional callbacks and contexts.
      *
-     * @var list<array{\Amp\Parallel\Worker\Execution,callable(mixed,mixed):void|null,mixed|null}>
+     * @var list<array{\Amp\Parallel\Worker\Execution<mixed,mixed,mixed>,callable(mixed,mixed):void|null,mixed|null}>
      */
     protected array $queue = [
         //
@@ -136,7 +136,7 @@ class Amp implements Backend
     }
 
     /**
-     * @return array{int}
+     * @return array{workers: int}
      */
     public function __serialize() : array
     {
@@ -144,7 +144,7 @@ class Amp implements Backend
     }
 
     /**
-     * @param array{int} $data
+     * @param array{workers: int} $data
      */
     public function __unserialize(array $data) : void
     {

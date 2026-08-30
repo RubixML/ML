@@ -10,7 +10,6 @@ parameters:
         - 'src'
         - 'benchmarks'
     excludePaths:
-        - src/Backends/Amp.php
         - src/Backends/Swoole.php
     ignoreErrors:
         - identifier: foreach.emptyArray
