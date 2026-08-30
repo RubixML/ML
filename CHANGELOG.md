@@ -25,6 +25,7 @@
     - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
     - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
     - Cross Entropy loss function now split into Binary and Multiclass
+    - LDA, PCA, SVD now powered by NumPower
     - Added windowed early stopping with validation holdout
     - Parallel Backends now default to max physical cores not logical
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
