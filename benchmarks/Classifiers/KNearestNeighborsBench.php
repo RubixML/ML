@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\ML\Benchmarks\Classifiers;
+
 use Generator;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Serial;

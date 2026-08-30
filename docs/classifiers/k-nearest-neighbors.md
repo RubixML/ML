@@ -35,7 +35,7 @@ This estimator implements the [Parallel](../parallel.md) interface and can utili
 ```php
 use Rubix\ML\Backends\Swoole;
 
-$estimator->setBackend(new Swoole());
+$estimator->setBackend(16));
 ```
 
 ## Additional Methods

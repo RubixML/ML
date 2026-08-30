@@ -48,12 +48,7 @@ class RandomForestBench
             'backend' => $ampBackend,
         ];
 
-        if (
-            SpecificationChain::with([
-                new ExtensionIsLoaded('swoole'),
-                new ExtensionIsLoaded('igbinary'),
-            ])->passes()
-        ) {
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
             $swooleBackend = new Swoole();
 
             yield (string) $swooleBackend => [

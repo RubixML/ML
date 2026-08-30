@@ -107,7 +107,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      *
      * @param self $estimator
      * @param Dataset $chunk
-     * @return array
+     * @return list<string|int>
      */
     public static function predictChunk(self $estimator, Dataset $chunk) : array
     {

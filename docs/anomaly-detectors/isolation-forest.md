@@ -24,6 +24,16 @@ use Rubix\ML\AnomalyDetectors\IsolationForest;
 $estimator = new IsolationForest(100, 0.2, 0.05);
 ```
 
+## Parallel
+
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole());
+```
+
 ## Additional Methods
 
 This estimator does not have any additional methods.
