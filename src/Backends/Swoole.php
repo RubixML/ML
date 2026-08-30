@@ -4,7 +4,6 @@ namespace Rubix\ML\Backends;
 
 use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Helpers\CPU;
-use Rubix\ML\Helpers\Params;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use RuntimeException;
