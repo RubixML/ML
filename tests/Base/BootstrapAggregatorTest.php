@@ -22,6 +22,7 @@ use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
@@ -63,8 +64,10 @@ class BootstrapAggregatorTest extends TestCase
         ];
 
         if (
-            SwooleExtensionIsLoaded::create()->passes()
-            && ExtensionIsLoaded::with('igbinary')->passes()
+            SpecificationChain::with([
+                new SwooleExtensionIsLoaded(),
+                new ExtensionIsLoaded('igbinary'),
+            ])->passes()
         ) {
             $swooleBackend = new Swoole();
 

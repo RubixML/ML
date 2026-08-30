@@ -49,8 +49,10 @@ class RandomForestBench
         ];
 
         if (
-            SwooleExtensionIsLoaded::create()->passes()
-            && ExtensionIsLoaded::with('igbinary')->passes()
+            SpecificationChain::with([
+                new SwooleExtensionIsLoaded(),
+                new ExtensionIsLoaded('igbinary'),
+            ])->passes()
         ) {
             $swooleBackend = new Swoole();
 
