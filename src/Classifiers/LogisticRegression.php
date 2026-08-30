@@ -17,6 +17,7 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Traits\AutotrackRevisions;
@@ -25,6 +26,8 @@ use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -33,14 +36,18 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function is_nan;
+use function is_dir;
 use function count;
+use function uniqid;
 use function get_object_vars;
 use function number_format;
 use function array_map;
+use function sys_get_temp_dir;
 
 /**
  * Logistic Regression
@@ -94,11 +101,39 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected float $minChange;
 
     /**
+     * The number of epochs to train before evaluating the model with the holdout set.
+     *
+     * @var int
+     */
+    protected int $evalInterval;
+
+    /**
+     * The number of epochs without improvement in the validation score to wait before considering an early stop.
+     *
+     * @var positive-int
+     */
+    protected int $window;
+
+    /**
+     * The proportion of training samples to use for validation and progress monitoring.
+     *
+     * @var float
+     */
+    protected float $holdOut;
+
+    /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var ClassificationLoss
      */
     protected ClassificationLoss $costFn;
+
+    /**
+     * The validation metric used to score the generalization performance of the model during training.
+     *
+     * @var Metric
+     */
+    protected Metric $metric;
 
     /**
      * The underlying neural network instance.
@@ -122,12 +157,30 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected ?array $losses = null;
 
     /**
+     * The validation scores at each epoch from the last training session.
+     *
+     * @var float[]|null
+     */
+    protected ?array $scores = null;
+
+    /**
+     * The file path to store the snapshot on disk during training.
+     *
+     * @var string|null
+     */
+    protected ?string $snapshotPath = null;
+
+    /**
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
+     * @param int $evalInterval
+     * @param int $window
+     * @param float $holdOut
      * @param ClassificationLoss|null $costFn
+     * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -136,7 +189,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?ClassificationLoss $costFn = null
+        int $evalInterval = 3,
+        int $window = 5,
+        float $holdOut = 0.1,
+        ?ClassificationLoss $costFn = null,
+        ?Metric $metric = null
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
@@ -158,12 +215,35 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . " greater than 0, $minChange given.");
         }
 
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Eval interval must be'
+                . " greater than 0, $evalInterval given.");
+        }
+
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be'
+                . " greater than 0, $window given.");
+        }
+
+        if ($holdOut < 0.0 or $holdOut > 0.5) {
+            throw new InvalidArgumentException('Hold out ratio must be'
+                . " between 0 and 0.5, $holdOut given.");
+        }
+
+        if ($metric) {
+            EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
+        }
+
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->evalInterval = $evalInterval;
+        $this->window = $window;
+        $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new BinaryCrossEntropy();
+        $this->metric = $metric ?? new FBeta();
     }
 
     /**
@@ -207,7 +287,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
+            'eval interval' => $this->evalInterval,
+            'window' => $this->window,
+            'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
+            'metric' => $this->metric,
         ];
     }
 
@@ -235,6 +319,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
+                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
             ];
         }
@@ -251,6 +336,16 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
+     * Return the validation score at each epoch from the last training session.
+     *
+     * @return float[]|null
+     */
+    public function scores() : ?array
+    {
+        return $this->scores;
+    }
+
+    /**
      * Return the underlying neural network instance or null if not trained.
      *
      * @return Network|null
@@ -258,6 +353,21 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function network() : ?Network
     {
         return $this->network;
+    }
+
+    /**
+     * Set the file path to store the snapshot on disk during training.
+     *
+     * @param string|null $path
+     * @throws InvalidArgumentException
+     */
+    public function setSnapshotPath(?string $path) : void
+    {
+        if (isset($path) and is_dir($path)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
+        $this->snapshotPath = $path;
     }
 
     /**
@@ -318,12 +428,31 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             $this->logger->info("{$numParams} trainable parameters");
         }
 
+        [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
+
+        [$minScore, $maxScore] = $this->metric->range()->list();
+
+        $bestScore = $minScore;
+        $bestEpoch = $numWorseEpochs = 0;
+        $loss = 0.0;
+        $score = $snapshot = null;
         $prevLoss = INF;
 
-        $this->losses = [];
+        $snapshotPath = $this->snapshotPath;
+
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
+
+        if ($testing->empty() and $this->logger) {
+            $this->logger->notice('Insufficient validation data, '
+                . 'some features are disabled');
+        }
+
+        $this->scores = $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $batches = $dataset->randomize()->batch($this->batchSize);
+            $batches = $training->randomize()->batch($this->batchSize);
 
             $loss = 0.0;
 
@@ -337,16 +466,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
             $this->losses[$epoch] = $loss;
 
-            if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "{$this->costFn}: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
-
-                $this->logger->info($message);
-            }
-
             if (is_nan($loss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
@@ -359,11 +478,68 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 break;
             }
 
+            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+
+            if ($evalThisStep) {
+                $predictions = $this->predict($testing);
+
+                $score = $this->metric->score($predictions, $testing->labels());
+
+                $this->scores[$epoch] = $score;
+            }
+
+            if ($this->logger) {
+                $message = "Epoch: $epoch, {$this->costFn}: $loss";
+
+                if ($evalThisStep) {
+                    $message .= ", {$this->metric}: $score";
+                }
+
+                $this->logger->info($message);
+            }
+
+            if ($evalThisStep) {
+                if ($score >= $maxScore) {
+                    break;
+                }
+
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestEpoch = $epoch;
+
+                    if ($snapshot) {
+                        $snapshot->destroy();
+                    }
+
+                    $snapshot = Snapshot::take($this->network, $snapshotPath);
+
+                    $numWorseEpochs = 0;
+                } else {
+                    ++$numWorseEpochs;
+                }
+
+                if ($numWorseEpochs >= $this->window) {
+                    break;
+                }
+            }
+
             if ($lossChange < $this->minChange) {
                 break;
             }
 
             $prevLoss = $loss;
+        }
+
+        if ($snapshot) {
+            if (end($this->scores) < $bestScore or is_nan($loss)) {
+                $snapshot->restore();
+
+                if ($this->logger) {
+                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                }
+            }
+
+            $snapshot->destroy();
         }
 
         if ($this->logger) {
@@ -447,7 +623,12 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['logger']);
+        unset(
+            $properties['losses'],
+            $properties['scores'],
+            $properties['logger'],
+            $properties['snapshotPath']
+        );
 
         return $properties;
     }

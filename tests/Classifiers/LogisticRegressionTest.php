@@ -23,6 +23,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+use function sys_get_temp_dir;
+use function uniqid;
+
 #[Group('Classifiers')]
 #[CoversClass(LogisticRegression::class)]
 class LogisticRegressionTest extends TestCase
@@ -75,7 +78,11 @@ class LogisticRegressionTest extends TestCase
             l2Penalty: 1e-4,
             epochs: 300,
             minChange: 1e-4,
-            costFn: new BinaryCrossEntropy()
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            costFn: new BinaryCrossEntropy(),
+            metric: new FBeta()
         );
 
         $this->metric = new FBeta();
@@ -122,7 +129,11 @@ class LogisticRegressionTest extends TestCase
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
+            'eval interval' => 3,
+            'window' => 5,
+            'hold out' => 0.1,
             'cost fn' => new BinaryCrossEntropy(),
+            'metric' => new FBeta(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -152,6 +163,11 @@ class LogisticRegressionTest extends TestCase
         $this->assertIsArray($losses);
         $this->assertContainsOnlyFloat($losses);
 
+        $scores = $this->estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertContainsOnlyFloat($scores);
+
         $importances = $this->estimator->featureImportances();
 
         $this->assertIsArray($importances);
@@ -166,6 +182,44 @@ class LogisticRegressionTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    public function snapshotPathIsTransientAndResolvedLazily() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
+
+        $this->estimator->setSnapshotPath($snapshotPath);
+
+        $this->estimator->train($dataset->stratifiedFold(2)[0]);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $this->assertArrayNotHasKey('snapshotPath', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        $this->assertTrue($copy->trained());
+
+        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+
+        $copy->partial($dataset->stratifiedFold(2)[0]);
+
+        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+    }
+
+    #[Test]
+    public function snapshotPathRejectsDirectory() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->setSnapshotPath(sys_get_temp_dir());
     }
 
     #[Test]

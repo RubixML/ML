@@ -26,6 +26,7 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
+
 use function abs;
 use function array_fill;
 use function array_map;
@@ -415,7 +416,9 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $this->losses[$epoch] = $loss;
 
-            if ($epoch % $this->evalInterval === 0 && isset($outTest)) {
+            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+
+            if ($evalThisStep and isset($outTest)) {
                 $score = $this->metric->score($outTest, $testing->labels());
 
                 $this->scores[$epoch] = $score;
@@ -424,7 +427,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             if ($this->logger) {
                 $message = "Epoch: $epoch, L2 Loss: $loss";
 
-                if (isset($score)) {
+                if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
                 }
 
@@ -439,7 +442,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 break;
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -456,8 +459,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {

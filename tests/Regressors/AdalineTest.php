@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
@@ -23,6 +24,9 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Regressors\Adaline;
+
+use function sys_get_temp_dir;
+use function uniqid;
 
 #[Group('Regressors')]
 #[CoversClass(Adaline::class)]
@@ -107,7 +111,11 @@ class AdalineTest extends TestCase
             l2Penalty: 1e-4,
             epochs: 100,
             minChange: 1e-4,
-            costFn: new HuberLoss(1.0)
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            costFn: new HuberLoss(1.0),
+            metric: new RMSE()
         );
 
         $this->metric = new RSquared();
@@ -159,7 +167,11 @@ class AdalineTest extends TestCase
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
+            'eval interval' => 3,
+            'window' => 5,
+            'hold out' => 0.1,
             'cost fn' => new HuberLoss(1.0),
+            'metric' => new RMSE(),
         ];
 
         self::assertEquals($expected, $this->estimator->params());
@@ -183,6 +195,11 @@ class AdalineTest extends TestCase
         self::assertIsArray($losses);
         self::assertContainsOnlyFloat($losses);
 
+        $scores = $this->estimator->scores();
+
+        self::assertIsArray($scores);
+        self::assertContainsOnlyFloat($scores);
+
         $importances = $this->estimator->featureImportances();
 
         self::assertCount(4, $importances);
@@ -198,6 +215,44 @@ class AdalineTest extends TestCase
         );
 
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Snapshot path is transient and resolved lazily')]
+    public function snapshotPathIsTransientAndResolvedLazily() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
+
+        $this->estimator->setSnapshotPath($snapshotPath);
+
+        $this->estimator->train($dataset->fold(2)[0]);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('snapshotPath', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertTrue($copy->trained());
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+
+        $copy->partial($dataset->fold(2)[0]);
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+    }
+
+    #[Test]
+    #[TestDox('Snapshot path rejects a directory')]
+    public function snapshotPathRejectsDirectory() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->setSnapshotPath(sys_get_temp_dir());
     }
 
     #[Test]

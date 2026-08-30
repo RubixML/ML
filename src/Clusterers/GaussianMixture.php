@@ -390,11 +390,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "Loss: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
+                $message = "Epoch: $epoch, Loss: $loss";
 
                 $this->logger->info($message);
             }

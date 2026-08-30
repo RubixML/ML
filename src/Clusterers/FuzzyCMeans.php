@@ -327,11 +327,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "Inertia: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
+                $message = "Epoch: $epoch, Inertia: $loss";
 
                 $this->logger->info($message);
             }

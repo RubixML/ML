@@ -497,7 +497,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break;
             }
 
-            if ($epoch % $this->evalInterval === 0 && !$testing->empty()) {
+            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+
+            if ($evalThisStep) {
                 $predictions = $this->predict($testing);
 
                 $score = $this->metric->score($predictions, $testing->labels());
@@ -508,14 +510,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             if ($this->logger) {
                 $message = "Epoch: $epoch, {$this->costFn}: $loss";
 
-                if (isset($score)) {
+                if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
                 }
 
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -525,7 +527,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                     $bestEpoch = $epoch;
 
                     if ($snapshot) {
-                        $snapshot->clean();
+                        $snapshot->destroy();
                     }
 
                     $snapshot = Snapshot::take($this->network, $snapshotPath);
@@ -538,8 +540,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 if ($numWorseEpochs >= $this->window) {
                     break;
                 }
-
-                unset($score);
             }
 
             if ($lossChange < $this->minChange) {
@@ -558,7 +558,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 }
             }
 
-            $snapshot->clean();
+            $snapshot->destroy();
         }
 
         if ($this->logger) {
