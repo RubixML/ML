@@ -11,6 +11,9 @@ use Swoole\Atomic;
 use Swoole\Process;
 
 use function Swoole\Coroutine\run;
+use function serialize;
+use function unserialize;
+use function strlen;
 
 /**
  * Swoole
@@ -105,11 +108,8 @@ class Swoole implements Backend
      */
     public function process() : array
     {
-        $results = [];
-
         $maxMessageLength = new Atomic(0);
         $workerProcesses = [];
-
         $currentCpu = 0;
 
         foreach ($this->queue as $index => $queueItem) {
@@ -117,21 +117,19 @@ class Swoole implements Backend
                 function (Process $worker) use ($maxMessageLength, $queueItem) {
                     $serialized = $this->serialize($queueItem());
 
-                    $serializedLength = strlen($serialized);
-                    $currentMaxSerializedLength = $maxMessageLength->get();
+                    $length = strlen($serialized);
 
-                    if ($serializedLength > $currentMaxSerializedLength) {
-                        $maxMessageLength->set($serializedLength);
+                    $currentMaxLength = $maxMessageLength->get();
+
+                    if ($length > $currentMaxLength) {
+                        $maxMessageLength->set($length);
                     }
 
                     $worker->exportSocket()->send($serialized);
                 },
-                // redirect_stdin_and_stdout
-                false,
-                // pipe_type
-                SOCK_DGRAM,
-                // enable_coroutine
-                true,
+                false, // Redirect_stdin_and_stdout
+                SOCK_DGRAM, // Pipe type
+                true, // Enable coroutine
             );
 
             if (method_exists($workerProcess, 'setAffinity')) {
@@ -145,6 +143,8 @@ class Swoole implements Backend
 
             $currentCpu = ($currentCpu + 1) % $this->workers;
         }
+
+        $results = [];
 
         run(function () use ($maxMessageLength, &$results, $workerProcesses) {
             foreach ($workerProcesses as $workerProcess) {
