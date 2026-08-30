@@ -72,7 +72,7 @@ class SnapshotTest extends TestCase
         $this->assertNotFalse($contents);
         $this->assertGreaterThan(0, strlen($contents));
 
-        $snapshot->clean();
+        $snapshot->destroy();
     }
 
     #[Test]
@@ -130,7 +130,7 @@ class SnapshotTest extends TestCase
 
         $this->assertEquals($originalData, $restoredData);
 
-        $snapshot->clean();
+        $snapshot->destroy();
     }
 
     #[Test]
@@ -142,7 +142,7 @@ class SnapshotTest extends TestCase
 
         $this->assertFileExists($this->testPath);
 
-        $snapshot->clean();
+        $snapshot->destroy();
 
         $this->assertFileDoesNotExist($this->testPath);
     }

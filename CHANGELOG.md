@@ -26,6 +26,7 @@
     - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
     - Cross Entropy loss function now split into Binary and Multiclass
     - LDA, PCA, SVD now powered by NumPower
+    - Added windowed early stopping with validation holdout
     - Parallel Backends now default to max physical cores not logical
     
 - 2.5.11
