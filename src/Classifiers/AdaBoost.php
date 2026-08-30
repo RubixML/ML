@@ -341,11 +341,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "Exponential Loss: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
+                $message = "Epoch: $epoch, Exponential Loss: $loss";
 
                 $this->logger->info($message);
             }
