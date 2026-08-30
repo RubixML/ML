@@ -185,6 +185,27 @@ class CommitteeMachineTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Predictions are identical regardless of the backend')]
+    public function predictIsBackendAgnostic() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        $expected = $this->estimator->predict($testing);
+
+        $amp = new Amp(4);
+        $this->backend = $amp;
+
+        $this->estimator->setBackend($amp);
+
+        $this->assertSame($expected, $this->estimator->predict($testing));
+    }
+
+    #[Test]
     #[TestDox('Train incompatible')]
     public function trainIncompatible() : void
     {

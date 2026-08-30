@@ -13,9 +13,8 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Backends\Tasks\Proba;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -30,10 +29,12 @@ use Rubix\ML\Exceptions\RuntimeException;
 use function Rubix\ML\argmax;
 use function Rubix\ML\array_transpose;
 use function array_count_values;
+use function array_fill_keys;
+use function array_map;
+use function array_merge;
+use function ceil;
 use function get_class;
 use function in_array;
-use function array_map;
-use function array_fill_keys;
 
 /**
  * Random Forest
@@ -269,18 +270,53 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
+
         $this->backend()->flush();
 
-        foreach ($this->trees as $estimator) {
-            $this->backend()->enqueue(new Predict($estimator, $dataset));
-        }
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
 
-        $aggregate = array_transpose($this->backend()->process());
+            $this->backend()->enqueue($task);
+        }
 
         $predictions = [];
 
-        foreach ($aggregate as $votes) {
-            $counts = array_count_values(array_map('strval', $votes));
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<string> $output */
+            $predictions = array_merge($predictions, $output);
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @throws RuntimeException
+     * @return list<string>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        if (!$this->trees) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $votes = [];
+
+        foreach ($this->trees as $tree) {
+            $votes[] = $tree->predict($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
+
+        $predictions = [];
+
+        foreach ($aggregate as $sampleVotes) {
+            $counts = array_count_values(array_map('strval', $sampleVotes));
 
             $predictions[] = argmax($counts);
         }
@@ -303,17 +339,46 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $probabilities = array_fill(0, $dataset->numSamples(), $this->classes);
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
 
         $this->backend()->flush();
 
-        foreach ($this->trees as $estimator) {
-            $this->backend()->enqueue(new Proba($estimator, $dataset));
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'probaChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
-        $aggregate = $this->backend()->process();
+        $probabilities = [];
 
-        foreach ($aggregate as $proba) {
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<array<string,float>> $output */
+            $probabilities = array_merge($probabilities, $output);
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Estimate the joint probabilities of each possible outcome for a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @throws RuntimeException
+     * @return list<array<string,float>>
+     */
+    public function probaChunk(Dataset $chunk) : array
+    {
+        if (!$this->trees or !$this->classes) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $probabilities = array_fill(0, $chunk->numSamples(), $this->classes);
+
+        foreach ($this->trees as $tree) {
+            $proba = $tree->proba($chunk);
+
             /** @var int $i */
             foreach ($proba as $i => $joint) {
                 foreach ($joint as $class => $probability) {

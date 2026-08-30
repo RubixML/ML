@@ -176,6 +176,27 @@ class OneVsRestTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Probabilities are identical regardless of the backend')]
+    public function probaIsBackendAgnostic() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        $expected = $this->estimator->proba($testing);
+
+        $amp = new Amp(4);
+        $this->backend = $amp;
+
+        $this->estimator->setBackend($amp);
+
+        $this->assertSame($expected, $this->estimator->proba($testing));
+    }
+
+    #[Test]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

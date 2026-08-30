@@ -12,7 +12,7 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Backends\Tasks\Proba;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
@@ -29,7 +29,9 @@ use function Rubix\ML\array_transpose;
 use function array_combine;
 use function array_keys;
 use function array_map;
+use function array_merge;
 use function array_sum;
+use function ceil;
 
 /**
  * One Vs Rest
@@ -206,27 +208,53 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
+
         $this->backend()->flush();
 
-        /** @var Probabilistic $estimator */
-        foreach ($this->classifiers as $estimator) {
-            $task = new Proba($estimator, $dataset);
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'probaChunk'], [$chunk]);
 
             $this->backend()->enqueue($task);
         }
 
-        $aggregate = $this->backend()->process();
+        $probabilities = [];
 
-        $aggregate = array_transpose($aggregate);
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<array<string,float>> $output */
+            $probabilities = array_merge($probabilities, $output);
+        }
 
+        return $probabilities;
+    }
+
+    /**
+     * Estimate the joint probabilities of each possible outcome for a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<array<string,float>>
+     */
+    public function probaChunk(Dataset $chunk) : array
+    {
         $classes = array_keys($this->classifiers);
+
+        $votes = [];
+
+        /** @var Probabilistic $estimator */
+        foreach ($this->classifiers as $estimator) {
+            $votes[] = $estimator->proba($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
 
         $probabilities = [];
 
-        foreach ($aggregate as $votes) {
+        foreach ($aggregate as $sampleVotes) {
             $dist = [];
 
-            foreach ($votes as $j => $proba) {
+            foreach ($sampleVotes as $j => $proba) {
                 $dist[$classes[$j]] = $proba['y'];
             }
 

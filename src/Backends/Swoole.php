@@ -12,6 +12,7 @@ use Swoole\Process;
 
 use function Swoole\Coroutine\run;
 use function method_exists;
+use function array_chunk;
 use function serialize;
 use function unserialize;
 use function strlen;
@@ -109,67 +110,71 @@ class Swoole implements Backend
      */
     public function process() : array
     {
-        $maxMessageLength = new Atomic(0);
-        $workerProcesses = [];
+        $results = [];
         $currentCpu = 0;
 
-        foreach ($this->queue as $index => $queueItem) {
-            $workerProcess = new Process(
-                function (Process $worker) use ($maxMessageLength, $queueItem) {
-                    $serialized = $this->serialize($queueItem());
+        foreach (array_chunk($this->queue, $this->workers) as $batch) {
+            $maxMessageLength = new Atomic(0);
+            $workerProcesses = [];
 
-                    $length = strlen($serialized);
+            foreach ($batch as $queueItem) {
+                $workerProcess = new Process(
+                    function (Process $worker) use ($maxMessageLength, $queueItem) {
+                        $serialized = $this->serialize($queueItem());
 
-                    $currentMaxLength = $maxMessageLength->get();
+                        $length = strlen($serialized);
 
-                    if ($length > $currentMaxLength) {
-                        $maxMessageLength->set($length);
+                        $currentMaxLength = $maxMessageLength->get();
+
+                        if ($length > $currentMaxLength) {
+                            $maxMessageLength->set($length);
+                        }
+
+                        $worker->exportSocket()->send($serialized);
+                    },
+                    false, // Redirect_stdin_and_stdout
+                    SOCK_DGRAM, // Pipe type
+                    true, // Enable coroutine
+                );
+
+                if (method_exists($workerProcess, 'setAffinity')) {
+                    $workerProcess->setAffinity([$currentCpu]);
+                }
+
+                $workerProcess->setBlocking(false);
+                $workerProcess->start();
+
+                $workerProcesses[] = $workerProcess;
+
+                $currentCpu = ($currentCpu + 1) % $this->workers;
+            }
+
+            run(function () use ($maxMessageLength, &$results, $workerProcesses) {
+                foreach ($workerProcesses as $workerProcess) {
+                    $status = $workerProcess->wait();
+
+                    if (0 !== $status['code']) {
+                        throw new RuntimeException('Worker process exited with an error.');
                     }
 
-                    $worker->exportSocket()->send($serialized);
-                },
-                false, // Redirect_stdin_and_stdout
-                SOCK_DGRAM, // Pipe type
-                true, // Enable coroutine
-            );
+                    $socket = $workerProcess->exportSocket();
 
-            if (method_exists($workerProcess, 'setAffinity')) {
-                $workerProcess->setAffinity([$currentCpu]);
-            }
+                    if ($socket->isClosed()) {
+                        throw new RuntimeException('Coroutine socket is closed.');
+                    }
 
-            $workerProcess->setBlocking(false);
-            $workerProcess->start();
+                    $maxMessageLengthValue = $maxMessageLength->get();
 
-            $workerProcesses[$index] = $workerProcess;
+                    $receivedData = $socket->recv($maxMessageLengthValue);
 
-            $currentCpu = ($currentCpu + 1) % $this->workers;
+                    $unserialized = $this->unserialize($receivedData);
+
+                    $results[] = $unserialized;
+                }
+            });
         }
 
-        $results = [];
-
-        run(function () use ($maxMessageLength, &$results, $workerProcesses) {
-            foreach ($workerProcesses as $workerProcess) {
-                $status = $workerProcess->wait();
-
-                if (0 !== $status['code']) {
-                    throw new RuntimeException('Worker process exited with an error.');
-                }
-
-                $socket = $workerProcess->exportSocket();
-
-                if ($socket->isClosed()) {
-                    throw new RuntimeException('Coroutine socket is closed.');
-                }
-
-                $maxMessageLengthValue = $maxMessageLength->get();
-
-                $receivedData = $socket->recv($maxMessageLengthValue);
-
-                $unserialized = $this->unserialize($receivedData);
-
-                $results[] = $unserialized;
-            }
-        });
+        $this->queue = [];
 
         return $results;
     }

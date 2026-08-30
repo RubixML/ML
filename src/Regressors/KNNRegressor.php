@@ -88,20 +88,6 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
     ];
 
     /**
-     * Make predictions on a chunk of samples.
-     *
-     * @internal
-     *
-     * @param self $estimator
-     * @param Dataset $dataset
-     * @return list<int|float>
-     */
-    public static function predictChunk(self $estimator, Dataset $dataset) : array
-    {
-        return array_map([$estimator, 'predictSample'], $dataset->samples());
-    }
-
-    /**
      * @param int $k
      * @param bool $weighted
      * @param Distance|null $kernel
@@ -117,6 +103,19 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
         $this->k = $k;
         $this->weighted = $weighted;
         $this->kernel = $kernel ?? new Euclidean();
+    }
+
+    /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<int|float>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'predictSample'], $chunk->samples());
     }
 
     /**
@@ -219,7 +218,7 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
         $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $task = new Task([self::class, 'predictChunk'], [$this, $chunk]);
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
 
             $this->backend()->enqueue($task);
         }

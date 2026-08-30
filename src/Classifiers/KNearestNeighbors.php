@@ -102,34 +102,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
     ];
 
     /**
-     * Infer a chunk of samples.
-     *
-     * @internal
-     *
-     * @param self $estimator
-     * @param Dataset $chunk
-     * @return list<string|int>
-     */
-    public static function predictChunk(self $estimator, Dataset $chunk) : array
-    {
-        return array_map([$estimator, 'predictSample'], $chunk->samples());
-    }
-
-    /**
-     * Estimate the joint probabilities for each possible outcome in a chunk of samples.
-     *
-     * @internal
-     *
-     * @param self $estimator
-     * @param Dataset $chunk
-     * @return list<array<string,float>>
-     */
-    public static function probaChunk(self $estimator, Dataset $chunk) : array
-    {
-        return array_map([$estimator, 'probaSample'], $chunk->samples());
-    }
-
-    /**
      * @param int $k
      * @param bool $weighted
      * @param Distance|null $kernel
@@ -253,7 +225,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
         $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $task = new Task([self::class, 'predictChunk'], [$this, $chunk]);
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
 
             $this->backend()->enqueue($task);
         }
@@ -266,6 +238,19 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
         }
 
         return $predictions;
+    }
+
+    /**
+     * Infer a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<string|int>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'predictSample'], $chunk->samples());
     }
 
     /**
@@ -315,7 +300,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
         $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $task = new Task([self::class, 'probaChunk'], [$this, $chunk]);
+            $task = new Task([$this, 'probaChunk'], [$chunk]);
 
             $this->backend()->enqueue($task);
         }
@@ -328,6 +313,19 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Estimate the joint probabilities for each possible outcome in a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<array<string,float>>
+     */
+    public function probaChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'probaSample'], $chunk->samples());
     }
 
     /**

@@ -142,34 +142,6 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
     }
 
     /**
-     * Predict a chunk of samples.
-     *
-     * @internal
-     *
-     * @param self $estimator
-     * @param Dataset $dataset
-     * @return list<int>
-     */
-    public static function predictChunk(self $estimator, Dataset $dataset) : array
-    {
-        return array_map([$estimator, 'predictSample'], $dataset->samples());
-    }
-
-    /**
-     * Score a chunk of samples.
-     *
-     * @internal
-     *
-     * @param self $estimator
-     * @param Dataset $dataset
-     * @return list<float>
-     */
-    public static function scoreChunk(self $estimator, Dataset $dataset) : array
-    {
-        return array_map([$estimator, 'isolationScore'], $dataset->samples());
-    }
-
-    /**
      * @param int $estimators
      * @param float|null $ratio
      * @param float|null $contamination
@@ -283,7 +255,7 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         $this->delta = $this->estimators * Depth::c($p);
 
         if (isset($this->contamination)) {
-            $scores = $this->scores($dataset);
+            $scores = $this->scoreChunk($dataset);
 
             $threshold = Stats::quantile($scores, 1.0 - $this->contamination);
         }
@@ -308,7 +280,35 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        return $this->predictions($dataset);
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
+
+        $this->backend()->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $this->backend()->enqueue(new Task([$this, 'predictChunk'], [$chunk]));
+        }
+
+        $predictions = [];
+
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<int> $output */
+            $predictions = array_merge($predictions, $output);
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Predict a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<int>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'predictSample'], $chunk->samples());
     }
 
     /**
@@ -339,7 +339,35 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        return $this->scores($dataset);
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
+
+        $this->backend()->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $this->backend()->enqueue(new Task([$this, 'scoreChunk'], [$chunk]));
+        }
+
+        $scores = [];
+
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<float> $output */
+            $scores = array_merge($scores, $output);
+        }
+
+        return $scores;
+    }
+
+    /**
+     * Score a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<float>
+     */
+    public function scoreChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'isolationScore'], $chunk->samples());
     }
 
     /**
@@ -372,58 +400,6 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         $depth /= $this->delta;
 
         return 2.0 ** -$depth;
-    }
-
-    /**
-     * Make predictions on the samples in a dataset in chunks.
-     *
-     * @param Dataset $dataset
-     * @return list<int>
-     */
-    protected function predictions(Dataset $dataset) : array
-    {
-        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
-
-        $this->backend()->flush();
-
-        foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend()->enqueue(new Task([self::class, 'predictChunk'], [$this, $chunk]));
-        }
-
-        $predictions = [];
-
-        foreach ($this->backend()->process() as $output) {
-            /** @var list<int> $output */
-            $predictions = array_merge($predictions, $output);
-        }
-
-        return $predictions;
-    }
-
-    /**
-     * Compute the isolation scores of the samples in a dataset in chunks.
-     *
-     * @param Dataset $dataset
-     * @return list<float>
-     */
-    protected function scores(Dataset $dataset) : array
-    {
-        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
-
-        $this->backend()->flush();
-
-        foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend()->enqueue(new Task([self::class, 'scoreChunk'], [$this, $chunk]));
-        }
-
-        $scores = [];
-
-        foreach ($this->backend()->process() as $output) {
-            /** @var list<float> $output */
-            $scores = array_merge($scores, $output);
-        }
-
-        return $scores;
     }
 
     /**

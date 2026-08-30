@@ -9,7 +9,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Backends\Tasks\Predict;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -20,6 +20,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function array_merge;
+use function ceil;
 use function count;
 use function in_array;
 
@@ -150,6 +152,41 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $this->experts = array_values($experts);
         $this->influences = $influences;
         $this->compatibility = $compatibility;
+    }
+
+    /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<string|int|float>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        $votes = [];
+
+        foreach ($this->experts as $estimator) {
+            $votes[] = $estimator->predict($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
+
+        $predictions = [];
+
+        $type = $this->type();
+
+        if ($type->isClassifier() or $type->isAnomalyDetector()) {
+            foreach ($aggregate as $votes) {
+                $predictions[] = $this->decideDiscrete($votes);
+            }
+        } else {
+            foreach ($aggregate as $votes) {
+                $predictions[] = $this->decideContinuous($votes);
+            }
+        }
+
+        return $predictions;
     }
 
     /**
@@ -285,35 +322,24 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
+
         $this->backend()->flush();
 
-        foreach ($this->experts as $estimator) {
-            $task = new Predict($estimator, $dataset);
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
 
             $this->backend()->enqueue($task);
         }
 
-        $aggregate = array_transpose($this->backend()->process());
+        $predictions = [];
 
-        switch ($this->type()) {
-            case EstimatorType::classifier():
-            case EstimatorType::anomalyDetector():
-                return array_map([$this, 'decideDiscrete'], $aggregate);
-
-            default:
-                return array_map([$this, 'decideContinuous'], $aggregate);
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<string|int|float> $output */
+            $predictions = array_merge($predictions, $output);
         }
-    }
 
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
+        return $predictions;
     }
 
     /**
@@ -342,6 +368,17 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     protected function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**

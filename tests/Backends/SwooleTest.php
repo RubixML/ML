@@ -72,5 +72,7 @@ class SwooleTest extends TestCase
             16,
             18,
         ], $results);
+
+        $this->assertSame([], $this->backend->process());
     }
 }

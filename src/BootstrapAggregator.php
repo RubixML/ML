@@ -9,7 +9,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Backends\Tasks\Predict;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -20,8 +20,10 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function in_array;
 use function array_count_values;
+use function array_merge;
+use function ceil;
+use function in_array;
 
 /**
  * Bootstrap Aggregator
@@ -109,6 +111,43 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
+    }
+
+    /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<string|int|float>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        $votes = [];
+
+        foreach ($this->ensemble as $estimator) {
+            $votes[] = $estimator->predict($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
+
+        $predictions = [];
+
+        $type = $this->type();
+
+        if ($type->isClassifier() or $type->isAnomalyDetector()) {
+            foreach ($aggregate as $votes) {
+                $predictions[] = $this->decideDiscrete($votes);
+            }
+
+            return $predictions;
+        }
+
+        foreach ($aggregate as $votes) {
+            $predictions[] = Stats::mean($votes);
+        }
+
+        return $predictions;
     }
 
     /**
@@ -217,35 +256,24 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
+
         $this->backend()->flush();
 
-        foreach ($this->ensemble as $estimator) {
-            $task = new Predict($estimator, $dataset);
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
 
             $this->backend()->enqueue($task);
         }
 
-        $aggregate = array_transpose($this->backend()->process());
+        $predictions = [];
 
-        switch ($this->type()) {
-            case EstimatorType::classifier():
-            case EstimatorType::anomalyDetector():
-                return array_map([$this, 'decideDiscrete'], $aggregate);
-
-            default:
-                return array_map([Stats::class, 'mean'], $aggregate);
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<string|int|float> $output */
+            $predictions = array_merge($predictions, $output);
         }
-    }
 
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
+        return $predictions;
     }
 
     /**
@@ -260,6 +288,17 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $counts = array_count_values($votes);
 
         return argmax($counts);
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**

@@ -605,6 +605,18 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     }
 
     /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
+    }
+
+    /**
      * Return the string representation of the object.
      *
      * @internal

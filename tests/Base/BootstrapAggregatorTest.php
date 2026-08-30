@@ -134,6 +134,7 @@ class BootstrapAggregatorTest extends TestCase
      * @param Backend $backend
      */
     #[DataProvider('provideBackends')]
+    #[Test]
     #[RunInSeparateProcess]
     public function trainPredict(Backend $backend) : void
     {
@@ -158,6 +159,27 @@ class BootstrapAggregatorTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Predictions are identical regardless of the backend')]
+    public function predictIsBackendAgnostic() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        $expected = $this->estimator->predict($testing);
+
+        $amp = new Amp(4);
+        $this->backend = $amp;
+
+        $this->estimator->setBackend($amp);
+
+        $this->assertSame($expected, $this->estimator->predict($testing));
     }
 
     #[Test]

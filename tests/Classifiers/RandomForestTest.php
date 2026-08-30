@@ -199,6 +199,30 @@ class RandomForestTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    #[DataProvider('provideBackends')]
+    #[Test]
+    #[RunInSeparateProcess]
+    public function predictProba(Backend $backend) : void
+    {
+        $this->backend = $backend;
+
+        $this->estimator->setBackend($backend);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        foreach ($probabilities as $joint) {
+            $this->assertContainsOnlyFloat($joint);
+            $this->assertEqualsWithDelta(1.0, array_sum($joint), 1e-6);
+        }
+    }
+
     #[Test]
     public function predictUntrained() : void
     {
