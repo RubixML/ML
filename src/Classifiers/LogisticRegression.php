@@ -491,7 +491,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             if ($this->logger) {
                 $message = "Epoch: $epoch, {$this->costFn}: $loss";
 
-                if ($evalThisStep && isset($score)) {
+                if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
                 }
 

@@ -483,7 +483,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             if ($this->logger) {
                 $message = "Epoch: $epoch, {$this->costFn}: $loss";
 
-                if ($evalThisStep && isset($score)) {
+                if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
                 }
 

@@ -510,7 +510,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             if ($this->logger) {
                 $message = "Epoch: $epoch, {$this->costFn}: $loss";
 
-                if ($evalThisStep && isset($score)) {
+                if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
                 }
 
