@@ -28,6 +28,16 @@ use Rubix\ML\Kernels\Distance\Manhattan;
 $estimator = new KNearestNeighbors(3, false, new Manhattan());
 ```
 
+## Parallel
+
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole());
+```
+
 ## Additional Methods
 
 This estimator does not have any additional methods.

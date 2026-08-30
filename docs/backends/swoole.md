@@ -17,6 +17,17 @@ use Rubix\ML\Backends\Swoole;
 $backend = new Swoole();
 ```
 
+Any estimator that implements the [Parallel](parallel.md) interface can utilize the Swoole backend by passing it to the `setBackend()` method:
+
+```php
+use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Backends\Swoole;
+
+$estimator = new RandomForest();
+
+$estimator->setBackend(new Swoole());
+```
+
 ## Additional Methods
 
 Return the number of concurrent worker processes:
