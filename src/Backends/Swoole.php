@@ -54,7 +54,7 @@ class Swoole implements Backend
 
         ExtensionIsLoaded::with('swoole')->check();
 
-        $workers ??= function_exists('swoole_cpu_num') ? swoole_cpu_num() : CPU::cores();
+        $workers ??= CPU::cores();
 
         $hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
 

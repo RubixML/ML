@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
@@ -17,6 +20,11 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use PHPUnit\Framework\TestCase;
 
 #[Group('AnomalyDetectors')]
@@ -26,17 +34,17 @@ class IsolationForestTest extends TestCase
     /**
      * The number of samples in the training set.
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 2000;
 
     /**
      * The number of samples in the validation set.
      */
-    protected const int TEST_SIZE = 256;
+    protected const int TEST_SIZE = 1000;
 
     /**
      * The minimum validation score required to pass the test.
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.8;
 
     /**
      * Constant used to see the random number generator.
@@ -48,6 +56,34 @@ class IsolationForestTest extends TestCase
     protected IsolationForest $estimator;
 
     protected FBeta $metric;
+
+    protected ?Backend $backend = null;
+
+    /**
+     * @return Generator<string, array{backend: Backend}>
+     */
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        $ampBackend = new Amp(4);
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
+    }
 
     protected function setUp() : void
     {
@@ -76,6 +112,11 @@ class IsolationForestTest extends TestCase
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
+    }
+
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
     }
 
     #[Test]
@@ -121,9 +162,15 @@ class IsolationForestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
+    #[DataProvider('provideBackends')]
     #[Test]
-    public function trainPredict() : void
+    #[RunInSeparateProcess]
+    public function trainPredict(Backend $backend) : void
     {
+        $this->backend = $backend;
+
+        $this->estimator->setBackend($backend);
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 

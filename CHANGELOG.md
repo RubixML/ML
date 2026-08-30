@@ -27,6 +27,7 @@
     - Cross Entropy loss function now split into Binary and Multiclass
     - Parallel Backends now default to max physical cores not logical
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
+    - Isolation Forest training and scoring is now parallelized
     - Added workers() method to the Backend interface (Serial returns 1)
     
 - 2.5.11

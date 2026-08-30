@@ -2,10 +2,17 @@
 
 namespace Rubix\ML\Benchmarks\AnomalyDetectors;
 
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use Rubix\ML\Datasets\Labeled;
+use Generator;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * @Groups({"AnomalyDetectors"})
@@ -22,6 +29,37 @@ class IsolationForestBench
     protected Labeled $testing;
 
     protected IsolationForest $estimator;
+
+    /**
+     * @return Generator<string, array{backend: Backend}>
+     */
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        $ampBackend = new Amp();
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
+        if (
+            SpecificationChain::with([
+                new ExtensionIsLoaded('swoole'),
+                new ExtensionIsLoaded('igbinary'),
+            ])->passes()
+        ) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
+    }
 
     public function setUp() : void
     {
@@ -40,10 +78,14 @@ class IsolationForestBench
     /**
      * @Subject
      * @Iterations(5)
+     * @ParamProviders("provideBackends")
      * @OutputTimeUnit("seconds", precision=3)
+     * @param array{ backend: Backend } $params
      */
-    public function trainPredict() : void
+    public function trainPredict(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

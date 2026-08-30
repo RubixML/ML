@@ -12,7 +12,7 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  */
 class TSNEBench
 {
-    protected const TESTING_SIZE = 1000;
+    protected const TESTING_SIZE = 500;
 
     /**
      * @var \Rubix\ML\Datasets\Labeled
