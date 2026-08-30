@@ -2,13 +2,16 @@
 
 namespace Rubix\ML\Transformers;
 
-use Tensor\Matrix;
-use Tensor\ColumnVector;
+use NDArray;
+use NumPower;
 use Rubix\ML\DataType;
 use Rubix\ML\Verbose;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;
@@ -202,6 +205,11 @@ class TSNE implements Transformer, Verbose
         int $epochs = 1000,
         float $minGradient = 1e-7
     ) {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
                 . " greater than 0, $dimensions given.");
@@ -304,16 +312,17 @@ class TSNE implements Transformer, Verbose
 
         $m = count($samples);
 
-        $distances = $this->pairwiseDistances(Matrix::quick($samples));
+        $distances = $this->pairwiseDistances(NumPower::array($samples, 'float32'));
 
-        $p = $this->affinities($distances)
-            ->multiply($this->exaggeration);
+        $p = NumPower::multiply($this->affinities($distances), $this->exaggeration);
 
-        $y = Matrix::gaussian($m, $this->dimensions)
-            ->multiply(self::Y_INIT_SCALE);
+        $y = NumPower::multiply(
+            NumPower::standardNormal([$m, $this->dimensions]),
+            self::Y_INIT_SCALE
+        );
 
-        $velocity = Matrix::zeros($m, $this->dimensions);
-        $gains = Matrix::ones($m, $this->dimensions)->asArray();
+        $velocity = NumPower::zeros([$m, $this->dimensions], 'float32', 0);
+        $gains = NumPower::ones([$m, $this->dimensions], 'float32', 0)->toArray();
 
         $momentum = self::INIT_MOMENTUM;
 
@@ -324,7 +333,7 @@ class TSNE implements Transformer, Verbose
 
             $gradient = $this->gradient($p, $y, $distances);
 
-            $directions = $velocity->multiply($gradient)->asArray();
+            $directions = NumPower::multiply($velocity, $gradient)->toArray();
 
             foreach ($gains as $i => &$row) {
                 $row = array_map([$this, 'attenuate'], $row, $directions[$i]);
@@ -332,14 +341,16 @@ class TSNE implements Transformer, Verbose
 
             unset($row);
 
-            $gradient = $gradient->multiply(Matrix::quick($gains));
+            $gradient = NumPower::multiply($gradient, NumPower::array($gains, 'float32'));
 
-            $velocity = $velocity->multiply($momentum)
-                ->subtract($gradient->multiply($this->rate));
+            $velocity = NumPower::subtract(
+                NumPower::multiply($velocity, $momentum),
+                NumPower::multiply($gradient, $this->rate)
+            );
 
-            $y = $y->add($velocity);
+            $y = NumPower::add($y, $velocity);
 
-            $loss = $gradient->l2Norm();
+            $loss = NumPower::sqrt(NumPower::sum(NumPower::square($gradient)));
 
             $this->losses[] = $loss;
 
@@ -360,7 +371,7 @@ class TSNE implements Transformer, Verbose
             }
 
             if ($epoch === $this->early) {
-                $p = $p->divide($this->exaggeration);
+                $p = NumPower::divide($p, $this->exaggeration);
 
                 $momentum += self::MOMENTUM_BOOST;
 
@@ -374,7 +385,7 @@ class TSNE implements Transformer, Verbose
             $this->logger->info('Embedding complete');
         }
 
-        $samples = $y->asArray();
+        $samples = $y->toArray();
     }
 
     /**
@@ -382,18 +393,21 @@ class TSNE implements Transformer, Verbose
      * ||a - b||^2 = ||a||^2 + ||b||^2 - 2a.b identity and return them as a
      * matrix.
      *
-     * @param Matrix $samples
-     * @return Matrix
+     * @param NDArray $samples
+     * @return NDArray
      */
-    protected function pairwiseDistances(Matrix $samples) : Matrix
+    protected function pairwiseDistances(NDArray $samples) : NDArray
     {
-        $norms = $samples->square()->sum();
+        $norms = NumPower::sum(NumPower::square($samples), axis: 1);
 
-        $dots = $samples->matmul($samples->transpose());
+        $dots = NumPower::matmul($samples, NumPower::transpose($samples, [1, 0]));
 
-        return $dots->multiplyScalar(-2.0)
-            ->addColumnVector($norms)
-            ->addVector($norms->transpose());
+        $result = NumPower::add(
+            NumPower::multiply($dots, -2.0),
+            NumPower::reshape($norms, [$samples->shape()[0], 1])
+        );
+
+        return NumPower::add($result, $norms);
     }
 
     /**
@@ -401,19 +415,21 @@ class TSNE implements Transformer, Verbose
      * that they approximately match the desired perplexity. The resulting
      * matrix is symmetric and globally normalized (total sum equals 1).
      *
-     * @param Matrix $distances
-     * @return Matrix
+     * @param NDArray $distances
+     * @return NDArray
      */
-    protected function affinities(Matrix $distances) : Matrix
+    protected function affinities(NDArray $distances) : NDArray
     {
-        $m = $distances->m();
+        $m = $distances->shape()[0];
 
         if ($m === 0) {
-            return Matrix::quick([]);
+            return NumPower::array([], 'float32');
         }
 
-        $mask = Matrix::ones($m, $m)
-            ->subtract(Matrix::identity($m));
+        $mask = NumPower::subtract(
+            NumPower::ones([$m, $m], 'float32', 0),
+            NumPower::identity($m, 'float32', 0)
+        );
 
         $betas = array_fill(0, $m, 1.0);
         $minBetas = array_fill(0, $m, -INF);
@@ -423,31 +439,44 @@ class TSNE implements Transformer, Verbose
 
         $active = $m;
 
-        $candidate = Matrix::zeros($m, $m);
+        $candidate = NumPower::zeros([$m, $m], 'float32', 0);
 
         for ($j = 0; $j < self::MAX_BINARY_PRECISION; ++$j) {
             if ($active === 0) {
                 break;
             }
 
-            $candidate = $distances->multiplyColumnVector(ColumnVector::quick($betas))
-                ->negate()
-                ->exp()
-                ->multiply($mask);
+            $betasColumn = NumPower::reshape(NumPower::array($betas, 'float32'), [$m, 1]);
 
-            $sigma = $candidate->sum();
+            $candidate = NumPower::multiply(
+                NumPower::exp(
+                    NumPower::negative(
+                        NumPower::multiply($distances, $betasColumn)
+                    )
+                ),
+                $mask
+            );
 
-            $sigma = $sigma->add($sigma->equalScalar(0.0)->multiplyScalar(EPSILON));
+            $sigma = NumPower::sum($candidate, axis: 1);
 
-            $candidate = $candidate->divideColumnVector($sigma);
+            $sigma = NumPower::add(
+                $sigma,
+                NumPower::multiply(NumPower::equal($sigma, 0.0), EPSILON)
+            );
 
-            $dcb = $distances->multiply($candidate)->sum()->multiply(ColumnVector::quick($betas));
+            $candidate = NumPower::divide($candidate, NumPower::reshape($sigma, [$m, 1]));
 
-            $diff = $sigma->log()
-                ->add($dcb)
-                ->subtractScalar($this->entropy)
-                ->negate()
-                ->asArray();
+            $dcb = NumPower::multiply(
+                NumPower::sum(NumPower::multiply($distances, $candidate), axis: 1),
+                NumPower::array($betas, 'float32')
+            );
+
+            $diff = NumPower::negative(
+                NumPower::subtract(
+                    NumPower::add(NumPower::log($sigma), $dcb),
+                    $this->entropy
+                )
+            )->toArray();
 
             for ($i = 0; $i < $m; ++$i) {
                 if ($converged[$i]) {
@@ -480,40 +509,49 @@ class TSNE implements Transformer, Verbose
 
         $scale = 1.0 / (2.0 * $m);
 
-        $symmetric = $candidate->add($candidate->transpose())
-            ->multiplyScalar($scale);
-
-        return $symmetric;
+        return NumPower::multiply(
+            NumPower::add($candidate, NumPower::transpose($candidate, [1, 0])),
+            $scale
+        );
     }
 
     /**
      * Compute the gradient of the KL Divergence cost function with respect
      * to the embedding.
      *
-     * @param Matrix $p
-     * @param Matrix $y
-     * @param Matrix $distances
-     * @return Matrix
+     * @param NDArray $p
+     * @param NDArray $y
+     * @param NDArray $distances
+     * @return NDArray
      */
-    protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
+    protected function gradient(NDArray $p, NDArray $y, NDArray $distances) : NDArray
     {
-        $base = $distances->divide($this->dofs)->add(1.0);
+        $base = NumPower::add(NumPower::divide($distances, $this->dofs), 1.0);
 
-        $weights = $base->reciprocal();
+        $weights = NumPower::reciprocal($base);
 
         $kernel = $this->dofs === 1
             ? $weights
-            : $weights->pow((1.0 + $this->dofs) * 0.5);
+            : NumPower::pow($weights, (1.0 + $this->dofs) * 0.5);
 
-        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
+        $norm = NumPower::sum($kernel) - NumPower::trace($kernel);
 
-        $q = $kernel->divide(max($norm, EPSILON));
+        $q = NumPower::divide($kernel, max($norm, EPSILON));
 
-        $pqd = $p->subtract($q)->multiply($weights);
+        $pqd = NumPower::multiply(NumPower::subtract($p, $q), $weights);
 
-        return $y->multiplyColumnVector($pqd->sum())
-            ->subtract($pqd->matmul($y))
-            ->multiplyScalar($this->c);
+        $pqdSum = NumPower::reshape(
+            NumPower::sum($pqd, axis: 1),
+            [$y->shape()[0], 1]
+        );
+
+        return NumPower::multiply(
+            NumPower::subtract(
+                NumPower::multiply($y, $pqdSum),
+                NumPower::matmul($pqd, $y)
+            ),
+            $this->c
+        );
     }
 
     /**

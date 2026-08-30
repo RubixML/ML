@@ -8,13 +8,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use ReflectionMethod;
+use NDArray;
+use NumPower;
 use Rubix\ML\DataType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Tensor\Matrix;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -226,25 +227,25 @@ class TSNETest extends TestCase
     #[Test]
     public function gradientShape() : void
     {
-        $p = Matrix::quick([
+        $p = NumPower::array([
             [0.5, 0.3, 0.2],
             [0.2, 0.5, 0.3],
             [0.2, 0.3, 0.5],
-        ]);
+        ], 'float32');
 
-        $y = Matrix::quick([
+        $y = NumPower::array([
             [0.0, 1.0],
             [1.0, -1.0],
             [-1.0, 0.0],
-        ]);
+        ], 'float32');
 
-        $distances = Matrix::quick([
+        $distances = NumPower::array([
             [0.0, 1.0, 4.0],
             [1.0, 0.0, 1.0],
             [4.0, 1.0, 0.0],
-        ]);
+        ], 'float32');
 
-        $rows = $this->invokeGradient($this->embedder, $p, $y, $distances)->asArray();
+        $rows = $this->invokeGradient($this->embedder, $p, $y, $distances)->toArray();
 
         $this->assertCount(3, $rows);
 
@@ -256,38 +257,40 @@ class TSNETest extends TestCase
     #[Test]
     public function gradientNonZero() : void
     {
-        $p = Matrix::quick([
+        $p = NumPower::array([
             [0.9, 0.05, 0.05],
             [0.5, 0.4, 0.1],
             [0.1, 0.2, 0.7],
-        ]);
+        ], 'float32');
 
-        $y = Matrix::quick([
+        $y = NumPower::array([
             [0.0, 1.0],
             [1.0, -1.0],
             [-1.0, 0.0],
-        ]);
+        ], 'float32');
 
-        $distances = Matrix::quick([
+        $distances = NumPower::array([
             [0.0, 1.0, 4.0],
             [1.0, 0.0, 1.0],
             [4.0, 1.0, 0.0],
-        ]);
+        ], 'float32');
+
+        $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
 
         $this->assertGreaterThan(
             0.0,
-            $this->invokeGradient($this->embedder, $p, $y, $distances)->l2Norm()
+            NumPower::sqrt(NumPower::sum(NumPower::square($gradient)))
         );
     }
 
     /**
      * @param TSNE $embedder
-     * @param Matrix $p
-     * @param Matrix $y
-     * @param Matrix $distances
-     * @return Matrix
+     * @param NDArray $p
+     * @param NDArray $y
+     * @param NDArray $distances
+     * @return NDArray
      */
-    private function invokeGradient(TSNE $embedder, Matrix $p, Matrix $y, Matrix $distances) : Matrix
+    private function invokeGradient(TSNE $embedder, NDArray $p, NDArray $y, NDArray $distances) : NDArray
     {
         $method = new ReflectionMethod(TSNE::class, 'gradient');
 

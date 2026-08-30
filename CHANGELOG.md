@@ -28,6 +28,7 @@
     - LDA, PCA, SVD now powered by NumPower
     - Added windowed early stopping with validation holdout
     - Parallel Backends now default to max physical cores not logical
+    - T-SNE now powered by NumPower
     
 - 2.5.11
     - Optimize DBSCAN inference
