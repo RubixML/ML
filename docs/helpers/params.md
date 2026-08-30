@@ -1,8 +1,11 @@
 # Params
+
 Generate distributions of values to use in conjunction with [Grid Search](../grid-search.md) or other forms of model selection and/or cross validation.
 
-### Generate Params
+## Generate Params
+
 To generate a *unique* distribution of integer parameters:
+
 ```php
 public static ints(int $min, int $max, int $n = 10) : array
 ```
@@ -27,6 +30,7 @@ Array
 ```
 
 To generate a random distribution of floating point parameters:
+
 ```php
 public static floats(float $min, float $max, int $n = 10) : array
 ```
@@ -51,6 +55,7 @@ Array
 ```
 
 To generate a uniformly spaced grid of parameters:
+
 ```php
 public static grid(float $min, float $max, int $n = 10) : array
 ```

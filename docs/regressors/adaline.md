@@ -11,8 +11,9 @@
 **Data Type Compatibility:** Continuous
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | batchSize | 128 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
 | 3 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
@@ -25,6 +26,7 @@
 | 10 | metric | RMSE | Metric | The validation metric used to score the generalization performance of the model during training. |
 
 ## Example
+
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -35,7 +37,9 @@ $estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 3, 5, 0.1, new H
 ```
 
 ## Additional Methods
+
 Return an iterable progress table with the steps from the last training session:
+
 ```php
 public steps() : iterable
 ```
@@ -49,24 +53,29 @@ $extractor->export($estimator->steps());
 ```
 
 Return the loss for each epoch from the last training session:
+
 ```php
 public losses() : float[]|null
 ```
 
 Return the validation score for each epoch from the last training session:
+
 ```php
 public scores() : float[]|null
 ```
 
 Return the underlying neural network instance or `null` if untrained:
+
 ```php
 public network() : Network|null
 ```
 
 Set the path of the temporary snapshot file used to store network parameters during training:
+
 ```php
 public setSnapshotPath(?string $path) : void
 ```
 
 ## References
+
 [^1]: B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical "Memistors".

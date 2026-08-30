@@ -11,8 +11,9 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 **Data Type Compatibility:** Continuous
 
 ## Parameters
+
 | # | Name | Default | Type | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | batchSize | 128 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
 | 3 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
@@ -25,6 +26,7 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 | 10 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
 
 ## Example
+
 ```php
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -35,7 +37,9 @@ $estimator = new LogisticRegression(64, new Adam(0.001), 1e-4, 100, 1e-4, 3, 5, 
 ```
 
 ## Additional Methods
+
 Return an iterable progress table with the steps from the last training session:
+
 ```php
 public steps() : iterable
 ```
@@ -49,6 +53,7 @@ $extractor->export($estimator->steps());
 ```
 
 Return the loss for each epoch from the last training session:
+
 ```php
 public losses() : float[]|null
 ```
@@ -59,6 +64,7 @@ public scores() : float[]|null
 ```
 
 Return the underlying neural network instance or `null` if untrained:
+
 ```php
 public network() : Network|null
 ```
