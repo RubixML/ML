@@ -13,6 +13,7 @@ use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SwooleExtensionIsLoaded;
 
