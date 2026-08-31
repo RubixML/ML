@@ -207,7 +207,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
         $iHat = $dHat = [];
 
         foreach ($dataset->samples() as $sample) {
-            [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
+            [, $indices, $distances] = $this->tree->nearest($sample, $this->k);
 
             $iHat[] = $indices;
             $dHat[] = $distances;
@@ -285,7 +285,7 @@ class LocalOutlierFactor implements Estimator, Learner, Scoring, Persistable
      */
     protected function localOutlierFactor(array $sample) : float
     {
-        [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
+        [, $indices, $distances] = $this->tree->nearest($sample, $this->k);
 
         $lrd = $this->localReachabilityDensity($indices, $distances) ?: EPSILON;
 
