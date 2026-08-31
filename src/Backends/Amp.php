@@ -127,7 +127,7 @@ class Amp implements Backend
      */
     public function __serialize() : array
     {
-        return ['workers' => $this->pool->getWorkerLimit()];
+        return ['workers' => $this->workers()];
     }
 
     /**
