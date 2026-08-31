@@ -45,14 +45,14 @@ class Swoole implements Backend
      *
      * @var callable
      */
-    protected $serialize;
+    protected string $serialize;
 
     /**
      * The unserialization function to use.
      *
      * @var callable
      */
-    protected $unserialize;
+    protected string $unserialize;
 
     /**
      * @param int|null $workers
@@ -67,11 +67,9 @@ class Swoole implements Backend
 
         ExtensionIsLoaded::with('swoole')->check();
 
-        $workers ??= CPU::cores();
-
         $hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
 
-        $this->workers = $workers;
+        $this->workers = $workers ?? CPU::cores();
         $this->serialize = $hasIgbinary ? 'igbinary_serialize' : 'serialize';
         $this->unserialize = $hasIgbinary ? 'igbinary_unserialize' : 'unserialize';
     }
@@ -127,10 +125,10 @@ class Swoole implements Backend
         foreach ($chunks as $batch) {
             $maxMessageLength = new Atomic(0);
 
-            $workerProcesses = [];
+            $processes = [];
 
             foreach ($batch as $queueItem) {
-                $workerProcess = new Process(
+                $process = new Process(
                     function (Process $worker) use ($maxMessageLength, $queueItem) {
                         $serialized = call_user_func($this->serialize, $queueItem());
 
@@ -153,28 +151,28 @@ class Swoole implements Backend
                     Process::setAffinity([$currentCpu]);
                 }
 
-                $workerProcess->setBlocking(false);
-                $workerProcess->start();
+                $process->setBlocking(false);
+                $process->start();
 
-                $workerProcesses[] = $workerProcess;
+                $processes[] = $process;
 
                 ++$currentCpu;
 
                 $currentCpu %= $this->workers;
             }
 
-            run(function () use ($maxMessageLength, &$results, $workerProcesses) {
-                foreach ($workerProcesses as $workerProcess) {
-                    $status = $workerProcess->wait();
+            run(function () use ($maxMessageLength, &$results, $processes) {
+                foreach ($processes as $process) {
+                    $status = $process->wait();
 
                     if (0 !== $status['code']) {
                         throw new RuntimeException('Worker process exited with an error.');
                     }
 
-                    $socket = $workerProcess->exportSocket();
+                    $socket = $process->exportSocket();
 
                     if ($socket->isClosed()) {
-                        throw new RuntimeException('Coroutine socket is closed.');
+                        throw new RuntimeException('Coroutine socket is already closed.');
                     }
 
                     $maxMessageLengthValue = $maxMessageLength->get();
@@ -188,7 +186,7 @@ class Swoole implements Backend
             });
         }
 
-        $this->queue = [];
+        $this->flush();
 
         return $results;
     }

@@ -37,15 +37,6 @@ class Amp implements Backend
     ];
 
     /**
-     * The memorized results of the last parallel computation.
-     *
-     * @var mixed[]
-     */
-    protected array $results = [
-        //
-    ];
-
-    /**
      * @param int|null $workers
      * @throws InvalidArgumentException
      */
@@ -56,9 +47,7 @@ class Amp implements Backend
                 . " must be greater than 0, $workers given.");
         }
 
-        $workers ??= CPU::cores();
-
-        $this->pool = new ContextWorkerPool($workers);
+        $this->pool = new ContextWorkerPool($workers ?? CPU::cores());
     }
 
     /**
@@ -108,9 +97,7 @@ class Amp implements Backend
             $results[] = $result;
         }
 
-        $this->queue = [];
-
-        $this->results = $results;
+        $this->flush();
 
         return $results;
     }
@@ -122,7 +109,7 @@ class Amp implements Backend
      */
     public function flush() : void
     {
-        $this->queue = $this->results = [];
+        $this->queue = [];
     }
 
     /**

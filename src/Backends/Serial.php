@@ -73,7 +73,7 @@ class Serial implements Backend
             $results[] = $result;
         }
 
-        $this->queue = [];
+        $this->flush();
 
         return $results;
     }
