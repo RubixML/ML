@@ -29,6 +29,16 @@ use Rubix\ML\Classifiers\ClassificationTree;
 $estimator = new RandomForest(new ClassificationTree(10), 300, 0.1, true);
 ```
 
+## Parallel
+
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole(16));
+```
+
 ## Additional Methods
 
 This estimator does not have any additional methods.

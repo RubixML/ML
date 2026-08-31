@@ -8,6 +8,7 @@ use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
@@ -198,11 +199,61 @@ class RandomForestTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    #[DataProvider('provideBackends')]
+    #[Test]
+    #[RunInSeparateProcess]
+    public function predictProba(Backend $backend) : void
+    {
+        $this->backend = $backend;
+
+        $this->estimator->setBackend($backend);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        foreach ($probabilities as $joint) {
+            $this->assertContainsOnlyFloat($joint);
+            $this->assertEqualsWithDelta(1.0, array_sum($joint), 1e-6);
+        }
+    }
+
     #[Test]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $this->estimator->setBackend(new Serial());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(RandomForest::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount(self::TRAIN_SIZE, $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

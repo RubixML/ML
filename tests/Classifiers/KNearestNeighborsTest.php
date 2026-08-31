@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Classifiers;
 
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
@@ -18,7 +22,14 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use PHPUnit\Framework\TestCase;
+
+use function array_sum;
 
 #[Group('Classifiers')]
 #[CoversClass(KNearestNeighbors::class)]
@@ -50,6 +61,34 @@ class KNearestNeighborsTest extends TestCase
 
     protected FBeta $metric;
 
+    protected ?Backend $backend = null;
+
+    /**
+     * @return Generator<string, array{backend: Backend}>
+     */
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        $ampBackend = new Amp(4);
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
+    }
+
     protected function setUp() : void
     {
         $this->generator = new Agglomerate(
@@ -79,6 +118,11 @@ class KNearestNeighborsTest extends TestCase
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
+    }
+
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
     }
 
     #[Test]
@@ -123,17 +167,19 @@ class KNearestNeighborsTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
+    #[DataProvider('provideBackends')]
     #[Test]
-    public function trainPartialPredict() : void
+    #[RunInSeparateProcess]
+    public function trainPredict(Backend $backend) : void
     {
+        $this->backend = $backend;
+
+        $this->estimator->setBackend($backend);
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $folds = $training->stratifiedFold(3);
-
-        $this->estimator->train($folds[0]);
-        $this->estimator->partial($folds[1]);
-        $this->estimator->partial($folds[2]);
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
@@ -145,6 +191,66 @@ class KNearestNeighborsTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[DataProvider('provideBackends')]
+    #[Test]
+    #[RunInSeparateProcess]
+    public function proba(Backend $backend) : void
+    {
+        $this->backend = $backend;
+
+        $this->estimator->setBackend($backend);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        foreach ($probabilities as $probability) {
+            $this->assertCount(3, $probability);
+            $this->assertEqualsWithDelta(1.0, array_sum($probability), 1e-8);
+        }
+    }
+
+    #[Test]
+    #[RunInSeparateProcess]
+    public function predictionsAgreeAcrossBackends() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $serial = new KNearestNeighbors(
+            k: 3,
+            weighted: true,
+            kernel: new Euclidean()
+        );
+
+        $serial->train($training);
+
+        $serialPredictions = $serial->predict($testing);
+
+        $ampBackend = new Amp(4);
+
+        $this->backend = $ampBackend;
+
+        $amp = new KNearestNeighbors(
+            k: 3,
+            weighted: true,
+            kernel: new Euclidean()
+        );
+
+        $amp->setBackend($ampBackend);
+
+        $amp->train($training);
+
+        $ampPredictions = $amp->predict($testing);
+
+        $this->assertEquals($serialPredictions, $ampPredictions);
     }
 
     #[Test]
@@ -161,5 +267,31 @@ class KNearestNeighborsTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(KNearestNeighbors::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount(self::TRAIN_SIZE, $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -12,6 +13,10 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Tasks\Task;
+use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -20,7 +25,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function count;
+use function array_merge;
+use function ceil;
 
 use const Rubix\ML\EPSILON;
 
@@ -41,9 +47,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Estimator, Learner, Scoring, Persistable
+class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persistable
 {
-    use AutotrackRevisions;
+    use AutotrackRevisions, Multiprocessing;
 
     /**
      * The default minimum anomaly score for a sample to be flagged.
@@ -116,6 +122,24 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
      * @var int|null
      */
     protected ?int $featureCount = null;
+
+    /**
+     * Grow an isolation tree on a unique subset of the training set.
+     *
+     * @internal
+     *
+     * @param Dataset $subset
+     * @param int $maxHeight
+     * @return ITree
+     */
+    public static function growTree(Dataset $subset, int $maxHeight) : ITree
+    {
+        $tree = new ITree($maxHeight);
+
+        $tree->grow($subset);
+
+        return $tree;
+    }
 
     /**
      * @param int $estimators
@@ -218,22 +242,20 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
 
         $maxHeight = (int) max(1, round(log($p, 2.0)));
 
-        $this->trees = [];
+        $this->backend()->flush();
 
-        while (count($this->trees) < $this->estimators) {
-            $tree = new ITree($maxHeight);
-
+        for ($i = 0; $i < $this->estimators; ++$i) {
             $subset = $dataset->randomSubset($p);
 
-            $tree->grow($subset);
-
-            $this->trees[] = $tree;
+            $this->backend()->enqueue(new Task([self::class, 'growTree'], [$subset, $maxHeight]));
         }
+
+        $this->trees = $this->backend()->process();
 
         $this->delta = $this->estimators * Depth::c($p);
 
         if (isset($this->contamination)) {
-            $scores = array_map([$this, 'isolationScore'], $dataset->samples());
+            $scores = $this->scoreChunk($dataset);
 
             $threshold = Stats::quantile($scores, 1.0 - $this->contamination);
         }
@@ -258,7 +280,35 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        return array_map([$this, 'predictSample'], $dataset->samples());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
+
+        $this->backend()->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $this->backend()->enqueue(new Task([$this, 'predictChunk'], [$chunk]));
+        }
+
+        $predictions = [];
+
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<int> $output */
+            $predictions = array_merge($predictions, $output);
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Predict a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<int>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'predictSample'], $chunk->samples());
     }
 
     /**
@@ -289,7 +339,46 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        return array_map([$this, 'isolationScore'], $dataset->samples());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
+
+        $this->backend()->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $this->backend()->enqueue(new Task([$this, 'scoreChunk'], [$chunk]));
+        }
+
+        $scores = [];
+
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<float> $output */
+            $scores = array_merge($scores, $output);
+        }
+
+        return $scores;
+    }
+
+    /**
+     * Score a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<float>
+     */
+    public function scoreChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'isolationScore'], $chunk->samples());
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @return Backend
+     */
+    protected function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**
@@ -311,6 +400,32 @@ class IsolationForest implements Estimator, Learner, Scoring, Persistable
         $depth /= $this->delta;
 
         return 2.0 ** -$depth;
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

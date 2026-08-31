@@ -2,9 +2,10 @@
 
 - 3.0.0
     - Neural Network subsystem now powered by NumPower
-    - LDA, PCA, SVD now powered by NumPower
-    - Dropped support for PHP 7.4
+    - LDA, PCA, SVD, and TSNE now powered by NumPower
     - Update Amp Backend to Amp version 2.0
+    - K Nearest Neighbors and KNN Regressor inference is now parallelized
+    - Isolation Forest training and scoring is now parallelized
     - Added disk-based neural network snapshotting
     - Added validation interval parameter to MLPs and GBM Learners
     - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
@@ -27,7 +28,8 @@
     - Removed Word Stemmer tokenizer
     - Fixed SVC save/load using class map sidecar
     - Parallel Backends now default to max physical cores not logical
-    - T-SNE now powered by NumPower
+    - Added workers() method to the Backend interface (Serial returns 1)
+    - No longer save/load Backend state, transient
     
 - 2.5.11
     - Optimize DBSCAN inference
