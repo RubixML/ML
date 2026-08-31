@@ -25,7 +25,7 @@ class DataTypeTest extends TestCase
 
         yield [2.75, DataType::continuous()];
 
-        yield [-100, DataType::continuous()];
+        yield [-100, DataType::categorical()];
 
         yield [null, DataType::other()];
 

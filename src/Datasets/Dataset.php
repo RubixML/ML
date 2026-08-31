@@ -32,8 +32,8 @@ use function usort;
  * of categorical and continuous data and they make it easy to transport data in a
  * canonical way.
  *
- * > **Note:** By convention, categorical data are given as string type whereas
- * continuous data are given as either integer or floating point numbers.
+ * > **Note:** By convention, categorical data are given as either string or
+ * integer type whereas continuous data are given as floating point numbers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -185,7 +185,7 @@ class MeanShiftTest extends TestCase
         $estimator = new MeanShift(1.0, 1.0, 10, 1e-4, new BallTree(), new Preset($presets));
 
         $training = Unlabeled::quick([
-            [0, 0], [1, 0], [0, 1], [1, 1],
+            [0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0],
         ]);
 
         $estimator->train($training);
