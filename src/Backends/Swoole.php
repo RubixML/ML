@@ -11,10 +11,9 @@ use Swoole\Atomic;
 use Swoole\Process;
 
 use function Swoole\Coroutine\run;
+use function call_user_func;
 use function method_exists;
 use function array_chunk;
-use function serialize;
-use function unserialize;
 use function strlen;
 
 /**
@@ -42,11 +41,18 @@ class Swoole implements Backend
     protected int $workers;
 
     /**
-     * Whether the igbinary extension is loaded.
+     * The serialization function to use.
      *
-     * @var bool
+     * @var callable
      */
-    protected bool $hasIgbinary;
+    protected $serialize;
+
+    /**
+     * The unserialization function to use.
+     *
+     * @var callable
+     */
+    protected $unserialize;
 
     /**
      * @param int|null $workers
@@ -66,7 +72,8 @@ class Swoole implements Backend
         $hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
 
         $this->workers = $workers;
-        $this->hasIgbinary = $hasIgbinary;
+        $this->serialize = $hasIgbinary ? 'igbinary_serialize' : 'serialize';
+        $this->unserialize = $hasIgbinary ? 'igbinary_unserialize' : 'unserialize';
     }
 
     /**
@@ -115,14 +122,17 @@ class Swoole implements Backend
         $results = [];
         $currentCpu = 0;
 
-        foreach (array_chunk($this->queue, $this->workers) as $batch) {
+        $chunks = array_chunk($this->queue, $this->workers);
+
+        foreach ($chunks as $batch) {
             $maxMessageLength = new Atomic(0);
+
             $workerProcesses = [];
 
             foreach ($batch as $queueItem) {
                 $workerProcess = new Process(
                     function (Process $worker) use ($maxMessageLength, $queueItem) {
-                        $serialized = $this->serialize($queueItem());
+                        $serialized = call_user_func($this->serialize, $queueItem());
 
                         $length = strlen($serialized);
 
@@ -139,8 +149,8 @@ class Swoole implements Backend
                     true, // Enable coroutine
                 );
 
-                if (method_exists($workerProcess, 'setAffinity')) {
-                    $workerProcess->setAffinity([$currentCpu]);
+                if (method_exists(Process::class, 'setAffinity')) {
+                    Process::setAffinity([$currentCpu]);
                 }
 
                 $workerProcess->setBlocking(false);
@@ -148,7 +158,9 @@ class Swoole implements Backend
 
                 $workerProcesses[] = $workerProcess;
 
-                $currentCpu = ($currentCpu + 1) % $this->workers;
+                ++$currentCpu;
+
+                $currentCpu %= $this->workers;
             }
 
             run(function () use ($maxMessageLength, &$results, $workerProcesses) {
@@ -169,7 +181,7 @@ class Swoole implements Backend
 
                     $receivedData = $socket->recv($maxMessageLengthValue);
 
-                    $unserialized = $this->unserialize($receivedData);
+                    $unserialized = call_user_func($this->unserialize, $receivedData);
 
                     $results[] = $unserialized;
                 }
@@ -197,36 +209,6 @@ class Swoole implements Backend
     public function shutdown() : void
     {
         // No-op for the Swoole backend.
-    }
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @internal
-     *
-     * @param mixed $data
-     * @return string
-     */
-    protected function serialize(mixed $data) : string
-    {
-        return $this->hasIgbinary
-            ? igbinary_serialize($data)
-            : serialize($data);
-    }
-
-    /**
-     * Return the string representation of the object.
-     *
-     * @internal
-     *
-     * @param string $serialized
-     * @return mixed
-     */
-    protected function unserialize(string $serialized) : mixed
-    {
-        return $this->hasIgbinary
-            ? igbinary_unserialize($serialized)
-            : unserialize($serialized);
     }
 
     /**
