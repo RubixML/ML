@@ -221,6 +221,19 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -328,17 +341,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             $this->logger->info("{$this->metric}: $score, "
                 . 'params: [' . Params::stringify($params) . ']');
         }
-    }
-
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
     }
 
     /**

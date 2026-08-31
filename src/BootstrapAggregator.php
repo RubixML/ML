@@ -191,6 +191,19 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -288,17 +301,6 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $counts = array_count_values($votes);
 
         return argmax($counts);
-    }
-
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
     }
 
     /**

@@ -213,6 +213,19 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -368,17 +381,6 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
     public function scoreChunk(Dataset $chunk) : array
     {
         return array_map([$this, 'isolationScore'], $chunk->samples());
-    }
-
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
     }
 
     /**

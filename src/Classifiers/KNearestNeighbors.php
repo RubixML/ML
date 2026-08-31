@@ -160,6 +160,19 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -360,17 +373,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
         }
 
         return $dist;
-    }
-
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
     }
 
     /**
