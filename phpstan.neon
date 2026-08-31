@@ -9,8 +9,6 @@ parameters:
     paths:
         - 'src'
         - 'benchmarks'
-    excludePaths:
-        - src/Backends/Swoole.php
     ignoreErrors:
         - identifier: foreach.emptyArray
     

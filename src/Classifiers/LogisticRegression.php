@@ -634,6 +634,18 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
+    }
+
+    /**
      * Return the string representation of the object.
      *
      * @internal
@@ -643,21 +655,5 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function __toString() : string
     {
         return 'Logistic Regression (' . Params::stringify($this->params()) . ')';
-    }
-
-    /**
-     * Without this method, causes errors with Swoole backend + Igbinary
-     * serialization.
-     *
-     * Can be removed if it's no longer the case.
-     *
-     * @internal
-     * @param array<string,mixed> $data
-     */
-    public function __unserialize(array $data) : void
-    {
-        foreach ($data as $propertyName => $propertyValue) {
-            $this->{$propertyName} = $propertyValue;
-        }
     }
 }

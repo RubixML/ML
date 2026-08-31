@@ -38,6 +38,16 @@ $estimator = new CommitteeMachine([
 ]);
 ```
 
+## Parallel
+
+This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Swoole](backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole(8));
+```
+
 ## Additional Methods
 
 Return the learner instances of the committee:

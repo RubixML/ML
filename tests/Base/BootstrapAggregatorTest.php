@@ -8,6 +8,7 @@ use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
@@ -133,6 +134,7 @@ class BootstrapAggregatorTest extends TestCase
      * @param Backend $backend
      */
     #[DataProvider('provideBackends')]
+    #[Test]
     #[RunInSeparateProcess]
     public function trainPredict(Backend $backend) : void
     {
@@ -160,10 +162,57 @@ class BootstrapAggregatorTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Predictions are identical regardless of the backend')]
+    public function predictIsBackendAgnostic() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        $expected = $this->estimator->predict($testing);
+
+        $amp = new Amp(4);
+        $this->backend = $amp;
+
+        $this->estimator->setBackend($amp);
+
+        $this->assertSame($expected, $this->estimator->predict($testing));
+    }
+
+    #[Test]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(BootstrapAggregator::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount(self::TRAIN_SIZE, $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

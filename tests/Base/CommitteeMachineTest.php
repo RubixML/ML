@@ -185,6 +185,27 @@ class CommitteeMachineTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Predictions are identical regardless of the backend')]
+    public function predictIsBackendAgnostic() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        $expected = $this->estimator->predict($testing);
+
+        $amp = new Amp(4);
+        $this->backend = $amp;
+
+        $this->estimator->setBackend($amp);
+
+        $this->assertSame($expected, $this->estimator->predict($testing));
+    }
+
+    #[Test]
     #[TestDox('Train incompatible')]
     public function trainIncompatible() : void
     {
@@ -200,5 +221,31 @@ class CommitteeMachineTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(CommitteeMachine::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount($training->numSamples(), $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

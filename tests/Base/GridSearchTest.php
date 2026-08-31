@@ -8,6 +8,7 @@ use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
@@ -182,5 +183,31 @@ class GridSearchTest extends TestCase
         ];
 
         $this->assertEquals($expectedBest, $this->estimator->base()->params());
+    }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(GridSearch::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount($training->numSamples(), $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

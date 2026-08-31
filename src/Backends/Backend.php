@@ -26,6 +26,15 @@ interface Backend extends Stringable
     public function enqueue(Task $task, ?callable $after = null, mixed $context = null) : void;
 
     /**
+     * Return the number of concurrent worker processes.
+     *
+     * @internal
+     *
+     * @return int
+     */
+    public function workers() : int;
+
+    /**
      * Process the queue and return the results.
      *
      * @internal

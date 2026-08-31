@@ -11,10 +11,6 @@ use Generator;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Amp;
-use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * @Groups({"Classifiers"})
@@ -42,25 +38,6 @@ class OneVsRestBench
         yield (string) $serialBackend => [
             'backend' => $serialBackend,
         ];
-
-        $ampBackend = new Amp();
-
-        yield (string) $ampBackend => [
-            'backend' => $ampBackend,
-        ];
-
-        if (
-            SpecificationChain::with([
-                new ExtensionIsLoaded('swoole'),
-                new ExtensionIsLoaded('igbinary'),
-            ])->passes()
-        ) {
-            $swooleBackend = new Swoole();
-
-            yield (string) $swooleBackend => [
-                'backend' => $swooleBackend,
-            ];
-        }
     }
 
     public function setUp() : void

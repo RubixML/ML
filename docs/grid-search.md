@@ -34,6 +34,16 @@ $params = [
 $estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
 ```
 
+## Parallel
+
+This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Amp](backends/amp.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Amp;
+
+$estimator->setBackend(new Amp(4));
+```
+
 ## Additional Methods
 
 Return the base learner instance:
