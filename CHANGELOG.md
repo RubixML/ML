@@ -3,33 +3,36 @@
 - 3.0.0
     - Neural Network subsystem now powered by NumPower
     - LDA, PCA, SVD, and TSNE now powered by NumPower
-    - Update Amp Backend to Amp version 2.0
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
-    - Isolation Forest training and scoring is now parallelized
+    - Isolation Forest training and inference is now parallelized
     - Added disk-based neural network snapshotting
     - Added validation interval parameter to MLPs and GBM Learners
     - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
     - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
     - Cross Entropy loss function now split into Binary and Multiclass
-    - Logistic Regression, Softmax, and Adaline now use validation set
+    - Logistic Regression, Softmax, and Adaline now use hold out set
+    - Adaboost now used validation set with early stopping window
     - Renamed TF-IDF dampening parameter to sublinear
     - Updated to PSR-3 Log version 3
+    - Update Amp Backend to Amp version 2.0
     - Added Emoji preset to Regex Filter
     - Exportable Extractors now append by default with option to overwrite
     - Removed output layer L2 Penalty parameter from MLP Learners
-    - RBX Serializer only tracks major library version number
-    - Removed window (early stopping) hyper-parameter from TSNE
+    - RBX Serializer tracks major library version number, not minor
+    - Removed window early stopping from TSNE
     - Added Class/Cluster Purity clustering metrics
     - V-measure, Completeness, and Homogeneity now use entropy-based formula
     - Fixed KDTree edge pruning + optimize traversal
+    - Ball and Vantage Trees now require Subadditive kernels
+    - K-d Trees now require Monotonic distance kernels
     - Optimize Dataset sort(), sorting is now unstable
     - Added per-class smoothing to Gaussian Naive Bayes
     - You can now exclude certain categories from one-hot encoding
-    - Removed Word Stemmer tokenizer
     - Fixed SVC save/load using class map sidecar
     - Parallel Backends now default to max physical cores not logical
     - Added workers() method to the Backend interface (Serial returns 1)
-    - No longer save/load Backend state, transient
+    - No longer save/load Backend state, transient per environment
+    - Removed Word Stemmer tokenizer
     
 - 2.5.11
     - Optimize DBSCAN inference
