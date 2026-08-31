@@ -89,7 +89,6 @@
         "fix": [
             "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
         ],
-        "phplint": "phplint",
         "test": "phpunit"
     },
     "config": {
