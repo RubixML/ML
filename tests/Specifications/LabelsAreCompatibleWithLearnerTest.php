@@ -25,7 +25,7 @@ class LabelsAreCompatibleWithLearnerTest extends TestCase
             LabelsAreCompatibleWithLearner::with(
                 Labeled::quick([
                     [6.0, -1.1, 5, 'college'],
-                ], [200]),
+                ], [200.0]),
                 new GradientBoost()
             ),
             true,
@@ -58,7 +58,7 @@ class LabelsAreCompatibleWithLearnerTest extends TestCase
                 ], [200]),
                 new AdaBoost()
             ),
-            false,
+            true,
         ];
     }
 

@@ -35,12 +35,12 @@ class KNNImputerTest extends TestCase
     public function fitTransform() : void
     {
         $dataset = new Unlabeled(samples: [
-            [30, 0.001],
+            [30.0, 0.001],
             [NAN, 0.055],
-            [50, -2.0],
-            [60, NAN],
-            [10, 1.0],
-            [100, 9.0],
+            [50.0, -2.0],
+            [60.0, NAN],
+            [10.0, 1.0],
+            [100.0, 9.0],
         ]);
 
         $this->transformer->fit($dataset);

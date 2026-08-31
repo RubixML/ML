@@ -87,7 +87,7 @@ class Gower implements Distance, Subadditive, Monotonic, NaNSafe
 
                     break;
 
-                case !is_string($valueA) and !is_string($valueB):
+                case is_float($valueA) and is_float($valueB):
                     $distance += abs($valueA - $valueB)
                         / $this->range;
 
