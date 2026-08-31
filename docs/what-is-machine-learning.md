@@ -12,7 +12,7 @@ For classification problems, a learner is trained to differentiate samples among
 
 ### Regression
 
-Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the training labels are continuous data types such as integers and floating point numbers. Regression problems include estimating [house prices](https://github.com/RubixML/Housing), credit scoring, and the steering angle of an autonomous vehicle.
+Regression is a learning problem that aims to predict a continuous-valued outcome. In this case, the training labels are continuous data types such as floating point numbers. Regression problems include estimating [house prices](https://github.com/RubixML/Housing), credit scoring, and the steering angle of an autonomous vehicle.
 
 ## Unsupervised Learning
 

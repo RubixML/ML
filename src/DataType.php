@@ -101,9 +101,9 @@ class DataType implements Stringable
     {
         switch (gettype($value)) {
             case 'double':
-            case 'integer':
                 return new self(self::CONTINUOUS);
 
+            case 'integer':
             case 'string':
                 return new self(self::CATEGORICAL);
 

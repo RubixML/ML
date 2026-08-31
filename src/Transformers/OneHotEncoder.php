@@ -38,26 +38,29 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     /**
      * The categories that should be ignored.
      *
-     * @var list<string>
+     * @var list<string|int>
      */
     protected array $excluded = [];
 
     /**
      * The set of unique possible categories per feature column of the training set.
      *
-     * @var array<int[]>|null
+     * @var array<int, array<int|string, int>>|null
      */
     protected ?array $categories = null;
 
     /**
-     * @param array<mixed> $excluded
+     * Build a new one hot encoder with an array of categories to be excluded from encoding.
+     *
+     * @param mixed[] $excluded
      */
     public function __construct(array $excluded = [])
     {
         foreach ($excluded as $category) {
-            if (!is_string($category)) {
+            if (!is_string($category) and !is_int($category)) {
                 throw new InvalidArgumentException(
-                    'Excluded category must be a string, ' . gettype($category) . ' found.'
+                    'Excluded category must be a string or integer, '
+                    . gettype($category) . ' found.'
                 );
             }
         }
@@ -90,7 +93,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     /**
      * Return the categories computed during fitting indexed by feature column.
      *
-     * @return array<string[]>|null
+     * @return array<(int|string)[]>|null
      */
     public function categories() : ?array
     {
@@ -118,7 +121,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
 
                 $categories = array_values(array_unique($values));
 
-                /** @var int[] $offsets */
+                /** @var array<int|string, int> $offsets */
                 $offsets = array_flip($categories);
 
                 $this->categories[$column] = $offsets;

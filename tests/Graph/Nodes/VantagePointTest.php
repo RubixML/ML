@@ -17,8 +17,8 @@ use PHPUnit\Framework\TestCase;
 class VantagePointTest extends TestCase
 {
     protected const array SAMPLES = [
-        [5.0, 2.0, -3],
-        [6.0, 4.0, -5],
+        [5.0, 2.0, -3.0],
+        [6.0, 4.0, -5.0],
     ];
 
     protected const array LABELS = [22, 13];

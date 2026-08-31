@@ -318,7 +318,7 @@ class ClassificationTreeTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5]], [1]));
+        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5]], [1.0]));
     }
 
     #[Test]
