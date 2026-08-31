@@ -287,7 +287,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 $this->metric
             );
 
-            $after = function ($score) use ($params) {
+            $after = function (float $score) use ($params) {
                 if ($this->logger) {
                     $this->logger->info("{$this->metric}: $score, "
                         . 'params: [' . Params::stringify($params) . ']');
@@ -306,7 +306,8 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         $estimator = new $this->base(...$best);
 
         if ($this->logger) {
-            $this->logger->info('Training with best hyper-parameters');
+            $this->logger->info('Now training with best hyper-parameters'
+                . Params::stringify($best) . ' on full dataset.');
         }
 
         $estimator->train($dataset);
