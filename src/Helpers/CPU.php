@@ -39,6 +39,13 @@ class CPU
     protected const PROCESSOR_REGEX = '/\n(?=processor\s*:)/';
 
     /**
+     * The cached machine epsilon.
+     *
+     * @var float|null
+     */
+    protected static ?float $epsilon = null;
+
+    /**
      * Return the number of physical cpu cores or 0 if unable to detect.
      *
      * @throws RuntimeException
@@ -55,7 +62,7 @@ class CPU
             case is_readable(self::CPU_INFO):
                 $cpuinfo = file_get_contents(self::CPU_INFO) ?: '';
 
-                return self::physicalCores($cpuinfo);
+                return self::extractPhysicalCoreCount($cpuinfo);
 
             default:
                 throw new RuntimeException('Could not detect number'
@@ -70,15 +77,19 @@ class CPU
      */
     public static function epsilon() : float
     {
-        $epsilon = $previous = 1.0;
+        if (self::$epsilon === null) {
+            $epsilon = $previous = 1.0;
 
-        while (1.0 + $epsilon !== 1.0) {
-            $previous = $epsilon;
+            while (1.0 + $epsilon !== 1.0) {
+                $previous = $epsilon;
 
-            $epsilon *= 0.5;
+                $epsilon *= 0.5;
+            }
+
+            self::$epsilon = $previous;
         }
 
-        return $previous;
+        return self::$epsilon;
     }
 
     /**
@@ -88,7 +99,7 @@ class CPU
      * @param string $cpuinfo
      * @return int
      */
-    protected static function physicalCores(string $cpuinfo) : int
+    protected static function extractPhysicalCoreCount(string $cpuinfo) : int
     {
         $cores = [];
         $logical = 0;
