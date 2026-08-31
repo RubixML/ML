@@ -20,10 +20,9 @@ interface Backend extends Stringable
      * @internal
      *
      * @param Task $task
-     * @param callable(mixed,mixed):void $after
-     * @param mixed $context
+     * @param ?callable $after
      */
-    public function enqueue(Task $task, ?callable $after = null, mixed $context = null) : void;
+    public function enqueue(Task $task, ?callable $after = null) : void;
 
     /**
      * Return the number of concurrent worker processes.

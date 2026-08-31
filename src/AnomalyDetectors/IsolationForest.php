@@ -213,6 +213,19 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -247,7 +260,9 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         for ($i = 0; $i < $this->estimators; ++$i) {
             $subset = $dataset->randomSubset($p);
 
-            $this->backend()->enqueue(new Task([self::class, 'growTree'], [$subset, $maxHeight]));
+            $task = new Task([self::class, 'growTree'], [$subset, $maxHeight]);
+
+            $this->backend()->enqueue($task);
         }
 
         $this->trees = $this->backend()->process();
@@ -285,7 +300,9 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend()->enqueue(new Task([$this, 'predictChunk'], [$chunk]));
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
         $predictions = [];
@@ -344,7 +361,9 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend()->enqueue(new Task([$this, 'scoreChunk'], [$chunk]));
+            $task = new Task([$this, 'scoreChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
         $scores = [];
@@ -368,17 +387,6 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
     public function scoreChunk(Dataset $chunk) : array
     {
         return array_map([$this, 'isolationScore'], $chunk->samples());
-    }
-
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
     }
 
     /**

@@ -221,6 +221,19 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -274,11 +287,14 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 $this->metric
             );
 
-            $this->backend()->enqueue(
-                $task,
-                [$this, 'afterScore'],
-                $estimator->params()
-            );
+            $after = function ($score) use ($params) {
+                if ($this->logger) {
+                    $this->logger->info("{$this->metric}: $score, "
+                        . 'params: [' . Params::stringify($params) . ']');
+                }
+            };
+
+            $this->backend()->enqueue($task, $after);
         }
 
         $scores = $this->backend()->process();
@@ -312,33 +328,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     public function predict(Dataset $dataset) : array
     {
         return $this->base->predict($dataset);
-    }
-
-    /**
-     * The callback that executes after the cross validation task.
-     *
-     * @internal
-     *
-     * @param float $score
-     * @param mixed[] $params
-     */
-    public function afterScore(float $score, array $params) : void
-    {
-        if ($this->logger) {
-            $this->logger->info("{$this->metric}: $score, "
-                . 'params: [' . Params::stringify($params) . ']');
-        }
-    }
-
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
     }
 
     /**

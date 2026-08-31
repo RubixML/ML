@@ -30,18 +30,9 @@ class Amp implements Backend
     /**
      * A 3-tuple of executions and their optional callbacks and contexts.
      *
-     * @var list<array{\Amp\Parallel\Worker\Execution<mixed,mixed,mixed>,callable(mixed,mixed):void|null,mixed|null}>
+     * @var list<array{\Amp\Parallel\Worker\Execution<mixed,mixed,mixed>,callable(mixed):void|null,mixed|null}>
      */
     protected array $queue = [
-        //
-    ];
-
-    /**
-     * The memorized results of the last parallel computation.
-     *
-     * @var mixed[]
-     */
-    protected array $results = [
         //
     ];
 
@@ -56,9 +47,7 @@ class Amp implements Backend
                 . " must be greater than 0, $workers given.");
         }
 
-        $workers ??= CPU::cores();
-
-        $this->pool = new ContextWorkerPool($workers);
+        $this->pool = new ContextWorkerPool($workers ?? CPU::cores());
     }
 
     /**
@@ -78,13 +67,12 @@ class Amp implements Backend
      *
      * @param Task $task
      * @param callable(mixed,mixed):void $after
-     * @param mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null, mixed $context = null) : void
+    public function enqueue(Task $task, ?callable $after = null) : void
     {
         $execution = $this->pool->submit($task);
 
-        $this->queue[] = [$execution, $after, $context];
+        $this->queue[] = [$execution, $after];
     }
 
     /**
@@ -98,19 +86,17 @@ class Amp implements Backend
     {
         $results = [];
 
-        foreach ($this->queue as [$execution, $after, $context]) {
+        foreach ($this->queue as [$execution, $after]) {
             $result = $execution->await();
 
             if ($after) {
-                $after($result, $context);
+                $after($result);
             }
 
             $results[] = $result;
         }
 
-        $this->queue = [];
-
-        $this->results = $results;
+        $this->flush();
 
         return $results;
     }
@@ -122,7 +108,7 @@ class Amp implements Backend
      */
     public function flush() : void
     {
-        $this->queue = $this->results = [];
+        $this->queue = [];
     }
 
     /**
@@ -140,7 +126,7 @@ class Amp implements Backend
      */
     public function __serialize() : array
     {
-        return ['workers' => $this->pool->getWorkerLimit()];
+        return ['workers' => $this->workers()];
     }
 
     /**

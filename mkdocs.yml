@@ -165,14 +165,17 @@ nav:
       - Activation Functions:
         - ELU: neural-network/activation-functions/elu.md
         - GELU: neural-network/activation-functions/gelu.md
+        - Hard Sigmoid: neural-network/activation-functions/hard-sigmoid.md
+        - Hard SiLU: neural-network/activation-functions/hard-silu.md
         - Hyperbolic Tangent: neural-network/activation-functions/hyperbolic-tangent.md
         - Leaky ReLU: neural-network/activation-functions/leaky-relu.md
         - ReLU: neural-network/activation-functions/relu.md
+        - ReLU6: neural-network/activation-functions/relu6.md
         - SELU: neural-network/activation-functions/selu.md
         - Sigmoid: neural-network/activation-functions/sigmoid.md
         - Softmax: neural-network/activation-functions/softmax.md
         - Soft Plus: neural-network/activation-functions/soft-plus.md
-        - Soft Sign: neural-network/activation-functions/softsign.md
+        - Softsign: neural-network/activation-functions/softsign.md
         - SiLU: neural-network/activation-functions/silu.md
         - Thresholded ReLU: neural-network/activation-functions/thresholded-relu.md
       - Cost Functions:

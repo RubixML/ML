@@ -24,7 +24,7 @@ class Serial implements Backend
     /**
      * A 3-tuple of deferred computations and their optional callbacks and contexts.
      *
-     * @var list<array{Task,callable(mixed,mixed):void|null,mixed|null}>
+     * @var list<array{Task,callable(mixed):void|null,mixed|null}>
      */
     protected array $queue = [
         //
@@ -34,12 +34,11 @@ class Serial implements Backend
      * Queue up a deferred computation for backend processing.
      *
      * @param Task $task
-     * @param callable(mixed,mixed):void|null $after
-     * @param mixed $context
+     * @param callable(mixed):void|null $after
      */
-    public function enqueue(Task $task, ?callable $after = null, mixed $context = null) : void
+    public function enqueue(Task $task, ?callable $after = null) : void
     {
-        $this->queue[] = [$task, $after, $context];
+        $this->queue[] = [$task, $after];
     }
 
     /**
@@ -63,17 +62,17 @@ class Serial implements Backend
     {
         $results = [];
 
-        foreach ($this->queue as [$task, $after, $context]) {
+        foreach ($this->queue as [$task, $after]) {
             $result = $task();
 
             if ($after) {
-                $after($result, $context);
+                $after($result);
             }
 
             $results[] = $result;
         }
 
-        $this->queue = [];
+        $this->flush();
 
         return $results;
     }

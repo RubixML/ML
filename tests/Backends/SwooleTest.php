@@ -27,6 +27,13 @@ class SwooleTest extends TestCase
         return $i * 2;
     }
 
+    public static function delay(int $i, int $usec) : int
+    {
+        usleep($usec);
+
+        return $i * 2;
+    }
+
     protected function setUp() : void
     {
         $this->backend = new SwooleBackend(4);
@@ -74,5 +81,88 @@ class SwooleTest extends TestCase
         ], $results);
 
         $this->assertSame([], $this->backend->process());
+    }
+
+    #[Test]
+    #[RunInSeparateProcess]
+    public function invokesAfterCallback() : void
+    {
+        $invocations = 0;
+
+        $after = static function (int $result) use (&$invocations) : void {
+            ++$invocations;
+        };
+
+        for ($i = 0; $i < 10; ++$i) {
+            $this->backend->enqueue(
+                task: new Task(
+                    fn: [self::class, 'foo'],
+                    args: [$i]
+                ),
+                after: $after
+            );
+        }
+
+        $results = $this->backend->process();
+
+        $this->assertEquals([
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+        ], $results);
+
+        $this->assertSame(10, $invocations);
+    }
+
+    #[Test]
+    #[RunInSeparateProcess]
+    public function dispatchesNextTaskAsSoonAsWorkerFrees() : void
+    {
+        $durations = [
+            400_000,
+            20_000,
+            20_000,
+            20_000,
+            400_000,
+            20_000,
+            20_000,
+            20_000,
+        ];
+
+        foreach ($durations as $i => $usec) {
+            $this->backend->enqueue(
+                task: new Task(
+                    fn: [self::class, 'delay'],
+                    args: [$i, $usec]
+                )
+            );
+        }
+
+        $start = microtime(true);
+
+        $results = $this->backend->process();
+
+        $elapsed = microtime(true) - $start;
+
+        $this->assertCount(8, $results);
+        $this->assertEquals([
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            12,
+            14,
+        ], $results);
+
+        $this->assertLessThan(0.7, $elapsed);
     }
 }

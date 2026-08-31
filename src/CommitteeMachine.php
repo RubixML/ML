@@ -233,6 +233,19 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -368,17 +381,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     protected function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
-    }
-
-    /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @return Backend
-     */
-    protected function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
     }
 
     /**
