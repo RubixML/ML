@@ -287,11 +287,14 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 $this->metric
             );
 
-            $this->backend()->enqueue(
-                $task,
-                [$this, 'afterScore'],
-                $estimator->params()
-            );
+            $after = function ($score) use ($params) {
+                if ($this->logger) {
+                    $this->logger->info("{$this->metric}: $score, "
+                        . 'params: [' . Params::stringify($params) . ']');
+                }
+            };
+
+            $this->backend()->enqueue($task, $after);
         }
 
         $scores = $this->backend()->process();
@@ -325,22 +328,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     public function predict(Dataset $dataset) : array
     {
         return $this->base->predict($dataset);
-    }
-
-    /**
-     * The callback that executes after the cross validation task.
-     *
-     * @internal
-     *
-     * @param float $score
-     * @param mixed[] $params
-     */
-    public function afterScore(float $score, array $params) : void
-    {
-        if ($this->logger) {
-            $this->logger->info("{$this->metric}: $score, "
-                . 'params: [' . Params::stringify($params) . ']');
-        }
     }
 
     /**

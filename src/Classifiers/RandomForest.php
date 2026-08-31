@@ -258,7 +258,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
                 $subset = $dataset->randomSubsetWithReplacement($p);
             }
 
-            $this->backend()->enqueue(new TrainLearner($estimator, $subset));
+            $task = new TrainLearner($estimator, $subset);
+
+            $this->backend()->enqueue($task);
         }
 
         $this->trees = $this->backend()->process();

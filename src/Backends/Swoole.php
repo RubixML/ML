@@ -30,9 +30,11 @@ class Swoole implements Backend
     /**
      * The queue of tasks to be processed in parallel.
      *
-     * @var array<callable():mixed>
+     * @var array<array{Task,callable(mixed):void|null}>
      */
-    protected array $queue = [];
+    protected array $queue = [
+        //
+    ];
 
     /**
      * The number of workers available to the backend.
@@ -44,14 +46,14 @@ class Swoole implements Backend
     /**
      * The serialization function to use.
      *
-     * @var callable
+     * @var string
      */
     protected string $serialize;
 
     /**
      * The unserialization function to use.
      *
-     * @var callable
+     * @var string
      */
     protected string $unserialize;
 
@@ -81,20 +83,11 @@ class Swoole implements Backend
      * @internal
      *
      * @param Task $task
-     * @param callable(mixed,mixed):void $after
-     * @param mixed $context
+     * @param ?callable $after
      */
-    public function enqueue(Task $task, ?callable $after = null, $context = null) : void
+    public function enqueue(Task $task, ?callable $after = null) : void
     {
-        $this->queue[] = function () use ($task, $after, $context) {
-            $result = $task();
-
-            if ($after) {
-                $after($result, $context);
-            }
-
-            return $result;
-        };
+        $this->queue[] = [$task, $after];
     }
 
     /**
@@ -122,12 +115,12 @@ class Swoole implements Backend
 
         $results = array_fill(0, count($this->queue), null);
 
-        $prepared = [];
+        $prepared = $afters = [];
 
-        foreach ($this->queue as $item) {
+        foreach ($this->queue as [$task, $after]) {
             $prepared[] = new Process(
-                function (Process $worker) use ($maxMessageLength, $item) {
-                    $serialized = call_user_func($this->serialize, $item());
+                function (Process $worker) use ($maxMessageLength, $task) {
+                    $serialized = call_user_func($this->serialize, $task());
 
                     $length = strlen($serialized);
 
@@ -143,6 +136,8 @@ class Swoole implements Backend
                 SOCK_DGRAM, // Pipe type
                 true, // Enable coroutine
             );
+
+            $afters[] = $after;
         }
 
         $currentCpu = $next = 0;
@@ -172,7 +167,7 @@ class Swoole implements Backend
         }
 
         while ($running) {
-            run(function () use (&$running, &$results, $maxMessageLength) {
+            run(function () use (&$running, &$results, $maxMessageLength, $afters) {
                 $status = System::wait();
 
                 $index = $running[$status['pid']][0];
@@ -193,6 +188,12 @@ class Swoole implements Backend
                 $receivedData = $socket->recv($maxMessageLength->get());
 
                 $results[$index] = call_user_func($this->unserialize, $receivedData);
+
+                $after = $afters[$index];
+
+                if ($after) {
+                    $after($results[$index]);
+                }
             });
 
             if ($next < count($prepared)) {

@@ -85,6 +85,44 @@ class SwooleTest extends TestCase
 
     #[Test]
     #[RunInSeparateProcess]
+    public function invokesAfterCallback() : void
+    {
+        $invocations = 0;
+
+        $after = static function (int $result) use (&$invocations) : void {
+            ++$invocations;
+        };
+
+        for ($i = 0; $i < 10; ++$i) {
+            $this->backend->enqueue(
+                task: new Task(
+                    fn: [self::class, 'foo'],
+                    args: [$i]
+                ),
+                after: $after
+            );
+        }
+
+        $results = $this->backend->process();
+
+        $this->assertEquals([
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+        ], $results);
+
+        $this->assertSame(10, $invocations);
+    }
+
+    #[Test]
+    #[RunInSeparateProcess]
     public function dispatchesNextTaskAsSoonAsWorkerFrees() : void
     {
         $durations = [

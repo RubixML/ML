@@ -260,7 +260,9 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         for ($i = 0; $i < $this->estimators; ++$i) {
             $subset = $dataset->randomSubset($p);
 
-            $this->backend()->enqueue(new Task([self::class, 'growTree'], [$subset, $maxHeight]));
+            $task = new Task([self::class, 'growTree'], [$subset, $maxHeight]);
+
+            $this->backend()->enqueue($task);
         }
 
         $this->trees = $this->backend()->process();
@@ -298,7 +300,9 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend()->enqueue(new Task([$this, 'predictChunk'], [$chunk]));
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
         $predictions = [];
@@ -357,7 +361,9 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
         $this->backend()->flush();
 
         foreach ($dataset->batch($chunkSize) as $chunk) {
-            $this->backend()->enqueue(new Task([$this, 'scoreChunk'], [$chunk]));
+            $task = new Task([$this, 'scoreChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
         $scores = [];
