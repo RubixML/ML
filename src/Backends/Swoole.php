@@ -8,12 +8,13 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Swoole\Atomic;
+use Swoole\Coroutine\System;
 use Swoole\Process;
 
 use function Swoole\Coroutine\run;
 use function call_user_func;
 use function method_exists;
-use function array_chunk;
+use function array_fill;
 use function strlen;
 
 /**
@@ -117,73 +118,86 @@ class Swoole implements Backend
      */
     public function process() : array
     {
-        $results = [];
-        $currentCpu = 0;
+        $maxMessageLength = new Atomic(0);
 
-        $chunks = array_chunk($this->queue, $this->workers);
+        $results = array_fill(0, count($this->queue), null);
 
-        foreach ($chunks as $batch) {
-            $maxMessageLength = new Atomic(0);
+        $prepared = [];
 
-            $processes = [];
+        foreach ($this->queue as $item) {
+            $prepared[] = new Process(
+                function (Process $worker) use ($maxMessageLength, $item) {
+                    $serialized = call_user_func($this->serialize, $item());
 
-            foreach ($batch as $queueItem) {
-                $process = new Process(
-                    function (Process $worker) use ($maxMessageLength, $queueItem) {
-                        $serialized = call_user_func($this->serialize, $queueItem());
+                    $length = strlen($serialized);
 
-                        $length = strlen($serialized);
+                    $currentMaxLength = $maxMessageLength->get();
 
-                        $currentMaxLength = $maxMessageLength->get();
+                    if ($length > $currentMaxLength) {
+                        $maxMessageLength->set($length);
+                    }
 
-                        if ($length > $currentMaxLength) {
-                            $maxMessageLength->set($length);
-                        }
+                    $worker->exportSocket()->send($serialized);
+                },
+                false, // Redirect_stdin_and_stdout
+                SOCK_DGRAM, // Pipe type
+                true, // Enable coroutine
+            );
+        }
 
-                        $worker->exportSocket()->send($serialized);
-                    },
-                    false, // Redirect_stdin_and_stdout
-                    SOCK_DGRAM, // Pipe type
-                    true, // Enable coroutine
-                );
+        $currentCpu = $next = 0;
+        $running = [];
 
-                if (method_exists(Process::class, 'setAffinity')) {
-                    Process::setAffinity([$currentCpu]);
-                }
+        $start = function (int $index) use (&$running, &$currentCpu, &$next, $prepared) {
+            $process = $prepared[$index];
 
-                $process->setBlocking(false);
-                $process->start();
-
-                $processes[] = $process;
-
-                ++$currentCpu;
-
-                $currentCpu %= $this->workers;
+            if (method_exists(Process::class, 'setAffinity')) {
+                Process::setAffinity([$currentCpu]);
             }
 
-            run(function () use ($maxMessageLength, &$results, $processes) {
-                foreach ($processes as $process) {
-                    $status = $process->wait();
+            $process->setBlocking(false);
+            $process->start();
 
-                    if (0 !== $status['code']) {
-                        throw new RuntimeException('Worker process exited with an error.');
-                    }
+            $running[$process->pid] = [$index, $process];
 
-                    $socket = $process->exportSocket();
+            ++$currentCpu;
 
-                    if ($socket->isClosed()) {
-                        throw new RuntimeException('Coroutine socket is already closed.');
-                    }
+            $currentCpu %= $this->workers;
 
-                    $maxMessageLengthValue = $maxMessageLength->get();
+            ++$next;
+        };
 
-                    $receivedData = $socket->recv($maxMessageLengthValue);
+        while (count($running) < $this->workers and $next < count($prepared)) {
+            $start($next);
+        }
 
-                    $unserialized = call_user_func($this->unserialize, $receivedData);
+        while ($running) {
+            run(function () use (&$running, &$results, $maxMessageLength) {
+                $status = System::wait();
 
-                    $results[] = $unserialized;
+                $index = $running[$status['pid']][0];
+                $process = $running[$status['pid']][1];
+
+                unset($running[$status['pid']]);
+
+                if (0 !== $status['code']) {
+                    throw new RuntimeException('Worker process exited with an error.');
                 }
+
+                $socket = $process->exportSocket();
+
+                if ($socket->isClosed()) {
+                    throw new RuntimeException('Coroutine socket is already closed.');
+                }
+
+                $receivedData = $socket->recv($maxMessageLength->get());
+
+                $results[$index] = call_user_func($this->unserialize, $receivedData);
             });
+
+            if ($next < count($prepared)) {
+                $start($next);
+            }
         }
 
         $this->flush();
