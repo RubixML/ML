@@ -70,7 +70,7 @@ class OneVsRestTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp(4);
+        $ampBackend = new Amp();
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -188,7 +188,7 @@ class OneVsRestTest extends TestCase
 
         $expected = $this->estimator->proba($testing);
 
-        $amp = new Amp(4);
+        $amp = new Amp();
         $this->backend = $amp;
 
         $this->estimator->setBackend($amp);

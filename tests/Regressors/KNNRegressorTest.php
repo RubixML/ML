@@ -76,7 +76,7 @@ class KNNRegressorTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp(4);
+        $ampBackend = new Amp();
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -190,7 +190,7 @@ class KNNRegressorTest extends TestCase
 
         $serialPredictions = $serial->predict($testing);
 
-        $ampBackend = new Amp(4);
+        $ampBackend = new Amp();
 
         $this->backend = $ampBackend;
 

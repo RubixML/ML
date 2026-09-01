@@ -71,7 +71,7 @@ class IsolationForestTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp(4);
+        $ampBackend = new Amp();
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,

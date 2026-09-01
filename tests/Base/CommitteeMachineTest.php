@@ -61,7 +61,7 @@ class CommitteeMachineTest extends TestCase
             'backend' => $serialBackend,
         ];
 
-        $ampBackend = new Amp(4);
+        $ampBackend = new Amp();
 
         yield (string) $ampBackend => [
             'backend' => $ampBackend,
@@ -197,7 +197,7 @@ class CommitteeMachineTest extends TestCase
 
         $expected = $this->estimator->predict($testing);
 
-        $amp = new Amp(4);
+        $amp = new Amp();
         $this->backend = $amp;
 
         $this->estimator->setBackend($amp);
