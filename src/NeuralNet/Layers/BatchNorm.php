@@ -153,16 +153,15 @@ class BatchNorm implements Hidden, Parametric
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = $fanIn;
 
-        // Initialize beta and gamma as vectors of length fanOut
-        // We request a [fanOut, 1] NDArray and then flatten to 1-D
-        $betaMat = $this->betaInitializer->initialize(1, $fanOut);
-        $gammaMat = $this->gammaInitializer->initialize(1, $fanOut);
+        $betaMat = $this->betaInitializer->initialize(1, $fanOut, $dataType);
+        $gammaMat = $this->gammaInitializer->initialize(1, $fanOut, $dataType);
 
         $beta = NumPower::flatten($betaMat);
         $gamma = NumPower::flatten($gammaMat);

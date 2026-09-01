@@ -108,7 +108,9 @@ class RMSProp implements Optimizer, Adaptive
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $this->cache[$param->id()] = NumPower::zeros($param->param()->shape(), 'float32', 0);
+        $zeros = NumPower::zeros($param->param()->shape(), $param->param()->dataType(), 0);
+
+        $this->cache[$param->id()] = $zeros;
     }
 
     /**

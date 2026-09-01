@@ -32,13 +32,18 @@ class Xavier2Uniform implements Initializer
     /**
      * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : NDArray
+    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
         $limit = (6.0 / ($fanOut + $fanIn)) ** 0.25;
 
-        return NumPower::uniform(shape: [$fanOut, $fanIn], low: -$limit, high: $limit);
+        return NumPower::uniform(
+            [$fanOut, $fanIn],
+            low: -$limit,
+            high: $limit,
+            dtype: $dataType
+        );
     }
 
     /**

@@ -84,7 +84,9 @@ class AdaGrad implements Optimizer, Adaptive
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $this->cache[$param->id()] = NumPower::zeros($param->param()->shape(), 'float32', 0);
+        $zeros = NumPower::zeros($param->param()->shape(), $param->param()->dataType(), 0);
+
+        $this->cache[$param->id()] = $zeros;
     }
 
     /**
@@ -110,16 +112,13 @@ class AdaGrad implements Optimizer, Adaptive
     {
         $norm = $this->cache[$param->id()];
 
-        // Update accumulated squared gradients: norm = norm + gradient^2
         $norm = NumPower::add($norm, NumPower::square($gradient));
 
         $this->cache[$param->id()] = $norm;
 
-        // denominator = max(sqrt(norm), EPSILON)
         $denominator = NumPower::sqrt($norm);
         $denominator = NumPower::clip($denominator, EPSILON, PHP_FLOAT_MAX);
 
-        // return rate * gradient / denominator
         return NumPower::divide(
             NumPower::multiply($gradient, $this->rate),
             $denominator

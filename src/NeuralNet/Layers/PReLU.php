@@ -97,15 +97,15 @@ class PReLU implements Hidden, Parametric
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = $fanIn;
 
-        // Initialize alpha as a vector of length fanOut (one alpha per neuron)
-        // Using shape [fanOut, 1] then flattening to [fanOut]
-        $alphaMat = $this->initializer->initialize(1, $fanOut);
+        $alphaMat = $this->initializer->initialize(1, $fanOut, $dataType);
+
         $alpha = NumPower::flatten($alphaMat);
 
         $this->width = $fanOut;
@@ -165,12 +165,10 @@ class PReLU implements Hidden, Parametric
         /** @var NDArray $dOut */
         $dOut = $prevGradient();
 
-        // Negative part of the input (values <= 0), used for dL/dalpha
         $negativeInput = NumPower::minimum($this->input, 0.0);
 
         $dAlphaFull = NumPower::multiply($dOut, $negativeInput);
 
-        // Sum over the batch axis (axis = 1) to obtain a gradient vector [width]
         $dAlpha = NumPower::sum($dAlphaFull, axis: 1);
 
         $this->alpha->update($dAlpha, $optimizer);
@@ -240,7 +238,6 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        // Reshape alpha vector [width] to column [width, 1] for broadcasting
         $alphaCol = NumPower::reshape($this->alpha->param(), [$this->width(), 1]);
 
         $positiveActivation = NumPower::maximum($input, 0.0);
@@ -266,7 +263,6 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        // Reshape alpha vector [width] to column [width, 1] for broadcasting
         $alphaCol = NumPower::reshape($this->alpha->param(), [$this->width(), 1]);
 
         $positivePart = NumPower::greater($input, 0.0);

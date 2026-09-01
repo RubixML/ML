@@ -181,7 +181,7 @@ class PReLUTest extends TestCase
     #[TestDox('Initializes width equal to fan-in')]
     public function initializeSetsWidth() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         self::assertEquals($this->fanIn, $this->layer->width());
     }
@@ -191,7 +191,7 @@ class PReLUTest extends TestCase
     #[DataProvider('initializeProvider')]
     public function initializeReturnsFanOut(int $fanIn) : void
     {
-        $fanOut = $this->layer->initialize($fanIn);
+        $fanOut = $this->layer->initialize($fanIn, dataType: 'float32');
 
         self::assertEquals($fanIn, $fanOut);
         self::assertEquals($fanIn, $this->layer->width());
@@ -202,7 +202,7 @@ class PReLUTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function forward(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $forward = $this->layer->forward($this->input);
 
@@ -214,7 +214,7 @@ class PReLUTest extends TestCase
     #[DataProvider('backProvider')]
     public function back(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         // Forward pass to set internal input state
         $this->layer->forward($this->input);
@@ -233,7 +233,7 @@ class PReLUTest extends TestCase
     #[DataProvider('gradientProvider')]
     public function gradient(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $gradient = $this->layer->gradient(
             $this->input,
@@ -248,7 +248,7 @@ class PReLUTest extends TestCase
     #[DataProvider('inferProvider')]
     public function infer(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $infer = $this->layer->infer($this->input);
 
@@ -259,7 +259,7 @@ class PReLUTest extends TestCase
     #[TestDox('Yields trainable alpha parameter')]
     public function parameters() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $params = iterator_to_array($this->layer->parameters());
 
@@ -271,7 +271,7 @@ class PReLUTest extends TestCase
     #[TestDox('Restores alpha parameter from array')]
     public function restore() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $alphaNew = new TrainableParameter(NumPower::full([$this->fanIn], 0.5));
 

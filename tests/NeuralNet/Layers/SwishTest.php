@@ -103,7 +103,7 @@ class SwishTest extends TestCase
         array $backExpected,
         array $inferExpected,
     ) : void {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         self::assertEquals($this->fanIn, $this->layer->width());
 
@@ -149,7 +149,7 @@ class SwishTest extends TestCase
         $fanIn = 4;
         $layer = new Swish(new Constant(1.0));
 
-        $fanOut = $layer->initialize($fanIn);
+        $fanOut = $layer->initialize($fanIn, dataType: 'float32');
 
         self::assertSame($fanIn, $fanOut);
         self::assertSame($fanIn, $layer->width());
@@ -158,7 +158,7 @@ class SwishTest extends TestCase
     #[Test]
     public function parametersAndRestore() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $parameters = iterator_to_array($this->layer->parameters());
 
@@ -169,7 +169,7 @@ class SwishTest extends TestCase
         $originalBeta = $betaParam->param()->toArray();
 
         $newLayer = new Swish(new Constant(0.0));
-        $newLayer->initialize($this->fanIn);
+        $newLayer->initialize($this->fanIn, dataType: 'float32');
 
         $newLayer->restore($parameters);
 
@@ -186,7 +186,7 @@ class SwishTest extends TestCase
     #[Test]
     public function gradientMatchesBackpropagatedGradient() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $output = $this->layer->forward($this->input);
 
@@ -213,7 +213,7 @@ class SwishTest extends TestCase
     {
         $layer = new Swish(new Constant(0.75));
 
-        $layer->initialize(3);
+        $layer->initialize(3, dataType: 'float32');
 
         $input = NumPower::array([
             [1.5, 0.0, -2.0],
@@ -266,7 +266,7 @@ class SwishTest extends TestCase
     #[Test]
     public function parametersRestoreRoundTrip() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $parameters = iterator_to_array($this->layer->parameters());
 
@@ -275,7 +275,7 @@ class SwishTest extends TestCase
         $this->assertInstanceOf(Parameter::class, $parameters['beta']);
 
         $fresh = new Swish(new Constant(1.0));
-        $fresh->initialize($this->fanIn);
+        $fresh->initialize($this->fanIn, dataType: 'float32');
         $fresh->restore(['beta' => $parameters['beta']]);
 
         $restored = iterator_to_array($fresh->parameters())['beta'];

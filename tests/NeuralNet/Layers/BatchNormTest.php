@@ -182,7 +182,7 @@ class BatchNormTest extends TestCase
     #[DataProvider('initializeProvider')]
     public function initialize(int $fanIn) : void
     {
-        $fanOut = $this->layer->initialize($fanIn);
+        $fanOut = $this->layer->initialize($fanIn, dataType: 'float32');
         self::assertEquals($fanIn, $fanOut);
         self::assertEquals($fanIn, $this->layer->width());
     }
@@ -192,7 +192,7 @@ class BatchNormTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function forward(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $forward = $this->layer->forward($this->input);
 
@@ -204,7 +204,7 @@ class BatchNormTest extends TestCase
     #[DataProvider('backProvider')]
     public function back(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
         $this->layer->forward($this->input);
 
         $gradient = $this->layer->back(
@@ -221,7 +221,7 @@ class BatchNormTest extends TestCase
     #[DataProvider('inferProvider')]
     public function infer(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
         // Perform a forward pass to set running mean/variance
         $this->layer->forward($this->input);
 
@@ -235,7 +235,7 @@ class BatchNormTest extends TestCase
     #[DataProvider('batchInputsProvider')]
     public function forwardStatsMultipleBatches(array $input) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $forward = $this->layer->forward(NumPower::array($input));
         $out = $forward->toArray();
@@ -249,7 +249,7 @@ class BatchNormTest extends TestCase
     #[DataProvider('batchInputsProvider')]
     public function inferStatsMultipleBatches(array $input) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         // Perform a forward pass on the same input to initialize running stats
         $this->layer->forward(NumPower::array($input));
@@ -282,7 +282,7 @@ class BatchNormTest extends TestCase
     #[TestDox('Yields trainable parameters beta and gamma')]
     public function parameters() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $params = iterator_to_array($this->layer->parameters());
 
@@ -299,7 +299,7 @@ class BatchNormTest extends TestCase
     #[TestDox('Restores parameters from array')]
     public function restore() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $betaNew = new TrainableParameter(NumPower::full([3], 2.0));
         $gammaNew = new TrainableParameter(NumPower::full([3], 3.0));
@@ -321,7 +321,7 @@ class BatchNormTest extends TestCase
     #[DataProvider('gradientProvider')]
     public function gradient(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         // Compute forward-time caches manually to pass into gradient()
         $input = $this->input;
@@ -379,7 +379,7 @@ class BatchNormTest extends TestCase
 
         $layer = new BatchNorm(0.9, new Constant(0.0), new Constant(1.0));
 
-        $layer->initialize($fanIn);
+        $layer->initialize($fanIn, dataType: 'float32');
 
         $forward = $layer->forward($input);
 
@@ -394,7 +394,7 @@ class BatchNormTest extends TestCase
 
         $inferLayer = new BatchNorm(0.9, new Constant(0.0), new Constant(1.0));
 
-        $inferLayer->initialize($fanIn);
+        $inferLayer->initialize($fanIn, dataType: 'float32');
         $inferLayer->forward($input);
 
         $infer = $inferLayer->infer($input);

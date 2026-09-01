@@ -78,7 +78,7 @@ class ContinuousTest extends TestCase
     #[TestDox('Returns string representation')]
     public function testToString() : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         self::assertEquals('Continuous (cost function: Least Squares)', (string) $this->layer);
     }
@@ -87,7 +87,7 @@ class ContinuousTest extends TestCase
     #[TestDox('Initializes and reports width')]
     public function initializeWidth() : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
         self::assertEquals(1, $this->layer->width());
     }
 
@@ -96,7 +96,7 @@ class ContinuousTest extends TestCase
     public function initializeRejectsInvalidFanIn() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->layer->initialize(2);
+        $this->layer->initialize(2, dataType: 'float32');
     }
 
     #[Test]
@@ -104,7 +104,7 @@ class ContinuousTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function forward(array $expected) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         $forward = $this->layer->forward($this->input);
         self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
@@ -115,7 +115,7 @@ class ContinuousTest extends TestCase
     #[DataProvider('gradientProvider')]
     public function back(array $expectedGradient) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
         $this->layer->forward($this->input);
 
         [$computation, $loss] = $this->layer->back(labels: $this->labels, optimizer: $this->optimizer);
@@ -134,7 +134,7 @@ class ContinuousTest extends TestCase
     #[DataProvider('gradientProvider')]
     public function gradient(array $expectedGradient) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         $input = $this->input;
         $expected = NumPower::array([$this->labels]);
@@ -150,7 +150,7 @@ class ContinuousTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function infer(array $expected) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         $infer = $this->layer->infer($this->input);
         self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);

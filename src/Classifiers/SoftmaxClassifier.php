@@ -168,6 +168,13 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     protected ?string $snapshotPath = null;
 
     /**
+     * The data type to use for NDArrays.
+     *
+     * @var string
+     */
+    protected string $dataType = 'float32';
+
+    /**
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param float $l2Penalty
@@ -372,6 +379,24 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     }
 
     /**
+     * Set the data type to use for NDArrays.
+     * @param string $dataType
+     */
+    public function setDataType(string $dataType) : void
+    {
+        if (!in_array($dataType, ['float16', 'float32', 'float64'])) {
+            throw new InvalidArgumentException('Data type must be float16, float32, or float64, '
+                . "$dataType given.");
+        }
+
+        if ($this->network) {
+            throw new RuntimeException('Cannot change data type after training.');
+        }
+
+        $this->dataType = $dataType;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -390,7 +415,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(count($classes), $this->l2Penalty, true, new Xavier1Uniform())],
             new Multiclass($classes, $this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->dataType
         );
 
         $this->network->initialize();

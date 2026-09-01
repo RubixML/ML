@@ -137,7 +137,7 @@ final class UniformTest extends TestCase
     public function matrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
 
         //when
         $shape = $w->shape();
@@ -152,7 +152,7 @@ final class UniformTest extends TestCase
     public function distributionStatisticsMatchUniform(int $fanIn, int $fanOut, float $beta) : void
     {
         //when
-        $w = (new Uniform($beta))->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new Uniform($beta))->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
         $values = array_merge(...$w->toArray());
 
         //then
@@ -175,7 +175,7 @@ final class UniformTest extends TestCase
         }
 
         //when
-        (new Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
     }
 
     #[Test]

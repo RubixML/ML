@@ -69,7 +69,8 @@ class NetworkTest extends TestCase
             input: $this->input,
             hidden: $this->hidden,
             output: $this->output,
-            optimizer: new Adam(0.001)
+            optimizer: new Adam(0.001),
+            dataType: 'float32'
         );
     }
 

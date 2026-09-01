@@ -91,7 +91,7 @@ class BinaryTest extends TestCase
     #[TestDox('Returns string representation')]
     public function testToString() : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         self::assertEquals('Binary (cost function: Binary Cross Entropy)', (string) $this->layer);
     }
@@ -100,7 +100,7 @@ class BinaryTest extends TestCase
     #[TestDox('Initializes and reports width')]
     public function initializeWidth() : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
         self::assertEquals(1, $this->layer->width());
     }
 
@@ -119,7 +119,7 @@ class BinaryTest extends TestCase
     {
         $layer = new Binary(classes: ['hot', 'cold', 'hot'], costFn: new BinaryCrossEntropy());
         // Should initialize without throwing and report correct width
-        $layer->initialize(1);
+        $layer->initialize(1, dataType: 'float32');
         self::assertEquals(1, $layer->width());
     }
 
@@ -128,7 +128,7 @@ class BinaryTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function forward(array $expected) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         $forward = $this->layer->forward($this->input);
         self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
@@ -139,7 +139,7 @@ class BinaryTest extends TestCase
     #[DataProvider('backProvider')]
     public function back(array $expectedGradient) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
         $this->layer->forward($this->input);
 
         [$computation, $loss] = $this->layer->back(labels: $this->labels, optimizer: $this->optimizer);
@@ -158,7 +158,7 @@ class BinaryTest extends TestCase
     #[DataProvider('backProvider')]
     public function gradient(array $expectedGradient) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         $input = $this->input;
         $output = $this->layer->forward($input);
@@ -182,7 +182,7 @@ class BinaryTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function infer(array $expected) : void
     {
-        $this->layer->initialize(1);
+        $this->layer->initialize(1, dataType: 'float32');
 
         $infer = $this->layer->infer($this->input);
         self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);

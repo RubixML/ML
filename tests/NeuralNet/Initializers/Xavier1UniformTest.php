@@ -104,7 +104,7 @@ final class Xavier1UniformTest extends TestCase
     public function matrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
 
         //when
         $shape = $w->shape();
@@ -122,7 +122,7 @@ final class Xavier1UniformTest extends TestCase
         $limit = sqrt(6 / ($fanOut + $fanIn));
 
         //when
-        $w = (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
         $values = array_merge(...$w->toArray());
 
         //then
@@ -165,7 +165,7 @@ final class Xavier1UniformTest extends TestCase
         }
 
         //when
-        (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Xavier1Uniform())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
     }
 
     #[Test]

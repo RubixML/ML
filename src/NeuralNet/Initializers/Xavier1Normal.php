@@ -43,13 +43,18 @@ class Xavier1Normal implements Initializer
     /**
      * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : NDArray
+    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
         $stdDev = sqrt(2 / ($fanOut + $fanIn));
 
-        return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $stdDev);
+        return NumPower::truncatedNormal(
+            [$fanOut, $fanIn],
+            loc: 0.0,
+            scale: $stdDev,
+            dtype: $dataType
+        );
     }
 
     /**

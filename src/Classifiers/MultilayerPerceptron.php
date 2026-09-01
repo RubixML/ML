@@ -178,6 +178,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected ?string $snapshotPath = null;
 
     /**
+     * The data type to use for NDArrays.
+     *
+     * @var string
+     */
+    protected string $dataType = 'float32';
+
+    /**
      * @param mixed[] $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
@@ -389,6 +396,24 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
+     * Set the data type to use for NDArrays.
+     * @param string $dataType
+     */
+    public function setDataType(string $dataType) : void
+    {
+        if (!in_array($dataType, ['float16', 'float32', 'float64'])) {
+            throw new InvalidArgumentException('Data type must be float16, float32, or float64, '
+                . "$dataType given.");
+        }
+
+        if ($this->network) {
+            throw new RuntimeException('Cannot change data type after training.');
+        }
+
+        $this->dataType = $dataType;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -412,7 +437,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Multiclass($classes, $this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->dataType
         );
 
         $this->network->initialize();

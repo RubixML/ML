@@ -39,13 +39,14 @@ class Constant implements Initializer
     /**
      * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : NDArray
+    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
         return NumPower::full(
-            shape: [$fanOut, $fanIn],
-            fill_value: $this->value
+            [$fanOut, $fanIn],
+            $this->value,
+            dtype: $dataType
         );
     }
 

@@ -104,7 +104,7 @@ final class LeCunNormalTest extends TestCase
     public function matrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
 
         //when
         $shape = $w->shape();
@@ -120,7 +120,7 @@ final class LeCunNormalTest extends TestCase
     {
         //given
         $expectedStd = sqrt(1 / $fanIn);
-        $w = (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut:  $fanOut);
+        $w = (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
         $flatValues = array_merge(...$w->toArray());
 
         //when
@@ -162,7 +162,7 @@ final class LeCunNormalTest extends TestCase
         }
 
         //when
-        (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new LeCunNormal())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
     }
 
     #[Test]

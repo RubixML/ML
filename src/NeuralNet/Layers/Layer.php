@@ -31,9 +31,10 @@ interface Layer extends Stringable
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int;
+    public function initialize(int $fanIn, string $dataType) : int;
 
     /**
      * Feed the input forward to the next layer in the network.

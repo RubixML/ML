@@ -122,7 +122,7 @@ class NoiseTest extends TestCase
     #[TestDox('Initializes width equal to fan-in')]
     public function initializeSetsWidth() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         self::assertEquals($this->fanIn, $this->layer->width());
     }
@@ -131,7 +131,7 @@ class NoiseTest extends TestCase
     #[TestDox('Computes forward pass that adds Gaussian noise with correct shape and scale')]
     public function forwardAddsNoiseWithCorrectProperties() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $forward = $this->layer->forward($this->input);
 
@@ -185,7 +185,7 @@ class NoiseTest extends TestCase
     #[DataProvider('backProvider')]
     public function backReturnsPrevGradient(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
         $this->layer->forward($this->input);
 
         $gradient = $this->layer->back(
@@ -202,7 +202,7 @@ class NoiseTest extends TestCase
     #[DataProvider('inferProvider')]
     public function inferIdentity(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $infer = $this->layer->infer($this->input);
 

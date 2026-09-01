@@ -122,7 +122,7 @@ class MulticlassTest extends TestCase
     #[DataProvider('initializeProvider')]
     public function initializeReturnsFanOut(int $fanIn) : void
     {
-        $fanOut = $this->layer->initialize($fanIn);
+        $fanOut = $this->layer->initialize($fanIn, dataType: 'float32');
 
         self::assertSame($fanIn, $fanOut);
         self::assertSame(3, $this->layer->width());
@@ -133,7 +133,7 @@ class MulticlassTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function forward(array $expected) : void
     {
-        $this->layer->initialize(3);
+        $this->layer->initialize(3, dataType: 'float32');
 
         self::assertEquals(3, $this->layer->width());
 
@@ -147,7 +147,7 @@ class MulticlassTest extends TestCase
     #[DataProvider('backProvider')]
     public function back(array $expected) : void
     {
-        $this->layer->initialize(3);
+        $this->layer->initialize(3, dataType: 'float32');
 
         // Set internal caches
         $this->layer->forward($this->input);
@@ -171,7 +171,7 @@ class MulticlassTest extends TestCase
     #[DataProvider('backProvider')]
     public function gradient(array $expectedGradient) : void
     {
-        $this->layer->initialize(3);
+        $this->layer->initialize(3, dataType: 'float32');
 
         // Forward pass to obtain output probabilities
         $output = $this->layer->forward($this->input);
@@ -211,7 +211,7 @@ class MulticlassTest extends TestCase
             costFn: new RelativeEntropy()
         );
 
-        $layer->initialize(3);
+        $layer->initialize(3, dataType: 'float32');
 
         $output = $layer->forward($this->input);
 
@@ -239,7 +239,7 @@ class MulticlassTest extends TestCase
     #[DataProvider('inferProvider')]
     public function infer(array $expected) : void
     {
-        $this->layer->initialize(3);
+        $this->layer->initialize(3, dataType: 'float32');
 
         $infer = $this->layer->infer($this->input);
 
