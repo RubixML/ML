@@ -173,7 +173,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var string
      */
-    protected string $dataType;
+    protected string $dataType = 'float32';
 
     /**
      * @param list<mixed> $hiddenLayers
