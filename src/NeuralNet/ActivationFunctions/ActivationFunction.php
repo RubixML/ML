@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use NDArray;
+use Tensor\Matrix;
 use Stringable;
 
 /**
@@ -13,24 +11,27 @@ use Stringable;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
 interface ActivationFunction extends Stringable
 {
     /**
      * Compute the activation.
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @internal
+     *
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function activate(NDArray $input) : NDArray;
+    public function activate(Matrix $input) : Matrix;
 
     /**
-     * Calculate the derivative of the activation for backpropagation.
+     * Calculate the derivative of the activation.
      *
-     * @param NDArray $input
-     * @param NDArray $output
-     * @return NDArray
+     * @internal
+     *
+     * @param Matrix $input
+     * @param Matrix $output
+     * @return Matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray;
+    public function differentiate(Matrix $input, Matrix $output) : Matrix;
 }

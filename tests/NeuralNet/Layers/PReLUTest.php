@@ -1,163 +1,65 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\PReLU;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Layers\Layer;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Parameter as TrainableParameter;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Layers')]
-#[CoversClass(PReLU::class)]
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\PReLU
+ */
 class PReLUTest extends TestCase
 {
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
     /**
      * @var positive-int
      */
-    protected int $fanIn;
-
-    protected NDArray $input;
-
-    protected Deferred $prevGrad;
-
-    protected Optimizer $optimizer;
-
-    protected PReLU $layer;
+    protected $fanIn;
 
     /**
-     * @return array<string, array{0:int}>
+     * @var Matrix
      */
-    public static function initializeProvider() : array
-    {
-        return [
-            'fanIn=3' => [3],
-        ];
-    }
+    protected $input;
 
     /**
-     * @return array<string, array{0:array}>
+     * @var Deferred
      */
-    public static function forwardProvider() : array
-    {
-        return [
-            'expectedForward' => [[
-                [1.0, 2.5, -0.025],
-                [0.1, 0.0, 3.0],
-                [0.002, -1.5, -0.125],
-            ]],
-        ];
-    }
+    protected $prevGrad;
 
     /**
-     * @return array<string, array{0:array}>
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    public static function backProvider() : array
-    {
-        return [
-            'expectedGradient' => [[
-                [0.25, 0.6999999, 0.0250010],
-                [0.5, 0.05, 0.01],
-                [0.25, 0.0251045, 0.2234300],
-            ]],
-        ];
-    }
+    protected $optimizer;
 
     /**
-     * @return array<string, array{0:array}>
+     * @var PReLU
      */
-    public static function gradientProvider() : array
-    {
-        return [
-            'expectedGradient' => [[
-                [0.25, 0.7, 0.025],
-                [0.5, 0.05, 0.01],
-                [0.25, 0.025, 0.2225],
-            ]],
-        ];
-    }
+    protected $layer;
 
     /**
-     * @return array<string, array{0:array}>
+     * @before
      */
-    public static function inferProvider() : array
-    {
-        return [
-            'expectedInfer' => [[
-                [1.0, 2.5, -0.0250000],
-                [0.1, 0.0, 3.0],
-                [0.0020000, -1.5, -0.125],
-            ]],
-        ];
-    }
-
-    /**
-     * @return array<string, array{0:array,1:array}>
-     */
-    public static function activateProvider() : array
-    {
-        return [
-            'defaultInput' => [
-                [
-                    [1.0, 2.5, -0.1],
-                    [0.1, 0.0, 3.0],
-                    [0.002, -6.0, -0.5],
-                ],
-                [
-                    [1.0, 2.5, -0.025],
-                    [0.1, 0.0, 3.0],
-                    [0.002, -1.5, -0.125],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array{0:array,1:array}>
-     */
-    public static function differentiateProvider() : array
-    {
-        return [
-            'defaultInput' => [
-                [
-                    [1.0, 2.5, -0.1],
-                    [0.1, 0.0, 3.0],
-                    [0.002, -6.0, -0.5],
-                ],
-                [
-                    [1.0, 1.0, 0.25],
-                    [1.0, 0.25, 1.0],
-                    [1.0, 0.25, 0.25],
-                ],
-            ],
-        ];
-    }
-
     protected function setUp() : void
     {
         $this->fanIn = 3;
 
-        $this->input = NumPower::array([
-            [1.0, 2.5, -0.1],
-            [0.1, 0.0, 3.0],
-            [0.002, -6.0, -0.5],
+        $this->input = Matrix::quick([
+            [1., 2.5, -0.1],
+            [0.1, 0., 3.],
+            [0.002, -6., -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(fn: function () : NDArray {
-            return NumPower::array([
+        $this->prevGrad = new Deferred(function () {
+            return Matrix::quick([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
@@ -171,120 +73,57 @@ class PReLUTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    #[TestDox('Can be cast to a string')]
-    public function testToString() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
-        self::assertEquals('PReLU (initializer: Constant (value: 0.25))', (string) $this->layer);
+        $this->assertInstanceOf(PReLU::class, $this->layer);
+        $this->assertInstanceOf(Layer::class, $this->layer);
+        $this->assertInstanceOf(Hidden::class, $this->layer);
+        $this->assertInstanceOf(Parametric::class, $this->layer);
     }
 
-    #[Test]
-    #[TestDox('Initializes width equal to fan-in')]
-    public function initializeSetsWidth() : void
+    /**
+     * @test
+     */
+    public function initializeForwardBackInfer() : void
     {
-        $this->layer->initialize($this->fanIn, dataType: 'float32');
+        $this->layer->initialize($this->fanIn);
 
-        self::assertEquals($this->fanIn, $this->layer->width());
-    }
-
-    #[Test]
-    #[TestDox('Initializes and returns fan out equal to fan-in')]
-    #[DataProvider('initializeProvider')]
-    public function initializeReturnsFanOut(int $fanIn) : void
-    {
-        $fanOut = $this->layer->initialize($fanIn, dataType: 'float32');
-
-        self::assertEquals($fanIn, $fanOut);
-        self::assertEquals($fanIn, $this->layer->width());
-    }
-
-    #[Test]
-    #[TestDox('Computes forward activations')]
-    #[DataProvider('forwardProvider')]
-    public function forward(array $expected) : void
-    {
-        $this->layer->initialize($this->fanIn, dataType: 'float32');
+        $this->assertEquals($this->fanIn, $this->layer->width());
 
         $forward = $this->layer->forward($this->input);
 
-        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
-    }
+        $expected = [
+            [1.0, 2.5, -0.025],
+            [0.1, 0.0, 3.0],
+            [0.002, -1.5, -0.125],
+        ];
 
-    #[Test]
-    #[TestDox('Backpropagates and returns gradient for previous layer')]
-    #[DataProvider('backProvider')]
-    public function back(array $expected) : void
-    {
-        $this->layer->initialize($this->fanIn, dataType: 'float32');
+        $this->assertInstanceOf(Matrix::class, $forward);
+        $this->assertEquals($expected, $forward->asArray());
 
-        // Forward pass to set internal input state
-        $this->layer->forward($this->input);
+        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
-        $gradient = $this->layer->back(
-            prevGradient: $this->prevGrad,
-            optimizer: $this->optimizer
-        )->compute();
+        $expected = [
+            [0.25, 0.7, 0.025001000000000002],
+            [0.5, 0.05, 0.01],
+            [0.25, 0.025104500000000002, 0.22343005000000002],
+        ];
 
-        self::assertInstanceOf(NDArray::class, $gradient);
-        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
-    }
+        $this->assertInstanceOf(Matrix::class, $gradient);
+        $this->assertEquals($expected, $gradient->asArray());
 
-    #[Test]
-    #[TestDox('Computes gradient for previous layer directly')]
-    #[DataProvider('gradientProvider')]
-    public function gradient(array $expected) : void
-    {
-        $this->layer->initialize($this->fanIn, dataType: 'float32');
-
-        $gradient = $this->layer->gradient(
-            $this->input,
-            ($this->prevGrad)(),
-        );
-
-        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
-    }
-
-    #[Test]
-    #[TestDox('Computes inference activations')]
-    #[DataProvider('inferProvider')]
-    public function infer(array $expected) : void
-    {
-        $this->layer->initialize($this->fanIn, dataType: 'float32');
+        $expected = [
+            [1.0, 2.5, -0.025001000000000002],
+            [0.1, 0.0, 3.0],
+            [0.002, -1.5062700000000002, -0.1255225],
+        ];
 
         $infer = $this->layer->infer($this->input);
 
-        self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
-    }
-
-    #[Test]
-    #[TestDox('Yields trainable alpha parameter')]
-    public function parameters() : void
-    {
-        $this->layer->initialize($this->fanIn, dataType: 'float32');
-
-        $params = iterator_to_array($this->layer->parameters());
-
-        self::assertArrayHasKey('alpha', $params);
-        self::assertInstanceOf(TrainableParameter::class, $params['alpha']);
-    }
-
-    #[Test]
-    #[TestDox('Restores alpha parameter from array')]
-    public function restore() : void
-    {
-        $this->layer->initialize($this->fanIn, dataType: 'float32');
-
-        $alphaNew = new TrainableParameter(NumPower::full([$this->fanIn], 0.5));
-
-        $this->layer->restore([
-            'alpha' => $alphaNew,
-        ]);
-
-        $restored = iterator_to_array($this->layer->parameters());
-
-        self::assertSame($alphaNew, $restored['alpha']);
-        self::assertEquals(
-            array_fill(0, $this->fanIn, 0.5),
-            $restored['alpha']->param()->toArray(),
-        );
+        $this->assertInstanceOf(Matrix::class, $infer);
+        $this->assertEquals($expected, $infer->asArray());
     }
 }

@@ -1,13 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use NDArray;
+use Tensor\Matrix;
 use Stringable;
-use Rubix\ML\Exceptions\InvalidFanInException;
-use Rubix\ML\Exceptions\InvalidFanOutException;
 
 /**
  * Initializer
@@ -15,19 +11,17 @@ use Rubix\ML\Exceptions\InvalidFanOutException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
 interface Initializer extends Stringable
 {
     /**
-     * Initialize a weight matrix W in the dimensions `fanIn` x `fanOut`.
+     * Initialize a weight matrix W in the dimensions fan in x fan out.
      *
-     * @param int<1, max> $fanIn
-     * @param int<1, max> $fanOut
-     * @param string $dataType
-     * @throws InvalidFanInException
-     * @throws InvalidFanOutException
-     * @return NDArray
+     * @internal
+     *
+     * @param int<0,max> $fanIn
+     * @param int<0,max> $fanOut
+     * @return Matrix
      */
-    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray;
+    public function initialize(int $fanIn, int $fanOut) : Matrix;
 }

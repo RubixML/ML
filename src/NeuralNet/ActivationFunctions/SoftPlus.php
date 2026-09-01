@@ -1,17 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use NumPower;
-use NDArray;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
+use Tensor\Matrix;
+
+use function log1p;
+use function exp;
 
 /**
- * SoftPlus
+ * Soft Plus
  *
  * A smooth approximation of the ReLU function whose output is constrained to be
  * positive.
@@ -22,58 +19,69 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class SoftPlus implements ActivationFunction
 {
-    public function __construct()
-    {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-    }
-
     /**
      * Compute the activation.
      *
-     * f(x) = log(1 + e^x)
+     * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function activate(NDArray $input) : NDArray
+    public function activate(Matrix $input) : Matrix
     {
-        $exp = NumPower::exp($input);
-
-        return NumPower::log1p($exp);
+        return $input->map([$this, '_activate']);
     }
 
     /**
      * Calculate the derivative of the activation.
      *
-     * f'(x) = 1 / (1 + e^(-x))
+     * @internal
      *
-     * @param NDArray $input
-     * @param NDArray $output
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $output
+     * @return Matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        $negExp = NumPower::exp(NumPower::multiply($input, -1.0));
+        return $input->map([$this, '_differentiate']);
+    }
 
-        $denominator = NumPower::add(1.0, $negExp);
+    /**
+     * @internal
+     *
+     * @param float $input
+     * @return float
+     */
+    public function _activate(float $input) : float
+    {
+        return $input > 0.0
+            ? $input + log1p(exp(-$input))
+            : log1p(exp($input));
+    }
 
-        return NumPower::divide(1.0, $denominator);
+    /**
+     * @internal
+     *
+     * @param float $input
+     * @return float
+     */
+    public function _differentiate(float $input) : float
+    {
+        return 1.0 / (1.0 + exp(-$input));
     }
 
     /**
      * Return the string representation of the object.
      *
+     * @internal
+     *
      * @return string
      */
     public function __toString() : string
     {
-        return 'SoftPlus';
+        return 'Soft Plus';
     }
 }

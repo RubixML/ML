@@ -2,53 +2,53 @@
 
 namespace Rubix\ML\Tests\NeuralNet;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\TestCase;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Output;
+use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Output;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
-use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use PHPUnit\Framework\TestCase;
 
-#[Group('NeuralNet')]
-#[CoversClass(FeedForward::class)]
+/**
+ * @group NeuralNet
+ * @covers \Rubix\ML\NeuralNet\FeedForward
+ */
 class FeedForwardTest extends TestCase
 {
     /**
      * @var Labeled
      */
-    protected Labeled $dataset;
+    protected $dataset;
 
     /**
      * @var FeedForward
      */
-    protected FeedForward $network;
+    protected $network;
 
     /**
-     * @var Input
+     * @var \Rubix\ML\NeuralNet\Layers\Input
      */
-    protected Input $input;
+    protected $input;
 
     /**
-     * @var Hidden[]
+     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
-    protected array $hidden;
+    protected $hidden;
 
     /**
      * @var Output
      */
-    protected Output $output;
+    protected $output;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->dataset = Labeled::quick([
@@ -67,63 +67,71 @@ class FeedForwardTest extends TestCase
             new Dense(3),
         ];
 
-        $this->output = new Multiclass(['yes', 'no', 'maybe'], new MulticlassCrossEntropy());
+        $this->output = new Multiclass(['yes', 'no', 'maybe'], new CrossEntropy());
 
-        $this->network = new FeedForward($this->input, $this->hidden, $this->output, optimizer: new Adam(0.001), dataType: 'float32');
+        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
 
-    #[Test]
-    #[TestDox('Builds a feed-forward network instance')]
+    /**
+     * @test
+     */
     public function build() : void
     {
-        self::assertInstanceOf(FeedForward::class, $this->network);
+        $this->assertInstanceOf(FeedForward::class, $this->network);
+        $this->assertInstanceOf(Network::class, $this->network);
     }
 
-    #[Test]
-    #[TestDox('Returns all hidden and output layers')]
+    /**
+     * @test
+     */
     public function layers() : void
     {
-        self::assertCount(5, iterator_to_array($this->network->layers()));
+        $this->assertCount(5, iterator_to_array($this->network->layers()));
     }
 
-    #[Test]
-    #[TestDox('Returns the input layer')]
+    /**
+     * @test
+     */
     public function input() : void
     {
-        self::assertInstanceOf(Placeholder1D::class, $this->network->input());
+        $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
-    #[Test]
-    #[TestDox('Returns the hidden layers')]
+    /**
+     * @test
+     */
     public function hidden() : void
     {
-        self::assertCount(5, $this->network->hidden());
+        $this->assertCount(5, $this->network->hidden());
     }
 
-    #[Test]
-    #[TestDox('Returns the output layer')]
-    public function networkOutput() : void
+    /**
+     * @test
+     */
+    public function output() : void
     {
-        self::assertInstanceOf(Output::class, $this->network->output());
+        $this->assertInstanceOf(Output::class, $this->network->output());
     }
 
-    #[Test]
-    #[TestDox('Reports the correct number of parameters after initialization')]
+    /**
+     * @test
+     */
     public function numParams() : void
     {
         $this->network->initialize();
 
-        self::assertEquals(103, $this->network->numParams());
+        $this->assertEquals(103, $this->network->numParams());
     }
 
-    #[Test]
-    #[TestDox('Performs a roundtrip pass and returns a loss value')]
+    /**
+     * @test
+     */
     public function roundtrip() : void
     {
         $this->network->initialize();
 
         $loss = $this->network->roundtrip($this->dataset);
 
-        self::assertIsFloat($loss);
+        $this->assertIsFloat($loss);
     }
 }

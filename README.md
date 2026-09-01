@@ -23,12 +23,11 @@ composer require rubix/ml
 
 #### Recommended
 
-- [NumPower extension](https://github.com/RubixML/numpower) for tensor computing on CPU and GPU.
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
 - [Swoole extension](https://openswoole.com/) for multiprocessing support.
 
 #### Optional
 
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
 - [GD extension](https://php.net/manual/en/book.image.php) for image support.
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).

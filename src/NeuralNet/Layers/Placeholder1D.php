@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
+use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
@@ -16,7 +16,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Placeholder1D implements Input
 {
@@ -34,7 +33,8 @@ class Placeholder1D implements Input
     public function __construct(int $inputs)
     {
         if ($inputs < 1) {
-            throw new InvalidArgumentException("Number of input nodes must be greater than 0, $inputs given.");
+            throw new InvalidArgumentException('Number of input nodes'
+            . " must be greater than 0, $inputs given.");
         }
 
         $this->inputs = $inputs;
@@ -53,10 +53,9 @@ class Placeholder1D implements Input
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         return $this->inputs;
     }
@@ -64,21 +63,16 @@ class Placeholder1D implements Input
     /**
      * Compute a forward pass through the layer.
      *
-     * @param NDArray $input
+     * @param Matrix $input
      * @throws InvalidArgumentException
-     * @return NDArray
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
-        $shape = $input->shape();
-
-        if (empty($shape) || $shape[0] !== $this->inputs) {
-            $features = $shape[0] ?? 0;
-
-            throw new InvalidArgumentException(
-                'The number of features and input nodes must be equal,'
-                . " {$this->inputs} expected but {$features} given."
-            );
+        if ($input->m() !== $this->inputs) {
+            throw new InvalidArgumentException('The number of features'
+                . ' and input nodes must be equal,'
+                . " $this->inputs expected but {$input->m()} given.");
         }
 
         return $input;
@@ -87,10 +81,10 @@ class Placeholder1D implements Input
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $this->forward($input);
     }

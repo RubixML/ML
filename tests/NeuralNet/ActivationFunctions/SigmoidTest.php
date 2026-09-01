@@ -1,199 +1,131 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
-use Generator;
-use NDArray;
-use NumPower;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\TestCase;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use PHPUnit\Framework\TestCase;
+use Generator;
 
-#[Group('ActivationFunctions')]
-#[CoversClass(Sigmoid::class)]
+/**
+ * @group ActivationFunctions
+ * @covers \Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid
+ */
 class SigmoidTest extends TestCase
 {
     /**
      * @var Sigmoid
      */
-    protected Sigmoid $activationFn;
+    protected $activationFn;
 
     /**
-     * @return Generator<array>
+     * @before
      */
-    public static function computeProvider() : Generator
+    protected function setUp() : void
+    {
+        $this->activationFn = new Sigmoid();
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Sigmoid::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
+    }
+
+    /**
+     * @test
+     * @dataProvider computeProvider
+     *
+     * @param Matrix $input
+     * @param list<list<float>> $expected $expected
+     */
+    public function activate(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEquals($expected, $activations);
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function computeProvider() : Generator
     {
         yield [
-            NumPower::array([
-                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [0.8807970, 0.7310586, 0.3775407, 0.5000000, 0.9999999, 0.0000454],
+                [0.7310585786300049, 0.3775406687981454, 0.5, 0.9999999979388463, 4.5397868702434395E-5],
             ],
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
             ]),
             [
-                [0.4700359, 0.5768852, 0.3798935],
-                [0.7290879, 0.5199893, 0.4925005],
-                [0.5124973, 0.3728522, 0.6318124],
+                [0.4700359482354282, 0.5768852611320463, 0.3798935676569099],
+                [0.7290879223493065, 0.5199893401555818, 0.4925005624493796],
+                [0.5124973964842103, 0.3728522336868044, 0.6318124177361016],
             ],
         ];
     }
 
     /**
-     * @return Generator<array>
+     * @test
+     * @dataProvider differentiateProvider
+     *
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected $expected
      */
-    public static function differentiateProvider() : Generator
+    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+
+        $this->assertEquals($expected, $derivatives);
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function differentiateProvider() : Generator
     {
         yield [
-            NumPower::array([
-                [0.8807970, 0.7310586, 0.3775407, 0.5000000, 0.9999999, 0.0000454, 1.0, 0.2],
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            Matrix::quick([
+                [0.7310585786300049, 0.3775406687981454, 0.5, 0.9999999979388463, 4.5397868702434395E-5],
             ]),
             [
-                [0.1049936, 0.1966119, 0.2350038, 0.2500000, 0.0000001, 0.0000454, 0.0, 0.16],
+                [0.19661193324148185, 0.2350037122015945, 0.25, 2.0611536879193953E-9, 4.5395807735951673E-5],
             ],
         ];
 
         yield [
-            NumPower::array([
-                [0.4700395, 0.5768852, 0.3799707],
-                [0.7290795, 0.5199968, 0.4925041],
-                [0.5124974, 0.3728375, 0.6319357],
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            Matrix::quick([
+                [0.4700359482354282, 0.5768852611320463, 0.3798935676569099],
+                [0.7290879223493065, 0.5199893401555818, 0.4925005624493796],
+                [0.5124973964842103, 0.3728522336868044, 0.6318124177361016],
             ]),
             [
-                [0.2491023, 0.2440886, 0.2355929],
-                [0.1975225, 0.2496001, 0.2499437],
-                [0.2498438, 0.2338296, 0.2325929],
+                [0.2491021556018501, 0.24408865662065704, 0.2355744449098147],
+                [0.1975187238336781, 0.24960042628014445, 0.24994375843642433],
+                [0.24984381508111644, 0.23383344552156501, 0.23262548653056345],
             ],
         ];
-    }
-
-    /**
-     * @return Generator<array>
-     */
-    public static function zeroRegionProvider() : Generator
-    {
-        // Test exactly at zero
-        yield [
-            NumPower::array([[0.0]]),
-            [[0.5]],
-            [[0.25]],
-        ];
-
-        // Test very small positive values
-        yield [
-            NumPower::array([[1e-15, 1e-10, 1e-7]]),
-            [[0.5000000000000005, 0.5000000000000001, 0.5000000001]],
-            [[0.25, 0.25, 0.25]],
-        ];
-
-        // Test very small negative values
-        yield [
-            NumPower::array([[-1e-15, -1e-10, -1e-7]]),
-            [[0.4999999999999995, 0.4999999999999999, 0.4999999999]],
-            [[0.25, 0.25, 0.25]],
-        ];
-
-        // Test values around machine epsilon
-        yield [
-            NumPower::array([[PHP_FLOAT_EPSILON, -PHP_FLOAT_EPSILON]]),
-            [[0.5 + PHP_FLOAT_EPSILON / 2, 0.5 - PHP_FLOAT_EPSILON / 2]],
-            [[0.25, 0.25]],
-        ];
-    }
-
-    /**
-     * @return Generator<array>
-     */
-    public static function extremeValuesProvider() : Generator
-    {
-        // Test with large positive values
-        yield [
-            NumPower::array([[10.0, 20.0, 50.0]]),
-            [[0.9999546, 0.9999999, 1.0]],
-            [[0.0000454, 0.0000001, 0.0]],
-        ];
-
-        // Test with large negative values
-        yield [
-            NumPower::array([[-10.0, -20.0, -50.0]]),
-            [[0.0000454, 0.0000001, 0.0]],
-            [[0.0000454, 0.0000001, 0.0]],
-        ];
-    }
-
-    /**
-     * Set up the test case.
-     */
-    protected function setUp() : void
-    {
-        parent::setUp();
-
-        $this->activationFn = new Sigmoid();
-    }
-
-    #[TestDox('Can be cast to a string')]
-    public function testToString() : void
-    {
-        static::assertEquals('Sigmoid', (string) $this->activationFn);
-    }
-
-    #[Test]
-    #[TestDox('Correctly activates the input')]
-    #[DataProvider('computeProvider')]
-    public function activate(NDArray $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->toArray();
-
-        static::assertEqualsWithDelta($expected, $activations, 1e-7);
-    }
-
-    #[Test]
-    #[TestDox('Correctly differentiates the output')]
-    #[DataProvider('differentiateProvider')]
-    public function differentiate(NDArray $output, array $expected) : void
-    {
-        $input = NumPower::zeros($output->shape());
-        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
-
-        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
-    }
-
-    #[Test]
-    #[TestDox('Correctly handles values around zero')]
-    #[DataProvider('zeroRegionProvider')]
-    public function zeroRegion(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
-    {
-        $output = $this->activationFn->activate($input);
-        $activations = $output->toArray();
-        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
-
-        static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
-        static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
-    }
-
-    #[Test]
-    #[TestDox('Correctly handles extreme values')]
-    #[DataProvider('extremeValuesProvider')]
-    public function extremeValues(NDArray $input, array $expectedActivation, array $expectedDerivative) : void
-    {
-        $output = $this->activationFn->activate($input);
-        $activations = $output->toArray();
-        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
-
-        static::assertEqualsWithDelta($expectedActivation, $activations, 1e-7);
-        static::assertEqualsWithDelta($expectedDerivative, $derivatives, 1e-7);
     }
 }

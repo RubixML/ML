@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use NDArray;
+use Tensor\Matrix;
 use Stringable;
 
 /**
@@ -12,25 +10,29 @@ use Stringable;
  *
  * @category    Machine Learning
  * @package     Rubix/ML
- * @author      Samuel Akopyan <leumas.a@gmail.com>
+ * @author      Andrew DalPino
  */
 interface CostFunction extends Stringable
 {
     /**
      * Compute the loss score.
      *
-     * @param NDArray $output
-     * @param NDArray $target
+     * @internal
+     *
+     * @param Matrix $output
+     * @param Matrix $target
      * @return float
      */
-    public function compute(NDArray $output, NDArray $target) : float;
+    public function compute(Matrix $output, Matrix $target) : float;
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param NDArray $output
-     * @param NDArray $target
-     * @return NDArray
+     * @internal
+     *
+     * @param Matrix $output
+     * @param Matrix $target
+     * @return Matrix
      */
-    public function differentiate(NDArray $output, NDArray $target) : NDArray;
+    public function differentiate(Matrix $output, Matrix $target) : Matrix;
 }

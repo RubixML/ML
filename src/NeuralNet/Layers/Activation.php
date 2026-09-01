@@ -2,15 +2,11 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Activation
@@ -21,7 +17,6 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Activation implements Hidden
 {
@@ -42,27 +37,22 @@ class Activation implements Hidden
     /**
      * The memorized input matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $output = null;
+    protected ?Matrix $output = null;
 
     /**
      * @param ActivationFunction $activationFn
      */
     public function __construct(ActivationFunction $activationFn)
     {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-
         $this->activationFn = $activationFn;
     }
 
@@ -90,10 +80,9 @@ class Activation implements Hidden
      * @internal
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $fanIn;
 
@@ -107,10 +96,10 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
         $output = $this->activationFn->activate($input);
 
@@ -125,10 +114,10 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $this->activationFn->activate($input);
     }
@@ -146,7 +135,8 @@ class Activation implements Hidden
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->input or !$this->output) {
-            throw new RuntimeException('Must perform forward pass before backpropagating.');
+            throw new RuntimeException('Must perform forward pass before'
+                . ' backpropagating.');
         }
 
         $input = $this->input;
@@ -165,17 +155,15 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param NDArray $input
-     * @param NDArray $output
+     * @param Matrix $input
+     * @param Matrix $output
      * @param Deferred $prevGradient
-     * @return NDArray
+     * @return Matrix
      */
-    public function gradient(NDArray $input, NDArray $output, Deferred $prevGradient) : NDArray
+    public function gradient(Matrix $input, Matrix $output, Deferred $prevGradient) : Matrix
     {
-        return NumPower::multiply(
-            $this->activationFn->differentiate($input, $output),
-            $prevGradient()
-        );
+        return $this->activationFn->differentiate($input, $output)
+            ->multiply($prevGradient());
     }
 
     /**

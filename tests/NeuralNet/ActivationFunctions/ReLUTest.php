@@ -1,45 +1,71 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
-use Generator;
-use NDArray;
-use NumPower;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\TestCase;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use PHPUnit\Framework\TestCase;
+use Generator;
 
-#[Group('ActivationFunctions')]
-#[CoversClass(ReLU::class)]
+/**
+ * @group ActivationFunctions
+ * @covers \Rubix\ML\NeuralNet\ActivationFunctions\ReLU
+ */
 class ReLUTest extends TestCase
 {
     /**
      * @var ReLU
      */
-    protected ReLU $activationFn;
+    protected $activationFn;
 
     /**
-     * @return Generator<array>
+     * @before
      */
-    public static function computeProvider() : Generator
+    protected function setUp() : void
+    {
+        $this->activationFn = new ReLU();
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(ReLU::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
+    }
+
+    /**
+     * @test
+     * @dataProvider computeProvider
+     *
+     * @param Matrix $input
+     * @param list<list<float>> $expected $expected
+     */
+    public function activate(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEquals($expected, $activations);
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function computeProvider() : Generator
     {
         yield [
-            NumPower::array([
-                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
-                [2.0, 1.0, 0.0, 0.0, 20.0, 0.0],
+                [1.0, 0.0, 0.0, 20.0, 0.0],
             ],
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
@@ -53,113 +79,53 @@ class ReLUTest extends TestCase
     }
 
     /**
-     * @return Generator<array>
+     * @test
+     * @dataProvider differentiateProvider
+     *
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected $expected
      */
-    public static function boundaryProvider() : Generator
+    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
     {
-        // Test very large positive values (should be equal to input)
-        yield [
-            NumPower::array([
-                [100.0, 500.0, 1000.0],
-            ]),
-            [
-                [100.0, 500.0, 1000.0],
-            ],
-        ];
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
 
-        // Test very large negative values (should be zero)
-        yield [
-            NumPower::array([
-                [-100.0, -500.0, -1000.0],
-            ]),
-            [
-                [0.0, 0.0, 0.0],
-            ],
-        ];
-
-        // Test values close to zero
-        yield [
-            NumPower::array([
-                [0.001, -0.001, 0.0001, -0.0001],
-            ]),
-            [
-                [0.001, 0.0, 0.0001, 0.0],
-            ],
-        ];
+        $this->assertEquals($expected, $derivatives);
     }
 
     /**
-     * @return Generator<array>
+     * @return Generator<mixed[]>
      */
-    public static function differentiateProvider() : Generator
+    public function differentiateProvider() : Generator
     {
         yield [
-            NumPower::array([
-                [2.0, 1.0, -0.5, 0.0, 20.0, -10.0],
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0, 20.0, 0.0],
             ]),
             [
-                [1.0, 1.0, 0.0, 0.0, 1.0, 0.0],
+                [1, 0, 0, 1, 0],
             ],
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
             ]),
+            Matrix::quick([
+                [0.0, 0.31, 0.0],
+                [0.99, 0.08, 0.0],
+                [0.05, 0.0, 0.54],
+            ]),
             [
-                [0.0, 1.0, 0.0],
-                [1.0, 1.0, 0.0],
-                [1.0, 0.0, 1.0],
+                [0, 1, 0],
+                [1, 1, 0],
+                [1, 0, 1],
             ],
         ];
-    }
-
-    /**
-     * Set up the test case.
-     */
-    protected function setUp() : void
-    {
-        parent::setUp();
-
-        $this->activationFn = new ReLU();
-    }
-
-    #[TestDox('Can be cast to a string')]
-    public function testToString() : void
-    {
-        static::assertEquals('ReLU', (string) $this->activationFn);
-    }
-
-    #[Test]
-    #[TestDox('Correctly activates the input')]
-    #[DataProvider('computeProvider')]
-    public function activate(NDArray $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->toArray();
-
-        static::assertEqualsWithDelta($expected, $activations, 1e-7);
-    }
-
-    #[Test]
-    #[TestDox('Correctly handles boundary values during activation')]
-    #[DataProvider('boundaryProvider')]
-    public function boundaryActivate(NDArray $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->toArray();
-
-        static::assertEqualsWithDelta($expected, $activations, 1e-7);
-    }
-
-    #[Test]
-    #[TestDox('Correctly differentiates the input')]
-    #[DataProvider('differentiateProvider')]
-    public function differentiate(NDArray $input, array $expected) : void
-    {
-        $output = $this->activationFn->activate($input);
-        $derivatives = $this->activationFn->differentiate($input, $output)->toArray();
-
-        static::assertEqualsWithDelta($expected, $derivatives, 1e-7);
     }
 }

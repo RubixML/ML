@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Generator;
-use Rubix\ML\NeuralNet\Parameter;
 
 /**
  * Parametric
@@ -13,21 +12,20 @@ use Rubix\ML\NeuralNet\Parameter;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Parametric
 {
     /**
      * Return the parameters of the layer.
      *
-     * @return Generator<Parameter>
+     * @return Generator<\Rubix\ML\NeuralNet\Parameter>
      */
     public function parameters() : Generator;
 
     /**
      * Restore the parameters on the layer from an associative array.
      *
-     * @param Parameter[] $parameters
+     * @param \Rubix\ML\NeuralNet\Parameter[] $parameters
      */
     public function restore(array $parameters) : void;
 }

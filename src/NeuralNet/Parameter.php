@@ -2,29 +2,17 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use NDArray;
-use NumPower;
+use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
 
 /**
  * Parameter
- *
- * A wrapper over an NDArray from NumPower that marks the parameter as trainable
- * and provides updates via the optimizer.
  *
  * @internal
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
- */
-
-/**
- * Parameter
  */
 class Parameter
 {
@@ -33,7 +21,7 @@ class Parameter
      *
      * @var int
      */
-    protected static int $counter = 0;
+    protected static $counter = 0;
 
     /**
      * The unique identifier of the parameter.
@@ -45,20 +33,15 @@ class Parameter
     /**
      * The parameter.
      *
-     * @var NDArray
+     * @var Tensor
      */
-    protected NDArray $param;
+    protected Tensor $param;
 
     /**
-     * @param NDArray $param
+     * @param Tensor $param
      */
-    public function __construct(NDArray $param)
+    public function __construct(Tensor $param)
     {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-
         $this->id = self::$counter++;
         $this->param = $param;
     }
@@ -76,30 +59,30 @@ class Parameter
     /**
      * Return the wrapped parameter.
      *
-     * @return NDArray
+     * @return mixed
      */
-    public function param() : NDArray
+    public function param()
     {
         return $this->param;
     }
 
     /**
-     * Update the parameter with the gradient and optimizer.
+     * Update the parameter.
      *
-     * @param NDArray $gradient
+     * @param Tensor $gradient
      * @param Optimizer $optimizer
      */
-    public function update(NDArray $gradient, Optimizer $optimizer) : void
+    public function update(Tensor $gradient, Optimizer $optimizer) : void
     {
         $step = $optimizer->step($this, $gradient);
 
-        $this->param = NumPower::subtract($this->param, $step);
+        $this->param = $this->param->subtract($step);
     }
 
     /**
      * Perform a deep copy of the object upon cloning.
      */
-    public function __clone() : void
+    public function __clone()
     {
         $this->param = clone $this->param;
     }

@@ -11,7 +11,6 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Hidden extends Layer
 {

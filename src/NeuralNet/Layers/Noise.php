@@ -2,12 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -26,7 +22,6 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Noise implements Hidden
 {
@@ -51,13 +46,9 @@ class Noise implements Hidden
     public function __construct(float $stdDev)
     {
         if ($stdDev < 0.0) {
-            throw new InvalidArgumentException("Standard deviation must be 0 or greater, $stdDev given.");
+            throw new InvalidArgumentException('Standard deviation must'
+                . " be 0 or greater, $stdDev given.");
         }
-
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
 
         $this->stdDev = $stdDev;
     }
@@ -86,10 +77,9 @@ class Noise implements Hidden
      * @internal
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $fanIn;
 
@@ -103,24 +93,17 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
-        if ($this->width === null) {
-            throw new RuntimeException('Layer has not been initialized.');
-        }
+        $noise = Matrix::gaussian(...$input->shape())
+            ->multiply($this->stdDev);
 
-        if ($this->stdDev === 0.0) {
-            return $input;
-        }
+        $output = $input->add($noise);
 
-        $shape = $input->shape();
-
-        $noise = NumPower::normal(shape: $shape, loc: 0.0, scale: $this->stdDev);
-
-        return NumPower::add($input, $noise);
+        return $output;
     }
 
     /**
@@ -128,10 +111,10 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $input;
     }

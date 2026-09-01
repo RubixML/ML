@@ -2,12 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -27,7 +23,6 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Dropout implements Hidden
 {
@@ -55,9 +50,9 @@ class Dropout implements Hidden
     /**
      * The memoized dropout mask.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $mask = null;
+    protected ?Matrix $mask = null;
 
     /**
      * @param float $ratio
@@ -66,13 +61,9 @@ class Dropout implements Hidden
     public function __construct(float $ratio = 0.5)
     {
         if ($ratio <= 0.0 or $ratio >= 1.0) {
-            throw new InvalidArgumentException("Ratio must be between 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Ratio must be'
+                . " between 0 and 1, $ratio given.");
         }
-
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
 
         $this->ratio = $ratio;
         $this->scale = 1.0 / (1.0 - $ratio);
@@ -102,10 +93,9 @@ class Dropout implements Hidden
      * @internal
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $fanIn;
 
@@ -119,19 +109,16 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
-        $shape = $input->shape();
+        $mask = Matrix::rand(...$input->shape())
+            ->greater($this->ratio)
+            ->multiply($this->scale);
 
-        $rand = NumPower::uniform($shape, 0.0, 1.0);
-
-        $mask = NumPower::greater($rand, $this->ratio);
-        $mask = NumPower::multiply($mask, $this->scale);
-
-        $output = NumPower::multiply($input, $mask);
+        $output = $input->multiply($mask);
 
         $this->mask = $mask;
 
@@ -143,10 +130,10 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $input;
     }
@@ -180,15 +167,12 @@ class Dropout implements Hidden
      * @internal
      *
      * @param Deferred $prevGradient
-     * @param NDArray $mask
-     * @return NDArray
+     * @param Matrix $mask
+     * @return Matrix
      */
-    public function gradient(Deferred $prevGradient, NDArray $mask) : NDArray
+    public function gradient(Deferred $prevGradient, Matrix $mask)
     {
-        /** @var NDArray $dOut */
-        $dOut = $prevGradient();
-
-        return NumPower::multiply($dOut, $mask);
+        return $prevGradient()->multiply($mask);
     }
 
     /**

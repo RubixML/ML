@@ -10,9 +10,9 @@ composer require rubix/ml
 
 - [PHP](https://php.net/manual/en/install.php) 8.3 or above.
 
-#### Recommended
+### Recommended
 
-- [NumPower extension](https://github.com/RubixML/numpower) for tensor computing on CPU and GPU.
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
 - [Swoole extension](https://openswoole.com/) for multiprocessing support.
 
 #### Optional

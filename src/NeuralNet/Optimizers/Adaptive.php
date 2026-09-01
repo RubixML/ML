@@ -12,7 +12,6 @@ use Rubix\ML\NeuralNet\Parameter;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 interface Adaptive extends Optimizer
 {

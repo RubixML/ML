@@ -1,15 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use NumPower;
-use NDArray;
-use Rubix\ML\Exceptions\InvalidAlphaException;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
+use Tensor\Matrix;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+
+use function exp;
 
 /**
  * ELU
@@ -24,82 +20,88 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Aleksei Nechaev <omfg.rus@gmail.com>
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class ELU implements ActivationFunction
 {
     /**
-     * Class constructor.
+     * At which negative value the ELU will saturate. For example if alpha
+     * equals 1, the leaked value will never be greater than -1.0.
      *
-     * @param float $alpha At which negative value the ELU will saturate. For example if alpha
-     *                     equals 1, the leaked value will never be greater than -1.0.
-     *
-     * @throws InvalidAlphaException
+     * @var float
      */
-    public function __construct(protected float $alpha = 1.0)
+    protected float $alpha;
+
+    /**
+     * @param float $alpha
+     * @throws InvalidArgumentException
+     */
+    public function __construct(float $alpha = 1.0)
     {
-        if ($this->alpha < 0.0) {
-            throw new InvalidAlphaException(
-                message: "Alpha must be greater than 0, {$this->alpha} given."
-            );
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('Alpha must be greater than'
+                . " 0, $alpha given.");
         }
 
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
+        $this->alpha = $alpha;
     }
 
     /**
-     * Apply the ELU activation function to the input.
+     * Compute the activation.
      *
-     * f(x) = x                 if x > 0
-     * f(x) = α * (e^x - 1)     if x ≤ 0
+     * @internal
      *
-     * @param NDArray $input The input values
-     * @return NDArray The activated values
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function activate(NDArray $input) : NDArray
+    public function activate(Matrix $input) : Matrix
     {
-        $positiveActivation = NumPower::maximum($input, 0);
-
-        $negativeMask = NumPower::minimum($input, 0);
-
-        $negativeActivation = NumPower::multiply(
-            NumPower::expm1($negativeMask),
-            $this->alpha
-        );
-
-        return NumPower::add($positiveActivation, $negativeActivation);
+        return $input->map([$this, '_activate']);
     }
 
     /**
-     * Calculate the derivative of the ELU activation function using input and output.
+     * Calculate the derivative of the activation.
      *
-     * f'(x) = 1             if x > 0
-     * f'(x) = f(x) + α      if x ≤ 0, where f(x) is the ELU output
+     * @internal
      *
-     * @param NDArray $input
-     * @param NDArray $output
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $output
+     * @return Matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        $positiveMask = NumPower::greater($input, 0);
-
-        $negativeMask = NumPower::lessEqual($input, 0);
-
-        $negativePart = NumPower::multiply(
-            NumPower::add($output, $this->alpha),
-            $negativeMask
-        );
-
-        return NumPower::add($positiveMask, $negativePart);
+        return $output->map([$this, '_differentiate']);
     }
 
     /**
-     * Return the string representation of the activation function.
+     * @internal
+     *
+     * @param float $input
+     * @return float
+     */
+    public function _activate(float $input) : float
+    {
+        return $input > 0.0
+            ? $input
+            : $this->alpha * (exp($input) - 1.0);
+    }
+
+    /**
+     * @internal
+     *
+     * @param float $output
+     * @return float
+     */
+    public function _differentiate(float $output) : float
+    {
+        return $output > 0.0
+            ? 1.0
+            : $output + $this->alpha;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
      *
      * @return string
      */

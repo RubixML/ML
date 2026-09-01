@@ -2,18 +2,16 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+
+use function count;
 
 /**
  * Multiclass
@@ -26,7 +24,6 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Multiclass implements Output
 {
@@ -56,16 +53,16 @@ class Multiclass implements Output
     /**
      * The memorized input matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $output = null;
+    protected ?Matrix $output = null;
 
     /**
      * @param string[] $classes
@@ -82,13 +79,8 @@ class Multiclass implements Output
                 . ' given.');
         }
 
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-
         $this->classes = $classes;
-        $this->costFn = $costFn ?? new MulticlassCrossEntropy();
+        $this->costFn = $costFn ?? new CrossEntropy();
         $this->softmax = new Softmax();
     }
 
@@ -107,11 +99,10 @@ class Multiclass implements Output
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @throws InvalidArgumentException
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = count($this->classes);
 
@@ -127,10 +118,10 @@ class Multiclass implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
         $output = $this->softmax->activate($input);
 
@@ -143,11 +134,11 @@ class Multiclass implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param NDArray $input
+     * @param Matrix $input
      * @throws RuntimeException
-     * @return NDArray
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $this->softmax->activate($input);
     }
@@ -158,7 +149,7 @@ class Multiclass implements Output
      * @param string[] $labels
      * @param Optimizer $optimizer
      * @throws RuntimeException
-     * @return array{0: Deferred, 1: float}
+     * @return (Deferred|float)[]
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
@@ -167,20 +158,19 @@ class Multiclass implements Output
                 . ' before backpropagating.');
         }
 
-        // Build one-hot targets as [classes, batch] to match Dense output layout.
         $expected = [];
 
         foreach ($this->classes as $class) {
-            $row = [];
+            $dist = [];
 
             foreach ($labels as $label) {
-                $row[] = $class == $label ? 1.0 : 0.0;
+                $dist[] = $class == $label ? 1.0 : 0.0;
             }
 
-            $expected[] = $row;
+            $expected[] = $dist;
         }
 
-        $expected = NumPower::array($expected, $this->input->dataType());
+        $expected = Matrix::quick($expected);
 
         $input = $this->input;
         $output = $this->output;
@@ -197,48 +187,23 @@ class Multiclass implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * For Cross Entropy, the loss derivative cancels with the Softmax
-     * derivative, so dZ = (output - expected). Otherwise, an exact backward
-     * pass through Softmax is computed as the Jacobian-vector product
-     *
-     * dZ_i = s_i * (g_i - sum_j(s_j * g_j))
-     *
-     * where s is the Softmax output and g is the upstream gradient.
-     *
-     * @param NDArray $input
-     * @param NDArray $output
-     * @param NDArray $expected
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $output
+     * @param Matrix $expected
+     * @return Matrix
      */
-    public function gradient(NDArray $input, NDArray $output, NDArray $expected) : NDArray
+    public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
     {
-        $n = array_product($output->shape());
-
-        // Optimization specific to softmax + multiclass cross entropy.
-        // The loss derivative cancels with the softmax derivative, so dZ = (output - expected).
-        if ($this->costFn instanceof MulticlassCrossEntropy) {
-            return NumPower::divide(
-                NumPower::subtract($output, $expected),
-                $n
-            );
+        if ($this->costFn instanceof CrossEntropy) {
+            return $output->subtract($expected)
+                ->divide($output->n());
         }
 
-        $gradient = NumPower::divide(
-            $this->costFn->differentiate($output, $expected),
-            $n
-        );
+        $dLoss = $this->costFn->differentiate($output, $expected)
+            ->divide($output->n());
 
-        $batch = $output->shape()[1];
-
-        $dot = NumPower::reshape(
-            NumPower::sum(NumPower::multiply($gradient, $output), axis: 0),
-            [1, $batch]
-        );
-
-        return NumPower::multiply(
-            $output,
-            NumPower::subtract($gradient, $dot)
-        );
+        return $this->softmax->differentiate($input, $output)
+            ->multiply($dLoss);
     }
 
     /**
