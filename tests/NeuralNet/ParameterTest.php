@@ -48,4 +48,15 @@ class ParameterTest extends TestCase
 
         self::assertEqualsWithDelta($expected, $this->param->param()->toArray(), 1e-7);
     }
+
+    #[Test]
+    public function setDataType() : void
+    {
+        self::assertSame('float32', $this->param->param()->dataType());
+
+        $this->param->setDataType('float64');
+
+        self::assertSame('float64', $this->param->param()->dataType());
+        self::assertEquals([[5.0, 4.0], [-2.0, 6.0]], $this->param->param()->toArray());
+    }
 }

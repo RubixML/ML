@@ -69,6 +69,20 @@ class AdaGrad implements Optimizer, Adaptive
     }
 
     /**
+     * Set the data type of the cached NDArrays in place.
+     *
+     * @param string $datatype
+     */
+    public function setCacheDataType(string $datatype) : void
+    {
+        foreach ($this->cache as &$entry) {
+            $entry->setDataType($datatype);
+        }
+
+        unset($entry);
+    }
+
+    /**
      * Warm the parameter cache.
      *
      * @internal
@@ -84,7 +98,9 @@ class AdaGrad implements Optimizer, Adaptive
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $this->cache[$param->id()] = NumPower::zeros($param->param()->shape(), 'float32', 0);
+        $zeros = NumPower::zeros($param->param()->shape(), $param->param()->dataType(), 0);
+
+        $this->cache[$param->id()] = $zeros;
     }
 
     /**

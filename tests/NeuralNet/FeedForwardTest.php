@@ -16,9 +16,11 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 #[Group('NeuralNet')]
 #[CoversClass(FeedForward::class)]
@@ -125,5 +127,57 @@ class FeedForwardTest extends TestCase
         $loss = $this->network->roundtrip($this->dataset);
 
         self::assertIsFloat($loss);
+    }
+
+    #[Test]
+    #[TestDox('Casts the data type of every parameter NDArray in place')]
+    public function setDataType() : void
+    {
+        $this->network->initialize();
+
+        $this->network->setDataType('float32');
+
+        foreach ($this->network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    self::assertSame('float32', $parameter->param()->dataType());
+                }
+            }
+        }
+    }
+
+    #[Test]
+    #[TestDox('Initializes parameters in the data type given at construction time')]
+    public function setDataTypeViaConstructor() : void
+    {
+        $network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001), 'float32');
+
+        $network->initialize();
+
+        foreach ($network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    self::assertSame('float32', $parameter->param()->dataType());
+                }
+            }
+        }
+    }
+
+    #[Test]
+    #[TestDox('Throws when the given data type is not float32')]
+    public function setDataTypeInvalid() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->network->setDataType('float64');
+    }
+
+    #[Test]
+    #[TestDox('Throws when the data type given at construction time is not float32')]
+    public function constructInvalid() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001), 'float64');
     }
 }

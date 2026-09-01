@@ -17,6 +17,7 @@ use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Traversable;
 use function array_reverse;
 use function Rubix\ML\array_pack;
@@ -76,13 +77,26 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
+     * The data type of the NDArrays contained within the network.
+     *
+     * @var string
+     */
+    protected string $dataType;
+
+    /**
      * @param Input $input
      * @param Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
+     * @param string $dataType
+     * @throws InvalidArgumentException
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer, string $dataType = 'float32')
     {
+        if ($dataType !== 'float32') {
+            throw new InvalidArgumentException("Data type must be float32, $dataType given.");
+        }
+
         SpecificationChain::with([
             new ExtensionIsLoaded('RubixNumPower'),
             new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
@@ -97,6 +111,7 @@ class FeedForward implements Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
+        $this->dataType = $dataType;
     }
 
     /**
@@ -117,6 +132,33 @@ class FeedForward implements Network
     public function hidden() : array
     {
         return $this->hidden;
+    }
+
+    /**
+     * Set the data type of every NDArray contained within the network and its optimizer.
+     *
+     * @param string $datatype
+     * @throws InvalidArgumentException
+     */
+    public function setDataType(string $datatype) : void
+    {
+        if ($datatype !== 'float32') {
+            throw new InvalidArgumentException("Data type must be float32, $datatype given.");
+        }
+
+        $this->dataType = $datatype;
+
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    $parameter->setDataType($datatype);
+                }
+            }
+        }
+
+        if ($this->optimizer instanceof Adaptive) {
+            $this->optimizer->setCacheDataType($datatype);
+        }
     }
 
     /**
@@ -174,6 +216,8 @@ class FeedForward implements Network
             $fanIn = $layer->initialize($fanIn);
         }
 
+        $this->setDataType($this->dataType);
+
         if ($this->optimizer instanceof Adaptive) {
             foreach ($this->layers() as $layer) {
                 if ($layer instanceof Parametric) {
@@ -194,12 +238,12 @@ class FeedForward implements Network
     public function infer(Dataset $dataset) : NDArray
     {
         if ($dataset->empty()) {
-            return NumPower::array([], 'float32');
+            return NumPower::array([], $this->dataType);
         }
 
         $samples = array_pack($dataset->samples());
 
-        $input = NumPower::transpose(NumPower::array($samples, 'float32'), [1, 0]);
+        $input = NumPower::transpose(NumPower::array($samples, $this->dataType), [1, 0]);
 
         foreach ($this->layers() as $layer) {
             $input = $layer->infer($input);
@@ -217,7 +261,7 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $dataset) : float
     {
-        $input = NumPower::transpose(NumPower::array($dataset->samples(), 'float32'), [1, 0]);
+        $input = NumPower::transpose(NumPower::array($dataset->samples(), $this->dataType), [1, 0]);
 
         $this->feed($input);
 

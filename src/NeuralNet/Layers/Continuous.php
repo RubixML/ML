@@ -120,7 +120,7 @@ class Continuous implements Output
             throw new RuntimeException('Must perform forward pass before backpropagating.');
         }
 
-        $expected = NumPower::array([$labels], 'float32');
+        $expected = NumPower::array([$labels], $this->input->dataType());
 
         $input = $this->input;
 

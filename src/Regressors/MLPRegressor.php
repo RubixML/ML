@@ -169,6 +169,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?string $snapshotPath = null;
 
     /**
+     * The data type of the NDArrays contained within the neural network.
+     *
+     * @var string|null
+     */
+    protected ?string $dataType = null;
+
+    /**
      * @param list<mixed> $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
@@ -375,6 +382,35 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
+     * Return the data type of the NDArrays contained within the neural network.
+     *
+     * @return string
+     */
+    public function dataType() : string
+    {
+        return $this->dataType ?? 'float32';
+    }
+
+    /**
+     * Set the data type of every NDArray contained within the neural network.
+     *
+     * @param string $datatype
+     * @throws InvalidArgumentException
+     */
+    public function setDataType(string $datatype) : void
+    {
+        if ($datatype !== 'float32') {
+            throw new InvalidArgumentException("Data type must be float32, $datatype given.");
+        }
+
+        if ($this->network) {
+            $this->network->setDataType($datatype);
+        }
+
+        $this->dataType = $datatype;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -388,10 +424,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1Uniform());
 
         $this->network = new FeedForward(
-            input: new Placeholder1D($dataset->numFeatures()),
-            hidden: $hiddenLayers,
-            output: new Continuous($this->costFn),
-            optimizer: $this->optimizer
+            new Placeholder1D($dataset->numFeatures()),
+            $hiddenLayers,
+            new Continuous($this->costFn),
+            $this->optimizer,
+            $this->dataType()
         );
 
         $this->network->initialize();

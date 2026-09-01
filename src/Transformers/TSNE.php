@@ -321,8 +321,8 @@ class TSNE implements Transformer, Verbose
             self::Y_INIT_SCALE
         );
 
-        $velocity = NumPower::zeros([$m, $this->dimensions], 'float32', 0);
-        $gains = NumPower::ones([$m, $this->dimensions], 'float32', 0)->toArray();
+        $velocity = NumPower::zeros([$m, $this->dimensions], $y->dataType(), 0);
+        $gains = NumPower::ones([$m, $this->dimensions], $y->dataType(), 0)->toArray();
 
         $momentum = self::INIT_MOMENTUM;
 
@@ -341,7 +341,7 @@ class TSNE implements Transformer, Verbose
 
             unset($row);
 
-            $gradient = NumPower::multiply($gradient, NumPower::array($gains, 'float32'));
+            $gradient = NumPower::multiply($gradient, NumPower::array($gains, $y->dataType()));
 
             $velocity = NumPower::subtract(
                 NumPower::multiply($velocity, $momentum),
@@ -423,12 +423,12 @@ class TSNE implements Transformer, Verbose
         $m = $distances->shape()[0];
 
         if ($m === 0) {
-            return NumPower::array([], 'float32');
+            return NumPower::array([], $distances->dataType());
         }
 
         $mask = NumPower::subtract(
-            NumPower::ones([$m, $m], 'float32', 0),
-            NumPower::identity($m, 'float32', 0)
+            NumPower::ones([$m, $m], $distances->dataType(), 0),
+            NumPower::identity($m, $distances->dataType(), 0)
         );
 
         $betas = array_fill(0, $m, 1.0);
@@ -439,14 +439,14 @@ class TSNE implements Transformer, Verbose
 
         $active = $m;
 
-        $candidate = NumPower::zeros([$m, $m], 'float32', 0);
+        $candidate = NumPower::zeros([$m, $m], $distances->dataType(), 0);
 
         for ($j = 0; $j < self::MAX_BINARY_PRECISION; ++$j) {
             if ($active === 0) {
                 break;
             }
 
-            $betasColumn = NumPower::reshape(NumPower::array($betas, 'float32'), [$m, 1]);
+            $betasColumn = NumPower::reshape(NumPower::array($betas, $distances->dataType()), [$m, 1]);
 
             $candidate = NumPower::multiply(
                 NumPower::exp(
@@ -468,7 +468,7 @@ class TSNE implements Transformer, Verbose
 
             $dcb = NumPower::multiply(
                 NumPower::sum(NumPower::multiply($distances, $candidate), axis: 1),
-                NumPower::array($betas, 'float32')
+                NumPower::array($betas, $distances->dataType())
             );
 
             $diff = NumPower::negative(

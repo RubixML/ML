@@ -22,6 +22,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Regressors\Adaline;
 
@@ -215,6 +216,69 @@ class AdalineTest extends TestCase
         );
 
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Casts the data type of every neural network NDArray in place')]
+    public function setDataType() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(128);
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        $this->estimator->setDataType('float32');
+
+        self::assertSame('float32', $this->estimator->dataType());
+
+        $network = $this->estimator->network();
+
+        self::assertNotNull($network);
+
+        foreach ($network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    self::assertSame('float32', $parameter->param()->dataType());
+                }
+            }
+        }
+    }
+
+    #[Test]
+    #[TestDox('Throws when the given data type is not float32')]
+    public function setDataTypeInvalid() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->setDataType('float64');
+    }
+
+    #[Test]
+    #[TestDox('Trains the network with the configured data type')]
+    public function setDataTypeBeforeTraining() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $this->estimator->setDataType('float32');
+
+        $training = $this->generator->generate(128);
+
+        $this->estimator->train($training);
+
+        $network = $this->estimator->network();
+
+        self::assertNotNull($network);
+
+        foreach ($network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    self::assertSame('float32', $parameter->param()->dataType());
+                }
+            }
+        }
     }
 
     #[Test]

@@ -90,4 +90,40 @@ class AdaGradTest extends TestCase
 
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);
     }
+
+    #[Test]
+    #[TestDox('Warms the cache with the parameter\'s data type')]
+    public function warmWithFloat64Param() : void
+    {
+        $param = new Parameter(NumPower::array([1.0, 2.0], 'float64'));
+
+        $this->optimizer->warm($param);
+
+        $ref = new \ReflectionClass($this->optimizer);
+        $prop = $ref->getProperty('cache');
+        $prop->setAccessible(true);
+
+        foreach ($prop->getValue($this->optimizer) as $entry) {
+            self::assertInstanceOf(NDArray::class, $entry);
+            self::assertSame('float64', $entry->dataType());
+        }
+    }
+
+    #[Test]
+    #[TestDox('Casts the cached NDArrays in place')]
+    public function setCacheDataType() : void
+    {
+        $this->optimizer->warm(new Parameter(NumPower::array([1.0, 2.0])));
+
+        $this->optimizer->setCacheDataType('float64');
+
+        $ref = new \ReflectionClass($this->optimizer);
+        $prop = $ref->getProperty('cache');
+        $prop->setAccessible(true);
+
+        foreach ($prop->getValue($this->optimizer) as $entry) {
+            self::assertInstanceOf(NDArray::class, $entry);
+            self::assertSame('float64', $entry->dataType());
+        }
+    }
 }

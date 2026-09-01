@@ -178,6 +178,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected ?string $snapshotPath = null;
 
     /**
+     * The data type of the NDArrays contained within the neural network.
+     *
+     * @var string|null
+     */
+    protected ?string $dataType = null;
+
+    /**
      * @param mixed[] $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
@@ -389,6 +396,35 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
+     * Return the data type of the NDArrays contained within the neural network.
+     *
+     * @return string
+     */
+    public function dataType() : string
+    {
+        return $this->dataType ?? 'float32';
+    }
+
+    /**
+     * Set the data type of every NDArray contained within the neural network.
+     *
+     * @param string $datatype
+     * @throws InvalidArgumentException
+     */
+    public function setDataType(string $datatype) : void
+    {
+        if ($datatype !== 'float32') {
+            throw new InvalidArgumentException("Data type must be float32, $datatype given.");
+        }
+
+        if ($this->network) {
+            $this->network->setDataType($datatype);
+        }
+
+        $this->dataType = $datatype;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -412,7 +448,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Multiclass($classes, $this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->dataType()
         );
 
         $this->network->initialize();

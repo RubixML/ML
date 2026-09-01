@@ -107,6 +107,30 @@ class AdamTest extends TestCase
         self::assertEqualsWithDelta($zeros->toArray(), $norm->toArray(), 0.0);
     }
 
+    #[Test]
+    #[TestDox('Warms the cache with the parameter\'s data type')]
+    public function warmWithFloat64Param() : void
+    {
+        $param = new Parameter(NumPower::array([1.0, 2.0], 'float64'));
+
+        $this->optimizer->warm($param);
+
+        $ref = new \ReflectionClass($this->optimizer);
+        $prop = $ref->getProperty('cache');
+        $prop->setAccessible(true);
+
+        foreach ($prop->getValue($this->optimizer) as $entry) {
+            self::assertIsArray($entry);
+
+            self::assertCount(2, $entry);
+
+            foreach ($entry as $ndarray) {
+                self::assertInstanceOf(NDArray::class, $ndarray);
+                self::assertSame('float64', $ndarray->dataType());
+            }
+        }
+    }
+
     /**
      * @param float $rate
      * @param float $momentumDecay
@@ -136,5 +160,27 @@ class AdamTest extends TestCase
         $step = $this->optimizer->step(param: $param, gradient: $gradient);
 
         self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Casts the cached velocity and norm NDArrays in place')]
+    public function setCacheDataType() : void
+    {
+        $this->optimizer->warm(new Parameter(NumPower::array([1.0, 2.0])));
+
+        $this->optimizer->setCacheDataType('float64');
+
+        $ref = new \ReflectionClass($this->optimizer);
+        $prop = $ref->getProperty('cache');
+        $prop->setAccessible(true);
+
+        foreach ($prop->getValue($this->optimizer) as $entry) {
+            self::assertIsArray($entry);
+
+            foreach ($entry as $ndarray) {
+                self::assertInstanceOf(NDArray::class, $ndarray);
+                self::assertSame('float64', $ndarray->dataType());
+            }
+        }
     }
 }

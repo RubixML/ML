@@ -171,6 +171,13 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected ?string $snapshotPath = null;
 
     /**
+     * The data type of the NDArrays contained within the neural network.
+     *
+     * @var string
+     */
+    protected ?string $dataType = null;
+
+    /**
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param float $l2Penalty
@@ -371,6 +378,35 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
+     * Return the data type of the NDArrays contained within the neural network.
+     *
+     * @return string
+     */
+    public function dataType() : string
+    {
+        return $this->dataType ?? 'float32';
+    }
+
+    /**
+     * Set the data type of every NDArray contained within the neural network.
+     *
+     * @param string $datatype
+     * @throws InvalidArgumentException
+     */
+    public function setDataType(string $datatype) : void
+    {
+        if ($datatype !== 'float32') {
+            throw new InvalidArgumentException("Data type must be float32, $datatype given.");
+        }
+
+        if ($this->network) {
+            $this->network->setDataType($datatype);
+        }
+
+        $this->dataType = $datatype;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -389,7 +425,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->l2Penalty, true, new Xavier1Uniform())],
             new Binary($classes, $this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->dataType()
         );
 
         $this->network->initialize();
@@ -627,7 +664,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             $properties['losses'],
             $properties['scores'],
             $properties['logger'],
-            $properties['snapshotPath']
+            $properties['snapshotPath'],
+            $properties['dataType'],
         );
 
         return $properties;

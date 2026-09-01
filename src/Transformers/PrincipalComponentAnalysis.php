@@ -165,7 +165,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = NumPower::array($eigenvectors, 'float32');
+        $eigenvectors = NumPower::array($eigenvectors, $eig[1]->dataType());
         $eigenvectors = NumPower::transpose($eigenvectors, [1, 0]);
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
@@ -188,7 +188,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $x = NumPower::array($samples, 'float32');
+        $x = NumPower::array($samples, $this->mean->dataType());
 
         $delta = NumPower::subtract($x, $this->mean);
 

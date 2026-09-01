@@ -154,6 +154,28 @@ class BinaryTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Backpropagates on a float64 input with float64 intermediates')]
+    public function backWithFloat64Input() : void
+    {
+        $this->layer->initialize(1);
+
+        $input = NumPower::array([
+            [1.0, 2.5, -0.1],
+        ], 'float64');
+
+        $this->layer->forward($input);
+
+        [$computation, $loss] = $this->layer->back(labels: $this->labels, optimizer: $this->optimizer);
+
+        self::assertIsFloat($loss);
+
+        $gradient = $computation->compute();
+
+        self::assertInstanceOf(NDArray::class, $gradient);
+        self::assertSame('float64', $gradient->dataType());
+    }
+
+    #[Test]
     #[TestDox('Computes gradient directly given input, output and expected')]
     #[DataProvider('backProvider')]
     public function gradient(array $expectedGradient) : void

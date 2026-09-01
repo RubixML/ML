@@ -97,6 +97,16 @@ class Parameter
     }
 
     /**
+     * Set the data type of the parameter NDArray.
+     *
+     * @param string $datatype
+     */
+    public function setDataType(string $datatype) : void
+    {
+        $this->param->setDataType($datatype);
+    }
+
+    /**
      * Perform a deep copy of the object upon cloning.
      */
     public function __clone() : void

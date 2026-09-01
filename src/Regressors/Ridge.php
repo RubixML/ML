@@ -24,6 +24,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AutotrackRevisions;
+
 use function is_array;
 use function is_float;
 use function is_null;
@@ -179,6 +180,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $biases = NumPower::ones([$dataset->numSamples(), 1], 'float32', 0);
 
         $samples = NumPower::array(array_pack($dataset->samples()), 'float32');
+
         // Add bias from left
         $x = NumPower::concatenate([$biases, $samples], axis: 1);
         $y = NumPower::array($dataset->labels(), 'float32');

@@ -179,7 +179,7 @@ class Multiclass implements Output
             $expected[] = $row;
         }
 
-        $expected = NumPower::array($expected, 'float32');
+        $expected = NumPower::array($expected, $this->input->dataType());
 
         $input = $this->input;
         $output = $this->output;

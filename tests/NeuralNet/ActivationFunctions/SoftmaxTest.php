@@ -245,4 +245,21 @@ class SoftmaxTest extends TestCase
             }
         }
     }
+
+    #[Test]
+    #[TestDox('Activates a float64 input with float64 intermediates')]
+    public function activateWithFloat64Input() : void
+    {
+        $input = NumPower::array([
+            [2.0],
+            [1.0],
+            [-0.5],
+            [0.0],
+        ], 'float64');
+
+        $activations = $this->activationFn->activate($input);
+
+        self::assertSame('float64', $activations->dataType());
+        self::assertEqualsWithDelta(1.0, NumPower::sum($activations, axis: 0)->toArray()[0], 1e-7);
+    }
 }

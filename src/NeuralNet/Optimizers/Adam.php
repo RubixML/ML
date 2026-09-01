@@ -103,6 +103,21 @@ class Adam implements Optimizer, Adaptive
     }
 
     /**
+     * Set the data type of the cached NDArrays in place.
+     *
+     * @param string $datatype
+     */
+    public function setCacheDataType(string $datatype) : void
+    {
+        foreach ($this->cache as &$entry) {
+            $entry[0]->setDataType($datatype);
+            $entry[1]->setDataType($datatype);
+        }
+
+        unset($entry);
+    }
+
+    /**
      * Warm the parameter cache.
      *
      * @internal
@@ -119,7 +134,7 @@ class Adam implements Optimizer, Adaptive
         }
 
         /** @var NDArray $zeros */
-        $zeros = NumPower::zeros($param->param()->shape(), 'float32', 0);
+        $zeros = NumPower::zeros($param->param()->shape(), $param->param()->dataType(), 0);
 
         $this->cache[$param->id()] = [clone $zeros, $zeros];
     }

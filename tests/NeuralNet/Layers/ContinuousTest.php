@@ -130,6 +130,28 @@ class ContinuousTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Backpropagates on a float64 input with float64 intermediates')]
+    public function backWithFloat64Input() : void
+    {
+        $this->layer->initialize(1);
+
+        $input = NumPower::array([
+            [2.5, 0.0, -6.0],
+        ], 'float64');
+
+        $this->layer->forward($input);
+
+        [$computation, $loss] = $this->layer->back(labels: $this->labels, optimizer: $this->optimizer);
+
+        self::assertIsFloat($loss);
+
+        $gradient = $computation->compute();
+
+        self::assertInstanceOf(NDArray::class, $gradient);
+        self::assertSame('float64', $gradient->dataType());
+    }
+
+    #[Test]
     #[TestDox('Computes gradient directly given input and expected')]
     #[DataProvider('gradientProvider')]
     public function gradient(array $expectedGradient) : void

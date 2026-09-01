@@ -17,6 +17,13 @@ use Rubix\ML\NeuralNet\Parameter;
 interface Adaptive extends Optimizer
 {
     /**
+     * Set the data type of the parameter cache.
+     *
+     * @param string $datatype
+     */
+    public function setCacheDataType(string $datatype) : void;
+
+    /**
      * Warm the parameter cache.
      *
      * @param Parameter $param

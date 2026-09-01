@@ -136,7 +136,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
         $singularValues = array_slice($singularValues, 0, $this->dimensions);
         $components = array_slice($components, 0, $this->dimensions);
 
-        $components = NumPower::array($components, 'float32');
+        $components = NumPower::array($components, $svd[2]->dataType());
         $components = NumPower::transpose($components, [1, 0]);
 
         $noiseStdDev = $totalStdDev - array_sum($singularValues);
@@ -158,7 +158,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $x = NumPower::array($samples, 'float32');
+        $x = NumPower::array($samples, $this->components->dataType());
 
         $samples = NumPower::matmul($x, $this->components)->toArray();
     }
