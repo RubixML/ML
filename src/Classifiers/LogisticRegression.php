@@ -140,7 +140,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @var string
      */
-    protected string $dataType;
+    protected string $dataType = 'float32';
 
     /**
      * The underlying neural network instance.
