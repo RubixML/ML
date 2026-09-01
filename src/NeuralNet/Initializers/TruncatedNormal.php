@@ -30,7 +30,7 @@ class TruncatedNormal implements Initializer
     use AssertsShapes;
 
     /**
-     * @param float $stdDev The standard deviation of the distribution to sample from
+     * @param float $stdDev
      * @throws InvalidArgumentException
      */
     public function __construct(protected float $stdDev = 0.05)

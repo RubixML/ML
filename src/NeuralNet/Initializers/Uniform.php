@@ -29,7 +29,7 @@ class Uniform implements Initializer
     use AssertsShapes;
 
     /**
-     * @param float $beta The upper and lower bound of the distribution.
+     * @param float $beta
      * @throws InvalidArgumentException
      */
     public function __construct(protected float $beta = 0.5)
