@@ -170,7 +170,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      *
      * @var string
      */
-    protected string $dataType;
+    protected string $dataType = 'float32';
 
     /**
      * @param int $batchSize
