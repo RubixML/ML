@@ -252,7 +252,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
-        $this->dataType = 'float32';
     }
 
     /**

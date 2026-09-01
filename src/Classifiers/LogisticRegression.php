@@ -251,7 +251,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new BinaryCrossEntropy();
         $this->metric = $metric ?? new FBeta();
-        $this->dataType = 'float32';
     }
 
     /**

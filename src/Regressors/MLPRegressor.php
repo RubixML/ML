@@ -255,7 +255,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
-        $this->dataType = 'float32';
     }
 
     /**

@@ -269,7 +269,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
-        $this->dataType = 'float32';
     }
 
     /**

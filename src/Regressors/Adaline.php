@@ -246,7 +246,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
-        $this->dataType = 'float32';
     }
 
     /**
