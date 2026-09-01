@@ -81,7 +81,7 @@ class FeedForward implements Network
      *
      * @var string
      */
-    protected string $dataType;
+    protected string $dataType = 'float32';
 
     /**
      * @param Input $input
