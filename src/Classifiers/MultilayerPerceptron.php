@@ -182,7 +182,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var string
      */
-    protected string $dataType;
+    protected string $dataType = 'float32';
 
     /**
      * @param mixed[] $hiddenLayers
