@@ -171,9 +171,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * The data type of the NDArrays contained within the neural network.
      *
-     * @var string|null
+     * @var string
      */
-    protected ?string $dataType = null;
+    protected string $dataType;
 
     /**
      * @param list<mixed> $hiddenLayers
@@ -255,6 +255,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
+        $this->dataType = 'float32';
     }
 
     /**
@@ -428,7 +429,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $hiddenLayers,
             new Continuous($this->costFn),
             $this->optimizer,
-            $this->dataType()
+            $this->dataType
         );
 
         $this->network->initialize();

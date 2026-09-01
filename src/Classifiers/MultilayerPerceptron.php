@@ -180,9 +180,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The data type of the NDArrays contained within the neural network.
      *
-     * @var string|null
+     * @var string
      */
-    protected ?string $dataType = null;
+    protected string $dataType;
 
     /**
      * @param mixed[] $hiddenLayers
@@ -269,6 +269,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
+        $this->dataType = 'float32';
     }
 
     /**
@@ -449,7 +450,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $hiddenLayers,
             new Multiclass($classes, $this->costFn),
             $this->optimizer,
-            $this->dataType()
+            $this->dataType
         );
 
         $this->network->initialize();

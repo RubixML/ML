@@ -144,7 +144,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      *
      * @var string
      */
-    protected string $dataType = 'float32';
+    protected string $dataType;
 
     /**
      * The unique class labels.
@@ -252,6 +252,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
+        $this->dataType = 'float32';
     }
 
     /**
@@ -427,7 +428,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             [new Dense(count($classes), $this->l2Penalty, true, new Xavier1Uniform())],
             new Multiclass($classes, $this->costFn),
             $this->optimizer,
-            $this->dataType()
+            $this->dataType
         );
 
         $this->network->initialize();

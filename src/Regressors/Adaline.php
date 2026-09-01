@@ -168,9 +168,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * The data type of the NDArrays contained within the neural network.
      *
-     * @var string|null
+     * @var string
      */
-    protected ?string $dataType = null;
+    protected string $dataType;
 
     /**
      * @param int $batchSize
@@ -246,6 +246,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
+        $this->dataType = 'float32';
     }
 
     /**
@@ -415,7 +416,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             [new Dense(1, $this->l2Penalty, true, new Xavier2Uniform())],
             new Continuous($this->costFn),
             $this->optimizer,
-            $this->dataType()
+            $this->dataType
         );
 
         $this->network->initialize();

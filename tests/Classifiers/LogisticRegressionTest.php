@@ -198,8 +198,6 @@ class LogisticRegressionTest extends TestCase
 
         $this->estimator->setDataType('float32');
 
-        self::assertSame('float32', $this->estimator->dataType());
-
         $network = $this->estimator->network();
 
         self::assertNotNull($network);

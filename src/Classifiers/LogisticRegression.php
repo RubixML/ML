@@ -136,6 +136,13 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected Metric $metric;
 
     /**
+     * The data type of the NDArrays contained within the neural network.
+     *
+     * @var string
+     */
+    protected string $dataType;
+
+    /**
      * The underlying neural network instance.
      *
      * @var FeedForward|null
@@ -169,13 +176,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      * @var string|null
      */
     protected ?string $snapshotPath = null;
-
-    /**
-     * The data type of the NDArrays contained within the neural network.
-     *
-     * @var string
-     */
-    protected ?string $dataType = null;
 
     /**
      * @param int $batchSize
@@ -251,6 +251,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new BinaryCrossEntropy();
         $this->metric = $metric ?? new FBeta();
+        $this->dataType = 'float32';
     }
 
     /**
@@ -378,16 +379,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
-     * Return the data type of the NDArrays contained within the neural network.
-     *
-     * @return string
-     */
-    public function dataType() : string
-    {
-        return $this->dataType ?? 'float32';
-    }
-
-    /**
      * Set the data type of every NDArray contained within the neural network.
      *
      * @param string $datatype
@@ -426,7 +417,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             [new Dense(1, $this->l2Penalty, true, new Xavier1Uniform())],
             new Binary($classes, $this->costFn),
             $this->optimizer,
-            $this->dataType()
+            $this->dataType
         );
 
         $this->network->initialize();
@@ -665,7 +656,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath'],
-            $properties['dataType'],
         );
 
         return $properties;
