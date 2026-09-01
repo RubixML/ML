@@ -1,8 +1,6 @@
 parameters:
     level: 6
     phpVersion: 80400
-    bootstrapFiles:
-        - phpstan-bootstrap.php
     fileExtensions:
         - php
     tmpDir: ./runtime/.phpstan/

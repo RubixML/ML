@@ -9,8 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use NumPower;
-use NDArray;
+use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use PHPUnit\Framework\TestCase;
@@ -25,47 +24,41 @@ class BinaryCrossEntropyTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            NumPower::array([]),
-            NumPower::array([]),
-            NAN,
-        ];
-
-        yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.99],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             0.0100503,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.7],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             0.3566749,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.01],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             4.6051702,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.9],
                 [0.1],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
                 [0.0],
             ]),
@@ -76,10 +69,10 @@ class BinaryCrossEntropyTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.99],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             [
@@ -88,10 +81,10 @@ class BinaryCrossEntropyTest extends TestCase
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.7],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             [
@@ -100,10 +93,10 @@ class BinaryCrossEntropyTest extends TestCase
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.01],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             [
@@ -112,11 +105,11 @@ class BinaryCrossEntropyTest extends TestCase
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.9],
                 [0.1],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
                 [0.0],
             ]),
@@ -145,8 +138,8 @@ class BinaryCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = NumPower::array([[1.0, 2.0, 3.0]]);
-        $target = NumPower::array([[1.0, 2.0]]);
+        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
+        $target = Matrix::quick([[1.0, 2.0]]);
 
         $this->costFn->compute($output, $target);
     }
@@ -158,8 +151,8 @@ class BinaryCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = NumPower::array([[1.0, 2.0, 3.0]]);
-        $target = NumPower::array([[1.0, 2.0]]);
+        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
+        $target = Matrix::quick([[1.0, 2.0]]);
 
         $this->costFn->differentiate($output, $target);
     }
@@ -167,25 +160,21 @@ class BinaryCrossEntropyTest extends TestCase
     #[Test]
     #[TestDox('Compute loss score')]
     #[DataProvider('computeProvider')]
-    public function compute(NDArray $output, NDArray $target, float $expected) : void
+    public function compute(Matrix $output, Matrix $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
-        if (is_nan($expected)) {
-            self::assertNan($loss);
-        } else {
-            self::assertEqualsWithDelta($expected, $loss, 1e-7);
-        }
+        self::assertEqualsWithDelta($expected, $loss, 1e-7);
     }
 
     #[Test]
     #[TestDox('Calculate gradient of cost function')]
     #[DataProvider('differentiateProvider')]
-    public function differentiate(NDArray $output, NDArray $target, array $expected) : void
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target);
 
-        $gradientArray = $gradient->toArray();
+        $gradientArray = $gradient->asArray();
 
         self::assertEqualsWithDelta($expected, $gradientArray, 1e-7);
     }

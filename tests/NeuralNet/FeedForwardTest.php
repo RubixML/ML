@@ -108,7 +108,7 @@ class FeedForwardTest extends TestCase
     /**
      * @test
      */
-    public function output() : void
+    public function testOutput() : void
     {
         $this->assertInstanceOf(Output::class, $this->network->output());
     }

@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use NDArray;
-use NumPower;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
+use Tensor\Matrix;
 use Rubix\ML\Traits\AssertsShapes;
 use const Rubix\ML\EPSILON;
 
@@ -28,36 +24,26 @@ class MulticlassCrossEntropy implements ClassificationLoss
 {
     use AssertsShapes;
 
-    public function __construct()
-    {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-    }
-
     /**
      * Compute the loss score.
      *
      * L(y, ŷ) = -Σ(y * log(ŷ)) / n
      *
-     * @param NDArray $output
-     * @param NDArray $target
+     * @param Matrix $output
+     * @param Matrix $target
      * @return float
      */
-    public function compute(NDArray $output, NDArray $target) : float
+    public function compute(Matrix $output, Matrix $target) : float
     {
         $this->assertSameShape($output, $target);
 
-        $output = NumPower::clip($output, EPSILON, 1.0);
+        $clippedOutput = $output->clip(EPSILON, 1.0);
 
-        $logOutput = NumPower::log($output);
-
-        $product = NumPower::multiply($target, $logOutput);
-
-        $negated = NumPower::multiply($product, -1.0);
-
-        return NumPower::mean($negated);
+        return $target
+            ->multiply($clippedOutput->log())
+            ->negate()
+            ->mean()
+            ->mean();
     }
 
     /**
@@ -65,19 +51,15 @@ class MulticlassCrossEntropy implements ClassificationLoss
      *
      * ∂L/∂ŷ = -y / ŷ
      *
-     * @param NDArray $output
-     * @param NDArray $target
-     * @return NDArray
+     * @param Matrix $output
+     * @param Matrix $target
+     * @return Matrix
      */
-    public function differentiate(NDArray $output, NDArray $target) : NDArray
+    public function differentiate(Matrix $output, Matrix $target) : Matrix
     {
         $this->assertSameShape($output, $target);
 
-        $output = NumPower::clip($output, EPSILON, 1.0);
-
-        $negated = NumPower::multiply($target, -1.0);
-
-        return NumPower::divide($negated, $output);
+        return $target->negate()->divide($output->clip(EPSILON, 1.0));
     }
 
     /**
