@@ -42,15 +42,14 @@ class RelativeEntropy implements ClassificationLoss
      *
      * @internal
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return float
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
         $this->assertSameShape($output, $target);
 
-        // Clip values to avoid log(0)
         $target = NumPower::clip($target, EPSILON, 1.0);
         $output = NumPower::clip($output, EPSILON, 1.0);
 
@@ -68,15 +67,14 @@ class RelativeEntropy implements ClassificationLoss
      *
      * @internal
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return NDArray
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
         $this->assertSameShape($output, $target);
 
-        // Clip values to avoid division by zero
         $target = NumPower::clip($target, EPSILON, 1.0);
         $output = NumPower::clip($output, EPSILON, 1.0);
 

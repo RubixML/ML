@@ -39,8 +39,8 @@ class LeastSquares implements RegressionLoss
      *
      * L(y, ŷ) = Σ(y - ŷ)^2 / n
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return float
      */
     public function compute(NDArray $output, NDArray $target) : float
@@ -50,7 +50,6 @@ class LeastSquares implements RegressionLoss
         $difference = NumPower::subtract($output, $target);
         $squared = NumPower::pow($difference, 2);
 
-        // Compute mean of all elements
         return NumPower::mean($squared);
     }
 
@@ -59,8 +58,8 @@ class LeastSquares implements RegressionLoss
      *
      * ∂L/∂ŷ = y - ŷ
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return NDArray
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray

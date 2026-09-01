@@ -71,8 +71,8 @@ class HuberLoss implements RegressionLoss
      *
      * @internal
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return float
      */
     public function compute(NDArray $output, NDArray $target) : float
@@ -95,8 +95,8 @@ class HuberLoss implements RegressionLoss
      *
      * @internal
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return NDArray
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray

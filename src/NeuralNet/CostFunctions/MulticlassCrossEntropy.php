@@ -23,7 +23,6 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class MulticlassCrossEntropy implements ClassificationLoss
 {
@@ -42,8 +41,8 @@ class MulticlassCrossEntropy implements ClassificationLoss
      *
      * L(y, ŷ) = -Σ(y * log(ŷ)) / n
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return float
      */
     public function compute(NDArray $output, NDArray $target) : float
@@ -53,7 +52,9 @@ class MulticlassCrossEntropy implements ClassificationLoss
         $output = NumPower::clip($output, EPSILON, 1.0);
 
         $logOutput = NumPower::log($output);
+
         $product = NumPower::multiply($target, $logOutput);
+
         $negated = NumPower::multiply($product, -1.0);
 
         return NumPower::mean($negated);
@@ -64,8 +65,8 @@ class MulticlassCrossEntropy implements ClassificationLoss
      *
      * ∂L/∂ŷ = -y / ŷ
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return NDArray
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray

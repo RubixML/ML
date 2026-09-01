@@ -44,8 +44,8 @@ class BinaryCrossEntropy implements ClassificationLoss
      *
      * L(y, ŷ) = -Σ(y * log(ŷ) + (1 - y) * log(1 - ŷ)) / n
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return float
      */
     public function compute(NDArray $output, NDArray $target) : float
@@ -72,8 +72,8 @@ class BinaryCrossEntropy implements ClassificationLoss
      *
      * ∂L/∂ŷ = (ŷ - y) / (ŷ * (1 - ŷ))
      *
-     * @param NDArray $output The output of the network
-     * @param NDArray $target The target values
+     * @param NDArray $output
+     * @param NDArray $target
      * @return NDArray
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
