@@ -104,7 +104,7 @@ final class Xavier1NormalTest extends TestCase
     public function matrixShapeMatchesFanInAndFanOut(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
 
         //when
         $shape = $w->shape();
@@ -122,7 +122,7 @@ final class Xavier1NormalTest extends TestCase
         // truncatedNormal truncates near ±2σ, so sample std ≈ 0.88 * scale (not scale itself)
         $scale = sqrt(2 / ($fanOut + $fanIn));
         $expectedStd = $scale * 0.88;
-        $w = (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
         $flatValues = array_merge(...$w->toArray());
 
         //when
@@ -164,7 +164,7 @@ final class Xavier1NormalTest extends TestCase
         }
 
         //when
-        (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Xavier1Normal())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
     }
 
     #[Test]

@@ -81,7 +81,7 @@ class Placeholder1DTest extends TestCase
     #[TestDox('Initialize returns fan out equal to inputs without changing width')]
     public function initialize() : void
     {
-        $fanOut = $this->layer->initialize(5);
+        $fanOut = $this->layer->initialize(5, dataType: 'float32');
 
         self::assertEquals(3, $fanOut);
         self::assertEquals(3, $this->layer->width());

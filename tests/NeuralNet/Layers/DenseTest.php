@@ -148,7 +148,7 @@ class DenseTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function forward(array $weights, array $biases, array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
         self::assertEquals(2, $this->layer->width());
 
         $this->layer->restore([
@@ -165,7 +165,7 @@ class DenseTest extends TestCase
     #[TestDox('Method weights() returns the restored weight matrix')]
     public function weightsReturnsExpectedValues() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $weightsArray = [
             [1.0, 0.0, 0.0],
@@ -195,7 +195,7 @@ class DenseTest extends TestCase
     #[DataProvider('backProvider')]
     public function back(array $weights, array $biases, array $prevGrad, array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $this->layer->restore([
             'weights' => new TrainableParameter(NumPower::array($weights)),
@@ -221,7 +221,7 @@ class DenseTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function infer(array $weights, array $biases, array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $this->layer->restore([
             'weights' => new TrainableParameter(NumPower::array($weights)),
@@ -237,7 +237,7 @@ class DenseTest extends TestCase
     #[TestDox('Method restore() correctly replaces layer parameters')]
     public function restoreReplacesParameters() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         // Use the same deterministic weights and biases as in forwardProvider
         $weights = [
@@ -266,7 +266,7 @@ class DenseTest extends TestCase
     #[TestDox('Method parameters() yields restored weights and biases')]
     public function parametersReturnsRestoredParameters() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $weightsArray = [
             [1.0, 0.0, 0.0],

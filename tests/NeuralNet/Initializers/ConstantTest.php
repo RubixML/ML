@@ -78,7 +78,7 @@ class ConstantTest extends TestCase
     public function matrixHasCorrectShape(int $fanIn, int $fanOut) : void
     {
         //given
-        $w = (new Constant(4.8))->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        $w = (new Constant(4.8))->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
 
         //when
         $shape = $w->shape();
@@ -92,7 +92,7 @@ class ConstantTest extends TestCase
     public function matrixFilledWithConstantValue() : void
     {
         //given
-        $w = (new Constant(4.5))->initialize(3, 4);
+        $w = (new Constant(4.5))->initialize(3, 4, dataType: 'float32');
 
         //when
         $values = $w->toArray();
@@ -116,7 +116,7 @@ class ConstantTest extends TestCase
         }
 
         //when
-        (new Constant())->initialize(fanIn: $fanIn, fanOut: $fanOut);
+        (new Constant())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
     }
 
     #[Test]

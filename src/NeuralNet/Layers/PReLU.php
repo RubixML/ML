@@ -104,7 +104,7 @@ class PReLU implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $alphaMat = $this->initializer->initialize(1, $fanOut);
+        $alphaMat = $this->initializer->initialize(1, $fanOut, $dataType);
 
         $alpha = NumPower::flatten($alphaMat);
 

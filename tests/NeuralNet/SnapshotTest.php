@@ -275,7 +275,8 @@ class SnapshotTest extends TestCase
                 classes: ['yes', 'no'],
                 costFn:  new BinaryCrossEntropy()
             ),
-            optimizer: new Stochastic()
+            optimizer: new Stochastic(),
+            dataType: 'float32'
         );
 
         $network->initialize();

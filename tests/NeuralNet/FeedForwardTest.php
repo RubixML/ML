@@ -69,7 +69,7 @@ class FeedForwardTest extends TestCase
 
         $this->output = new Multiclass(['yes', 'no', 'maybe'], new MulticlassCrossEntropy());
 
-        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
+        $this->network = new FeedForward($this->input, $this->hidden, $this->output, optimizer: new Adam(0.001), dataType: 'float32');
     }
 
     #[Test]

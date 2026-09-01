@@ -115,7 +115,7 @@ class ActivationTest extends TestCase
     #[TestDox('Initializes width equal to fan-in')]
     public function initializeSetsWidth() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         self::assertEquals($this->fanIn, $this->layer->width());
     }
@@ -125,7 +125,7 @@ class ActivationTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function forward(NDArray $input, array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $forward = $this->layer->forward($input);
         self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
@@ -136,7 +136,7 @@ class ActivationTest extends TestCase
     #[DataProvider('backProvider')]
     public function back(NDArray $input, NDArray $prevGrad, array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         // Forward pass to set internal input/output state
         $this->layer->forward($input);
@@ -153,7 +153,7 @@ class ActivationTest extends TestCase
     #[DataProvider('forwardProvider')]
     public function infer(NDArray $input, array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $infer = $this->layer->infer($input);
         self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
@@ -164,7 +164,7 @@ class ActivationTest extends TestCase
     #[DataProvider('backProvider')]
     public function gradient(NDArray $input, NDArray $prevGrad, array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         // Produce output to pass explicitly to gradient
         $output = $this->layer->forward($input);

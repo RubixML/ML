@@ -99,7 +99,7 @@ class DropoutTest extends TestCase
     #[TestDox('Initializes width equal to fan-in')]
     public function initializeSetsWidth() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         self::assertEquals($this->fanIn, $this->layer->width());
     }
@@ -108,7 +108,7 @@ class DropoutTest extends TestCase
     #[TestDox('Method forward() applies dropout mask with correct shape and scaling')]
     public function forward() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $forward = $this->layer->forward($this->input);
 
@@ -166,7 +166,7 @@ class DropoutTest extends TestCase
     #[TestDox('Backpropagates gradients using the same dropout mask')]
     public function back() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         // Forward pass to generate and store mask
         $forward = $this->layer->forward($this->input);
@@ -220,7 +220,7 @@ class DropoutTest extends TestCase
     #[DataProvider('inferProvider')]
     public function infer(array $expected) : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         $infer = $this->layer->infer($this->input);
 
@@ -231,7 +231,7 @@ class DropoutTest extends TestCase
     #[TestDox('Method initialize() returns fan out equal to fan in')]
     public function initializeReturnsFanOut() : void
     {
-        $fanOut = $this->layer->initialize($this->fanIn);
+        $fanOut = $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         self::assertSame($this->fanIn, $fanOut);
     }
@@ -240,7 +240,7 @@ class DropoutTest extends TestCase
     #[TestDox('Method width() returns the initialized width')]
     public function widthAfterInitialize() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
         self::assertSame($this->fanIn, $this->layer->width());
     }
