@@ -169,6 +169,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?string $snapshotPath = null;
 
     /**
+     * The data type to use for NDArrays.
+     *
+     * @var string
+     */
+    protected string $dataType = 'float32';
+
+    /**
      * @param list<mixed> $hiddenLayers
      * @param int $batchSize
      * @param Optimizer|null $optimizer
@@ -375,6 +382,24 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
+     * Set the data type to use for NDArrays.
+     * @param string $dataType
+     */
+    public function setDataType(string $dataType) : void
+    {
+        if (!in_array($dataType, ['float16', 'float32', 'float64'])) {
+            throw new InvalidArgumentException('Data type must be float16, float32, or float64, '
+                . "$dataType given.");
+        }
+
+        if ($this->network) {
+            throw new RuntimeException('Cannot change data type after training.');
+        }
+
+        $this->dataType = $dataType;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -388,10 +413,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1Uniform());
 
         $this->network = new FeedForward(
-            input: new Placeholder1D($dataset->numFeatures()),
-            hidden: $hiddenLayers,
-            output: new Continuous($this->costFn),
-            optimizer: $this->optimizer
+            new Placeholder1D($dataset->numFeatures()),
+            $hiddenLayers,
+            new Continuous($this->costFn),
+            $this->optimizer,
+            $this->dataType
         );
 
         $this->network->initialize();

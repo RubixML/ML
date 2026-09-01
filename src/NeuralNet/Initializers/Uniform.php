@@ -49,14 +49,15 @@ class Uniform implements Initializer
     /**
      * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : NDArray
+    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
         return NumPower::uniform(
-            shape: [$fanOut, $fanIn],
+            [$fanOut, $fanIn],
             low: -$this->beta,
-            high: $this->beta
+            high: $this->beta,
+            dtype: $dataType
         );
     }
 

@@ -50,11 +50,16 @@ class TruncatedNormal implements Initializer
     /**
      * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : NDArray
+    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray
     {
         $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
 
-        return NumPower::truncatedNormal(shape: [$fanOut, $fanIn], loc: 0.0, scale: $this->stdDev);
+        return NumPower::truncatedNormal(
+            [$fanOut, $fanIn],
+            loc: 0.0,
+            scale: $this->stdDev,
+            dtype: $dataType
+        );
     }
 
     /**

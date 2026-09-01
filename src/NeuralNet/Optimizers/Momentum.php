@@ -107,7 +107,9 @@ class Momentum implements Optimizer, Adaptive
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $this->cache[$param->id()] = NumPower::zeros($param->param()->shape(), 'float32', 0);
+        $zeros = NumPower::zeros($param->param()->shape(), $param->param()->dataType(), 0);
+
+        $this->cache[$param->id()] = $zeros;
     }
 
     /**
@@ -136,7 +138,6 @@ class Momentum implements Optimizer, Adaptive
     {
         $velocity = $this->cache[$param->id()];
 
-        // velocity = gradient * rate + velocity * (1 - decay)
         $velocity = NumPower::add(
             NumPower::multiply($gradient, $this->rate),
             NumPower::multiply($velocity, 1.0 - $this->decay)
@@ -145,7 +146,6 @@ class Momentum implements Optimizer, Adaptive
         $this->cache[$param->id()] = $velocity;
 
         if ($this->lookahead) {
-            // Apply lookahead: velocity = gradient * rate + velocity * (1 - decay)
             $velocity = NumPower::add(
                 NumPower::multiply($gradient, $this->rate),
                 NumPower::multiply($velocity, 1.0 - $this->decay)

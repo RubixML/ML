@@ -171,7 +171,7 @@ class Binary implements Output
             $expected[] = $this->classes[$label];
         }
 
-        $expected = NumPower::array([$expected], 'float32');
+        $expected = NumPower::array([$expected], $this->input->dataType());
 
         $input = $this->input;
         $output = $this->output;
