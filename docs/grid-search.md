@@ -51,3 +51,15 @@ Return the base learner instance:
 ```php
 public base() : ?\Rubix\ML\Learner
 ```
+
+Return all the parameter combinations:
+
+```php
+public combinations() : array
+```
+
+Return the validation scores of each of the parameter combinations:
+
+```php
+public scores() : ?array
+```

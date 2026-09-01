@@ -87,33 +87,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     protected ?array $scores = null;
 
     /**
-     * Return an array of all possible combinations of parameters. i.e their Cartesian product.
-     *
-     * @param list<list<mixed>> $params
-     * @return list<list<mixed>>
-     */
-    protected static function combine(array $params) : array
-    {
-        $combinations = [[]];
-
-        /** @var int<0,max> $i */
-        foreach ($params as $i => $params) {
-            $append = [];
-
-            foreach ($combinations as $product) {
-                foreach ($params as $param) {
-                    $product[$i] = $param;
-                    $append[] = $product;
-                }
-            }
-
-            $combinations = $append;
-        }
-
-        return $combinations;
-    }
-
-    /**
      * @param class-string $class
      * @param array<mixed[]> $params
      * @param Metric|null $metric
@@ -254,6 +227,42 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return the validation score for each parameter combination.
+     *
+     * @return float[]|null
+     */
+    public function scores() : ?array
+    {
+        return $this->scores;
+    }
+
+    /**
+     * Return a list of all possible combinations of parameters i.e their Cartesian product.
+     *
+     * @return list<list<mixed>>
+     */
+    public function combinations() : array
+    {
+        $combinations = [[]];
+
+        /** @var int<0,max> $i */
+        foreach ($this->params as $i => $params) {
+            $append = [];
+
+            foreach ($combinations as $product) {
+                foreach ($params as $param) {
+                    $product[$i] = $param;
+                    $append[] = $product;
+                }
+            }
+
+            $combinations = $append;
+        }
+
+        return $combinations;
+    }
+
+    /**
      * Train one estimator per combination of parameters given by the grid and
      * assign the best one as the base estimator of this instance.
      *
@@ -272,7 +281,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             $this->logger->info("Training $this");
         }
 
-        $combinations = self::combine($this->params);
+        $combinations = $this->combinations();
 
         $this->backend()->flush();
 
@@ -312,11 +321,12 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         $estimator->train($dataset);
 
-        $this->base = $estimator;
-
         if ($this->logger) {
             $this->logger->info('Training complete');
         }
+
+        $this->base = $estimator;
+        $this->scores = $scores;
     }
 
     /**
