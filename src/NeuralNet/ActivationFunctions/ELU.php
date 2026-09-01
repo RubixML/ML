@@ -80,15 +80,16 @@ class ELU implements ActivationFunction
      * f'(x) = 1             if x > 0
      * f'(x) = f(x) + α      if x ≤ 0, where f(x) is the ELU output
      *
-     * @param NDArray $input Input matrix (used to determine x > 0 mask)
-     * @param NDArray $output Output from the ELU activation function
-     * @return NDArray Derivative matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @return NDArray
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $positiveMask = NumPower::greater($input, 0);
 
         $negativeMask = NumPower::lessEqual($input, 0);
+
         $negativePart = NumPower::multiply(
             NumPower::add($output, $this->alpha),
             $negativeMask

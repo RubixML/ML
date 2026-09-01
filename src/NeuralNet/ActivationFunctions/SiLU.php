@@ -68,9 +68,9 @@ class SiLU implements ActivationFunction
      * f'(x) = sigmoid(x) + x * sigmoid(x) * (1 - sigmoid(x))
      *        = sigmoid(x) + x * sigmoid'(x)
      *
-     * @param NDArray $input Input matrix
-     * @param NDArray $output Output matrix
-     * @return NDArray Derivative matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @return NDArray
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {

@@ -49,13 +49,13 @@ class HyperbolicTangent implements ActivationFunction
      *
      * f'(x) = 1 - tanh^2(x)
      *
-     * @param NDArray $input Input matrix
-     * @param NDArray $tanH Output matrix
-     * @return NDArray Derivative matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @return NDArray
      */
-    public function differentiate(NDArray $input, NDArray $tanH) : NDArray
+    public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
-        $squared = NumPower::pow($tanH, 2);
+        $squared = NumPower::pow($output, 2);
 
         return NumPower::subtract(1.0, $squared);
     }

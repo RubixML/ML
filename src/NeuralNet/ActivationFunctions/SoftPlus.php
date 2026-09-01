@@ -61,6 +61,7 @@ class SoftPlus implements ActivationFunction
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $negExp = NumPower::exp(NumPower::multiply($input, -1.0));
+
         $denominator = NumPower::add(1.0, $negExp);
 
         return NumPower::divide(1.0, $denominator);

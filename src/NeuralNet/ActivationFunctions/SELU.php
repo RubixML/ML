@@ -63,8 +63,8 @@ class SELU implements ActivationFunction
      * f(x) = λ * x                 if x > 0
      * f(x) = λ * α * (e^x - 1)     if x ≤ 0
      *
-     * @param NDArray $input The input values
-     * @return NDArray The activated values
+     * @param NDArray $input
+     * @return NDArray
      */
     public function activate(NDArray $input) : NDArray
     {
@@ -74,6 +74,7 @@ class SELU implements ActivationFunction
         );
 
         $negativeMask = NumPower::minimum($input, 0);
+
         $negative = NumPower::multiply(
             NumPower::expm1($negativeMask),
             self::BETA
@@ -88,16 +89,18 @@ class SELU implements ActivationFunction
      * f'(x) = λ                if x > 0
      * f'(x) = λ * α * e^x      if x ≤ 0
      *
-     * @param NDArray $input Input matrix
-     * @param NDArray $output Output matrix
-     * @return NDArray Derivative matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @return NDArray
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $positiveMask = NumPower::greater($input, 0);
+
         $positivePart = NumPower::multiply($positiveMask, self::LAMBDA);
 
         $negativeMask = NumPower::lessEqual($input, 0);
+
         $negativePart = NumPower::multiply(
             NumPower::multiply(
                 NumPower::exp(

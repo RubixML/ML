@@ -85,8 +85,8 @@ class Softmax implements ActivationFunction
      * the Jacobian-vector product which must be handled by the output layer.
      *
      * @param NDArray $input
-     * @param NDArray $output The output from the Softmax activation
-     * @return NDArray The derivative
+     * @param NDArray $output
+     * @return NDArray
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {

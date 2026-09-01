@@ -110,6 +110,7 @@ class GELU implements ActivationFunction
         );
 
         $cosh = NumPower::cosh($innerTerm);
+
         $sech2 = NumPower::pow(
             NumPower::divide(1.0, $cosh),
             2

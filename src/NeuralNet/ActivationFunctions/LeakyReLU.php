@@ -64,8 +64,8 @@ class LeakyReLU implements ActivationFunction
      * f(x) = x           if x > 0
      * f(x) = leakage * x if x ≤ 0
      *
-     * @param NDArray $input The input values
-     * @return NDArray The activated values
+     * @param NDArray $input
+     * @return NDArray
      */
     public function activate(NDArray $input) : NDArray
     {
@@ -85,9 +85,9 @@ class LeakyReLU implements ActivationFunction
      * f'(x) = 1         if x > 0
      * f'(x) = leakage   if x ≤ 0
      *
-     * @param NDArray $input Input matrix
-     * @param NDArray $output Output matrix
-     * @return NDArray Derivative matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @return NDArray
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {

@@ -51,8 +51,8 @@ class HardSiLU implements ActivationFunction
      *
      * f(x) = x * HardSigmoid(x)
      *
-     * @param NDArray $input The input values
-     * @return NDArray The activated values
+     * @param NDArray $input
+     * @return NDArray
      */
     public function activate(NDArray $input) : NDArray
     {
@@ -66,14 +66,16 @@ class HardSiLU implements ActivationFunction
      *
      * f'(x) = HardSigmoid(x) + x * HardSigmoid'(x)
      *
-     * @param NDArray $input Input matrix
-     * @param NDArray $output Output matrix
-     * @return NDArray Derivative matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @return NDArray
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
         $hardSigmoid = $this->hardSigmoid->activate($input);
+
         $hardSigmoidDerivative = $this->hardSigmoid->differentiate($input, $hardSigmoid);
+
         $xTimesDerivative = NumPower::multiply($input, $hardSigmoidDerivative);
 
         return NumPower::add($hardSigmoid, $xTimesDerivative);

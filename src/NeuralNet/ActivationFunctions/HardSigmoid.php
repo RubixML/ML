@@ -86,15 +86,16 @@ class HardSigmoid implements ActivationFunction
      * f'(x) = 0.2 if -2.5 <= x <= 2.5
      * f'(x) = 0   otherwise
      *
-     * @param NDArray $input Input matrix
-     * @param NDArray $output Output matrix
-     * @return NDArray Derivative matrix
+     * @param NDArray $input
+     * @param NDArray $output
+     * @return NDArray
      */
     public function differentiate(NDArray $input, NDArray $output) : NDArray
     {
-        // For values in the linear region (-2.5 <= x <= 2.5): SLOPE
         $inLinearRegion = NumPower::greaterEqual($input, self::LOWER_BOUND);
+
         $inLinearRegion = NumPower::multiply($inLinearRegion, NumPower::lessEqual($input, self::UPPER_BOUND));
+
         $linearPart = NumPower::multiply($inLinearRegion, self::SLOPE);
 
         return $linearPart;
