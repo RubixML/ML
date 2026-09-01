@@ -22,6 +22,8 @@ use PHPUnit\Framework\TestCase;
 
 use function array_fill;
 use function is_nan;
+use function max;
+use function min;
 
 #[Group('Clusterers')]
 #[CoversClass(GaussianMixture::class)]
@@ -205,6 +207,35 @@ class GaussianMixtureTest extends TestCase
         $this->assertIsArray($losses);
 
         $this->assertNotContainsNAN($losses);
+    }
+
+    #[Test]
+    public function trainDiverseClusterScales() : void
+    {
+        $generator = new Agglomerate([
+            'wide' => new Blob(center: [0.0, 0.0], stdDev: 10000.0),
+            'tight' => new Blob(center: [5000.0, 5000.0], stdDev: 0.1),
+        ]);
+
+        $estimator = new GaussianMixture(
+            k: 2,
+            smoothing: 1e-9,
+            epochs: 100,
+            minChange: 1e-3,
+            seeder: new KMC2(m: 50)
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $estimator->train($generator->generate(self::TRAIN_SIZE));
+
+        $tightVariance = INF;
+
+        foreach ($estimator->variances() as $variances) {
+            $tightVariance = min($tightVariance, max($variances));
+        }
+
+        $this->assertLessThan(0.05, $tightVariance);
     }
 
     #[Test]

@@ -27,6 +27,7 @@
     - K-d Trees now require Monotonic distance kernels
     - Optimize Dataset sort(), sorting is now unstable
     - Added per-class smoothing to Gaussian Naive Bayes
+    - Added per-cluster smoothing to Gaussian Mixture
     - You can now exclude certain categories from one-hot encoding
     - Fixed SVC save/load using class map sidecar
     - Parallel Backends now default to max physical cores not logical
