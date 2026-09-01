@@ -11,6 +11,7 @@ use Swoole\Atomic;
 use Swoole\Coroutine\System;
 use Swoole\Process;
 
+use function Rubix\ML\warn;
 use function Swoole\Coroutine\run;
 use function call_user_func;
 use function method_exists;
@@ -68,11 +69,17 @@ class Swoole implements Backend
                 . " must be greater than 0, $workers given.");
         }
 
+        $cores = CPU::cores();
+
+        if (isset($workers) and $workers > $cores) {
+            warn("Number of workers ($workers) exceeds the number of detected physical CPU cores ($cores).");
+        }
+
         ExtensionIsLoaded::with('swoole')->check();
 
         $hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
 
-        $this->workers = $workers ?? CPU::cores();
+        $this->workers = $workers ?? $cores;
         $this->serialize = $hasIgbinary ? 'igbinary_serialize' : 'serialize';
         $this->unserialize = $hasIgbinary ? 'igbinary_unserialize' : 'unserialize';
     }

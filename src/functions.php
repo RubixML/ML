@@ -10,6 +10,7 @@ namespace Rubix\ML
     use function array_is_list;
     use function is_nan;
     use function is_float;
+    use function is_array;
     use function is_iterable;
     use function array_search;
     use function array_map;
@@ -265,18 +266,6 @@ namespace Rubix\ML
     }
 
     /**
-     * Emit a deprecation warning with a message.
-     *
-     * @internal
-     *
-     * @param string $message
-     */
-    function warn_deprecated(string $message) : void
-    {
-        trigger_error($message, E_USER_DEPRECATED);
-    }
-
-    /**
      * Pack an array of samples.
      *
      * @internal
@@ -286,17 +275,34 @@ namespace Rubix\ML
      */
     function array_pack(array $samples) : array
     {
-        // Ensure all levels have sequential numeric keys
         if (!array_is_list($samples)) {
             $samples = array_values($samples);
         }
 
-        return array_map(function ($item) {
-            if (is_array($item)) {
-                return array_pack($item);
-            }
+        return array_map(fn ($item) => is_array($item) ? array_pack($item) : $item, $samples);
+    }
 
-            return $item;
-        }, $samples);
+    /**
+     * Emit a warning with a message.
+     *
+     * @internal
+     *
+     * @param string $message
+     */
+    function warn(string $message) : void
+    {
+        trigger_error($message, E_USER_WARNING);
+    }
+
+    /**
+     * Emit a deprecation warning with a message.
+     *
+     * @internal
+     *
+     * @param string $message
+     */
+    function warn_deprecated(string $message) : void
+    {
+        trigger_error($message, E_USER_DEPRECATED);
     }
 }

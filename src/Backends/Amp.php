@@ -8,6 +8,8 @@ use Amp\Parallel\Worker\ContextWorkerPool;
 use Amp\Parallel\Worker\LimitedWorkerPool;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function Rubix\ML\warn;
+
 /**
  * Amp
  *
@@ -30,7 +32,7 @@ class Amp implements Backend
     /**
      * A 3-tuple of executions and their optional callbacks and contexts.
      *
-     * @var list<array{\Amp\Parallel\Worker\Execution<mixed,mixed,mixed>,callable(mixed):void|null,mixed|null}>
+     * @var list<array{Task,callable(mixed):void|null,mixed|null}>
      */
     protected array $queue = [
         //
@@ -47,7 +49,13 @@ class Amp implements Backend
                 . " must be greater than 0, $workers given.");
         }
 
-        $this->pool = new ContextWorkerPool($workers ?? CPU::cores());
+        $cores = CPU::cores();
+
+        if (isset($workers) and $workers > $cores) {
+            warn("Number of workers ($workers) exceeds the number of detected physical CPU cores ($cores).");
+        }
+
+        $this->pool = new ContextWorkerPool($workers ?? $cores);
     }
 
     /**
@@ -70,9 +78,7 @@ class Amp implements Backend
      */
     public function enqueue(Task $task, ?callable $after = null) : void
     {
-        $execution = $this->pool->submit($task);
-
-        $this->queue[] = [$execution, $after];
+        $this->queue[] = [$task, $after];
     }
 
     /**
@@ -84,10 +90,20 @@ class Amp implements Backend
      */
     public function process() : array
     {
+        $executions = $afters = [];
+
+        foreach ($this->queue as [$task, $after]) {
+            $executions[] = $this->pool->submit($task);
+
+            $afters[] = $after;
+        }
+
         $results = [];
 
-        foreach ($this->queue as [$execution, $after]) {
+        foreach ($executions as $i => $execution) {
             $result = $execution->await();
+
+            $after = $afters[$i];
 
             if ($after) {
                 $after($result);
