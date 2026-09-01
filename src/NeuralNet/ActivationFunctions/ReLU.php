@@ -65,7 +65,7 @@ class ReLU implements ActivationFunction
     /**
      * Return the string representation of the activation function.
      *
-     * @return string String representation
+     * @return string
      */
     public function __toString() : string
     {

@@ -26,7 +26,7 @@ class Constant implements Initializer
     use AssertsShapes;
 
     /**
-     * @param float $value The value to initialize the parameter to
+     * @param float $value
      */
     public function __construct(protected float $value = 0.0)
     {
@@ -53,7 +53,7 @@ class Constant implements Initializer
     /**
      * Return the string representation of the initializer.
      *
-     * @return string String representation
+     * @return string
      */
     public function __toString() : string
     {

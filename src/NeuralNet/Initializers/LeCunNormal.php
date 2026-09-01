@@ -60,7 +60,7 @@ class LeCunNormal implements Initializer
     /**
      * Return the string representation of the initializer.
      *
-     * @return string String representation
+     * @return string
      */
     public function __toString() : string
     {
