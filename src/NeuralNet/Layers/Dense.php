@@ -160,19 +160,20 @@ class Dense implements Hidden, Parametric
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = $this->neurons;
 
-        $weights = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $weights = $this->weightInitializer->initialize($fanIn, $fanOut, $dataType);
 
         $this->weights = new Parameter($weights);
 
         if ($this->bias) {
-            // Initialize biases as a vector of length fanOut
-            $biasMat = $this->biasInitializer->initialize(1, $fanOut);
+            $biasMat = $this->biasInitializer->initialize(1, $fanOut, $dataType);
+
             $biases = NumPower::flatten($biasMat);
 
             $this->biases = new Parameter($biases);
@@ -197,9 +198,8 @@ class Dense implements Hidden, Parametric
         $output = NumPower::matmul($this->weights->param(), $input);
 
         if ($this->biases) {
-            // Reshape bias vector [fanOut] to column [fanOut, 1] to match output [fanOut, n]
             $bias = NumPower::reshape($this->biases->param(), [$this->neurons, 1]);
-            // Manual “broadcast”: [neurons, n] + [neurons, 1]
+
             $output = NumPower::add($output, $bias);
         }
 
@@ -224,9 +224,8 @@ class Dense implements Hidden, Parametric
         $output = NumPower::matmul($this->weights->param(), $input);
 
         if ($this->biases) {
-            // Reshape bias vector [fanOut] to column [fanOut, 1] to match output [fanOut, n]
             $bias = NumPower::reshape($this->biases->param(), [$this->neurons, 1]);
-            // Manual “broadcast”: [neurons, n] + [neurons, 1]
+
             $output = NumPower::add($output, $bias);
         }
 
@@ -272,8 +271,6 @@ class Dense implements Hidden, Parametric
         $this->weights->update($dW, $optimizer);
 
         if ($this->biases) {
-            // Sum gradients over the batch dimension to obtain a bias gradient
-            // with the same shape as the bias vector [neurons]
             $dB = NumPower::sum($dOut, axis: 1);
 
             $this->biases->update($dB, $optimizer);

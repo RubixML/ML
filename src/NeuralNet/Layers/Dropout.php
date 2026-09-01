@@ -102,9 +102,10 @@ class Dropout implements Hidden
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = $fanIn;
 
@@ -123,14 +124,10 @@ class Dropout implements Hidden
      */
     public function forward(NDArray $input) : NDArray
     {
-        // Build dropout mask using NumPower's uniform RNG. Each unit is kept
-        // with probability (1 - ratio) and scaled by $this->scale.
         $shape = $input->shape();
 
-        // Uniform random numbers in [0, 1) with same shape as input
         $rand = NumPower::uniform($shape, 0.0, 1.0);
 
-        // mask = (rand > ratio) * scale
         $mask = NumPower::greater($rand, $this->ratio);
         $mask = NumPower::multiply($mask, $this->scale);
 

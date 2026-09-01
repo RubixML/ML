@@ -112,10 +112,11 @@ class Binary implements Output
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @throws InvalidArgumentException
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         if ($fanIn !== 1) {
             throw new InvalidArgumentException("Fan in must be equal to 1, $fanIn given.");

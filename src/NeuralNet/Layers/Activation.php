@@ -90,9 +90,10 @@ class Activation implements Hidden
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = $fanIn;
 

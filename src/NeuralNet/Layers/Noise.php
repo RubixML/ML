@@ -86,9 +86,10 @@ class Noise implements Hidden
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = $fanIn;
 
@@ -117,7 +118,6 @@ class Noise implements Hidden
 
         $shape = $input->shape();
 
-        // Gaussian noise with mean 0 and standard deviation $this->stdDev
         $noise = NumPower::normal(shape: $shape, loc: 0.0, scale: $this->stdDev);
 
         return NumPower::add($input, $noise);

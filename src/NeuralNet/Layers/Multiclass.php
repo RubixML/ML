@@ -107,10 +107,11 @@ class Multiclass implements Output
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @throws InvalidArgumentException
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = count($this->classes);
 

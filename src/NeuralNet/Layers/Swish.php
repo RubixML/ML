@@ -113,13 +113,14 @@ class Swish implements Hidden, Parametric
      * @internal
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         $fanOut = $fanIn;
 
-        $beta = $this->initializer->initialize(1, $fanOut);
+        $beta = $this->initializer->initialize(1, $fanOut, $dataType);
 
         $beta = NumPower::flatten($beta);
 

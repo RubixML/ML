@@ -53,9 +53,10 @@ class Placeholder1D implements Input
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
+     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn) : int
+    public function initialize(int $fanIn, string $dataType) : int
     {
         return $this->inputs;
     }

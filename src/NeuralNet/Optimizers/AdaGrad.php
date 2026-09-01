@@ -115,7 +115,7 @@ class AdaGrad implements Optimizer, Adaptive
         $norm = NumPower::add($norm, NumPower::square($gradient));
 
         $this->cache[$param->id()] = $norm;
-)
+
         $denominator = NumPower::sqrt($norm);
         $denominator = NumPower::clip($denominator, EPSILON, PHP_FLOAT_MAX);
 
