@@ -13,7 +13,10 @@ use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
+
+use function count;
 
 /**
  * Multiclass
@@ -72,7 +75,7 @@ class Multiclass implements Output
      * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ?ClassificationLoss $costFn = null)
+    public function __construct(array $classes, ClassificationLoss $costFn)
     {
         $classes = array_values(array_unique($classes));
 
@@ -86,6 +89,10 @@ class Multiclass implements Output
             new ExtensionIsLoaded('RubixNumPower'),
             new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
         ])->check();
+
+        if ($costFn instanceof BinaryCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
+        }
 
         $this->classes = $classes;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
@@ -212,6 +219,7 @@ class Multiclass implements Output
      */
     public function gradient(NDArray $input, NDArray $output, NDArray $expected) : NDArray
     {
+<<<<<<< HEAD
         $n = array_product($output->shape());
 
         // Optimization specific to softmax + multiclass cross entropy.
@@ -221,6 +229,11 @@ class Multiclass implements Output
                 NumPower::subtract($output, $expected),
                 $n
             );
+=======
+        if ($this->costFn instanceof MulticlassCrossEntropy) {
+            return $output->subtract($expected)
+                ->divide($output->n());
+>>>>>>> dd5c3b6ec645db882b76156bd0c482ea1ebf53dd
         }
 
         $gradient = NumPower::divide(

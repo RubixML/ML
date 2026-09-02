@@ -10,6 +10,7 @@ use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -74,7 +75,7 @@ class Binary implements Output
      * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ?ClassificationLoss $costFn = null)
+    public function __construct(array $classes, ClassificationLoss $costFn)
     {
         $classes = array_values(array_unique($classes));
 
@@ -86,6 +87,9 @@ class Binary implements Output
             new ExtensionIsLoaded('RubixNumPower'),
             new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
         ])->check();
+        if ($costFn instanceof MulticlassCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
+        }
 
         $classes = [
             $classes[0] => 0.0,
@@ -196,6 +200,7 @@ class Binary implements Output
      */
     public function gradient(NDArray $input, NDArray $output, NDArray $expected) : NDArray
     {
+<<<<<<< HEAD
         $n = $output->shape()[1];
 
         // Optimization specific to sigmoid + binary cross entropy.
@@ -205,6 +210,11 @@ class Binary implements Output
                 NumPower::subtract($output, $expected),
                 $n
             );
+=======
+        if ($this->costFn instanceof BinaryCrossEntropy) {
+            return $output->subtract($expected)
+                ->divide($output->n());
+>>>>>>> dd5c3b6ec645db882b76156bd0c482ea1ebf53dd
         }
 
         $dLoss = NumPower::divide(
