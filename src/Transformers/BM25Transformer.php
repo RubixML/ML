@@ -227,6 +227,8 @@ class BM25Transformer implements Transformer, Stateful, Elastic
                 }
             }
         }
+
+        unset($sample, $tf);
     }
 
     /**

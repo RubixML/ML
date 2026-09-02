@@ -68,6 +68,8 @@ class TextNormalizer implements Transformer
                 $value = call_user_func($this->normalize, $value);
             }
         }
+
+        unset($value);
     }
 
     /**

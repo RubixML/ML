@@ -200,6 +200,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
                 }
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -225,6 +227,8 @@ class TfIdfTransformer implements Transformer, Stateful, Elastic, Reversible, Pe
                 }
             }
         }
+
+        unset($sample);
     }
 
     /**

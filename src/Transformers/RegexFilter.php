@@ -157,6 +157,8 @@ class RegexFilter implements Transformer
                 $value = preg_replace($this->patterns, '', $value);
             }
         }
+
+        unset($value);
     }
 
     /**

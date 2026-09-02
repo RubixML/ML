@@ -20,7 +20,7 @@ $dataset = new Labeled($samples, $labels);
 Build a dataset with the records of a 2-dimensional iterable data table:
 
 ```php
-public static fromIterator(Traversable $iterator) : self
+public static fromIterator(Traversable $iterator, bool $verify = true) : self
 ```
 
 !!! note

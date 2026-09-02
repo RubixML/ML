@@ -125,6 +125,8 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, P
                 $sample[$column] /= $maxabs;
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -144,6 +146,8 @@ class MaxAbsoluteScaler implements Transformer, Stateful, Elastic, Reversible, P
                 $sample[$column] *= $maxabs;
             }
         }
+
+        unset($sample);
     }
 
     /**

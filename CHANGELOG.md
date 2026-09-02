@@ -31,6 +31,8 @@
     - Added workers() method to the Backend interface (Serial returns 1)
     - No longer save/load Backend state, transient per environment
     - Removed Word Stemmer tokenizer
+    - Added Float Type Converter numeric string and ints to float
+    - Boolean Converter now converts truthy and falsy
     
 - 2.5.11
     - Optimize DBSCAN inference

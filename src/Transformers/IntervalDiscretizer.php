@@ -189,6 +189,8 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
                 }
             }
         }
+
+        unset($sample, $value);
     }
 
     /**
