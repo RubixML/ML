@@ -8,7 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -52,7 +52,7 @@ class MulticlassTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new CrossEntropy());
+        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new MulticlassCrossEntropy());
 
         srand(self::RANDOM_SEED);
     }

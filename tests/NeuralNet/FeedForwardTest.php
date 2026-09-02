@@ -12,7 +12,7 @@ use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -65,7 +65,7 @@ class FeedForwardTest extends TestCase
             new Dense(3),
         ];
 
-        $this->output = new Multiclass(['yes', 'no', 'maybe'], new CrossEntropy());
+        $this->output = new Multiclass(['yes', 'no', 'maybe'], new MulticlassCrossEntropy());
 
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }

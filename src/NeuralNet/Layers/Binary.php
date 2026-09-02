@@ -5,7 +5,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -69,7 +70,7 @@ class Binary implements Output
      * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ?ClassificationLoss $costFn = null)
+    public function __construct(array $classes, ClassificationLoss $costFn)
     {
         $classes = array_values(array_unique($classes));
 
@@ -78,13 +79,17 @@ class Binary implements Output
                 . ' must be 2, ' . count($classes) . ' given.');
         }
 
+        if ($costFn instanceof MulticlassCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
+        }
+
         $classes = [
             $classes[0] => 0.0,
             $classes[1] => 1.0,
         ];
 
         $this->classes = $classes;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn;
         $this->sigmoid = new Sigmoid();
     }
 
@@ -188,7 +193,7 @@ class Binary implements Output
      */
     public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
     {
-        if ($this->costFn instanceof CrossEntropy) {
+        if ($this->costFn instanceof BinaryCrossEntropy) {
             return $output->subtract($expected)
                 ->divide($output->n());
         }
