@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/Sigmoid/Sigmoid.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/Sigmoid.php">[source]</a></span>
 
 # Sigmoid
 
@@ -12,15 +12,10 @@ $$
 
 This activation function does not have any parameters.
 
-## Plots
-<img src="../../images/activation-functions/sigmoid.png" alt="Sigmoid Function" width="500" height="auto">
-
-<img src="../../images/activation-functions/sigmoid-derivative.png" alt="Sigmoid Derivative" width="500" height="auto">
-
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 
 $activationFunction = new Sigmoid();
 ```

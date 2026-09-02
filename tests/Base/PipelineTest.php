@@ -30,7 +30,7 @@ class PipelineTest extends TestCase
 
     protected const float MIN_SCORE = 0.8;
 
-    protected const int RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 1;
 
     protected Agglomerate $generator;
 

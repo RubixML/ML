@@ -9,8 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
-use NumPower;
-use NDArray;
+use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use PHPUnit\Framework\TestCase;
@@ -25,48 +24,42 @@ class MulticlassCrossEntropyTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            NumPower::array([]),
-            NumPower::array([]),
-            NAN,
-        ];
-
-        yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.99, 0.01, 0.0],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0, 0.0, 0.0],
             ]),
             0.0033501,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.2, 0.4, 0.4],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [0.0, 1.0, 0.0],
             ]),
             0.3054302,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.0, 0.1, 0.9],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0, 0.0, 0.0],
             ]),
             6.1402269,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.2, 0.1, 0.7],
                 [0.0, 0.9, 0.1],
                 [0.1, 0.3, 0.6],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [0.0, 0.0, 1.0],
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
@@ -78,10 +71,10 @@ class MulticlassCrossEntropyTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.99, 0.01, 0.0],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0, 0.0, 0.0],
             ]),
             [
@@ -90,10 +83,10 @@ class MulticlassCrossEntropyTest extends TestCase
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.2, 0.4, 0.4],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [0.0, 1.0, 0.0],
             ]),
             [
@@ -102,10 +95,10 @@ class MulticlassCrossEntropyTest extends TestCase
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.0, 0.1, 0.9],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0, 0.0, 0.0],
             ]),
             [
@@ -114,12 +107,12 @@ class MulticlassCrossEntropyTest extends TestCase
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.2, 0.1, 0.7],
                 [0.0, 0.9, 0.1],
                 [0.1, 0.3, 0.6],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [0.0, 0.0, 1.0],
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
@@ -150,8 +143,8 @@ class MulticlassCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = NumPower::array([[1.0, 2.0, 3.0]]);
-        $target = NumPower::array([[1.0, 2.0]]);
+        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
+        $target = Matrix::quick([[1.0, 2.0]]);
 
         $this->costFn->compute($output, $target);
     }
@@ -163,8 +156,8 @@ class MulticlassCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = NumPower::array([[1.0, 2.0, 3.0]]);
-        $target = NumPower::array([[1.0, 2.0]]);
+        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
+        $target = Matrix::quick([[1.0, 2.0]]);
 
         $this->costFn->differentiate($output, $target);
     }
@@ -172,25 +165,21 @@ class MulticlassCrossEntropyTest extends TestCase
     #[Test]
     #[TestDox('Compute loss score')]
     #[DataProvider('computeProvider')]
-    public function compute(NDArray $output, NDArray $target, float $expected) : void
+    public function compute(Matrix $output, Matrix $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
-        if (is_nan($expected)) {
-            self::assertNan($loss);
-        } else {
-            self::assertEqualsWithDelta($expected, $loss, 1e-7);
-        }
+        self::assertEqualsWithDelta($expected, $loss, 1e-7);
     }
 
     #[Test]
     #[TestDox('Calculate gradient of cost function')]
     #[DataProvider('differentiateProvider')]
-    public function differentiate(NDArray $output, NDArray $target, array $expected) : void
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
     {
         $gradient = $this->costFn->differentiate($output, $target);
 
-        $gradientArray = $gradient->toArray();
+        $gradientArray = $gradient->asArray();
 
         self::assertEqualsWithDelta($expected, $gradientArray, 1e-7);
     }

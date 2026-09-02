@@ -1,51 +1,48 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
-use Generator;
-use NDArray;
-use NumPower;
-use PHPUnit\Framework\Attributes\CoversClass;
+use Tensor\Tensor;
+use Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Generator;
 
 #[Group('Optimizers')]
 #[CoversClass(Stochastic::class)]
 class StochasticTest extends TestCase
 {
-    protected Stochastic $optimizer;
+    /**
+     * @var Stochastic
+     */
+    protected $optimizer;
 
-    public static function invalidConstructorProvider() : Generator
-    {
-        yield 'zero rate' => [0.0];
-        yield 'negative rate' => [-0.001];
-    }
-
+    /**
+     * @return Generator<mixed[]>
+     */
     public static function stepProvider() : Generator
     {
         yield [
-            new Parameter(NumPower::array([
+            new Parameter(Matrix::quick([
                 [0.1, 0.6, -0.4],
                 [0.5, 0.6, -0.4],
                 [0.1, 0.1, -0.7],
             ])),
-            NumPower::array([
+            Matrix::quick([
                 [0.01, 0.05, -0.02],
                 [-0.01, 0.02, 0.03],
                 [0.04, -0.01, -0.5],
             ]),
             [
-                [0.00001, 0.00005, -0.00002],
-                [-0.00001, 0.00002, 0.00003],
-                [0.00004, -0.00001, -0.0005],
+                [1e-5, 5e-5, -2e-5],
+                [-1e-5, 2e-5, 3e-5],
+                [4e-5, -1e-5, -0.0005],
             ],
         ];
     }
@@ -55,37 +52,24 @@ class StochasticTest extends TestCase
         $this->optimizer = new Stochastic(0.001);
     }
 
-    #[TestDox('Can be cast to a string')]
-    public function testToString() : void
-    {
-        self::assertEquals('Stochastic (rate: 0.001)', (string) $this->optimizer);
-    }
-
-    /**
-     * @param float $rate
-     */
     #[Test]
-    #[DataProvider('invalidConstructorProvider')]
-    #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function invalidConstructorParams(float $rate) : void
+    public function build() : void
     {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Stochastic($rate);
+        $this->assertInstanceOf(Stochastic::class, $this->optimizer);
+        $this->assertInstanceOf(Optimizer::class, $this->optimizer);
     }
 
     /**
      * @param Parameter $param
-     * @param NDArray $gradient
+     * @param Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */
-    #[Test]
     #[DataProvider('stepProvider')]
-    #[TestDox('Can compute the step')]
-    public function step(Parameter $param, NDArray $gradient, array $expected) : void
+    #[Test]
+    public function step(Parameter $param, Tensor $gradient, array $expected) : void
     {
-        $step = $this->optimizer->step(param: $param, gradient: $gradient);
+        $step = $this->optimizer->step($param, $gradient);
 
-        self::assertEqualsWithDelta($expected, $step->toArray(), 1e-7);
+        $this->assertEquals($expected, $step->asArray());
     }
 }

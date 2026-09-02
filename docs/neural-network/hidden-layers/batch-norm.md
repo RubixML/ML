@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/BatchNorm/BatchNorm.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/BatchNorm.php">[source]</a></span>
 
 # Batch Norm
 
@@ -15,9 +15,9 @@ Batch Norm layers normalize the activations of the previous layer such that the 
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\Layers\BatchNorm\BatchNorm;
-use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
-use Rubix\ML\NeuralNet\Initializers\Normal\Normal;
+use Rubix\ML\NeuralNet\Layers\BatchNorm;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Normal;
 
 $layer = new BatchNorm(0.7, new Constant(0.), new Normal(1.));
 ```

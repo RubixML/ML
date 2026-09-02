@@ -49,7 +49,6 @@
         "swoole/ide-helper": "^5.1"
     },
     "suggest": {
-        "ext-numpower": "For tensor computing on CPU and GPU.",
         "ext-tensor": "For fast Matrix/Vector computing.",
         "ext-gd": "For image support.",
         "ext-mbstring": "For fast multibyte string manipulation.",

@@ -1,30 +1,21 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/ReLU/ReLU.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/ReLU.php">[source]</a></span>
 
 # ReLU
 
 Rectified Linear Units (ReLU) only output the positive signal of the input. They have the benefit of having a monotonic derivative and are cheap to compute.
 
 $$
-\text{ReLU}(x) =
-\begin{cases}
-x & \text{if } x \geq 0 \\
-0 & \text{if } x < 0
-\end{cases}
+{\displaystyle ReLU = {\begin{aligned}&{\begin{cases}0&{\text{if }}x\leq 0\\x&{\text{if }}x>0\end{cases}}=&\max\{0,x\}\end{aligned}}}
 $$
 
 ## Parameters
 
 This activation function does not have any parameters.
 
-## Plots
-<img src="../../images/activation-functions/relu.png" alt="ReLU Function" width="500" height="auto">
-
-<img src="../../images/activation-functions/relu-derivative.png" alt="ReLU Derivative" width="500" height="auto">
-
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU\ReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
 $activationFunction = new ReLU(0.1);
 ```

@@ -1,14 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use NumPower;
-use NDArray;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
+use Tensor\Matrix;
 
 /**
  * SELU
@@ -24,7 +18,6 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class SELU implements ActivationFunction
 {
@@ -33,89 +26,79 @@ class SELU implements ActivationFunction
      *
      * @var float
      */
-    public const ALPHA = 1.6732632;
+    public const ALPHA = 1.6732632423543772848170429916717;
 
     /**
      * The scaling coefficient.
      *
      * @var float
      */
-    public const LAMBDA = 1.0507009;
+    public const SCALE = 1.0507009873554804934193349852946;
 
     /**
      * The scaling coefficient multiplied by alpha.
      *
      * @var float
      */
-    protected const BETA = self::LAMBDA * self::ALPHA;
-
-    public function __construct()
-    {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-    }
+    protected const BETA = self::SCALE * self::ALPHA;
 
     /**
      * Compute the activation.
      *
-     * f(x) = λ * x                 if x > 0
-     * f(x) = λ * α * (e^x - 1)     if x ≤ 0
+     * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function activate(NDArray $input) : NDArray
+    public function activate(Matrix $input) : Matrix
     {
-        $positive = NumPower::multiply(
-            NumPower::maximum($input, 0),
-            self::LAMBDA
-        );
-
-        $negativeMask = NumPower::minimum($input, 0);
-
-        $negative = NumPower::multiply(
-            NumPower::expm1($negativeMask),
-            self::BETA
-        );
-
-        return NumPower::add($positive, $negative);
+        return $input->map([$this, '_activate']);
     }
 
     /**
-     * Calculate the derivative of the SELU activation function.
+     * Calculate the derivative of the activation.
      *
-     * f'(x) = λ                if x > 0
-     * f'(x) = λ * α * e^x      if x ≤ 0
+     * @internal
      *
-     * @param NDArray $input
-     * @param NDArray $output
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $output
+     * @return Matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        $positiveMask = NumPower::greater($input, 0);
-
-        $positivePart = NumPower::multiply($positiveMask, self::LAMBDA);
-
-        $negativeMask = NumPower::lessEqual($input, 0);
-
-        $negativePart = NumPower::multiply(
-            NumPower::multiply(
-                NumPower::exp(
-                    NumPower::multiply($negativeMask, $input)
-                ),
-                self::BETA
-            ),
-            $negativeMask
-        );
-
-        return NumPower::add($positivePart, $negativePart);
+        return $output->map([$this, '_differentiate']);
     }
 
     /**
-     * Return the string representation of the activation function.
+     * @internal
+     *
+     * @param float $input
+     * @return float
+     */
+    public function _activate(float $input) : float
+    {
+        return $input > 0.0
+            ? self::SCALE * $input
+            : self::BETA * (exp($input) - 1.0);
+    }
+
+    /**
+     * @internal
+     *
+     * @param float $output
+     * @return float
+     */
+    public function _differentiate(float $output) : float
+    {
+        return $output > 0.0
+            ? self::SCALE
+            : $output + self::BETA;
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
      *
      * @return string
      */

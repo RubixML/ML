@@ -2,13 +2,11 @@
 
 namespace Rubix\ML\Transformers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
@@ -16,7 +14,6 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function array_map;
 use function array_slice;
 use function array_multisort;
 use function array_sum;
@@ -54,9 +51,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     /**
      * The matrix of eigenvectors computed at fitting.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $eigenvectors = null;
+    protected ?Matrix $eigenvectors = null;
 
     /**
      * The percentage of information lost due to the transformation.
@@ -68,9 +65,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     /**
      * The centers (means) of the input feature columns.
      *
-     * @var NDArray|null
+     * @var \Tensor\Vector|null
      */
-    protected ?NDArray $mean = null;
+    protected ?\Tensor\Vector $mean = null;
 
     /**
      * @param int $dimensions
@@ -79,8 +76,8 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     public function __construct(int $dimensions)
     {
         SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+            new ExtensionIsLoaded('tensor'),
+            new ExtensionMinimumVersion('tensor', '2.1.4'),
         ])->check();
 
         if ($dimensions < 1) {
@@ -133,30 +130,14 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
      */
     public function fit(Dataset $dataset) : void
     {
-        SpecificationChain::with([
-            new DatasetIsNotEmpty($dataset),
-            new SamplesAreCompatibleWithTransformer($dataset, $this),
-        ])->check();
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $samples = $dataset->samples();
+        $xT = Matrix::quick($dataset->samples())->transpose();
 
-        $m = count($samples);
+        $eig = $xT->covariance()->eig(true);
 
-        $x = NumPower::array($samples, 'float32');
-
-        $mean = NumPower::divide(NumPower::sum($x, axis: 0), $m);
-
-        $centered = NumPower::subtract($x, $mean);
-
-        $covariance = NumPower::divide(
-            NumPower::matmul(NumPower::transpose($centered, [1, 0]), $centered),
-            $m
-        );
-
-        $eig = NumPower::eig($covariance);
-
-        $eigenvalues = $eig[0]->toArray();
-        $eigenvectors = array_map(null, ...$eig[1]->toArray());
+        $eigenvalues = $eig->eigenvalues();
+        $eigenvectors = $eig->eigenvectors()->asArray();
 
         $totalVariance = array_sum($eigenvalues);
 
@@ -165,13 +146,13 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = NumPower::array($eigenvectors, 'float32');
-        $eigenvectors = NumPower::transpose($eigenvectors, [1, 0]);
+        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
-        $this->mean = $mean;
+        $this->mean = $xT->mean()->transpose();
+
         $this->eigenvectors = $eigenvectors;
         $this->lossiness = $lossiness;
     }
@@ -188,11 +169,10 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $x = NumPower::array($samples, 'float32');
-
-        $delta = NumPower::subtract($x, $this->mean);
-
-        $samples = NumPower::matmul($delta, $this->eigenvectors)->toArray();
+        $samples = Matrix::build($samples)
+            ->subtract($this->mean)
+            ->matmul($this->eigenvectors)
+            ->asArray();
     }
 
     /**

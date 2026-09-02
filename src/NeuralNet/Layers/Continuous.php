@@ -2,12 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
@@ -24,7 +20,6 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Continuous implements Output
 {
@@ -38,9 +33,9 @@ class Continuous implements Output
     /**
      * The memorized input matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * @param RegressionLoss|null $costFn
@@ -48,11 +43,6 @@ class Continuous implements Output
     public function __construct(?RegressionLoss $costFn = null)
     {
         $this->costFn = $costFn ?? new LeastSquares();
-
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
     }
 
     /**
@@ -70,14 +60,14 @@ class Continuous implements Output
      * the fan out for this layer.
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @throws InvalidArgumentException
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         if ($fanIn !== 1) {
-            throw new InvalidArgumentException("Fan in must be equal to 1, $fanIn given.");
+            throw new InvalidArgumentException('Fan in must be'
+                . " equal to 1, $fanIn given.");
         }
 
         return 1;
@@ -86,10 +76,10 @@ class Continuous implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
         $this->input = $input;
 
@@ -99,10 +89,10 @@ class Continuous implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $input;
     }
@@ -118,10 +108,11 @@ class Continuous implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input) {
-            throw new RuntimeException('Must perform forward pass before backpropagating.');
+            throw new RuntimeException('Must perform forward pass'
+                . ' before backpropagating.');
         }
 
-        $expected = NumPower::array([$labels], $this->input->dataType());
+        $expected = Matrix::quick([$labels]);
 
         $input = $this->input;
 
@@ -137,18 +128,14 @@ class Continuous implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param NDArray $input
-     * @param NDArray $expected
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $expected
+     * @return Matrix
      */
-    public function gradient(NDArray $input, NDArray $expected) : NDArray
+    public function gradient(Matrix $input, Matrix $expected) : Matrix
     {
-        $n = $input->shape()[1];
-
-        return NumPower::divide(
-            $this->costFn->differentiate($input, $expected),
-            $n
-        );
+        return $this->costFn->differentiate($input, $expected)
+            ->divide($input->n());
     }
 
     /**

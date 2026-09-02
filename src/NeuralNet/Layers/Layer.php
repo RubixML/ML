@@ -2,17 +2,9 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
+use Tensor\Matrix;
 use Stringable;
 
-/**
- * Layer
- *
- * @category    Machine Learning
- * @package     Rubix/ML
- * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
- */
 interface Layer extends Stringable
 {
     /**
@@ -31,28 +23,27 @@ interface Layer extends Stringable
      * @internal
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int;
+    public function initialize(int $fanIn) : int;
 
     /**
      * Feed the input forward to the next layer in the network.
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray;
+    public function forward(Matrix $input) : Matrix;
 
     /**
      * Forward pass during inference.
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray;
+    public function infer(Matrix $input) : Matrix;
 }

@@ -1,132 +1,49 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\NeuralNet\Initializers;
 
+use Tensor\Matrix;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Exceptions\InvalidFanInException;
-use Rubix\ML\Exceptions\InvalidFanOutException;
 
 #[Group('Initializers')]
 #[CoversClass(Constant::class)]
 class ConstantTest extends TestCase
 {
     /**
-     * Provides valid values for constructing a Constant initializer.
-     *
-     * @return array<string, array{value: float}>
+     * @var Constant
      */
-    public static function validConstructorValuesProvider() : array
+    protected $initializer;
+
+    protected function setUp() : void
     {
-        return [
-            'negative constant value' => ['value' => -3.4],
-            'zero constant value' => ['value' => 0.0],
-            'positive constant value' => ['value' => 0.3],
+        $this->initializer = new Constant(4.8);
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(Constant::class, $this->initializer);
+        $this->assertInstanceOf(Initializer::class, $this->initializer);
+    }
+
+    #[Test]
+    public function initialize() : void
+    {
+        $w = $this->initializer->initialize(4, 3);
+
+        $expected = [
+            [4.8, 4.8, 4.8, 4.8],
+            [4.8, 4.8, 4.8, 4.8],
+            [4.8, 4.8, 4.8, 4.8],
         ];
-    }
 
-    /**
-     * Provides valid fanIn and fanOut values to test the shape of the initialized matrix.
-     *
-     * @return array<string, array{fanIn: int, fanOut: int}>
-     */
-    public static function validFanInAndFanOutProvider() : array
-    {
-        return [
-            'equal fanIn and fanOut' => ['fanIn' => 3, 'fanOut' => 3],
-            'fanIn greater than fanOut' => ['fanIn' => 4, 'fanOut' => 3],
-            'fanIn less than fanOut' => ['fanIn' => 3, 'fanOut' => 4],
-        ];
-    }
-
-    /**
-     * Provides invalid fanIn and fanOut values to test exception handling.
-     *
-     * @return array<string, array{fanIn: int, fanOut: int}>
-     */
-    public static function invalidFanValuesProvider() : array
-    {
-        return [
-            'fanIn less than 1' => ['fanIn' => 0, 'fanOut' => 1],
-            'fanOut less than 1' => ['fanIn' => 1, 'fanOut' => 0],
-            'both fanIn and fanOut invalid' => ['fanIn' => 0, 'fanOut' => 0],
-        ];
-    }
-
-    #[Test]
-    #[TestDox('It constructs the initializer with valid values')]
-    #[DataProvider('validConstructorValuesProvider')]
-    public function constructorWithValidValues(float $value) : void
-    {
-        //expect
-        $this->expectNotToPerformAssertions();
-
-        //when
-        new Constant($value);
-    }
-
-    #[Test]
-    #[TestDox('It initializes a matrix with correct shape')]
-    #[DataProvider('validFanInAndFanOutProvider')]
-    public function matrixHasCorrectShape(int $fanIn, int $fanOut) : void
-    {
-        //given
-        $w = (new Constant(4.8))->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
-
-        //when
-        $shape = $w->shape();
-
-        //then
-        $this->assertSame([$fanOut, $fanIn], $shape);
-    }
-
-    #[Test]
-    #[TestDox('It initializes a matrix filled with the constant value')]
-    public function matrixFilledWithConstantValue() : void
-    {
-        //given
-        $w = (new Constant(4.5))->initialize(3, 4, dataType: 'float32');
-
-        //when
-        $values = $w->toArray();
-
-        //then
-        $this->assertEquals([4.5], array_unique(array_merge(...$values)));
-    }
-
-    #[Test]
-    #[TestDox('It throws an exception when fanIn or fanOut is invalid')]
-    #[DataProvider('invalidFanValuesProvider')]
-    public function exceptionThrownForInvalidFanValues(int $fanIn, int $fanOut) : void
-    {
-        //expect
-        if ($fanIn < 1) {
-            $this->expectException(InvalidFanInException::class);
-        } elseif ($fanOut < 1) {
-            $this->expectException(InvalidFanOutException::class);
-        } else {
-            $this->expectNotToPerformAssertions();
-        }
-
-        //when
-        (new Constant())->initialize(fanIn: $fanIn, fanOut: $fanOut, dataType: 'float32');
-    }
-
-    #[Test]
-    #[TestDox('String representation is correct')]
-    public function returnsCorrectStringRepresentation() : void
-    {
-        //when
-        $string = (string) new Constant();
-
-        //then
-        $this->assertEquals('Constant (value: 0)', $string);
+        $this->assertInstanceOf(Matrix::class, $w);
+        $this->assertEquals([3, 4], $w->shape());
+        $this->assertEquals($expected, $w->asArray());
     }
 }

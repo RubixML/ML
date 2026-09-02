@@ -1,15 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use NDArray;
-use NumPower;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Traits\AssertsShapes;
+use Tensor\Matrix;
 
 /**
  * Least Squares
@@ -20,57 +13,41 @@ use Rubix\ML\Traits\AssertsShapes;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class LeastSquares implements RegressionLoss
 {
-    use AssertsShapes;
-
-    public function __construct()
-    {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-    }
-
     /**
      * Compute the loss score.
      *
-     * L(y, ŷ) = Σ(y - ŷ)^2 / n
+     * @internal
      *
-     * @param NDArray $output
-     * @param NDArray $target
+     * @param Matrix $output
+     * @param Matrix $target
      * @return float
      */
-    public function compute(NDArray $output, NDArray $target) : float
+    public function compute(Matrix $output, Matrix $target) : float
     {
-        $this->assertSameShape($output, $target);
-
-        $difference = NumPower::subtract($output, $target);
-        $squared = NumPower::pow($difference, 2);
-
-        return NumPower::mean($squared);
+        return $output->subtract($target)->square()->mean()->mean();
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * ∂L/∂ŷ = y - ŷ
+     * @internal
      *
-     * @param NDArray $output
-     * @param NDArray $target
-     * @return NDArray
+     * @param Matrix $output
+     * @param Matrix $target
+     * @return Matrix
      */
-    public function differentiate(NDArray $output, NDArray $target) : NDArray
+    public function differentiate(Matrix $output, Matrix $target) : Matrix
     {
-        $this->assertSameShape($output, $target);
-
-        return NumPower::subtract($output, $target);
+        return $output->subtract($target);
     }
 
     /**
      * Return the string representation of the object.
+     *
+     * @internal
      *
      * @return string
      */

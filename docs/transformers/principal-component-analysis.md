@@ -5,7 +5,7 @@
 Principal Component Analysis (PCA) is a dimensionality reduction technique that aims to transform the feature space by the *k* principal components that explain the most variance. PCA is used to compress high-dimensional samples down to lower dimensions such that they would retain as much information as possible.
 
 !!! note
-    Note that the [NumPower extension](https://github.com/RubixML/numpower) is required to use this transformer.
+    Note that the [Tensor extension](https://github.com/RubixML/Tesnor is required to use this transformer.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 

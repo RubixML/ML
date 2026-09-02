@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Generator;
-use NumPower;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -18,11 +17,11 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -169,13 +168,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      * @var string|null
      */
     protected ?string $snapshotPath = null;
-
-    /**
-     * The data type to use for NDArrays.
-     *
-     * @var string
-     */
-    protected string $dataType = 'float32';
 
     /**
      * @param int $batchSize
@@ -378,24 +370,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
-     * Set the data type to use for NDArrays.
-     * @param string $dataType
-     */
-    public function setDataType(string $dataType) : void
-    {
-        if (!in_array($dataType, ['float16', 'float32', 'float64'])) {
-            throw new InvalidArgumentException('Data type must be float16, float32, or float64, '
-                . "$dataType given.");
-        }
-
-        if ($this->network) {
-            throw new RuntimeException('Cannot change data type after training.');
-        }
-
-        $this->dataType = $dataType;
-    }
-
-    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -412,10 +386,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new Xavier1Uniform())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier1())],
             new Binary($classes, $this->costFn),
-            $this->optimizer,
-            $this->dataType
+            $this->optimizer
         );
 
         $this->network->initialize();
@@ -603,7 +576,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $activations = $this->network->infer($dataset);
 
-        $activations = array_column($activations->toArray(), 0);
+        $activations = array_column($activations->asArray(), 0);
 
         $probabilities = [];
 
@@ -635,7 +608,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Weight layer not found.');
         }
 
-        $weights = NumPower::abs($layer->weights())->toArray();
+        $weights = $layer->weights()->abs()->asArray();
 
         return $weights[0] ?? [];
     }

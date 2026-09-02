@@ -1,14 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use NumPower;
-use NDArray;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
+use Tensor\Matrix;
+
+use function exp;
 
 /**
  * SiLU
@@ -23,62 +19,58 @@ use Rubix\ML\Specifications\SpecificationChain;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class SiLU implements ActivationFunction
 {
     /**
-     * The Sigmoid activation function.
-     *
-     * @var Sigmoid
-     */
-    protected Sigmoid $sigmoid;
-
-    /**
-     * Class constructor.
-     */
-    public function __construct()
-    {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-
-        $this->sigmoid = new Sigmoid();
-    }
-
-    /**
      * Compute the activation.
      *
-     * f(x) = x * sigmoid(x) = x / (1 + e^(-x))
+     * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function activate(NDArray $input) : NDArray
+    public function activate(Matrix $input) : Matrix
     {
-        $sigmoid = $this->sigmoid->activate($input);
-
-        return NumPower::multiply($input, $sigmoid);
+        return $input->map([$this, '_compute']);
     }
 
     /**
      * Calculate the derivative of the activation.
      *
-     * f'(x) = sigmoid(x) + x * sigmoid(x) * (1 - sigmoid(x))
-     *        = sigmoid(x) + x * sigmoid'(x)
+     * @internal
      *
-     * @param NDArray $input
-     * @param NDArray $output
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $output
+     * @return Matrix
      */
-    public function differentiate(NDArray $input, NDArray $output) : NDArray
+    public function differentiate(Matrix $input, Matrix $output) : Matrix
     {
-        $sigmoid = $this->sigmoid->activate($input);
-        $sigmoidDerivative = $this->sigmoid->differentiate($input, $sigmoid);
-        $xTimesSigmoidDerivative = NumPower::multiply($input, $sigmoidDerivative);
+        return $input->map([$this, '_differentiate']);
+    }
 
-        return NumPower::add($sigmoid, $xTimesSigmoidDerivative);
+    /**
+     * @internal
+     *
+     * @param float $input
+     * @return float
+     */
+    public function _differentiate(float $input) : float
+    {
+        $sigmoid = 1.0 / (1.0 + exp(-$input));
+
+        return $sigmoid + $input * $sigmoid * (1.0 - $sigmoid);
+    }
+
+    /**
+     * @internal
+     *
+     * @param float $input
+     * @return float
+     */
+    public function _compute(float $input) : float
+    {
+        return $input / (1.0 + exp(-$input));
     }
 
     /**

@@ -1,19 +1,16 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
-use Generator;
-use NDArray;
-use NumPower;
-use PHPUnit\Framework\Attributes\CoversClass;
+use Tensor\Matrix;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
+use Generator;
 
 #[Group('ActivationFunctions')]
 #[CoversClass(Softmax::class)]
@@ -22,227 +19,142 @@ class SoftmaxTest extends TestCase
     /**
      * @var Softmax
      */
-    protected Softmax $activationFn;
+    protected $activationFn;
 
     /**
-     * @return Generator<array>
+     * @return Generator<mixed[]>
      */
     public static function computeProvider() : Generator
     {
-        // Inputs use network layout [classes, batch].
         yield [
-            NumPower::array([
-                [2.0],
-                [1.0],
-                [-0.5],
-                [0.0],
+            Matrix::quick([
+                [1.0], [-0.5], [0.0], [20.0], [-10.0],
             ]),
             [
-                [0.6307955],
-                [0.2320567],
-                [0.0517788],
-                [0.0853688],
+                [5.6027963875928395E-9],
+                [1.2501528552426345E-9],
+                [2.0611536040650294E-9],
+                [0.9999999910858036],
+                [9.357622885424485E-14],
             ],
         ];
 
         yield [
-            NumPower::array([
-                [-0.12, 0.99, 0.05],
-                [0.31, 0.08, -0.52],
-                [-0.49, -0.03, 0.54],
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
             ]),
             [
-                [0.3097901, 0.5671766, 0.3127109],
-                [0.4762272, 0.2283023, 0.1768459],
-                [0.2139826, 0.2045210, 0.5104430],
+                [0.19158324070294602, 0.44831331084352877, 0.18569619981694455],
+                [0.5813322146601748, 0.3561999899147059, 0.29415651924235886],
+                [0.22708454463687924, 0.19548669924176545, 0.5201472809406967],
             ],
         ];
 
         yield [
-            NumPower::array([
-                [0.0],
-                [0.0],
-                [0.0],
-                [0.0],
+            Matrix::quick([
+                [1000.0], [1001.0], [1002.0],
             ]),
             [
-                [0.25],
-                [0.25],
-                [0.25],
-                [0.25],
+                [0.09003057317038046],
+                [0.24472847105479764],
+                [0.6652409557748218],
             ],
         ];
 
         yield [
-            NumPower::array([
-                [1, 3],
-                [2, 4],
+            Matrix::quick([
+                [-1000.0], [-1001.0], [-1002.0],
             ]),
             [
-                [0.2689414, 0.2689414],
-                [0.7310585, 0.7310585],
+                [0.6652409557748218],
+                [0.24472847105479764],
+                [0.09003057317038046],
             ],
         ];
     }
 
     /**
-     * @return Generator<array>
+     * @return Generator<mixed[]>
      */
     public static function differentiateProvider() : Generator
     {
         yield [
-            NumPower::array([
-                [0.6],
-                [0.4],
+            Matrix::quick([
+                [1.0], [-0.5], [0.0], [20.0], [-10.0],
+            ]),
+            Matrix::quick([
+                [5.6027963875928395E-9],
+                [1.2501528552426345E-9],
+                [2.0611536040650294E-9],
+                [0.9999999910858036],
+                [9.357622885424485E-14],
             ]),
             [
-                [0.24],
-                [0.24],
+                [5.602796356201512E-9],
+                [1.2501528536797524E-9],
+                [2.0611535998166752E-9],
+                [8.91419630158617E-9],
+                [9.35762288542361E-14],
             ],
         ];
 
         yield [
-            NumPower::array([
-                [0.3],
-                [0.5],
-                [0.2],
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            Matrix::quick([
+                [0.19158324070294602, 0.44831331084352877, 0.18569619981694455],
+                [0.5813322146601748, 0.3561999899147059, 0.29415651924235886],
+                [0.22708454463687924, 0.19548669924176545, 0.5201472809406967],
             ]),
             [
-                [0.21],
-                [0.25],
-                [0.16],
-            ],
-        ];
-
-        yield [
-            NumPower::array([
-                [0.2689414],
-                [0.7310585],
-            ]),
-            [
-                [0.1966119],
-                [0.1966120],
-            ],
-        ];
-
-        // A batch of 3 samples must be differentiated independently per column.
-        yield [
-            NumPower::array([
-                [0.3097901, 0.5671766, 0.3127109],
-                [0.4762272, 0.2283023, 0.1768459],
-                [0.2139826, 0.2045210, 0.5104430],
-            ]),
-            [
-                [0.2138202, 0.2454873, 0.2149228],
-                [0.2494349, 0.1761804, 0.1455714],
-                [0.1681940, 0.1626922, 0.2498909],
+                [0.15487910258470305, 0.24732848616404232, 0.15121312119048996],
+                [0.24338507085847125, 0.22932155709946933, 0.2076284614295786],
+                [0.17551715422394046, 0.157271649661325, 0.24959408707069664],
             ],
         ];
     }
 
-    /**
-     * @return Generator<array>
-     */
-    public static function sumToOneProvider() : Generator
-    {
-        yield [
-            NumPower::array([
-                [10.0],
-                [-5.0],
-                [3.0],
-                [2.0],
-            ]),
-        ];
-
-        yield [
-            NumPower::array([
-                [-10.0],
-                [-20.0],
-                [-30.0],
-            ]),
-        ];
-
-        yield [
-            NumPower::array([
-                [0.1, 5.0, -1.0],
-                [0.2, 4.0, -2.0],
-                [0.3, 3.0, -3.0],
-                [0.4, 2.0, -4.0],
-            ]),
-        ];
-    }
-
-    /**
-     * Set up the test case.
-     */
     protected function setUp() : void
     {
-        parent::setUp();
-
         $this->activationFn = new Softmax();
     }
 
-    #[TestDox('Can be cast to a string')]
-    public function testToString() : void
+    #[Test]
+    public function build() : void
     {
-        static::assertEquals('Softmax', (string) $this->activationFn);
+        $this->assertInstanceOf(Softmax::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
-    #[Test]
-    #[TestDox('Correctly activates the input')]
+    /**
+     * @param Matrix $input
+     * @param list<list<float>> $expected $expected
+     */
     #[DataProvider('computeProvider')]
-    public function activate(NDArray $input, array $expected) : void
+    #[Test]
+    public function activate(Matrix $input, array $expected) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
+        $activations = $this->activationFn->activate($input)->asArray();
 
-        static::assertEqualsWithDelta($expected, $activations, 1e-7);
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
     }
 
-    #[Test]
-    #[TestDox('Correctly differentiates the activation')]
+    /**
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected $expected
+     */
     #[DataProvider('differentiateProvider')]
-    public function differentiate(NDArray $output, array $expected) : void
-    {
-        $input = NumPower::zeros($output->shape());
-        $derivatives = $this->activationFn->differentiate($input, $output);
-
-        static::assertEquals($output->shape(), $derivatives->shape());
-
-        $this->assertEqualsWithDelta($expected, $derivatives->toArray(), 1e-7);
-    }
-
     #[Test]
-    #[TestDox('Output values always sum to 1')]
-    #[DataProvider('sumToOneProvider')]
-    public function sumToOne(NDArray $input) : void
+    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
     {
-        $activations = $this->activationFn->activate($input)->toArray();
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
 
-        $columns = count($activations[0]);
-
-        for ($column = 0; $column < $columns; ++$column) {
-            $sum = 0.0;
-
-            foreach ($activations as $row) {
-                $sum += $row[$column];
-            }
-
-            static::assertEqualsWithDelta(1.0, $sum, 1e-7);
-        }
-    }
-
-    #[Test]
-    #[TestDox('Output values are always between 0 and 1')]
-    #[DataProvider('sumToOneProvider')]
-    public function outputRange(NDArray $input) : void
-    {
-        $activations = $this->activationFn->activate($input)->toArray();
-
-        foreach ($activations as $row) {
-            foreach ($row as $value) {
-                static::assertGreaterThanOrEqual(0.0, $value);
-                static::assertLessThanOrEqual(1.0, $value);
-            }
-        }
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 }

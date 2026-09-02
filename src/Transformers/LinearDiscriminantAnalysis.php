@@ -2,14 +2,12 @@
 
 namespace Rubix\ML\Transformers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
@@ -17,11 +15,9 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function array_map;
 use function array_slice;
 use function array_multisort;
 use function array_sum;
-use function count;
 
 use const Rubix\ML\EPSILON;
 
@@ -51,9 +47,9 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
     /**
      * The matrix of eigenvectors computed at fitting.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $eigenvectors = null;
+    protected ?Matrix $eigenvectors = null;
 
     /**
      * The percentage of information lost due to the transformation.
@@ -69,8 +65,8 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
     public function __construct(int $dimensions)
     {
         SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+            new ExtensionIsLoaded('tensor'),
+            new ExtensionMinimumVersion('tensor', '2.1.4'),
         ])->check();
 
         if ($dimensions < 1) {
@@ -128,10 +124,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
                 . ' Labeled training set.');
         }
 
-        SpecificationChain::with([
-            new DatasetIsNotEmpty($dataset),
-            new SamplesAreCompatibleWithTransformer($dataset, $this),
-        ])->check();
+        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
         if ($dataset->labelType() != DataType::categorical()) {
             throw new InvalidArgumentException('Transformer requires'
@@ -140,23 +133,26 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
 
         [$m, $n] = $dataset->shape();
 
-        $sW = NumPower::zeros([$n, $n], 'float32', 0);
+        $sW = Matrix::zeros($n, $n);
 
         foreach ($dataset->stratifyByLabel() as $stratum) {
             $prior = $stratum->numSamples() / $m;
 
-            $sW = NumPower::add(
-                NumPower::multiply($this->covariance($stratum->samples()), $prior),
-                $sW
-            );
+            $sW = Matrix::quick($stratum->samples())
+                ->transpose()
+                ->covariance()
+                ->multiply($prior)
+                ->add($sW);
         }
 
-        $eig = NumPower::eig(
-            NumPower::subtract($this->covariance($dataset->samples()), $sW)
-        );
+        $eig = Matrix::quick($dataset->samples())
+            ->transpose()
+            ->covariance()
+            ->subtract($sW)
+            ->eig(true);
 
-        $eigenvalues = $eig[0]->toArray();
-        $eigenvectors = array_map(null, ...$eig[1]->toArray());
+        $eigenvalues = $eig->eigenvalues();
+        $eigenvectors = $eig->eigenvectors()->asArray();
 
         $totalVariance = array_sum($eigenvalues);
 
@@ -165,8 +161,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = NumPower::array($eigenvectors, 'float32');
-        $eigenvectors = NumPower::transpose($eigenvectors, [1, 0]);
+        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
@@ -187,32 +182,9 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = NumPower::matmul(
-            NumPower::array($samples, 'float32'),
-            $this->eigenvectors
-        )->toArray();
-    }
-
-    /**
-     * Compute the covariance matrix of a set of samples.
-     *
-     * @param list<list<mixed>> $samples
-     * @return NDArray
-     */
-    protected function covariance(array $samples) : NDArray
-    {
-        $m = count($samples);
-
-        $x = NumPower::array($samples, 'float32');
-
-        $mean = NumPower::divide(NumPower::sum($x, axis: 0), $m);
-
-        $centered = NumPower::subtract($x, $mean);
-
-        return NumPower::divide(
-            NumPower::matmul(NumPower::transpose($centered, [1, 0]), $centered),
-            $m
-        );
+        $samples = Matrix::build($samples)
+            ->matmul($this->eigenvectors)
+            ->asArray();
     }
 
     /**

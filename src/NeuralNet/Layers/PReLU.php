@@ -2,17 +2,13 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\NeuralNet\Initializers\Initializer;
-use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 /**
@@ -28,7 +24,6 @@ use Generator;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class PReLU implements Hidden, Parametric
 {
@@ -56,20 +51,15 @@ class PReLU implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * @param Initializer|null $initializer
      */
     public function __construct(?Initializer $initializer = null)
     {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-
         $this->initializer = $initializer ?? new Constant(0.25);
     }
 
@@ -97,16 +87,13 @@ class PReLU implements Hidden, Parametric
      * @internal
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $fanIn;
 
-        $alphaMat = $this->initializer->initialize(1, $fanOut, $dataType);
-
-        $alpha = NumPower::flatten($alphaMat);
+        $alpha = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
 
         $this->width = $fanOut;
         $this->alpha = new Parameter($alpha);
@@ -119,10 +106,10 @@ class PReLU implements Hidden, Parametric
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
         $this->input = $input;
 
@@ -134,10 +121,10 @@ class PReLU implements Hidden, Parametric
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $this->activate($input);
     }
@@ -159,17 +146,15 @@ class PReLU implements Hidden, Parametric
         }
 
         if (!$this->input) {
-            throw new RuntimeException('Must perform forward pass before backpropagating.');
+            throw new RuntimeException('Must perform forward pass'
+                . ' before backpropagating.');
         }
 
-        /** @var NDArray $dOut */
         $dOut = $prevGradient();
 
-        $negativeInput = NumPower::minimum($this->input, 0.0);
+        $dIn = $this->input->clipUpper(0.0);
 
-        $dAlphaFull = NumPower::multiply($dOut, $negativeInput);
-
-        $dAlpha = NumPower::sum($dAlphaFull, axis: 1);
+        $dAlpha = $dOut->multiply($dIn)->sum();
 
         $this->alpha->update($dAlpha, $optimizer);
 
@@ -185,15 +170,13 @@ class PReLU implements Hidden, Parametric
      *
      * @internal
      *
-     * @param NDArray $input
-     * @param NDArray $dOut
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $dOut
+     * @return Matrix
      */
-    public function gradient(NDArray $input, NDArray $dOut) : NDArray
+    public function gradient($input, $dOut) : Matrix
     {
-        $derivative = $this->differentiate($input);
-
-        return NumPower::multiply($derivative, $dOut);
+        return $this->differentiate($input)->multiply($dOut);
     }
 
     /**
@@ -228,51 +211,67 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the leaky ReLU activation function and return a matrix.
      *
-     * @param NDArray $input
+     * @param Matrix $input
      * @throws RuntimeException
-     * @return NDArray
+     * @return Matrix
      */
-    protected function activate(NDArray $input) : NDArray
+    protected function activate(Matrix $input) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphaCol = NumPower::reshape($this->alpha->param(), [$this->width(), 1]);
+        $alphas = $this->alpha->param()->asArray();
 
-        $positiveActivation = NumPower::maximum($input, 0.0);
+        $computed = [];
 
-        $negativeActivation = NumPower::multiply(
-            NumPower::minimum($input, 0.0),
-            $alphaCol,
-        );
+        foreach ($input as $i => $row) {
+            $alpha = $alphas[$i];
 
-        return NumPower::add($positiveActivation, $negativeActivation);
+            $activations = [];
+
+            foreach ($row as $value) {
+                $activations[] = $value > 0.0
+                    ? $value
+                    : $alpha * $value;
+            }
+
+            $computed[] = $activations;
+        }
+
+        return Matrix::quick($computed);
     }
 
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param NDArray $input
+     * @param Matrix $input
      * @throws RuntimeException
-     * @return NDArray
+     * @return Matrix
      */
-    protected function differentiate(NDArray $input) : NDArray
+    protected function differentiate(Matrix $input) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphaCol = NumPower::reshape($this->alpha->param(), [$this->width(), 1]);
+        $alphas = $this->alpha->param()->asArray();
 
-        $positivePart = NumPower::greater($input, 0.0);
+        $gradient = [];
 
-        $negativePart = NumPower::multiply(
-            NumPower::lessEqual($input, 0.0),
-            $alphaCol,
-        );
+        foreach ($input as $i => $row) {
+            $alpha = $alphas[$i];
 
-        return NumPower::add($positivePart, $negativePart);
+            $derivative = [];
+
+            foreach ($row as $value) {
+                $derivative[] = $value > 0.0 ? 1.0 : $alpha;
+            }
+
+            $gradient[] = $derivative;
+        }
+
+        return Matrix::quick($gradient);
     }
 
     /**

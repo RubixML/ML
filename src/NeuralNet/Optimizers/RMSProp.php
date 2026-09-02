@@ -2,19 +2,14 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use NDArray;
-use NumPower;
+use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function get_class;
 
 use const Rubix\ML\EPSILON;
-use const PHP_FLOAT_MAX;
 
 /**
  * RMS Prop
@@ -29,7 +24,6 @@ use const PHP_FLOAT_MAX;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class RMSProp implements Optimizer, Adaptive
 {
@@ -57,7 +51,7 @@ class RMSProp implements Optimizer, Adaptive
     /**
      * The cache of running squared gradients.
      *
-     * @var NDArray[]
+     * @var Tensor[]
      */
     protected array $cache = [
         //
@@ -71,21 +65,14 @@ class RMSProp implements Optimizer, Adaptive
     public function __construct(float $rate = 0.001, float $decay = 0.1)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException(
-                "Learning rate must be greater than 0, $rate given."
-            );
+            throw new InvalidArgumentException('Learning rate must be'
+                . " greater than 0, $rate given.");
         }
 
         if ($decay <= 0.0 or $decay >= 1.0) {
-            throw new InvalidArgumentException(
-                "Decay must be between 0 and 1, $decay given."
-            );
+            throw new InvalidArgumentException('Decay must be between'
+                . " 0 and 1, $decay given.");
         }
-
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
 
         $this->rate = $rate;
         $this->decay = $decay;
@@ -104,52 +91,33 @@ class RMSProp implements Optimizer, Adaptive
     {
         $class = get_class($param->param());
 
-        if (!$class) {
+        if ($class === false) {
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $zeros = NumPower::zeros($param->param()->shape(), $param->param()->dataType(), 0);
-
-        $this->cache[$param->id()] = $zeros;
+        $this->cache[$param->id()] = $class::zeros(...$param->param()->shape());
     }
 
     /**
      * Take a step of gradient descent for a given parameter.
      *
-     * RMSProp update (element-wise):
-     *   v_t = ρ · v_{t-1} + (1 − ρ) · g_t^2
-     *   Δθ_t = η · g_t / max(sqrt(v_t), ε)
-     *
-     * where:
-     *   - g_t is the current gradient,
-     *   - v_t is the running average of squared gradients,
-     *   - ρ = 1 − decay, η is the learning rate,
-     *   - ε is a small constant to avoid division by zero (implemented by clipping √v_t to [ε, +∞)).
-     *
      * @internal
      *
      * @param Parameter $param
-     * @param NDArray $gradient
-     * @return NDArray
+     * @param Tensor<int|float|array> $gradient
+     * @return Tensor<int|float|array>
      */
-    public function step(Parameter $param, NDArray $gradient) : NDArray
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
         $norm = $this->cache[$param->id()];
 
-        $norm = NumPower::add(
-            NumPower::multiply($norm, $this->rho),
-            NumPower::multiply(NumPower::square($gradient), $this->decay)
-        );
+        $norm = $norm->multiply($this->rho)
+            ->add($gradient->square()->multiply($this->decay));
 
         $this->cache[$param->id()] = $norm;
 
-        $denominator = NumPower::sqrt($norm);
-        $denominator = NumPower::clip($denominator, EPSILON, PHP_FLOAT_MAX);
-
-        return NumPower::divide(
-            NumPower::multiply($gradient, $this->rate),
-            $denominator
-        );
+        return $gradient->multiply($this->rate)
+            ->divide($norm->sqrt()->clipLower(EPSILON));
     }
 
     /**

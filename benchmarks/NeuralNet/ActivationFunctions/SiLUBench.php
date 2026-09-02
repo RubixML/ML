@@ -2,8 +2,7 @@
 
 namespace Rubix\ML\Benchmarks\NeuralNet\ActivationFunctions;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 
 /**
@@ -13,12 +12,12 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 class SiLUBench
 {
     /**
-     * @var NDArray
+     * @var Matrix
      */
     protected $z;
 
     /**
-     * @var NDArray
+     * @var Matrix
      */
     protected $computed;
 
@@ -29,9 +28,9 @@ class SiLUBench
 
     public function setUp() : void
     {
-        $this->z = NumPower::uniform([500, 500]);
+        $this->z = Matrix::uniform(500, 500);
 
-        $this->computed = NumPower::uniform([500, 500]);
+        $this->computed = Matrix::uniform(500, 500);
 
         $this->activationFn = new SiLU();
     }

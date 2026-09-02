@@ -23,7 +23,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
+use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -176,13 +176,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var string|null
      */
     protected ?string $snapshotPath = null;
-
-    /**
-     * The data type to use for NDArrays.
-     *
-     * @var string
-     */
-    protected string $dataType = 'float32';
 
     /**
      * @param mixed[] $hiddenLayers
@@ -396,24 +389,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
-     * Set the data type to use for NDArrays.
-     * @param string $dataType
-     */
-    public function setDataType(string $dataType) : void
-    {
-        if (!in_array($dataType, ['float16', 'float32', 'float64'])) {
-            throw new InvalidArgumentException('Data type must be float16, float32, or float64, '
-                . "$dataType given.");
-        }
-
-        if ($this->network) {
-            throw new RuntimeException('Cannot change data type after training.');
-        }
-
-        $this->dataType = $dataType;
-    }
-
-    /**
      * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -431,14 +406,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1Uniform());
+        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Multiclass($classes, $this->costFn),
-            $this->optimizer,
-            $this->dataType
+            $this->optimizer
         );
 
         $this->network->initialize();
@@ -622,7 +596,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $probabilities = [];
 
-        foreach ($activations->toArray() as $dist) {
+        foreach ($activations->asArray() as $dist) {
             $probabilities[] = array_combine($this->classes, $dist) ?: [];
         }
 

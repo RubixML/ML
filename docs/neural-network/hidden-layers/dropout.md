@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Dropout/Dropout.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Dropout.php">[source]</a></span>
 
 # Dropout
 
@@ -13,7 +13,7 @@ Dropout is a regularization technique to reduce overfitting in neural networks b
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\Layers\Dropout\Dropout;
+use Rubix\ML\NeuralNet\Layers\Dropout;
 
 $layer = new Dropout(0.2);
 ```

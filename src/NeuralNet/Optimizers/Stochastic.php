@@ -2,24 +2,18 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use NDArray;
-use NumPower;
+use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Stochastic
  *
- * SGD (Stochastic Gradient Descent) optimizer -
- * a constant learning rate gradient descent optimizer.
+ * A constant learning rate gradient descent optimizer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Stochastic implements Optimizer
 {
@@ -37,15 +31,9 @@ class Stochastic implements Optimizer
     public function __construct(float $rate = 0.01)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException(
-                "Learning rate must be greater than 0, $rate given."
-            );
+            throw new InvalidArgumentException('Learning rate must'
+                . " be greater than 0, $rate given.");
         }
-
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
 
         $this->rate = $rate;
     }
@@ -53,22 +41,15 @@ class Stochastic implements Optimizer
     /**
      * Take a step of gradient descent for a given parameter.
      *
-     * SGD update (element-wise):
-     *   Δθ_t = η · g_t
-     *
-     * where:
-     *   - g_t is the current gradient,
-     *   - η is the learning rate.
-     *
      * @internal
      *
      * @param Parameter $param
-     * @param NDArray $gradient
-     * @return NDArray
+     * @param Tensor<int|float|array> $gradient
+     * @return Tensor<int|float|array>
      */
-    public function step(Parameter $param, NDArray $gradient) : NDArray
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
-        return NumPower::multiply($gradient, $this->rate);
+        return $gradient->multiply($this->rate);
     }
 
     /**

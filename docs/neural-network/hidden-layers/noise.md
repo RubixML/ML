@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Noise/Noise.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Noise.php">[source]</a></span>
 
 # Noise
 
@@ -13,7 +13,7 @@ This layer adds random Gaussian noise to the inputs with a user-defined standard
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\Layers\Noise\Noise;
+use Rubix\ML\NeuralNet\Layers\Noise;
 
 $layer = new Noise(1e-3);
 ```

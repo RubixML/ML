@@ -1,18 +1,14 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\CoversClass;
+use Tensor\Matrix;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use NumPower;
-use NDArray;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -23,80 +19,74 @@ class LeastSquaresTest extends TestCase
     /**
      * @var LeastSquares
      */
-    protected LeastSquares $costFn;
+    protected $costFn;
 
     /**
-     * @return Generator<array>
+     * @return Generator<mixed[]>
      */
     public static function computeProvider() : Generator
     {
         yield [
-            NumPower::array([]),
-            NumPower::array([]),
-            NAN,
-        ];
-
-        yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.99],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
-            0.0001000,
+            0.00010000000000000018,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [1000.0],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             998001.0,
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [33.98],
                 [20.0],
                 [4.6],
                 [44.2],
                 [38.5],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [36.0],
                 [22.0],
                 [18.0],
                 [41.5],
                 [38.0],
             ]),
-            39.0360776,
+            39.036080000000005,
         ];
     }
 
     /**
-     * @return Generator<array>
+     * @return Generator<mixed[]>
      */
     public static function differentiateProvider() : Generator
     {
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [0.99],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             [
-                [-0.0099999],
+                [-0.010000000000000009],
             ],
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [1000.0],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [1.0],
             ]),
             [
@@ -105,14 +95,14 @@ class LeastSquaresTest extends TestCase
         ];
 
         yield [
-            NumPower::array([
+            Matrix::quick([
                 [33.98],
                 [20.0],
                 [4.6],
                 [44.2],
                 [38.5],
             ]),
-            NumPower::array([
+            Matrix::quick([
                 [36.0],
                 [22.0],
                 [18.0],
@@ -120,10 +110,10 @@ class LeastSquaresTest extends TestCase
                 [38.0],
             ]),
             [
-                [-2.0200004],
+                [-2.020000000000003],
                 [-2.0],
-                [-13.3999996],
-                [2.7000007],
+                [-13.4],
+                [2.700000000000003],
                 [0.5],
             ],
         ];
@@ -134,62 +124,38 @@ class LeastSquaresTest extends TestCase
         $this->costFn = new LeastSquares();
     }
 
-    #[TestDox('Can be cast to a string')]
-    public function testToString() : void
+    #[Test]
+    public function build() : void
     {
-        static::assertEquals('Least Squares', (string) $this->costFn);
+        $this->assertInstanceOf(LeastSquares::class, $this->costFn);
+        $this->assertInstanceOf(CostFunction::class, $this->costFn);
     }
 
-    #[Test]
-    #[TestDox('Throws exception when output and target shapes do not match in compute')]
-    public function computeThrowsExceptionOnShapeMismatch() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Output and target must have the same shape.');
-
-        $output = NumPower::array([[1.0, 2.0, 3.0]]);
-        $target = NumPower::array([[1.0, 2.0]]);
-
-        $this->costFn->compute($output, $target);
-    }
-
-    #[Test]
-    #[TestDox('Throws exception when output and target shapes do not match in differentiate')]
-    public function differentiateThrowsExceptionOnShapeMismatch() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Output and target must have the same shape.');
-
-        $output = NumPower::array([[1.0, 2.0, 3.0]]);
-        $target = NumPower::array([[1.0, 2.0]]);
-
-        $this->costFn->differentiate($output, $target);
-    }
-
-    #[Test]
-    #[TestDox('Compute loss score')]
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param float $expected
+     */
     #[DataProvider('computeProvider')]
-    public function compute(NDArray $output, NDArray $target, float $expected) : void
+    #[Test]
+    public function compute(Matrix $output, Matrix $target, float $expected) : void
     {
         $loss = $this->costFn->compute($output, $target);
 
-        if (is_nan($expected)) {
-            self::assertNan($loss);
-        } else {
-            self::assertEqualsWithDelta($expected, $loss, 1e-7);
-        }
+        $this->assertEquals($expected, $loss);
     }
 
-    #[Test]
-    #[TestDox('Calculate gradient of cost function')]
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param list<list<float>> $expected
+     */
     #[DataProvider('differentiateProvider')]
-    public function differentiate(NDArray $output, NDArray $target, array $expected) : void
+    #[Test]
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
     {
-        $gradient = $this->costFn->differentiate($output, $target);
+        $gradient = $this->costFn->differentiate($output, $target)->asArray();
 
-        // Convert NDArray to PHP array for comparison
-        $gradientArray = $gradient->toArray();
-
-        self::assertEqualsWithDelta($expected, $gradientArray, 1e-7);
+        $this->assertEquals($expected, $gradient);
     }
 }

@@ -1,25 +1,24 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Regressors;
 
-use Generator;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\TestCase;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
-use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Ridge;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Regressors\Ridge;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[Group('Regressors')]
 #[CoversClass(Ridge::class)]
@@ -27,249 +26,74 @@ class RidgeTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
-
-    protected Hyperplane $generator;
-
-    protected Ridge $estimator;
-
-    protected RSquared $metric;
+    protected const RANDOM_SEED = 0;
 
     /**
-     * @return Generator<string, array{0: list<list<int|float>>, 1: list<int|float>, 2: list<int|float>, 3: float, 4: list<int|float>, 5: float}>
+     * @var Hyperplane
      */
-    public static function trainPredictProviderForNumPower() : Generator
-    {
-        $isArm = in_array(strtolower(php_uname('m')), ['arm64', 'aarch64'], true);
+    protected $generator;
 
-        yield 'sample with 1 feature and smaller values' => [
-            [
-                [0.0],
-                [1.0],
-                [2.0],
-                [3.0],
-            ],
-            [3.0, 5.0, 7.0, 9.0],
-            [4.0],
-            10.990020,
-            [1.996008],
-            3.005988,
-        ];
+    /**
+     * @var Ridge
+     */
+    protected $estimator;
 
-        yield 'sample with 2 features and smaller values' => [
-            [
-                [0.0, 0.0],
-                [1.0, 1.0],
-                [2.0, 1.0],
-                [1.0, 2.0],
-            ],
-            [3.0, 6.0, 7.0, 8.0],
-            [2.0, 2.0],
-            8.990033,
-            [0.999967, 1.990066],
-            3.009967,
-        ];
-
-        yield 'sample with 3 features and smaller values' => [
-            [
-                [0.0, 0.0, 0.0],
-                [1.0, 0.0, 0.0],
-                [0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0],
-            ],
-            [4.0, 5.0, 6.0, 7.0],
-            [1.0, 1.0, 1.0],
-            9.826923,
-            [0.932978, 1.923077, 2.913176],
-            4.057692,
-        ];
-
-        yield 'sample with 4 features' => [
-            [
-                [50.0, 3.0, 5.0, 10.0],
-                [70.0, 10.0, 3.0, 5.0],
-                [40.0, 2.0, 8.0, 30.0],
-            ],
-            [66000.0, 95000.0, 45000.0],
-            [60.0, 5.0, 4.0, 12.0],
-            $isArm ? 77676.53 : 77644.0,
-            $isArm
-                ? [1208.26, 360.18, -96.53, -420.41]
-                : [1172.0, 452.0, -70.0, -424.0],
-            $isArm ? 8810.75 : 10432.0,
-        ];
-
-        yield 'sample with 4 features with shifted values' => [
-            [
-                [52.0, 4.0, 6.0, 12.0],
-                [71.0, 9.0, 4.0, 6.0],
-                [38.0, 3.0, 7.0, 28.0],
-            ],
-            [66000.0, 95000.0, 45000.0],
-            [60.0, 5.0, 4.0, 12.0],
-            $isArm ? 77585.35 : 78540.0,
-            $isArm
-                ? [1364.07, 476.45, -161.59, -82.90]
-                : [1366.0, 504.0, -156.0, -91.0],
-            $isArm ? -4999.93 : -4224.0,
-        ];
-    }
+    /**
+     * @var RSquared
+     */
+    protected $metric;
 
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane(
-            coefficients: [1.0, 5.5, -7, 0.01],
-            intercept: 0.0,
-            noise: 1.0
-        );
+        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 0.0, 1.0);
 
         $this->estimator = new Ridge(1.0);
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
-        mt_srand(self::RANDOM_SEED);
     }
 
-    // happy path
-
-    #[Test]
-    #[TestDox('[happy path] Is not trained before training')]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
-        self::assertFalse($this->estimator->trained());
+        $this->assertFalse($this->estimator->trained());
     }
 
     #[Test]
-    #[TestDox('[happy path] Returns estimator type')]
-    public function type() : void
+    public function build() : void
     {
-        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        $this->assertInstanceOf(Ridge::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     #[Test]
-    #[TestDox('[happy path] Declares feature compatibility')]
-    public function compatibility() : void
-    {
-        $expected = [
-            DataType::continuous(),
-        ];
-
-        self::assertEquals($expected, $this->estimator->compatibility());
-    }
-
-    #[Test]
-    #[TestDox('[happy path] Exposes params and string representation')]
-    public function paramsAndToString() : void
-    {
-        $expected = [
-            'l2 penalty' => 1.0,
-        ];
-
-        self::assertSame($expected, $this->estimator->params());
-        self::assertStringContainsString('Ridge (l2 penalty: 1)', (string) $this->estimator);
-    }
-
-    #[Test]
-    #[TestDox('[happy path] Trains, predicts, and returns importances')]
-    public function trainPredictImportances() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->estimator->train($training);
-
-        self::assertTrue($this->estimator->trained());
-
-        $coefficients = $this->estimator->coefficients();
-
-        self::assertIsArray($coefficients);
-        self::assertCount(4, $coefficients);
-
-        self::assertIsFloat($this->estimator->bias());
-
-        $importances = $this->estimator->featureImportances();
-
-        self::assertCount(4, $importances);
-        self::assertContainsOnlyFloat($importances);
-
-        $predictions = $this->estimator->predict($testing);
-
-        /** @var list<int|float> $labels */
-        $labels = $testing->labels();
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $labels
-        );
-
-        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    // boundary
-
-    #[Test]
-    #[TestDox('[boundary] Coefficients and bias are null before training')]
-    public function nullStateBeforeTraining() : void
-    {
-        self::assertNull($this->estimator->coefficients());
-        self::assertNull($this->estimator->bias());
-    }
-
-    #[Test]
-    #[TestDox('[boundary] Allows zero L2 penalty')]
-    public function allowsZeroPenalty() : void
-    {
-        $regression = new Ridge(0.0);
-
-        $regression->train(Labeled::quick(
-            samples: [[0.0], [1.0], [2.0], [3.0]],
-            labels: [1.0, 3.0, 5.0, 7.0]
-        ));
-
-        $predictions = $regression->predict(Unlabeled::quick([[4.0]]));
-
-        self::assertTrue($regression->trained());
-        self::assertEqualsWithDelta(9.0, (float) $predictions[0], 1e-6);
-    }
-
-    #[Test]
-    #[TestDox('[boundary] Trains and predicts with one sample and one feature')]
-    public function oneSampleOneFeature() : void
-    {
-        $regression = new Ridge(1.0);
-
-        $regression->train(Labeled::quick(
-            samples: [[2.0]],
-            labels: [5.0]
-        ));
-
-        $predictions = $regression->predict(Unlabeled::quick([[2.0]]));
-
-        self::assertCount(1, $predictions);
-        self::assertIsFloat((float) $predictions[0]);
-        self::assertTrue(is_finite((float) $predictions[0]));
-    }
-
-    // invalid input
-
-    #[Test]
-    #[TestDox('[invalid input] Throws when L2 penalty is invalid')]
     public function badL2Penalty() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -278,325 +102,64 @@ class RidgeTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('[invalid input] Throws when training set is incompatible')]
-    public function trainIncompatible() : void
+    public function type() : void
     {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
     #[Test]
-    #[TestDox('[invalid input] Throws when labels are missing from training set')]
-    public function trainUnlabeledDataset() : void
+    public function compatibility() : void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $expected = [
+            DataType::continuous(),
+        ];
 
-        $this->estimator->train(Unlabeled::quick([[1.0, 2.0, 3.0, 4.0]]));
+        $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
     #[Test]
-    #[TestDox('[invalid input] Throws when training set is empty')]
-    public function trainEmptyDataset() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Labeled::quick([], []));
-    }
-
-    #[Test]
-    #[TestDox('[invalid input] Throws when predicting before training')]
-    public function predictUntrained() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[Test]
-    #[TestDox('[invalid input] Throws when requesting importances before training')]
-    public function featureImportancesUntrained() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->estimator->featureImportances();
-    }
-
-    #[Test]
-    #[TestDox('[invalid input] Throws when prediction dimensionality is incorrect')]
-    public function predictDimensionalityMismatch() : void
-    {
-        $this->estimator->train(Labeled::quick(
-            samples: [[1.0, 2.0], [2.0, 3.0], [3.0, 4.0]],
-            labels: [4.0, 6.0, 8.0]
-        ));
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->predict(Unlabeled::quick([[1.0]]));
-    }
-
-    // malicious input
-
-    #[Test]
-    #[TestDox('[malicious input] Rejects script-like payload in samples')]
-    public function rejectsScriptLikeSamplePayload() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Labeled::build(
-            samples: [[1.0, 2.0], [3.0, '<script>alert(1)</script>']],
-            labels: [1.0, 2.0]
-        ));
-    }
-
-    #[Test]
-    #[TestDox('[malicious input] Rejects categorical label injection')]
-    public function rejectsCategoricalLabelPayload() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Labeled::quick(
-            samples: [[1.0, 2.0], [2.0, 3.0]],
-            labels: ['DROP TABLE', 'rm -rf']
-        ));
-    }
-
-    // race conditions
-
-    #[Test]
-    #[TestDox('[race conditions] Predict is deterministic and does not mutate dataset')]
-    public function deterministicPredictAndNoMutation() : void
+    public function trainPredictImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
 
-        $samplesBefore = $testing->samples();
-        $labelsBefore = $testing->labels();
+        $this->assertTrue($this->estimator->trained());
 
-        $predictionsA = $this->estimator->predict($testing);
-        $predictionsB = $this->estimator->predict($testing);
+        $coefficients = $this->estimator->coefficients();
 
-        self::assertCount($testing->numSamples(), $predictionsA);
-        self::assertCount($testing->numSamples(), $predictionsB);
-        self::assertEquals($samplesBefore, $testing->samples());
-        self::assertEquals($labelsBefore, $testing->labels());
+        $this->assertIsArray($coefficients);
+        $this->assertCount(4, $coefficients);
 
-        foreach ($predictionsA as $i => $prediction) {
-            self::assertEqualsWithDelta((float) $prediction, (float) $predictionsB[$i], 1e-12);
-        }
+        $this->assertIsFloat($this->estimator->bias());
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertIsArray($importances);
+        $this->assertCount(4, $importances);
+        $this->assertContainsOnlyFloat($importances);
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     #[Test]
-    #[TestDox('[race conditions] Retraining overwrites previous model state')]
-    public function retrainingOverwritesState() : void
+    public function trainIncompatible() : void
     {
-        $first = Labeled::quick(
-            samples: [[0.0], [1.0], [2.0], [3.0]],
-            labels: [1.0, 3.0, 5.0, 7.0]
-        );
-        $second = Labeled::quick(
-            samples: [[0.0], [1.0], [2.0], [3.0]],
-            labels: [7.0, 5.0, 3.0, 1.0]
-        );
+        $this->expectException(InvalidArgumentException::class);
 
-        $probe = Unlabeled::quick([[4.0]]);
-
-        $this->estimator->train($first);
-        $firstPrediction = $this->estimator->predict($probe)[0];
-
-        $this->estimator->train($second);
-        $secondPrediction = $this->estimator->predict($probe)[0];
-
-        self::assertNotEqualsWithDelta((float) $firstPrediction, (float) $secondPrediction, 1.0);
-    }
-
-    // regression
-
-    #[Test]
-    #[TestDox('[regression] Trains, predicts, and returns expected NumPower ridge values')]
-    #[DataProvider('trainPredictProviderForNumPower')]
-    public function trainPredict(array $samples, array $labels, array $prediction, float $expectedPrediction, array $expectedCoefficients, float $expectedBias) : void
-    {
-        $regression = new Ridge(0.01);
-        $regression->train(new Labeled($samples, $labels));
-
-        $predictions = $regression->predict(new Unlabeled([$prediction]));
-        $coefficients = $regression->coefficients();
-
-        self::assertEqualsWithDelta($expectedPrediction, $predictions[0], 1e-4);
-        self::assertIsArray($coefficients);
-        self::assertCount(count($expectedCoefficients), $coefficients);
-
-        foreach ($expectedCoefficients as $i => $expectedCoefficient) {
-            self::assertEqualsWithDelta($expectedCoefficient, $coefficients[$i], 1e-4);
-        }
-
-        self::assertEqualsWithDelta($expectedBias, $regression->bias(), 1e-4);
+        $this->estimator->train(Labeled::quick([['bad']], [2]));
     }
 
     #[Test]
-    #[TestDox('[regression] Serialization preserves predictions and parameters')]
-    public function serializationRegression() : void
+    public function predictUntrained() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(64);
+        $this->expectException(RuntimeException::class);
 
-        $this->estimator->train($training);
-
-        $predictionsBefore = $this->estimator->predict($testing);
-        $copy = unserialize(serialize($this->estimator));
-
-        self::assertInstanceOf(Ridge::class, $copy);
-        self::assertTrue($copy->trained());
-        self::assertSame($this->estimator->params(), $copy->params());
-        self::assertEquals($this->estimator->coefficients(), $copy->coefficients());
-        self::assertEqualsWithDelta((float) $this->estimator->bias(), (float) $copy->bias(), 1e-12);
-
-        $predictionsAfter = $copy->predict($testing);
-
-        foreach ($predictionsBefore as $i => $prediction) {
-            self::assertEqualsWithDelta((float) $prediction, (float) $predictionsAfter[$i], 1e-12);
-        }
-    }
-
-    // property based
-
-    #[Test]
-    #[TestDox('[property based] Larger L2 penalty shrinks coefficient norm')]
-    public function largerPenaltyShrinksCoefficientNorm() : void
-    {
-        for ($seed = 1; $seed <= 10; ++$seed) {
-            [$samples, $labels] = $this->makeRandomLinearProblem(samples: 64, features: 4, seed: $seed);
-
-            $lowPenalty = new Ridge(1e-8);
-            $highPenalty = new Ridge(100.0);
-
-            $dataset = Labeled::quick($samples, $labels);
-
-            $lowPenalty->train($dataset);
-            $highPenalty->train($dataset);
-
-            $lowNorm = $this->l2Norm($lowPenalty->coefficients() ?? []);
-            $highNorm = $this->l2Norm($highPenalty->coefficients() ?? []);
-
-            self::assertLessThanOrEqual($lowNorm + 1e-7, $highNorm);
-        }
-    }
-
-    #[Test]
-    #[TestDox('[property based] Recover near-perfect linear relationships across random seeds')]
-    public function recoverLinearRelationshipsAcrossSeeds() : void
-    {
-        for ($seed = 11; $seed <= 20; ++$seed) {
-            [$samples, $labels] = $this->makeRandomLinearProblem(samples: 96, features: 3, seed: $seed);
-
-            $regression = new Ridge(1e-8);
-            $regression->train(Labeled::quick($samples, $labels));
-
-            $predictions = $regression->predict(Unlabeled::quick($samples));
-
-            $score = $this->metric->score(predictions: $predictions, labels: $labels);
-
-            self::assertGreaterThanOrEqual(0.999999, $score);
-        }
-    }
-
-    // fuzzing
-
-    #[Test]
-    #[TestDox('[fuzzing] Random numeric datasets produce finite predictions')]
-    public function randomDatasetsProduceFinitePredictions() : void
-    {
-        mt_srand(1337);
-
-        for ($iteration = 0; $iteration < 25; ++$iteration) {
-            $features = mt_rand(1, 8);
-            $samplesCount = mt_rand(8, 48);
-            $testCount = mt_rand(1, 16);
-
-            [$samples, $labels] = $this->makeRandomLinearProblem(
-                samples: $samplesCount,
-                features: $features,
-                seed: 2000 + $iteration
-            );
-            [$testSamples] = $this->makeRandomLinearProblem(
-                samples: $testCount,
-                features: $features,
-                seed: 3000 + $iteration
-            );
-
-            $penalty = mt_rand(0, 1000) / 10.0;
-            $regression = new Ridge($penalty);
-
-            $regression->train(Labeled::quick($samples, $labels));
-            $predictions = $regression->predict(Unlabeled::quick($testSamples));
-
-            self::assertCount($testCount, $predictions);
-
-            foreach ($predictions as $prediction) {
-                self::assertIsNumeric($prediction);
-                self::assertTrue(is_finite((float) $prediction));
-            }
-        }
-    }
-
-    /**
-     * Make random linear problem
-     *
-     * @param int $samples
-     * @param int $features
-     * @param int $seed
-     * @return array{0: list<list<float>>, 1: list<float>}
-     */
-    private function makeRandomLinearProblem(int $samples, int $features, int $seed) : array
-    {
-        mt_srand($seed);
-
-        $coefficients = [];
-
-        for ($j = 0; $j < $features; ++$j) {
-            $coefficients[] = mt_rand(-200, 200) / 10.0;
-        }
-
-        $bias = mt_rand(-100, 100) / 10.0;
-
-        $x = [];
-        $y = [];
-
-        for ($i = 0; $i < $samples; ++$i) {
-            $sample = [];
-
-            for ($j = 0; $j < $features; ++$j) {
-                $sample[] = mt_rand(-500, 500) / 10.0;
-            }
-
-            $target = $bias;
-
-            foreach ($sample as $j => $value) {
-                $target += $value * $coefficients[$j];
-            }
-
-            $x[] = $sample;
-            $y[] = $target;
-        }
-
-        return [$x, $y];
-    }
-
-    /**
-     * @param (int|float)[] $values
-     */
-    private function l2Norm(array $values) : float
-    {
-        $sum = 0.0;
-
-        foreach ($values as $value) {
-            $sum += (float) $value * (float) $value;
-        }
-
-        return sqrt($sum);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

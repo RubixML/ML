@@ -1,15 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use NumPower;
-use NDArray;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Traits\AssertsShapes;
+use Tensor\Matrix;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Constant
@@ -19,39 +13,48 @@ use Rubix\ML\Traits\AssertsShapes;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
 class Constant implements Initializer
 {
-    use AssertsShapes;
+    /**
+     * The value to initialize the parameter to.
+     *
+     * @var float
+     */
+    protected float $value;
 
     /**
      * @param float $value
+     * @throws InvalidArgumentException
      */
-    public function __construct(protected float $value = 0.0)
+    public function __construct(float $value = 0.0)
     {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
+        if (is_nan($value)) {
+            throw new InvalidArgumentException('Cannot initialize'
+                . ' weight values to NaN.');
+        }
+
+        $this->value = $value;
     }
 
     /**
-     * @inheritdoc
+     * Initialize a weight matrix W in the dimensions fan in x fan out.
+     *
+     * @internal
+     *
+     * @param int<0,max> $fanIn
+     * @param int<0,max> $fanOut
+     * @return Matrix
      */
-    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray
+    public function initialize(int $fanIn, int $fanOut) : Matrix
     {
-        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
-
-        return NumPower::full(
-            [$fanOut, $fanIn],
-            $this->value,
-            dtype: $dataType
-        );
+        return Matrix::fill($this->value, $fanOut, $fanIn);
     }
 
     /**
-     * Return the string representation of the initializer.
+     * Return the string representation of the object.
+     *
+     * @internal
      *
      * @return string
      */

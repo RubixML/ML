@@ -2,18 +2,15 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use NDArray;
-use NumPower;
+use Tensor\Matrix;
+use Tensor\Vector;
 use Rubix\ML\Deferred;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
-use Rubix\ML\NeuralNet\Initializers\Initializer;
-use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
 /**
@@ -29,7 +26,6 @@ use Generator;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class Swish implements Hidden, Parametric
 {
@@ -64,27 +60,22 @@ class Swish implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $input = null;
+    protected ?Matrix $input = null;
 
     /**
      * The memorized activation matrix.
      *
-     * @var NDArray|null
+     * @var Matrix|null
      */
-    protected ?NDArray $output = null;
+    protected ?Matrix $output = null;
 
     /**
      * @param Initializer|null $initializer
      */
     public function __construct(?Initializer $initializer = null)
     {
-        SpecificationChain::with([
-            new ExtensionIsLoaded('RubixNumPower'),
-            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
-        ])->check();
-
         $this->initializer = $initializer ?? new Constant(1.0);
         $this->sigmoid = new Sigmoid();
     }
@@ -113,16 +104,13 @@ class Swish implements Hidden, Parametric
      * @internal
      *
      * @param positive-int $fanIn
-     * @param string $dataType
      * @return positive-int
      */
-    public function initialize(int $fanIn, string $dataType) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $fanIn;
 
-        $beta = $this->initializer->initialize(1, $fanOut, $dataType);
-
-        $beta = NumPower::flatten($beta);
+        $beta = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
 
         $this->width = $fanOut;
         $this->beta = new Parameter($beta);
@@ -135,16 +123,17 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function forward(NDArray $input) : NDArray
+    public function forward(Matrix $input) : Matrix
     {
+        $output = $this->activate($input);
+
         $this->input = $input;
+        $this->output = $output;
 
-        $this->output = $this->activate($input);
-
-        return $this->output;
+        return $output;
     }
 
     /**
@@ -152,10 +141,10 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param NDArray $input
-     * @return NDArray
+     * @param Matrix $input
+     * @return Matrix
      */
-    public function infer(NDArray $input) : NDArray
+    public function infer(Matrix $input) : Matrix
     {
         return $this->activate($input);
     }
@@ -177,37 +166,26 @@ class Swish implements Hidden, Parametric
         }
 
         if (!$this->input or !$this->output) {
-            throw new RuntimeException('Must perform forward pass before backpropagating.');
+            throw new RuntimeException('Must perform forward pass'
+                . ' before backpropagating.');
         }
 
-        /** @var NDArray $dOut */
         $dOut = $prevGradient();
 
         $input = $this->input;
+        $output = $this->output;
+
+        $dInput = $input->multiply($output)->subtract($output->square());
+
+        $dBeta = $dOut->multiply($dInput)->sum();
 
         $beta = $this->beta->param();
-
-        $betaCol = NumPower::reshape($beta, [$this->width(), 1]);
-
-        $z = NumPower::multiply($betaCol, $input);
-
-        $sigma = $this->sigmoid->activate($z);
-
-        $sigmoidDelta = $this->sigmoid->differentiate($z, $sigma);
-
-        $dBeta = NumPower::sum(
-            NumPower::multiply(
-                NumPower::multiply($dOut, NumPower::multiply($input, $input)),
-                $sigmoidDelta
-            ),
-            axis: 1
-        );
 
         $this->beta->update($dBeta, $optimizer);
 
         $this->input = $this->output = null;
 
-        return new Deferred([$this, 'gradient'], [$input, $dOut, $beta]);
+        return new Deferred([$this, 'gradient'], [$input, $output, $dOut, $beta]);
     }
 
     /**
@@ -215,16 +193,15 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param NDArray $input
-     * @param NDArray $dOut
-     * @param NDArray $beta
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $output
+     * @param Matrix $dOut
+     * @param Vector $beta
+     * @return Matrix
      */
-    public function gradient(NDArray $input, NDArray $dOut, NDArray $beta) : NDArray
+    public function gradient($input, $output, $dOut, $beta) : Matrix
     {
-        $derivative = $this->differentiate($input, $beta);
-
-        return NumPower::multiply($derivative, $dOut);
+        return $this->differentiate($input, $output, $beta)->multiply($dOut);
     }
 
     /**
@@ -259,51 +236,45 @@ class Swish implements Hidden, Parametric
     /**
      * Compute the Swish activation function and return a matrix.
      *
-     * @param NDArray $input
+     * @param Matrix $input
      * @throws RuntimeException
-     * @return NDArray
+     * @return Matrix
      */
-    protected function activate(NDArray $input) : NDArray
+    protected function activate(Matrix $input) : Matrix
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $betaCol = NumPower::reshape($this->beta->param(), [$this->width(), 1]);
+        $zHat = $input->multiply($this->beta->param());
 
-        $zHat = NumPower::multiply($betaCol, $input);
-
-        $activated = $this->sigmoid->activate($zHat);
-
-        return NumPower::multiply($activated, $input);
+        return $this->sigmoid->activate($zHat)->multiply($input);
     }
 
     /**
-     * Calculate the derivative of the activation function with respect to the input.
+     * Calculate the derivative of the activation function at a given output.
      *
-     *     f'(x) = sigma(z) + z * sigma(z) * (1 - sigma(z))
+     *     f'(x) = sigmoid(z) + z * sigmoid(z) * (1 - sigmoid(z))
      *
-     * where z = beta * x. This formulation is defined at x = 0 for any value of beta.
+     * where z = beta * x. This formulation is defined at x = 0 and for any
+     * value of beta.
      *
-     * @param NDArray $input
-     * @param NDArray $beta
-     * @throws RuntimeException
-     * @return NDArray
+     * @param Matrix $input
+     * @param Matrix $output
+     * @param Vector $beta
+     * @return Matrix
      */
-    protected function differentiate(NDArray $input, NDArray $beta) : NDArray
+    protected function differentiate(Matrix $input, Matrix $output, Vector $beta) : Matrix
     {
-        $betaCol = NumPower::reshape($beta, [$this->width(), 1]);
+        $zHat = $input->multiply($beta);
 
-        $z = NumPower::multiply($betaCol, $input);
+        $sigmoid = $this->sigmoid->activate($zHat);
 
-        $sigma = $this->sigmoid->activate($z);
+        $ones = Matrix::ones(...$output->shape());
 
-        $term = NumPower::multiply(
-            NumPower::multiply($z, $sigma),
-            NumPower::subtract(1.0, $sigma)
-        );
+        $term = $zHat->multiply($sigmoid)->multiply($ones->subtract($sigmoid));
 
-        return NumPower::add($sigma, $term);
+        return $sigmoid->add($term);
     }
 
     /**
