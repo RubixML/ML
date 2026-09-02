@@ -13,5 +13,6 @@ pyvenv.cfg
 .idea
 .vscode
 .vs
+.opencode
 /runtime
 /worktrees
