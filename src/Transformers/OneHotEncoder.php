@@ -40,7 +40,9 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
      *
      * @var list<string|int>
      */
-    protected array $excluded = [];
+    protected array $excludedCategories = [
+        //
+    ];
 
     /**
      * The set of unique possible categories per feature column of the training set.
@@ -52,11 +54,12 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     /**
      * Build a new one hot encoder with an array of categories to be excluded from encoding.
      *
-     * @param mixed[] $excluded
+     * @param mixed[] $excludedCategories
+     * @throws InvalidArgumentException
      */
-    public function __construct(array $excluded = [])
+    public function __construct(array $excludedCategories = [])
     {
-        foreach ($excluded as $category) {
+        foreach ($excludedCategories as $category) {
             if (!is_string($category) and !is_int($category)) {
                 throw new InvalidArgumentException(
                     'Excluded category must be a string or integer, '
@@ -65,7 +68,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
             }
         }
 
-        $this->excluded = array_values($excluded);
+        $this->excludedCategories = array_values($excludedCategories);
     }
 
     /**
@@ -113,13 +116,15 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isCategorical()) {
-                $values = $dataset->feature($column);
+                $categories = $dataset->feature($column);
 
-                if ($this->excluded) {
-                    $values = array_diff($values, $this->excluded);
+                $categories = array_unique($categories);
+
+                if ($this->excludedCategories) {
+                    $categories = array_diff($categories, $this->excludedCategories);
                 }
 
-                $categories = array_values(array_unique($values));
+                $categories = array_values($categories);
 
                 /** @var array<int|string, int> $offsets */
                 $offsets = array_flip($categories);
