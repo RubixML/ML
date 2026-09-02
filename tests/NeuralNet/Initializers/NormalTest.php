@@ -5,12 +5,13 @@ namespace Rubix\ML\Tests\NeuralNet\Initializers;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\Normal;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Initializers
- * @covers \Rubix\ML\NeuralNet\Initializers\Normal
- */
+#[Group('Initializers')]
+#[CoversClass(Normal::class)]
 class NormalTest extends TestCase
 {
     /**
@@ -18,26 +19,19 @@ class NormalTest extends TestCase
      */
     protected $initializer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->initializer = new Normal(0.05);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Normal::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);

@@ -11,12 +11,13 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Swish
- */
+#[Group('Layers')]
+#[CoversClass(Swish::class)]
 class SwishTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -46,9 +47,6 @@ class SwishTest extends TestCase
      */
     protected $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -74,9 +72,7 @@ class SwishTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Swish::class, $this->layer);
@@ -85,9 +81,7 @@ class SwishTest extends TestCase
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
@@ -128,9 +122,7 @@ class SwishTest extends TestCase
         $this->assertEquals($expected, $infer->asArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInferWithNonDefaultBeta() : void
     {
         $layer = new Swish(new Constant(0.75));
@@ -185,9 +177,7 @@ class SwishTest extends TestCase
         $this->assertEquals($expected, $infer->asArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parametersRestoreRoundTrip() : void
     {
         $this->layer->initialize($this->fanIn);

@@ -8,12 +8,13 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Dropout
- */
+#[Group('Layers')]
+#[CoversClass(Dropout::class)]
 class DropoutTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -43,9 +44,6 @@ class DropoutTest extends TestCase
      */
     protected $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -71,9 +69,7 @@ class DropoutTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Dropout::class, $this->layer);
@@ -81,9 +77,7 @@ class DropoutTest extends TestCase
         $this->assertInstanceOf(Hidden::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);

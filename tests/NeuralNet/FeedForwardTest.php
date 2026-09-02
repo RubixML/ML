@@ -13,12 +13,13 @@ use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group NeuralNet
- * @covers \Rubix\ML\NeuralNet\FeedForward
- */
+#[Group('NeuralNet')]
+#[CoversClass(FeedForward::class)]
 class FeedForwardTest extends TestCase
 {
     /**
@@ -46,9 +47,6 @@ class FeedForwardTest extends TestCase
      */
     protected $output;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->dataset = Labeled::quick([
@@ -72,50 +70,38 @@ class FeedForwardTest extends TestCase
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(FeedForward::class, $this->network);
         $this->assertInstanceOf(Network::class, $this->network);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function layers() : void
     {
         $this->assertCount(5, iterator_to_array($this->network->layers()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function input() : void
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hidden() : void
     {
         $this->assertCount(5, $this->network->hidden());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testOutput() : void
     {
         $this->assertInstanceOf(Output::class, $this->network->output());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function numParams() : void
     {
         $this->network->initialize();
@@ -123,9 +109,7 @@ class FeedForwardTest extends TestCase
         $this->assertEquals(103, $this->network->numParams());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function roundtrip() : void
     {
         $this->network->initialize();

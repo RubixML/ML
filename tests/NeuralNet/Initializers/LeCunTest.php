@@ -5,12 +5,13 @@ namespace Rubix\ML\Tests\NeuralNet\Initializers;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\LeCun;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Initializers
- * @covers \Rubix\ML\NeuralNet\Initializers\LeCun
- */
+#[Group('Initializers')]
+#[CoversClass(LeCun::class)]
 class LeCunTest extends TestCase
 {
     /**
@@ -18,26 +19,19 @@ class LeCunTest extends TestCase
      */
     protected $initializer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->initializer = new LeCun();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(LeCun::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);

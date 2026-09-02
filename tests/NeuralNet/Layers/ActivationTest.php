@@ -9,12 +9,13 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Activation
- */
+#[Group('Layers')]
+#[CoversClass(Activation::class)]
 class ActivationTest extends TestCase
 {
     /**
@@ -42,9 +43,6 @@ class ActivationTest extends TestCase
      */
     protected $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -68,9 +66,7 @@ class ActivationTest extends TestCase
         $this->layer = new Activation(new ReLU());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Activation::class, $this->layer);
@@ -78,9 +74,7 @@ class ActivationTest extends TestCase
         $this->assertInstanceOf(Hidden::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);

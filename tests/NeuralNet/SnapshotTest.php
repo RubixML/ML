@@ -275,8 +275,7 @@ class SnapshotTest extends TestCase
                 classes: ['yes', 'no'],
                 costFn:  new BinaryCrossEntropy()
             ),
-            optimizer: new Stochastic(),
-            dataType: 'float32'
+            optimizer: new Stochastic()
         );
 
         $network->initialize();
@@ -299,7 +298,7 @@ class SnapshotTest extends TestCase
                 $layerData = [];
 
                 foreach ($layer->parameters() as $key => $parameter) {
-                    $layerData[$key] = $parameter->param()->toArray();
+                    $layerData[$key] = $parameter->param()->asArray();
                 }
 
                 $data[] = $layerData;

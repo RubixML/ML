@@ -13,12 +13,13 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Tensor\Matrix;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\TSNE
- */
+#[Group('Transformers')]
+#[CoversClass(TSNE::class)]
 class TSNETest extends TestCase
 {
     /**
@@ -45,9 +46,6 @@ class TSNETest extends TestCase
      */
     protected $embedder;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
@@ -63,18 +61,14 @@ class TSNETest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(TSNE::class, $this->embedder);
         $this->assertInstanceOf(Verbose::class, $this->embedder);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badNumDimensions() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -82,9 +76,7 @@ class TSNETest extends TestCase
         new TSNE(0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function compatibility() : void
     {
         $expected = [
@@ -94,9 +86,7 @@ class TSNETest extends TestCase
         $this->assertEquals($expected, $this->embedder->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gradient() : void
     {
         $p = Matrix::quick([
@@ -132,9 +122,7 @@ class TSNETest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gradientWeight() : void
     {
         $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
@@ -172,9 +160,7 @@ class TSNETest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gradientCorrectness() : void
     {
         $p = Matrix::quick([
@@ -234,9 +220,7 @@ class TSNETest extends TestCase
         $this->assertLessThan(0.05 * $codeNorm, $diff);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function affinities() : void
     {
         $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
@@ -269,9 +253,7 @@ class TSNETest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform() : void
     {
         $dataset = $this->generator->generate(self::TEST_SIZE);
@@ -284,7 +266,7 @@ class TSNETest extends TestCase
         $losses = $this->embedder->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
     }
 
     /**

@@ -7,13 +7,15 @@ use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Cyclical;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Optimizers
- * @covers \Rubix\ML\NeuralNet\Optimizers\Cyclical
- */
+#[Group('Optimizers')]
+#[CoversClass(Cyclical::class)]
 class CyclicalTest extends TestCase
 {
     /**
@@ -22,41 +24,9 @@ class CyclicalTest extends TestCase
     protected $optimizer;
 
     /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->optimizer = new Cyclical(0.001, 0.006, 2000);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Cyclical::class, $this->optimizer);
-        $this->assertInstanceOf(Optimizer::class, $this->optimizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider stepProvider
-     *
-     * @param Parameter $param
-     * @param Tensor<int|float> $gradient
-     * @param list<list<float>> $expected
-     */
-    public function step(Parameter $param, Tensor $gradient, array $expected) : void
-    {
-        $step = $this->optimizer->step($param, $gradient);
-
-        $this->assertEquals($expected, $step->asArray());
-    }
-
-    /**
      * @return Generator<mixed[]>
      */
-    public function stepProvider() : Generator
+    public static function stepProvider() : Generator
     {
         yield [
             new Parameter(Matrix::quick([
@@ -75,5 +45,31 @@ class CyclicalTest extends TestCase
                 [4e-5, -1e-5, -0.0005],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->optimizer = new Cyclical(0.001, 0.006, 2000);
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(Cyclical::class, $this->optimizer);
+        $this->assertInstanceOf(Optimizer::class, $this->optimizer);
+    }
+
+    /**
+     * @param Parameter $param
+     * @param Tensor<int|float> $gradient
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('stepProvider')]
+    #[Test]
+    public function step(Parameter $param, Tensor $gradient, array $expected) : void
+    {
+        $step = $this->optimizer->step($param, $gradient);
+
+        $this->assertEquals($expected, $step->asArray());
     }
 }
