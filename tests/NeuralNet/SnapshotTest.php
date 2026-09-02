@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\NeuralNet;
 
-use Tensor\Tensor;
+use NDArray;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
@@ -107,7 +107,7 @@ class SnapshotTest extends TestCase
             $this->assertIsArray($params);
 
             foreach ($params as $param) {
-                $this->assertInstanceOf(Tensor::class, $param->param());
+                $this->assertInstanceOf(NDArray::class, $param->param());
             }
 
             $offset += $length['len'];
@@ -275,7 +275,8 @@ class SnapshotTest extends TestCase
                 classes: ['yes', 'no'],
                 costFn:  new BinaryCrossEntropy()
             ),
-            optimizer: new Stochastic()
+            optimizer: new Stochastic(),
+            dataType: 'float32'
         );
 
         $network->initialize();
@@ -298,7 +299,7 @@ class SnapshotTest extends TestCase
                 $layerData = [];
 
                 foreach ($layer->parameters() as $key => $parameter) {
-                    $layerData[$key] = $parameter->param()->asArray();
+                    $layerData[$key] = $parameter->param()->toArray();
                 }
 
                 $data[] = $layerData;

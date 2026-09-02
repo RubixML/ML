@@ -15,10 +15,10 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Learner;
-use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -167,6 +167,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @var string|null
      */
     protected ?string $snapshotPath = null;
+
+    /**
+     * The data type to use for NDArrays.
+     *
+     * @var string
+     */
+    protected string $dataType = 'float32';
 
     /**
      * @param list<mixed> $hiddenLayers
@@ -375,6 +382,24 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
+     * Set the data type to use for NDArrays.
+     * @param string $dataType
+     */
+    public function setDataType(string $dataType) : void
+    {
+        if (!in_array($dataType, ['float16', 'float32', 'float64'])) {
+            throw new InvalidArgumentException('Data type must be float16, float32, or float64, '
+                . "$dataType given.");
+        }
+
+        if ($this->network) {
+            throw new RuntimeException('Cannot change data type after training.');
+        }
+
+        $this->dataType = $dataType;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -385,13 +410,14 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1());
+        $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1Uniform());
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Continuous($this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->dataType
         );
 
         $this->network->initialize();
@@ -557,7 +583,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $activations = $this->network->infer($dataset);
 
-        return array_column($activations->asArray(), 0);
+        return array_column($activations->toArray(), 0);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Generator;
+use NumPower;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
@@ -14,11 +15,11 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Learner;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\Initializers\Xavier2Uniform;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Snapshot;
@@ -163,6 +164,13 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @var string|null
      */
     protected ?string $snapshotPath = null;
+
+    /**
+     * The data type to use for NDArrays.
+     *
+     * @var string
+     */
+    protected string $dataType = 'float32';
 
     /**
      * @param int $batchSize
@@ -365,6 +373,24 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     }
 
     /**
+     * Set the data type to use for NDArrays.
+     * @param string $dataType
+     */
+    public function setDataType(string $dataType) : void
+    {
+        if (!in_array($dataType, ['float16', 'float32', 'float64'])) {
+            throw new InvalidArgumentException('Data type must be float16, float32, or float64, '
+                . "$dataType given.");
+        }
+
+        if ($this->network) {
+            throw new RuntimeException('Cannot change data type after training.');
+        }
+
+        $this->dataType = $dataType;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -375,9 +401,10 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new Xavier2())],
+            [new Dense(1, $this->l2Penalty, true, new Xavier2Uniform())],
             new Continuous($this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->dataType
         );
 
         $this->network->initialize();
@@ -550,7 +577,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $activations = $this->network->infer($dataset);
 
-        return array_column($activations->asArray(), 0);
+        return array_column($activations->toArray(), 0);
     }
 
     /**
@@ -571,9 +598,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             throw new RuntimeException('Weight layer is missing.');
         }
 
-        // Convert the weight matrix to a plain PHP array because the current Matrix
+        // Convert the weight matrix to a plain PHP array because the current NDArray build
         // does not expose a stable row-extraction helper (e.g. rowAsVector())
-        $weights = $layer->weights()->abs()->asArray();
+        $weights = NumPower::abs($layer->weights())->toArray();
 
         // This model has a single output neuron, so the first row contains the per-feature weights.
         return $weights[0] ?? [];

@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Tensor\Matrix;
+use NDArray;
+use NumPower;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AssertsShapes;
 use const Rubix\ML\EPSILON;
 
@@ -27,31 +31,40 @@ class BinaryCrossEntropy implements ClassificationLoss
 {
     use AssertsShapes;
 
+    public function __construct()
+    {
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
+    }
+
     /**
      * Compute the loss score.
      *
      * L(y, ŷ) = -Σ(y * log(ŷ) + (1 - y) * log(1 - ŷ)) / n
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param NDArray $output
+     * @param NDArray $target
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float
+    public function compute(NDArray $output, NDArray $target) : float
     {
         $this->assertSameShape($output, $target);
 
-        $output = $output->clip(EPSILON, 1.0 - EPSILON);
-        $target = $target->clip(EPSILON, 1.0 - EPSILON);
+        $output = NumPower::clip($output, EPSILON, 1.0 - EPSILON);
+        $target = NumPower::clip($target, EPSILON, 1.0 - EPSILON);
 
-        $oneMinusOutput = Matrix::ones(...$output->shape())->subtract($output);
-        $oneMinusTarget = Matrix::ones(...$target->shape())->subtract($target);
+        $logOutput = NumPower::log($output);
+        $logOneMinusOutput = NumPower::log(NumPower::subtract(1.0, $output));
+        $oneMinusTarget = NumPower::subtract(1.0, $target);
 
-        return $target
-            ->multiply($output->log())
-            ->add($oneMinusTarget->multiply($oneMinusOutput->log()))
-            ->negate()
-            ->mean()
-            ->mean();
+        $product = NumPower::multiply($target, $logOutput);
+        $product2 = NumPower::multiply($oneMinusTarget, $logOneMinusOutput);
+        $sum = NumPower::add($product, $product2);
+        $negated = NumPower::multiply($sum, -1.0);
+
+        return NumPower::mean($negated);
     }
 
     /**
@@ -59,23 +72,23 @@ class BinaryCrossEntropy implements ClassificationLoss
      *
      * ∂L/∂ŷ = (ŷ - y) / (ŷ * (1 - ŷ))
      *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @return Matrix
+     * @param NDArray $output
+     * @param NDArray $target
+     * @return NDArray
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix
+    public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
         $this->assertSameShape($output, $target);
 
-        $clippedOutput = $output->clip(EPSILON, 1.0 - EPSILON);
+        $numerator = NumPower::subtract($output, $target);
 
-        $oneMinusOutput = Matrix::ones(...$clippedOutput->shape())->subtract($clippedOutput);
+        $output = NumPower::clip($output, EPSILON, 1.0 - EPSILON);
 
-        $denominator = $clippedOutput
-            ->multiply($oneMinusOutput)
-            ->clip(EPSILON, 1.0);
+        $oneMinusOutput = NumPower::subtract(1.0, $output);
+        $denominator = NumPower::multiply($output, $oneMinusOutput);
+        $denominator = NumPower::clip($denominator, EPSILON, 1.0);
 
-        return $output->subtract($target)->divide($denominator);
+        return NumPower::divide($numerator, $denominator);
     }
 
     /**

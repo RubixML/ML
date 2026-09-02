@@ -18,7 +18,7 @@ High-level machine learning and deep learning library for **PHP 8.3+**. Namespac
 
 ## Architecture
 
-```text
+```
 src/          →  Rubix\ML\*          (PSR-4)
 tests/        →  Rubix\ML\Tests\*    (PHPUnit, mirrors src/)
 benchmarks/   →  Rubix\ML\Benchmarks\* (PHPBench, mirrors src/)

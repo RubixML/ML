@@ -2,14 +2,19 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Tensor\Tensor;
+use NDArray;
+use NumPower;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function get_class;
 
 use const Rubix\ML\EPSILON;
+use const PHP_FLOAT_MAX;
 
 /**
  * AdaGrad
@@ -25,6 +30,7 @@ use const Rubix\ML\EPSILON;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class AdaGrad implements Optimizer, Adaptive
 {
@@ -38,7 +44,7 @@ class AdaGrad implements Optimizer, Adaptive
     /**
      * The cache of sum of squared gradients.
      *
-     * @var Tensor[]
+     * @var NDArray[]
      */
     protected array $cache = [
         //
@@ -51,9 +57,13 @@ class AdaGrad implements Optimizer, Adaptive
     public function __construct(float $rate = 0.01)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must be'
-                . " greater than 0, $rate given.");
+            throw new InvalidArgumentException("Learning rate must be greater than 0, $rate given.");
         }
+
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
 
         $this->rate = $rate;
     }
@@ -70,32 +80,49 @@ class AdaGrad implements Optimizer, Adaptive
     {
         $class = get_class($param->param());
 
-        if ($class === false) {
+        if (!$class) {
             throw new RuntimeException('Could not locate parameter class.');
         }
 
-        $this->cache[$param->id()] = $class::zeros(...$param->param()->shape());
+        $zeros = NumPower::zeros($param->param()->shape(), $param->param()->dataType(), 0);
+
+        $this->cache[$param->id()] = $zeros;
     }
 
     /**
      * Take a step of gradient descent for a given parameter.
      *
+     * AdaGrad update (element-wise):
+     *   n_t = n_{t-1} + g_t^2
+     *   Δθ_t = η · g_t / max(√n_t, ε)
+     *
+     * where:
+     *   - g_t is the current gradient,
+     *   - n_t is the accumulated (running) sum of squared gradients,
+     *   - η is the learning rate (rate),
+     *   - ε is a small constant to avoid division by zero (implemented via clipping √n_t to [ε, +∞)).
+     *
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @param NDArray $gradient
+     * @return NDArray
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function step(Parameter $param, NDArray $gradient) : NDArray
     {
         $norm = $this->cache[$param->id()];
 
-        $norm = $norm->add($gradient->square());
+        $norm = NumPower::add($norm, NumPower::square($gradient));
 
         $this->cache[$param->id()] = $norm;
 
-        return $gradient->multiply($this->rate)
-            ->divide($norm->sqrt()->clipLower(EPSILON));
+        $denominator = NumPower::sqrt($norm);
+        $denominator = NumPower::clip($denominator, EPSILON, PHP_FLOAT_MAX);
+
+        return NumPower::divide(
+            NumPower::multiply($gradient, $this->rate),
+            $denominator
+        );
     }
 
     /**

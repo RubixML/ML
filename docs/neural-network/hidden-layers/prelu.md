@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/PReLU.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/PReLU/PReLU.php">[source]</a></span>
 
 # PReLU
 
@@ -17,8 +17,8 @@ $$
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\Layers\PReLU;
-use Rubix\ML\NeuralNet\Initializers\Normal;
+use Rubix\ML\NeuralNet\Layers\PReLU\PReLU;
+use Rubix\ML\NeuralNet\Initializers\Normal\Normal;
 
 $layer = new PReLU(new Normal(0.5));
 ```

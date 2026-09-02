@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Swish.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Swish/Swish.php">[source]</a></span>
 
 # Swish
 
@@ -13,8 +13,8 @@ Swish is a parametric activation layer that utilizes smooth rectified activation
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\Layers\Swish;
-use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Layers\Swish\Swish;
+use Rubix\ML\NeuralNet\Initializers\Constant\Constant;
 
 $layer = new Swish(new Constant(1.0));
 ```

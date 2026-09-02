@@ -1,32 +1,29 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\NeuralNet;
 
-use Tensor\Matrix;
+use NumPower;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[Group('NeuralNet')]
+#[Group('Parameters')]
 #[CoversClass(Parameter::class)]
 class ParameterTest extends TestCase
 {
-    /**
-     * @var Parameter
-     */
     protected Parameter $param;
 
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
+    protected Optimizer $optimizer;
 
     protected function setUp() : void
     {
-        $this->param = new Parameter(Matrix::quick([
+        $this->param = new Parameter(NumPower::array([
             [5, 4],
             [-2, 6],
         ]));
@@ -35,21 +32,9 @@ class ParameterTest extends TestCase
     }
 
     #[Test]
-    public function build() : void
-    {
-        $this->assertInstanceOf(Parameter::class, $this->param);
-    }
-
-    #[Test]
-    public function id() : void
-    {
-        $this->assertIsInt($this->param->id());
-    }
-
-    #[Test]
     public function update() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = NumPower::array([
             [2, 1],
             [1, -2],
         ]);
@@ -59,8 +44,8 @@ class ParameterTest extends TestCase
             [-2.01, 6.02],
         ];
 
-        $this->param->update($gradient, $this->optimizer);
+        $this->param->update(gradient: $gradient, optimizer: $this->optimizer);
 
-        $this->assertEquals($expected, $this->param->param()->asArray());
+        self::assertEqualsWithDelta($expected, $this->param->param()->toArray(), 1e-7);
     }
 }

@@ -7,7 +7,7 @@ namespace Rubix\ML\Traits;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\InvalidFanInException;
 use Rubix\ML\Exceptions\InvalidFanOutException;
-use Tensor\Matrix;
+use NDArray;
 
 /**
  * Validates Shapes
@@ -22,13 +22,13 @@ use Tensor\Matrix;
 trait AssertsShapes
 {
     /**
-     * Assert that the output and target matrices have identical shapes.
+     * Assert that the output and target NDArrays have identical shapes.
      *
-     * @param Matrix $output The output matrix to check.
-     * @param Matrix $target The target matrix to compare against.
+     * @param NDArray $output The output array to check.
+     * @param NDArray $target The target array to compare against.
      * @throws InvalidArgumentException If the shapes do not match.
      */
-    protected function assertSameShape(Matrix $output, Matrix $target) : void
+    protected function assertSameShape(NDArray $output, NDArray $target) : void
     {
         if ($output->shape() !== $target->shape()) {
             throw new InvalidArgumentException('Output and target must have the same shape.');

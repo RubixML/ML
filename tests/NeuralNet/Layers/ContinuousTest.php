@@ -1,105 +1,158 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Tensor\Matrix;
-use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\DataProvider;
+use NDArray;
+use NumPower;
+use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Layers')]
 #[CoversClass(Continuous::class)]
 class ContinuousTest extends TestCase
 {
-    protected const RANDOM_SEED = 0;
-
-    /**
-     * @var Matrix
-     */
-    protected $input;
+    protected NDArray $input;
 
     /**
      * @var (int|float)[]
      */
-    protected $labels;
+    protected array $labels;
+
+    protected Optimizer $optimizer;
+
+    protected Continuous $layer;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @return array<int, array{0: array}>
      */
-    protected $optimizer;
+    public static function forwardProvider() : array
+    {
+        return [
+            [
+                [
+                    [2.5, 0.0, -6.0],
+                ],
+            ],
+        ];
+    }
 
     /**
-     * @var Continuous
+     * @return array<int, array{0: array}>
      */
-    protected $layer;
+    public static function gradientProvider() : array
+    {
+        return [
+            [
+                [
+                    [0.8333333, 0.8333333, -32.0],
+                ],
+            ],
+        ];
+    }
 
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->input = NumPower::array([
             [2.5, 0.0, -6.0],
         ]);
 
-        $this->labels = [0.0, -2.5, 90];
+        $this->labels = [0.0, -2.5, 90.0];
 
         $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new Continuous(new LeastSquares());
+    }
 
-        srand(self::RANDOM_SEED);
+    #[TestDox('Returns string representation')]
+    public function testToString() : void
+    {
+        $this->layer->initialize(1, dataType: 'float32');
+
+        self::assertEquals('Continuous (cost function: Least Squares)', (string) $this->layer);
     }
 
     #[Test]
-    public function build() : void
+    #[TestDox('Initializes and reports width')]
+    public function initializeWidth() : void
     {
-        $this->assertInstanceOf(Continuous::class, $this->layer);
-        $this->assertInstanceOf(Output::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
+        $this->layer->initialize(1, dataType: 'float32');
+        self::assertEquals(1, $this->layer->width());
     }
 
     #[Test]
-    public function initializeForwardBackInfer() : void
+    #[TestDox('Initialize rejects fan-in not equal to 1')]
+    public function initializeRejectsInvalidFanIn() : void
     {
-        $this->layer->initialize(1);
+        $this->expectException(InvalidArgumentException::class);
+        $this->layer->initialize(2, dataType: 'float32');
+    }
 
-        $this->assertEquals(1, $this->layer->width());
-
-        $expected = [
-            [2.5, 0.0, -6.0],
-        ];
+    #[Test]
+    #[TestDox('Computes forward pass')]
+    #[DataProvider('forwardProvider')]
+    public function forward(array $expected) : void
+    {
+        $this->layer->initialize(1, dataType: 'float32');
 
         $forward = $this->layer->forward($this->input);
+        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
+    }
 
-        $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
+    #[Test]
+    #[TestDox('Backpropagates and returns gradient for previous layer')]
+    #[DataProvider('gradientProvider')]
+    public function back(array $expectedGradient) : void
+    {
+        $this->layer->initialize(1, dataType: 'float32');
+        $this->layer->forward($this->input);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back(labels: $this->labels, optimizer: $this->optimizer);
 
-        $this->assertInstanceOf(Deferred::class, $computation);
-        $this->assertIsFloat($loss);
+        self::assertInstanceOf(Deferred::class, $computation);
+        self::assertIsFloat($loss);
 
         $gradient = $computation->compute();
 
-        $expected = [
-            [0.8333333333333334, 0.8333333333333334, -32.0],
-        ];
+        self::assertInstanceOf(NDArray::class, $gradient);
+        self::assertEqualsWithDelta($expectedGradient, $gradient->toArray(), 1e-7);
+    }
 
-        $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
+    #[Test]
+    #[TestDox('Computes gradient directly given input and expected')]
+    #[DataProvider('gradientProvider')]
+    public function gradient(array $expectedGradient) : void
+    {
+        $this->layer->initialize(1, dataType: 'float32');
 
-        $expected = [
-            [2.5, 0.0, -6.0],
-        ];
+        $input = $this->input;
+        $expected = NumPower::array([$this->labels]);
+
+        $gradient = $this->layer->gradient($input, $expected);
+
+        self::assertInstanceOf(NDArray::class, $gradient);
+        self::assertEqualsWithDelta($expectedGradient, $gradient->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Computes inference activations')]
+    #[DataProvider('forwardProvider')]
+    public function infer(array $expected) : void
+    {
+        $this->layer->initialize(1, dataType: 'float32');
 
         $infer = $this->layer->infer($this->input);
-
-        $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
+        self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
     }
 }

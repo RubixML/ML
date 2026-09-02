@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Dense.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Layers/Dense/Dense.php">[source]</a></span>
 
 # Dense
 
@@ -17,7 +17,7 @@ Dense (or *fully connected*) hidden layers are layers of neurons that connect to
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Dense\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 

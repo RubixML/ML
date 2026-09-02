@@ -6,10 +6,10 @@ The pseudo Huber Loss function transitions between L1 and L2 loss at a given piv
 
 $$
 L_{\delta}=
-    \left\{\begin{matrix}
-        \frac{1}{2}(y - \hat{y})^{2} & if \left | (y - \hat{y})  \right | < \delta\\
-        \delta ((y - \hat{y}) - \frac1 2 \delta) & otherwise
-    \end{matrix}\right.
+    \begin{cases}
+        \frac{1}{2}(y - \hat{y})^{2} & \text{if } |y - \hat{y}| < \delta\\
+        \delta ((y - \hat{y}) - \frac{1}{2} \delta) & \text{otherwise}
+    \end{cases}
 $$
 
 ## Parameters

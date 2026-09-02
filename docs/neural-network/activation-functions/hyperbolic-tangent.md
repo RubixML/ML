@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/HyperbolicTangent.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/ActivationFunctions/HyperbolicTangent/HyperbolicTangent.php">[source]</a></span>
 
 # Hyperbolic Tangent
 
@@ -12,10 +12,15 @@ $$
 
 This activation function does not have any parameters.
 
+## Plots
+<img src="../../images/activation-functions/hyperbolic-tangent.png" alt="Hyperbolic Tangent Function" width="500" height="auto">
+
+<img src="../../images/activation-functions/hyperbolic-tangent-derivative.png" alt="Hyperbolic Tangent Derivative" width="500" height="auto">
+
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent\HyperbolicTangent;
 
 $activationFunction = new HyperbolicTangent();
 ```

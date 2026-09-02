@@ -2,9 +2,7 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Tensor\Matrix;
-use Tensor\Vector;
-use Tensor\ColumnVector;
+use NDArray;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -42,9 +40,7 @@ class Snapshot
 {
     public const ALLOWED_CLASSES = [
         Parameter::class,
-        Matrix::class,
-        Vector::class,
-        ColumnVector::class,
+        NDArray::class,
     ];
 
     /**

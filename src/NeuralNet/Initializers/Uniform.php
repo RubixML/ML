@@ -1,9 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use Tensor\Matrix;
+use NumPower;
+use NDArray;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Traits\AssertsShapes;
+use Rubix\ML\Exceptions\InvalidBetaException;
 
 /**
  * Uniform
@@ -14,49 +22,47 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
+ * @author      Aleksei Nechaev <omfg.rus@gmail.com>
  */
 class Uniform implements Initializer
 {
-    /**
-     * The upper and lower bound of the distribution.
-     *
-     * @var float
-     */
-    protected float $beta;
+    use AssertsShapes;
 
     /**
      * @param float $beta
      * @throws InvalidArgumentException
      */
-    public function __construct(float $beta = 0.5)
+    public function __construct(protected float $beta = 0.5)
     {
-        if ($beta <= 0.0) {
-            throw new InvalidArgumentException('Beta cannot be less than'
-                . " or equal to 0, $beta given.");
+        if ($this->beta <= 0.0) {
+            throw new InvalidBetaException(
+                message: "Beta cannot be less than or equal to 0, $beta given."
+            );
         }
 
-        $this->beta = $beta;
+        SpecificationChain::with([
+            new ExtensionIsLoaded('RubixNumPower'),
+            new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
+        ])->check();
     }
 
     /**
-     * Initialize a weight matrix W in the dimensions fan in x fan out.
-     *
-     * @internal
-     *
-     * @param int<0,max> $fanIn
-     * @param int<0,max> $fanOut
-     * @return Matrix
+     * @inheritdoc
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix
+    public function initialize(int $fanIn, int $fanOut, string $dataType) : NDArray
     {
-        return Matrix::uniform($fanOut, $fanIn)
-            ->multiply($this->beta);
+        $this->validateFanInFanOut(fanIn: $fanIn, fanOut: $fanOut);
+
+        return NumPower::uniform(
+            [$fanOut, $fanIn],
+            low: -$this->beta,
+            high: $this->beta,
+            dtype: $dataType
+        );
     }
 
     /**
-     * Return the string representation of the object.
-     *
-     * @internal
+     * Return the string representation of the initializer.
      *
      * @return string
      */

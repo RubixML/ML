@@ -15,7 +15,7 @@ This cost function does not have any parameters.
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares\LeastSquares;
 
 $costFunction = new LeastSquares();
 ```

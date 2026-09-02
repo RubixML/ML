@@ -1,33 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Tensor\Matrix;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use NDArray;
+use NumPower;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Layers')]
 #[CoversClass(Placeholder1D::class)]
 class Placeholder1DTest extends TestCase
 {
-    /**
-     * @var Matrix
-     */
-    protected $input;
+    protected NDArray $input;
+
+    protected Placeholder1D $layer;
 
     /**
-     * @var Placeholder1D
+     * @return array<int, array{NDArray,array<int, array<int, float>>}>
      */
-    protected $layer;
+    public static function inputProvider() : array
+    {
+        return [
+            [
+                NumPower::array([
+                    [1.0, 2.5],
+                    [0.1, 0.0],
+                    [0.002, -6.0],
+                ]),
+                [
+                    [1.0, 2.5],
+                    [0.1, 0.0],
+                    [0.002, -6.0],
+                ],
+            ],
+        ];
+    }
 
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->input = NumPower::array([
             [1.0, 2.5],
             [0.1, 0.0],
             [0.002, -6.0],
@@ -36,33 +55,59 @@ class Placeholder1DTest extends TestCase
         $this->layer = new Placeholder1D(3);
     }
 
-    #[Test]
-    public function build() : void
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
     {
-        $this->assertInstanceOf(Placeholder1D::class, $this->layer);
-        $this->assertInstanceOf(Input::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
+        self::assertEquals('Placeholder 1D (inputs: 3)', (string) $this->layer);
     }
 
     #[Test]
-    public function forwardInfer() : void
+    #[TestDox('Returns width equal to number of inputs')]
+    public function width() : void
     {
-        $this->assertEquals(3, $this->layer->width());
+        self::assertEquals(3, $this->layer->width());
+    }
 
-        $expected = [
-            [1.0, 2.5],
-            [0.1, 0.0],
-            [0.002, -6.0],
-        ];
+    #[Test]
+    #[TestDox('Constructor rejects invalid number of inputs')]
+    public function constructorRejectsInvalidInputs() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
 
-        $forward = $this->layer->forward($this->input);
+        new Placeholder1D(0);
+    }
 
-        $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals($expected, $forward->asArray());
+    #[Test]
+    #[TestDox('Initialize returns fan out equal to inputs without changing width')]
+    public function initialize() : void
+    {
+        $fanOut = $this->layer->initialize(5, dataType: 'float32');
 
-        $infer = $this->layer->infer($this->input);
+        self::assertEquals(3, $fanOut);
+        self::assertEquals(3, $this->layer->width());
+    }
 
-        $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals($expected, $infer->asArray());
+    #[Test]
+    #[TestDox('Computes forward pass')]
+    #[DataProvider('inputProvider')]
+    public function forward(NDArray $input, array $expected) : void
+    {
+        self::assertEquals(3, $this->layer->width());
+
+        $forward = $this->layer->forward($input);
+
+        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
+    }
+
+    #[Test]
+    #[TestDox('Computes inference pass')]
+    #[DataProvider('inputProvider')]
+    public function infer(NDArray $input, array $expected) : void
+    {
+        self::assertEquals(3, $this->layer->width());
+
+        $infer = $this->layer->infer($input);
+
+        self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
     }
 }

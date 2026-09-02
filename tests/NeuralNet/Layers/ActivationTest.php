@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Tensor\Matrix;
-use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\DataProvider;
+use NDArray;
+use NumPower;
+use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Layers')]
@@ -21,40 +25,75 @@ class ActivationTest extends TestCase
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
+
+    protected NDArray $input;
+
+    protected Deferred $prevGrad;
+
+    protected Optimizer $optimizer;
+
+    protected Activation $layer;
 
     /**
-     * @var Matrix
+     * @return array<int, array{NDArray,array}>
      */
-    protected $input;
+    public static function forwardProvider() : array
+    {
+        return [
+            [
+                NumPower::array([
+                    [1.0, 2.5, -0.1],
+                    [0.1, 0.0, 3.0],
+                    [0.002, -6.0, -0.5],
+                ]),
+                [
+                    [1.0, 2.5, 0.0],
+                    [0.1, 0.0, 3.0],
+                    [0.002, 0.0, 0.0],
+                ],
+            ],
+        ];
+    }
 
     /**
-     * @var Deferred
+     * @return array<int, array{NDArray,NDArray,array}>
      */
-    protected $prevGrad;
-
-    /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
-
-    /**
-     * @var Activation
-     */
-    protected $layer;
+    public static function backProvider() : array
+    {
+        return [
+            [
+                NumPower::array([
+                    [1.0, 2.5, -0.1],
+                    [0.1, 0.0, 3.0],
+                    [0.002, -6.0, -0.5],
+                ]),
+                NumPower::array([
+                    [0.25, 0.7, 0.1],
+                    [0.50, 0.2, 0.01],
+                    [0.25, 0.1, 0.89],
+                ]),
+                [
+                    [0.25, 0.7, 0.0],
+                    [0.5, 0.0, 0.01],
+                    [0.25, 0, 0.0],
+                ],
+            ],
+        ];
+    }
 
     protected function setUp() : void
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->input = NumPower::array([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->prevGrad = new Deferred(function () {
-            return Matrix::quick([
+        $this->prevGrad = new Deferred(fn: function () : NDArray {
+            return NumPower::array([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
@@ -66,52 +105,76 @@ class ActivationTest extends TestCase
         $this->layer = new Activation(new ReLU());
     }
 
-    #[Test]
-    public function build() : void
+    #[TestDox('Can be cast to a string')]
+    public function testToString() : void
     {
-        $this->assertInstanceOf(Activation::class, $this->layer);
-        $this->assertInstanceOf(Layer::class, $this->layer);
-        $this->assertInstanceOf(Hidden::class, $this->layer);
+        self::assertEquals('Activation (activation fn: ReLU)', (string) $this->layer);
     }
 
     #[Test]
-    public function initializeForwardBackInfer() : void
+    #[TestDox('Initializes width equal to fan-in')]
+    public function initializeSetsWidth() : void
     {
-        $this->layer->initialize($this->fanIn);
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
-        $this->assertEquals($this->fanIn, $this->layer->width());
+        self::assertEquals($this->fanIn, $this->layer->width());
+    }
 
-        $expected = [
-            [1.0, 2.5, 0.0],
-            [0.1, 0.0, 3.0],
-            [0.002, 0.0, 0.0],
-        ];
+    #[Test]
+    #[TestDox('Computes forward activations')]
+    #[DataProvider('forwardProvider')]
+    public function forward(NDArray $input, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($input);
+        self::assertEqualsWithDelta($expected, $forward->toArray(), 1e-7);
+    }
 
-        $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals($expected, $forward->asArray());
+    #[Test]
+    #[TestDox('Computes backpropagated gradients after forward pass')]
+    #[DataProvider('backProvider')]
+    public function back(NDArray $input, NDArray $prevGrad, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        // Forward pass to set internal input/output state
+        $this->layer->forward($input);
 
-        $expected = [
-            [0.25, 0.7, 0.0],
-            [0.5, 0.0, 0.01],
-            [0.25, 0, 0.0],
-        ];
+        $gradient = $this->layer
+            ->back(prevGradient: new Deferred(fn: fn () => $prevGrad), optimizer: $this->optimizer)
+            ->compute();
 
-        $this->assertInstanceOf(Matrix::class, $gradient);
-        $this->assertEquals($expected, $gradient->asArray());
+        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
+    }
 
-        $expected = [
-            [1.0, 2.5, 0.0],
-            [0.1, 0.0, 3.0],
-            [0.002, 0.0, 0.0],
-        ];
+    #[Test]
+    #[TestDox('Computes inference activations')]
+    #[DataProvider('forwardProvider')]
+    public function infer(NDArray $input, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($input);
+        self::assertEqualsWithDelta($expected, $infer->toArray(), 1e-7);
+    }
 
-        $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals($expected, $infer->asArray());
+    #[Test]
+    #[TestDox('Computes gradient correctly given input, output, and previous gradient')]
+    #[DataProvider('backProvider')]
+    public function gradient(NDArray $input, NDArray $prevGrad, array $expected) : void
+    {
+        $this->layer->initialize($this->fanIn, dataType: 'float32');
+
+        // Produce output to pass explicitly to gradient
+        $output = $this->layer->forward($input);
+
+        $gradient = $this->layer->gradient(
+            $input,
+            $output,
+            new Deferred(fn: fn () => $prevGrad)
+        );
+
+        self::assertEqualsWithDelta($expected, $gradient->toArray(), 1e-7);
     }
 }
