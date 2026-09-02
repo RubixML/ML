@@ -1,12 +1,11 @@
 # Changelog
 
 - 3.0.0
+    - Integers are now considered a cateogircal data type
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and inference is now parallelized
     - Added disk-based neural network snapshotting
     - Added validation interval parameter to MLPs and GBM Learners
-    - Added Hard Sigmoid, Hard SiLU, and ReLU6 activation functions
-    - Added He Normal, Le Cun Normal, Truncated Normal, Xavier 1 & 2 Normal
     - Cross Entropy loss function now split into Binary and Multiclass
     - Logistic Regression, Softmax, and Adaline now use hold out set
     - Adaboost now used validation set with early stopping window
