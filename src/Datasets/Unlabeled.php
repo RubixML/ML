@@ -56,13 +56,14 @@ class Unlabeled extends Dataset
      * Build a dataset with the rows from an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $verify
      * @return self
      */
-    public static function fromIterator(iterable $iterator) : self
+    public static function fromIterator(iterable $iterator, bool $verify = true) : self
     {
         $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator, false);
 
-        return self::build($samples);
+        return new self($samples, $verify);
     }
 
     /**

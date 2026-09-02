@@ -213,6 +213,8 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Reversible, 
                 }
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -240,6 +242,8 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic, Reversible, 
                 }
             }
         }
+
+        unset($sample);
     }
 
     /**

@@ -26,15 +26,15 @@ class BooleanConverterTest extends TestCase
     public function transform() : void
     {
         $dataset = new Unlabeled([
-            [true, 'true', '1', 1],
-            [false, 'false', '0', 0],
+            [true, 'false', '1', 1, 45.5],
+            [false, '', '0', 0, 0.0],
         ]);
 
         $dataset->apply($this->transformer);
 
         $expected = [
-            ['!true!', 'true', '1', 1],
-            ['!false!', 'false', '0', 0],
+            ['!true!', '!true!', '!true!', '!true!', '!true!'],
+            ['!false!', '!false!', '!false!', '!false!', '!false!'],
         ];
 
         $this->assertEquals($expected, $dataset->samples());

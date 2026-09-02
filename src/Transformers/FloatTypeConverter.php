@@ -4,22 +4,27 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 
+use function is_int;
 use function is_string;
 use function is_numeric;
 use function strtolower;
 
 /**
- * Numeric String Converter
+ * Float Type Converter
  *
- * Convert all numeric strings to their equivalent integer and floating point types.
- * Useful for when extracting from a source that only recognizes data as string
- * types such as CSV.
+ * Convert all integer and numeric string values to their equivalent
+ * floating point type. Useful for when continuous features are
+ * inadvertently stored as integers by either the PHP interpreter
+ * or JSON serialization, or as strings by the extraction from a
+ * source that only recognizes data as string types such as CSV.
+ * Both of these cases would otherwise cause the features to be
+ * inferred as categorical data.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NumericStringConverter implements Transformer, Reversible
+class FloatTypeConverter implements Transformer
 {
     /**
      * Return the data types that this transformer is compatible with.
@@ -40,33 +45,26 @@ class NumericStringConverter implements Transformer, Reversible
      */
     public function transform(array &$samples) : void
     {
-        array_walk($samples, [$this, 'convertToNumber']);
+        array_walk($samples, [$this, 'convert']);
     }
 
     /**
-     * Perform the reverse transformation to the samples.
-     *
-     * @param list<list<mixed>> $samples
-     * @throws \Rubix\ML\Exceptions\RuntimeException
-     */
-    public function reverseTransform(array &$samples) : void
-    {
-        array_walk($samples, [$this, 'convertToString']);
-    }
-
-    /**
-     * Convert numeric strings to integer and floating point numbers.
+     * Convert integers and numeric strings to their floating point equivalent.
      *
      * @param list<mixed> $sample
      */
-    protected function convertToNumber(array &$sample) : void
+    protected function convert(array &$sample) : void
     {
         foreach ($sample as &$value) {
+            if (is_int($value)) {
+                $value = (float) $value;
+
+                continue;
+            }
+
             if (is_string($value)) {
                 if (is_numeric($value)) {
-                    $value = (int) $value == $value
-                        ? (int) $value
-                        : (float) $value;
+                    $value = (float) $value;
 
                     continue;
                 }
@@ -84,23 +82,13 @@ class NumericStringConverter implements Transformer, Reversible
 
                     case '-inf':
                         $value = -INF;
+
+                        break;
                 }
             }
         }
-    }
 
-    /**
-     * Convert numbers to their numeric string representation.
-     *
-     * @param list<mixed> $sample
-     */
-    protected function convertToString(array &$sample) : void
-    {
-        foreach ($sample as &$value) {
-            if (is_float($value) or is_int($value)) {
-                $value = (string) $value;
-            }
-        }
+        unset($value);
     }
 
     /**
@@ -112,6 +100,6 @@ class NumericStringConverter implements Transformer, Reversible
      */
     public function __toString() : string
     {
-        return 'Numeric String Converter';
+        return 'Float Type Converter';
     }
 }

@@ -84,6 +84,7 @@ Feature converters are transformers that convert feature columns of one data typ
 | [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | ● | |
 | [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
 | [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | |
+| [Float Type Converter](transformers/float-type-converter.md) | Categorical | Continuous | | |
 | [Boolean Converter](transformers/boolean-converter.md) | Other | Categorical or Continuous | | |
 
 ### Dimensionality Reduction

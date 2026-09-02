@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Datasets;
 
+use Rubix\ML\Transformers\FloatTypeConverter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
@@ -49,6 +50,8 @@ class LabeledTest extends TestCase
 
     protected Labeled $dataset;
 
+    protected FloatTypeConverter $transformer;
+
     protected string $originalPrecision;
 
     protected function setUp() : void
@@ -63,6 +66,8 @@ class LabeledTest extends TestCase
             verify: false
         );
 
+        $this->transformer = new FloatTypeConverter();
+
         srand(self::RANDOM_SEED);
     }
 
@@ -74,7 +79,11 @@ class LabeledTest extends TestCase
     #[Test]
     public function fromIterator() : void
     {
-        $dataset = Labeled::fromIterator(new NDJSON('tests/test.ndjson'));
+        $dataset = Labeled::fromIterator(new NDJSON('tests/test.ndjson'), false);
+
+        $dataset->apply($this->transformer);
+
+        $dataset = Labeled::build($dataset->samples(), $dataset->labels());
 
         $this->assertInstanceOf(Labeled::class, $dataset);
         $this->assertEquals(self::SAMPLES, $dataset->samples());

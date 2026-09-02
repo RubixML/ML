@@ -181,6 +181,8 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
             $this->minimums[$column] = $min;
             $this->maximums[$column] = $max;
         }
+
+        unset($scale);
     }
 
     /**
@@ -210,6 +212,8 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
                 $value += $this->min - $min * $scale;
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -239,6 +243,8 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
                 $value /= $scale;
             }
         }
+
+        unset($sample);
     }
 
     /**

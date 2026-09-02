@@ -12,7 +12,7 @@ The One Hot Encoder takes a categorical feature column and produces an n-dimensi
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | excluded | [] | array | The list of categories to drop (ignore) during one-hot encoding. |
+| 1 | excludedCategories | [] | array | The list of categories to drop (ignore) during one-hot encoding. |
 
 ## Example
 

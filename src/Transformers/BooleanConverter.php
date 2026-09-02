@@ -7,12 +7,12 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function is_string;
 use function is_int;
-use function is_bool;
+use function is_float;
 
 /**
  * Boolean Converter
  *
- * Convert boolean true/false values to continuous or categorical values.
+ * Convert truthy values to either categorical or continuous values.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -23,23 +23,23 @@ class BooleanConverter implements Transformer
     /**
      * The value used to replace boolean value `true` with.
      *
-     * @var string|int
+     * @var string|int|float
      */
-    protected string|int $trueValue;
+    protected string|int|float $trueValue;
 
     /**
      * The value used to replace boolean value `false` with.
      *
-     * @var string|int
+     * @var string|int|float
      */
-    protected string|int $falseValue;
+    protected string|int|float $falseValue;
 
     /**
-     * @param string|int $trueValue
-     * @param string|int $falseValue
+     * @param string|int|float $trueValue
+     * @param string|int|float $falseValue
      * @throws InvalidArgumentException
      */
-    public function __construct(string|int $trueValue = 'true', string|int $falseValue = 'false')
+    public function __construct(string|int|float $trueValue = 1, string|int|float $falseValue = 0)
     {
         if (is_string($trueValue) and !is_string($falseValue)) {
             throw new InvalidArgumentException('True and false values must'
@@ -47,6 +47,11 @@ class BooleanConverter implements Transformer
         }
 
         if (is_int($trueValue) and !is_int($falseValue)) {
+            throw new InvalidArgumentException('True and false values must'
+                . ' be of the same data type.');
+        }
+
+        if (is_float($trueValue) and !is_float($falseValue)) {
             throw new InvalidArgumentException('True and false values must'
                 . ' be of the same data type.');
         }
@@ -85,10 +90,10 @@ class BooleanConverter implements Transformer
     public function convert(array &$sample) : void
     {
         foreach ($sample as &$value) {
-            if (is_bool($value)) {
-                $value = $value ? $this->trueValue : $this->falseValue;
-            }
+            $value = $value ? $this->trueValue : $this->falseValue;
         }
+
+        unset($value);
     }
 
     /**

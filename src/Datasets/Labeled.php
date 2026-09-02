@@ -77,9 +77,10 @@ class Labeled extends Dataset
      * Build a dataset with the rows from an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $verify
      * @return self
      */
-    public static function fromIterator(iterable $iterator) : self
+    public static function fromIterator(iterable $iterator, bool $verify = true) : self
     {
         $samples = $labels = [];
 
@@ -88,7 +89,7 @@ class Labeled extends Dataset
             $samples[] = $record;
         }
 
-        return self::build($samples, $labels);
+        return new self($samples, $labels, $verify);
     }
 
     /**

@@ -72,7 +72,7 @@ class Binary implements Output
 
     /**
      * @param string[] $classes
-     * @param ClassificationLoss|null $costFn
+     * @param ClassificationLoss $costFn
      * @throws InvalidArgumentException
      */
     public function __construct(array $classes, ClassificationLoss $costFn)

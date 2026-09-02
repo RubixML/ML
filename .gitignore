@@ -15,9 +15,5 @@ pyvenv.cfg
 .vscode
 .vs
 .phpbench
-Dockerfile
 /runtime/
-/docker/
-docker-compose.yml
-Makefile
 /worktrees

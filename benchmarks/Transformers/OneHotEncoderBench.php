@@ -46,8 +46,6 @@ class OneHotEncoderBench
         }
 
         $this->dataset = Unlabeled::quick($samples);
-
-        $this->transformer = new OneHotEncoder();
     }
 
     /**
@@ -57,6 +55,20 @@ class OneHotEncoderBench
      */
     public function apply() : void
     {
-        $this->dataset->apply($this->transformer);
+        $transformer = new OneHotEncoder();
+
+        $this->dataset->apply($transformer);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function applyWithExclusions() : void
+    {
+        $transformer = new OneHotEncoder(['red', 'green', 'blue']);
+
+        $this->dataset->apply($transformer);
     }
 }
