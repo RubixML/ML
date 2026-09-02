@@ -275,7 +275,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -298,7 +298,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         $predictions = [];
 
         foreach ($this->backend()->process() as $output) {
-            /** @var list<string> $output */
+            /** @var list<string|int> $output */
             $predictions = array_merge($predictions, $output);
         }
 
@@ -312,7 +312,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param Dataset $chunk
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predictChunk(Dataset $chunk) : array
     {
@@ -344,7 +344,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -367,7 +367,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         $probabilities = [];
 
         foreach ($this->backend()->process() as $output) {
-            /** @var list<array<string,float>> $output */
+            /** @var list<array<string|int,float>> $output */
             $probabilities = array_merge($probabilities, $output);
         }
 
@@ -381,7 +381,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param Dataset $chunk
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function probaChunk(Dataset $chunk) : array
     {

@@ -154,9 +154,9 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return int|float
+     * @return float
      */
-    public function predictSample(array $sample) : int|float
+    public function predictSample(array $sample) : float
     {
         /** @var Average $node */
         $node = $this->search($sample);

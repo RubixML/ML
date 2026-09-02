@@ -570,7 +570,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -582,7 +582,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {

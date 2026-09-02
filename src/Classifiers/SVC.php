@@ -233,7 +233,7 @@ class SVC implements Estimator, Learner
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -247,9 +247,9 @@ class SVC implements Estimator, Learner
      *
      * @param list<int|float> $sample
      * @throws RuntimeException
-     * @return string
+     * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');

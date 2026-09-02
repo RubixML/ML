@@ -552,7 +552,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -564,7 +564,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {

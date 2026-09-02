@@ -156,7 +156,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -175,9 +175,9 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return string
+     * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
         /** @var Best $node */
         $node = $this->search($sample);
@@ -190,7 +190,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {

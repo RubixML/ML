@@ -557,7 +557,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param Dataset $dataset
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {

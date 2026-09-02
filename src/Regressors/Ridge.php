@@ -189,7 +189,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<int|float>
+     * @return list<float>
      */
     public function predict(Dataset $dataset) : array
     {

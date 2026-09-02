@@ -333,7 +333,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -352,9 +352,9 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * @internal
      *
      * @param (int|float)[] $sample
-     * @return string
+     * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
         return argmax($this->jointLogLikelihood($sample));
     }
@@ -364,7 +364,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -382,8 +382,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @internal
      *
-     * @param (int|float)[] $sample
-     * @return float[]
+     * @param list<float> $sample
+     * @return array<string|int,float>
      */
     public function probaSample(array $sample) : array
     {
