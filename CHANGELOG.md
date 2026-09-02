@@ -1,5 +1,9 @@
 # Changelog
 
+- 4.0.0
+    - Neural network susbsytem now powered by NumPower
+    - TSNE, SVD, PCA, and LDA now powered by NumPower
+
 - 3.0.0
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and inference is now parallelized
