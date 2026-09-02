@@ -30,6 +30,7 @@
     - Removed Word Stemmer tokenizer
     - Added Float Type Converter numeric string and ints to float
     - Boolean Converter now converts truthy and falsy
+    - Interval Discretizer now encodes values as integers
     - Updated to PSR-3 Log version 3
     - Update Amp Backend to Amp version 2.0
     - Added Emoji preset to Regex Filter
