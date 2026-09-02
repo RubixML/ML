@@ -8,7 +8,7 @@
     - Added validation interval parameter to MLPs and GBM Learners
     - Cross Entropy loss function now split into Binary and Multiclass
     - Logistic Regression, Softmax, and Adaline now use hold out set
-    - Adaboost now used validation set with early stopping window
+    - Adaboost now uses validation set with early stopping window
     - Renamed TF-IDF dampening parameter to sublinear
     - Updated to PSR-3 Log version 3
     - Update Amp Backend to Amp version 2.0
