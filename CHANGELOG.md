@@ -1,7 +1,7 @@
 # Changelog
 
 - 3.0.0
-    - Integers are now considered a cateogircal data type
+    - Integers are now considered a categorical data type
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and inference is now parallelized
     - Added disk-based neural network snapshotting
