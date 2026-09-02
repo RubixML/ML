@@ -306,9 +306,9 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * @internal
      *
      * @param list<string> $sample
-     * @return string
+     * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
         return argmax($this->jointLogLikelihood($sample));
     }
@@ -318,7 +318,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -337,7 +337,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * @internal
      *
      * @param list<string> $sample
-     * @return float[]
+     * @return array<string|int,float>
      */
     public function probaSample(array $sample) : array
     {
@@ -358,7 +358,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
      * @param list<string> $sample
-     * @return array<string,float>
+     * @return array<string|int,float>
      */
     protected function jointLogLikelihood(array $sample) : array
     {

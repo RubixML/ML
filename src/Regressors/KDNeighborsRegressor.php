@@ -167,7 +167,7 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<int|float>
+     * @return list<float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -186,11 +186,11 @@ class KDNeighborsRegressor implements Estimator, Learner, Persistable
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return int|float
+     * @return float
      */
-    public function predictSample(array $sample) : int|float
+    public function predictSample(array $sample) : float
     {
-        [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
+        [, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
         if ($this->weighted) {
             $weights = [];

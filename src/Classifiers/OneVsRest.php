@@ -199,7 +199,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -211,7 +211,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -247,7 +247,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      * @internal
      *
      * @param Dataset $chunk
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function probaChunk(Dataset $chunk) : array
     {

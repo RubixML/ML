@@ -216,7 +216,7 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<int|float>
+     * @return list<float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -252,9 +252,9 @@ class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return int|float
+     * @return float
      */
-    public function predictSample(array $sample) : int|float
+    public function predictSample(array $sample) : float
     {
         [$labels, $distances] = $this->nearest($sample);
 

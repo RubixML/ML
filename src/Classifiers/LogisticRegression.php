@@ -577,7 +577,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -589,7 +589,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {

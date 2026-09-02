@@ -223,7 +223,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return string[]
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -272,9 +272,9 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return string
+     * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
         /** @var array<string> $labels */
         [$labels, $distances] = $this->nearest($sample);
@@ -298,7 +298,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -321,7 +321,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
         $probabilities = [];
 
         foreach ($this->backend()->process() as $output) {
-            /** @var list<array<string,float>> $output */
+            /** @var list<array<string|int,float>> $output */
             $probabilities = array_merge($probabilities, $output);
         }
 
@@ -334,7 +334,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      * @internal
      *
      * @param Dataset $chunk
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function probaChunk(Dataset $chunk) : array
     {
@@ -347,7 +347,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return array<string,float>
+     * @return array<string|int,float>
      */
     public function probaSample(array $sample) : array
     {
@@ -379,7 +379,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      * Find the K nearest neighbors to the given sample vector using the brute force method.
      *
      * @param list<string|int|float> $sample
-     * @return array{list<string|int|float>,list<float>}
+     * @return array{list<string|int>,list<float>}
      */
     protected function nearest(array $sample) : array
     {

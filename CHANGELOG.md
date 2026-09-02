@@ -5,18 +5,15 @@
     - TSNE, SVD, PCA, and LDA now powered by NumPower
 
 - 3.0.0
-    - Integers are now considered a cateogircal data type
+    - Integers are now considered a categorical data type
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and inference is now parallelized
     - Added disk-based neural network snapshotting
     - Added validation interval parameter to MLPs and GBM Learners
     - Cross Entropy loss function now split into Binary and Multiclass
     - Logistic Regression, Softmax, and Adaline now use hold out set
-    - Adaboost now used validation set with early stopping window
+    - Adaboost now uses validation set with early stopping window
     - Renamed TF-IDF dampening parameter to sublinear
-    - Updated to PSR-3 Log version 3
-    - Update Amp Backend to Amp version 2.0
-    - Added Emoji preset to Regex Filter
     - Exportable Extractors now append by default with option to overwrite
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer tracks major library version number, not minor
@@ -37,6 +34,9 @@
     - Removed Word Stemmer tokenizer
     - Added Float Type Converter numeric string and ints to float
     - Boolean Converter now converts truthy and falsy
+    - Updated to PSR-3 Log version 3
+    - Update Amp Backend to Amp version 2.0
+    - Added Emoji preset to Regex Filter
     
 - 2.5.11
     - Optimize DBSCAN inference

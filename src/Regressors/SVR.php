@@ -215,7 +215,7 @@ class SVR implements Estimator, Learner
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<int|float>
+     * @return list<float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -229,9 +229,9 @@ class SVR implements Estimator, Learner
      *
      * @param list<int|float> $sample
      * @throws RuntimeException
-     * @return int|float
+     * @return float
      */
-    public function predictSample(array $sample) : int|float
+    public function predictSample(array $sample) : float
     {
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
