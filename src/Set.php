@@ -149,6 +149,10 @@ class Set implements ArrayAccess, IteratorAggregate, Countable
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
+        if (!is_int($offset) and !is_string($offset)) {
+            throw new InvalidArgumentException('Set members must be of type int or string.');
+        }
+
         if (!$this->has($offset)) {
             throw new InvalidArgumentException('Member not found in the set.');
         }
@@ -164,6 +168,10 @@ class Set implements ArrayAccess, IteratorAggregate, Countable
      */
     public function offsetUnset($offset) : void
     {
+        if (!is_int($offset) and !is_string($offset)) {
+            throw new InvalidArgumentException('Set members must be of type int or string.');
+        }
+
         $this->remove($offset);
     }
 
