@@ -162,4 +162,22 @@ class RidgeTest extends TestCase
 
         $this->estimator->predict(Unlabeled::quick());
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $restored = unserialize(serialize($this->estimator));
+
+        $this->assertTrue($restored->trained());
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
+    }
 }

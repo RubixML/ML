@@ -195,6 +195,7 @@ class LabeledTest extends TestCase
         $this->assertEquals([6, 4], $this->dataset->shape());
     }
 
+    #[Test]
     public function testSize() : void
     {
         $this->assertEquals(24, $this->dataset->size());
@@ -716,6 +717,7 @@ class LabeledTest extends TestCase
         $this->assertCount(6, $dataset);
     }
 
+    #[Test]
     public function testCount() : void
     {
         $this->assertEquals(6, $this->dataset->count());

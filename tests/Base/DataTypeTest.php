@@ -102,6 +102,7 @@ class DataTypeTest extends TestCase
         $this->assertFalse(DataType::continuous()->isOther());
     }
 
+    #[Test]
     public function testToString() : void
     {
         $this->assertEquals('continuous', (string) DataType::continuous());

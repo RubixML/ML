@@ -224,4 +224,28 @@ class IsolationForestTest extends TestCase
 
         self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
+
+    #[Test]
+    public function score() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        $scores = $this->estimator->score($testing);
+
+        $this->assertCount(self::TEST_SIZE, $scores);
+        $this->assertContainsOnlyFloat($scores);
+
+        foreach ($scores as $score) {
+            $this->assertIsFloat($score);
+            $this->assertFalse(is_nan($score));
+            $this->assertTrue(is_finite($score));
+            $this->assertGreaterThanOrEqual(0.0, $score);
+            $this->assertLessThanOrEqual(1.0, $score);
+        }
+    }
 }

@@ -1,6 +1,6 @@
 # Rubix ML
 
-High-level machine learning and deep learning library with 40 learning algorithms including ETL and cross-validation for **PHP**.
+High-level machine learning and deep learning library with 40 learning algorithms including ETL and cross-validation for the PHP language.
 
 ## Documentation
 
@@ -24,7 +24,7 @@ The project documentation is located in the `/docs` folder in the project root.
 | `composer test` | Run PHPUnit tests |
 | `composer analyze` | PHPStan static analysis (level 6) |
 | `composer check` | PHP-CS-Fixer dry-run (style check) |
-| `composer fix` | PHP-CS-Fixer auto-fix |
+| `composer fix` | PHP code style auto-fixer |
 | `composer phplint` | PHP syntax lint |
 | `composer benchmark` | PHPBench benchmarks |
 | `composer coverage` | Analyze test coverage |
@@ -56,7 +56,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 - **Clusterers** (5): KMeans, DBSCAN, GaussianMixture, MeanShift, FuzzyCMeans
 - **Anomaly Detectors** (7): IsolationForest, LOF, OneClassSVM, GaussianMLE, Loda, RobustZScore
 
-## Code Conventions
+## Coding Conventions
 
 - `declare(strict_types=1)` in every file
 - PSR-2 with extended rules (enforced by PHP-CS-Fixer, see `.php-cs-fixer.dist.php`)
@@ -65,7 +65,6 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 - Objects are *generally* immutable — state mutation only through a well-defined public API
 - Domain-driven naming — names reflect the ML domain
 - No inline comments — use expressive syntax and abstractions instead
-- Named arguments preferred in constructor calls
 - Single quotes for strings, short array syntax (`[]`)
 - Prefer pre-increment (`++$i`) over post-increment where possible
 - No superfluous `else`/`return` constructs
@@ -73,6 +72,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 - Optimizations should include a before and after benchmark
 - Include documentation updates for changes that effect the public API
 - Class members annotated `internal` are not part of the public API
+- Verify changes by running tests, static analysis, and code style fixer
 
 ## Workflows
 
@@ -110,4 +110,4 @@ mike serve
 
 ## CI
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on push/PR: phplint → phpstan → phpunit → php-cs-fixer check.
+GitHub Actions (`.github/workflows/ci.yml`) runs on push/PR: phpstan → phpunit → php-cs-fixer check.

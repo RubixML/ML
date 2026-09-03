@@ -38,7 +38,7 @@ class SVRTest extends TestCase
     /**
      * The minimum validation score required to pass the test.
      */
-    protected const float MIN_SCORE = -INF;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.

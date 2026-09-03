@@ -42,7 +42,8 @@ class PriorTest extends TestCase
         $this->assertContains($value, $values);
     }
 
-    protected function testAssertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->strategy->fitted());
     }
