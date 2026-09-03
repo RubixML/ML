@@ -132,6 +132,10 @@ class Set implements ArrayAccess, IteratorAggregate, Countable
      */
     public function offsetSet($offset, $values) : void
     {
+        if (!is_int($offset) and !is_string($offset)) {
+            throw new InvalidArgumentException('Set members must be of type int or string.');
+        }
+
         $this->add($offset);
     }
 
