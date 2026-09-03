@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Generator;
@@ -24,6 +25,8 @@ use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
 use function Rubix\ML\iterator_filter;
 use function Rubix\ML\iterator_contains_nan;
+use function Rubix\ML\warn;
+use function Rubix\ML\warn_deprecated;
 use function is_infinite;
 
 #[Group('Functions')]
@@ -39,6 +42,7 @@ use function is_infinite;
 #[CoversFunction('\Rubix\ML\linspace')]
 #[CoversFunction('\Rubix\ML\logsumexp')]
 #[CoversFunction('\Rubix\ML\sigmoid')]
+#[CoversFunction('\Rubix\ML\warn')]
 #[CoversFunction('\Rubix\ML\warn_deprecated')]
 class FunctionsTest extends TestCase
 {
@@ -339,5 +343,101 @@ class FunctionsTest extends TestCase
     public function iteratorContainsNan(array $values, bool $expected) : void
     {
         $this->assertEquals($expected, iterator_contains_nan($values));
+    }
+
+    #[Test]
+    public function argminUndefinedOnEmptySet() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        argmin([]);
+    }
+
+    #[Test]
+    public function argminUndefinedOnNanSet() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        argmin([NAN, NAN]);
+    }
+
+    #[Test]
+    public function argmaxUndefinedOnEmptySet() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        argmax([]);
+    }
+
+    #[Test]
+    public function logsumexpUndefinedOnEmptySet() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        logsumexp([]);
+    }
+
+    #[Test]
+    public function linspaceRejectsMinGreaterThanMax() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        linspace(1.0, 0.0, 5);
+    }
+
+    #[Test]
+    public function linspaceRejectsFewerThanTwoElements() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        linspace(0.0, 1.0, 1);
+    }
+
+    #[Test]
+    public function iteratorFirstUndefinedOnEmptyIterator() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        iterator_first([]);
+    }
+
+    #[Test]
+    public function warnEmitsUserWarning() : void
+    {
+        $level = null;
+
+        set_error_handler(function (int $errno, string $errstr) use (&$level) : bool {
+            $level = $errno;
+
+            return true;
+        });
+
+        try {
+            warn('A user warning.');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(E_USER_WARNING, $level);
+    }
+
+    #[Test]
+    public function warnDeprecatedEmitsUserDeprecation() : void
+    {
+        $level = null;
+
+        set_error_handler(function (int $errno, string $errstr) use (&$level) : bool {
+            $level = $errno;
+
+            return true;
+        });
+
+        try {
+            warn_deprecated('A deprecation warning.');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(E_USER_DEPRECATED, $level);
     }
 }

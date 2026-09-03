@@ -51,6 +51,7 @@ class EstimatorTypeTest extends TestCase
         $this->assertFalse($this->type->isAnomalyDetector());
     }
 
+    #[Test]
     public function testToString() : void
     {
         $this->assertEquals('clusterer', (string) $this->type);

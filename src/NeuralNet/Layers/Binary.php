@@ -87,6 +87,7 @@ class Binary implements Output
             new ExtensionIsLoaded('RubixNumPower'),
             new ExtensionMinimumVersion('RubixNumPower', '0.7.0'),
         ])->check();
+
         if ($costFn instanceof MulticlassCrossEntropy) {
             throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
@@ -200,7 +201,6 @@ class Binary implements Output
      */
     public function gradient(NDArray $input, NDArray $output, NDArray $expected) : NDArray
     {
-<<<<<<< HEAD
         $n = $output->shape()[1];
 
         // Optimization specific to sigmoid + binary cross entropy.
@@ -210,11 +210,6 @@ class Binary implements Output
                 NumPower::subtract($output, $expected),
                 $n
             );
-=======
-        if ($this->costFn instanceof BinaryCrossEntropy) {
-            return $output->subtract($expected)
-                ->divide($output->n());
->>>>>>> dd5c3b6ec645db882b76156bd0c482ea1ebf53dd
         }
 
         $dLoss = NumPower::divide(

@@ -170,4 +170,46 @@ class LocalOutlierFactorTest extends TestCase
 
         $this->estimator->predict(Unlabeled::quick());
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $restored = unserialize(serialize($this->estimator));
+
+        $this->assertTrue($restored->trained());
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->assertEquals(
+            $this->estimator->predict($testing),
+            $restored->predict($testing)
+        );
+    }
+
+    #[Test]
+    public function score() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $scores = $this->estimator->score($testing);
+
+        $this->assertCount(self::TEST_SIZE, $scores);
+        $this->assertContainsOnlyFloat($scores);
+
+        foreach ($scores as $score) {
+            $this->assertIsFloat($score);
+            $this->assertFalse(is_nan($score));
+            $this->assertTrue(is_finite($score));
+            $this->assertGreaterThanOrEqual(0.0, $score);
+        }
+    }
 }

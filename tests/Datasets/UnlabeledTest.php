@@ -151,6 +151,7 @@ class UnlabeledTest extends TestCase
         $this->assertSame([6, 4], $this->dataset->shape());
     }
 
+    #[Test]
     public function testSize() : void
     {
         $this->assertSame(24, $this->dataset->size());
@@ -461,6 +462,7 @@ class UnlabeledTest extends TestCase
         $this->assertCount(6, $dataset);
     }
 
+    #[Test]
     public function testCount() : void
     {
         $this->assertEquals(6, $this->dataset->count());

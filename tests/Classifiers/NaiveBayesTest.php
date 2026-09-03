@@ -163,4 +163,53 @@ class NaiveBayesTest extends TestCase
 
         $this->estimator->predict(Unlabeled::quick());
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $transformer = new IntervalDiscretizer(5);
+
+        $transformer->fit($dataset);
+        $dataset->apply($transformer);
+
+        $training = $dataset->randomize()->take(self::TRAIN_SIZE);
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $restored = unserialize(serialize($this->estimator));
+
+        $this->assertTrue($restored->trained());
+
+        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
+    }
+
+    #[Test]
+    public function probaRowsSumToOne() : void
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $transformer = new IntervalDiscretizer(5);
+
+        $transformer->fit($dataset);
+        $dataset->apply($transformer);
+
+        $training = $dataset->randomize()->take(self::TRAIN_SIZE);
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertIsArray($probabilities);
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        foreach ($probabilities as $probability) {
+            $this->assertEqualsWithDelta(1.0, array_sum($probability), 1e-8);
+        }
+    }
 }

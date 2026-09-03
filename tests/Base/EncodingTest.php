@@ -35,7 +35,8 @@ class EncodingTest extends TestCase
         $this->assertEquals($expected, $this->encoding->data());
     }
 
-    public function tstBytes() : void
+    #[Test]
+    public function bytes() : void
     {
         $this->assertSame(82, $this->encoding->bytes());
     }

@@ -219,7 +219,6 @@ class Multiclass implements Output
      */
     public function gradient(NDArray $input, NDArray $output, NDArray $expected) : NDArray
     {
-<<<<<<< HEAD
         $n = array_product($output->shape());
 
         // Optimization specific to softmax + multiclass cross entropy.
@@ -229,11 +228,6 @@ class Multiclass implements Output
                 NumPower::subtract($output, $expected),
                 $n
             );
-=======
-        if ($this->costFn instanceof MulticlassCrossEntropy) {
-            return $output->subtract($expected)
-                ->divide($output->n());
->>>>>>> dd5c3b6ec645db882b76156bd0c482ea1ebf53dd
         }
 
         $gradient = NumPower::divide(
