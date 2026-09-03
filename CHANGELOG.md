@@ -5,6 +5,7 @@
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and inference is now parallelized
     - Added disk-based neural network snapshotting
+    - Can now clear neural network Adaptive optimizer state
     - Added validation interval parameter to MLPs and GBM Learners
     - Cross Entropy loss function now split into Binary and Multiclass
     - Logistic Regression, Softmax, and Adaline now use hold out set

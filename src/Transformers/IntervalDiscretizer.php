@@ -62,7 +62,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     {
         if ($bins < 3 or $bins > PHP_INT_MAX) {
             throw new InvalidArgumentException('Number of bins must be'
-                . " between 3 and " . PHP_INT_MAX . ", $bins given.");
+                . ' between 3 and ' . PHP_INT_MAX . ", $bins given.");
         }
 
         $this->bins = $bins;
