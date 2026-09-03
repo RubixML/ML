@@ -22,6 +22,7 @@ use function fwrite;
 use function fflush;
 use function fsync;
 use function fclose;
+use function substr;
 
 /**
  * Filesystem
@@ -134,8 +135,16 @@ class Filesystem implements Persister
                 throw new RuntimeException("Could not open temp file {$temp} for writing.");
             }
 
-            if (fwrite($handle, $encoding->data()) !== $encoding->bytes()) {
-                throw new RuntimeException("Could not write all bytes to temp file {$temp}.");
+            $offset = 0;
+
+            while ($offset < $encoding->bytes()) {
+                $written = fwrite($handle, substr($encoding, $offset));
+
+                if (!$written) {
+                    throw new RuntimeException("Could not write all bytes to temp file {$temp}.");
+                }
+
+                $offset += $written;
             }
 
             if (!fflush($handle)) {
