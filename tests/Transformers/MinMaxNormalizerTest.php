@@ -89,4 +89,18 @@ class MinMaxNormalizerTest extends TestCase
         $this->assertNan($samples[0][2]);
         $this->assertNan($samples[1][2]);
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $this->transformer->fit($this->generator->generate(30));
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+        $this->assertEquals($this->transformer->minimums(), $restored->minimums());
+        $this->assertEquals($this->transformer->maximums(), $restored->maximums());
+    }
 }

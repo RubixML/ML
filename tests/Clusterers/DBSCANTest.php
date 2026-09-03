@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Clusterers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -111,6 +112,8 @@ class DBSCANTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    #[Test]
+    #[TestDox('Throws an exception when predicting with incompatible data')]
     public function predictIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Clusterers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -163,6 +164,8 @@ class FuzzyCMeansTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    #[Test]
+    #[TestDox('Throws an exception when training with incompatible data')]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -170,6 +173,8 @@ class FuzzyCMeansTest extends TestCase
         $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
     }
 
+    #[Test]
+    #[TestDox('Throws an exception when predicting before training')]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

@@ -87,4 +87,24 @@ class OneHotEncoderTest extends TestCase
 
         $this->assertEquals($expected, $dataset->samples());
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = new Unlabeled(samples: [
+            ['nice', 'furry', 'friendly'],
+            ['mean', 'furry', 'loner'],
+            ['nice', 'rough', 'friendly'],
+            ['mean', 'rough', 'friendly'],
+        ]);
+
+        $this->transformer->fit($dataset);
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+        $this->assertEquals($this->transformer->categories(), $restored->categories());
+    }
 }

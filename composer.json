@@ -79,6 +79,7 @@
         ],
         "analyze": "phpstan analyse -c phpstan.neon --memory-limit 1G",
         "benchmark": "phpbench run --report=aggregate",
+        "coverage": "phpunit --coverage-text --coverage-html=runtime/coverage",
         "check": [
             "php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --using-cache=no --sequential --show-progress=dots --stop-on-violation"
         ],

@@ -40,4 +40,18 @@ class TextNormalizerTest extends TestCase
 
         $this->assertEquals($expected, $dataset->samples());
     }
+
+    #[Test]
+    public function transformToLowercase() : void
+    {
+        $transformer = new TextNormalizer(false);
+
+        $dataset = Unlabeled::quick(samples: [
+            ['The Quick Brown Fox', 42],
+        ]);
+
+        $dataset->apply($transformer);
+
+        $this->assertEquals([['the quick brown fox', 42]], $dataset->samples());
+    }
 }

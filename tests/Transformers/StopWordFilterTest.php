@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Transformers\StopWordFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -41,5 +42,13 @@ class StopWordFilterTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
+    }
+
+    #[Test]
+    public function nonStringStopWordThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new StopWordFilter(['a', 42]);
     }
 }

@@ -1,8 +1,21 @@
-# Rubix ML — Agent Guide
+# Rubix ML
 
-## Project
+High-level machine learning and deep learning library with 40 learning algorithms including ETL and cross-validation for **PHP**.
 
-High-level machine learning and deep learning library for **PHP 8.3+**. Namespace `Rubix\ML` autoloaded from `src/`. Requires the [Rubix Tensor](https://github.com/RubixML/Tensor) extension for fast matrix/vector operations.
+## Documentation
+
+The project documentation is located in the `/docs` folder in the project root.
+
+## Requirements
+
+- [PHP](https://php.net/manual/en/install.php) 8.3 or above.
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
+- [Swoole extension](https://openswoole.com/) for multiprocessing support.
+- [GD extension](https://php.net/manual/en/book.image.php) for image support.
+- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
+- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).
+- [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support.
+- [GraphViz](https://graphviz.org/) for graph visualization.
 
 ## Key Commands
 
@@ -14,9 +27,12 @@ High-level machine learning and deep learning library for **PHP 8.3+**. Namespac
 | `composer fix` | PHP-CS-Fixer auto-fix |
 | `composer phplint` | PHP syntax lint |
 | `composer benchmark` | PHPBench benchmarks |
+| `composer coverage` | Analyze test coverage |
 | `composer build` | Full pipeline: install → analyze → test → check |
 
 ## Architecture
+
+Namespace `Rubix\ML` autoloaded from `src/`.
 
 ```text
 src/          →  Rubix\ML\*          (PSR-4)
@@ -29,9 +45,9 @@ docs/         →  MkDocs documentation
 
 `Estimator`, `Learner`, `Online`, `Parallel`, `Probabilistic`, `Persistable`, `Verbose`, `RanksFeatures`, `Scoring`
 
-### Meta-Estimators
+### High-level data types
 
-`Pipeline`, `GridSearch`, `PersistentModel`, `CommitteeMachine`, `BootstrapAggregator`
+Rubix ML uses a high-level type system. Strings and integers are considered `categorical` and floats are considered `continuous`.
 
 ### Estimator Types
 
@@ -53,6 +69,10 @@ docs/         →  MkDocs documentation
 - Single quotes for strings, short array syntax (`[]`)
 - Prefer pre-increment (`++$i`) over post-increment where possible
 - No superfluous `else`/`return` constructs
+- Bugfixes should include a test that reproduces the bug before the fix
+- Optimizations should include a before and after benchmark
+- Include documentation updates for changes that effect the public API
+- Class members annotated `internal` are not part of the public API
 
 ## Workflows
 

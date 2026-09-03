@@ -55,4 +55,22 @@ class WordCountVectorizerTest extends TestCase
 
         $this->assertEquals($expected, $dataset->samples());
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = Unlabeled::quick(samples: [
+            ['the quick brown fox jumped over the lazy man sitting at a bus stop'],
+            ['with a dandy umbrella'],
+        ]);
+
+        $this->transformer->fit($dataset);
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+        $this->assertEquals($this->transformer->vocabularies(), $restored->vocabularies());
+    }
 }

@@ -41,4 +41,39 @@ class L1NormalizerTest extends TestCase
 
         $this->assertEquals($expected, $dataset->samples());
     }
+
+    #[Test]
+    public function transformDoesNotDivideByZeroNorThrow() : void
+    {
+        $dataset = new Unlabeled(samples: [
+            [0, 0, 0, 0],
+            [-2, 0, 0, 0],
+        ]);
+
+        $dataset->apply($this->transformer);
+
+        $expected = [
+            [0, 0, 0, 0],
+            [-1.0, 0.0, 0.0, 0.0],
+        ];
+
+        $this->assertEquals($expected, $dataset->samples());
+    }
+
+    #[Test]
+    public function transformIsIdempotent() : void
+    {
+        $dataset = new Unlabeled(samples: [
+            [1, 2, 3, 4],
+            [40, 0, 30, 10],
+        ]);
+
+        $dataset->apply($this->transformer);
+
+        $first = $dataset->samples();
+
+        $dataset->apply($this->transformer);
+
+        $this->assertEquals($first, $dataset->samples());
+    }
 }

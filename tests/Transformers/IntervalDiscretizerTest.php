@@ -68,4 +68,19 @@ class IntervalDiscretizerTest extends TestCase
 
         $this->transformer->transform($samples);
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = $this->generator->generate(30);
+
+        $this->transformer->fit($dataset);
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+        $this->assertEquals($this->transformer->intervals(), $restored->intervals());
+    }
 }
