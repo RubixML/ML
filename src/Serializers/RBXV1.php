@@ -49,7 +49,7 @@ class RBXV1 implements Serializer
      *
      * @var string
      */
-    protected const CHECKSUM_HASH_TYPE = 'crc32b';
+    protected const CHECKSUM_TYPE = 'crc32b';
 
     /**
      * The end of line character.
@@ -83,30 +83,32 @@ class RBXV1 implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
+        $className = get_class($persistable);
+
         $encoding = $this->base->serialize($persistable);
 
-        $hash = hash(self::CHECKSUM_HASH_TYPE, $encoding);
+        $hash = hash(self::CHECKSUM_TYPE, $encoding);
 
         $header = JSON::encode([
             'library' => [
                 'version' => LIBRARY_VERSION,
             ],
             'class' => [
-                'name' => get_class($persistable),
+                'name' => $className,
                 'revision' => $persistable->revision(),
             ],
             'data' => [
                 'checksum' => [
-                    'type' => self::CHECKSUM_HASH_TYPE,
+                    'type' => self::CHECKSUM_TYPE,
                     'hash' => $hash,
                 ],
                 'length' => $encoding->bytes(),
             ],
         ]);
 
-        $hash = hash(self::CHECKSUM_HASH_TYPE, $header);
+        $hash = hash(self::CHECKSUM_TYPE, $header);
 
-        $checksum = self::CHECKSUM_HASH_TYPE . ':' . $hash;
+        $checksum = self::CHECKSUM_TYPE . ':' . $hash;
 
         $data = self::IDENTIFIER_STRING;
         $data .= self::VERSION . self::EOL;
@@ -151,7 +153,7 @@ class RBXV1 implements Serializer
             throw new RuntimeException('Invalid header digest.');
         }
 
-        if ($type != self::CHECKSUM_HASH_TYPE) {
+        if ($type != self::CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid header checksum type.');
         }
 
@@ -169,7 +171,7 @@ class RBXV1 implements Serializer
 
         $dataChecksumType = $header['data']['checksum']['type'] ?? null;
 
-        if ($dataChecksumType != self::CHECKSUM_HASH_TYPE) {
+        if ($dataChecksumType != self::CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid data checksum type.');
         }
 
