@@ -18,7 +18,7 @@ class RBXV2Bench
     /**
      * @var RBXV2
      */
-    protected $serializer;
+    protected RBXV2 $serializer;
 
     /**
      * @var \Rubix\ML\Persistable
