@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\CrossValidation\Metrics\TopKAccuracy;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -72,11 +73,12 @@ class TopKAccuracyTest extends TestCase
         $this->assertGreaterThan($tuple[0], $tuple[1]);
     }
 
-    /*\
+    /**
      * @param list<array<string,int|float>> $probabilities
      * @param list<string|int> $labels
      * @param float $expected
      */
+    #[Test]
     #[DataProvider('scoreProvider')]
     public function score(array $probabilities, array $labels, float $expected) : void
     {
@@ -96,5 +98,24 @@ class TopKAccuracyTest extends TestCase
         );
 
         $this->assertEqualsWithDelta($expected, $score, 1e-8);
+    }
+
+    #[Test]
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TopKAccuracy(0);
+    }
+
+    #[Test]
+    public function scoreOnEmptySet() : void
+    {
+        $score = $this->metric->score(
+            probabilities: [],
+            labels: []
+        );
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
     }
 }

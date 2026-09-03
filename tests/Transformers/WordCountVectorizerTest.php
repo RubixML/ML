@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\WordCountVectorizer;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -54,6 +55,18 @@ class WordCountVectorizerTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
+    }
+
+    #[Test]
+    public function transformUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = [
+            ['the quick brown fox jumped over the lazy man'],
+        ];
+
+        $this->transformer->transform($samples);
     }
 
     #[Test]

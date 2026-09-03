@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -52,6 +53,18 @@ class OneHotEncoderTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
+    }
+
+    #[Test]
+    public function transformUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = [
+            ['nice', 'furry', 'friendly'],
+        ];
+
+        $this->transformer->transform($samples);
     }
 
     #[Test]

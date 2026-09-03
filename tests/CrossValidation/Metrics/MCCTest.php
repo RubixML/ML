@@ -94,6 +94,30 @@ class MCCTest extends TestCase
         $this->assertEquals($expected, $this->metric->compatibility());
     }
 
+    #[Test]
+    public function scoreOnEmptySet() : void
+    {
+        $score = $this->metric->score(predictions: [], labels: []);
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+    }
+
+    #[Test]
+    public function scoreOnSingleClass() : void
+    {
+        $score = $this->metric->score(
+            predictions: ['A', 'A'],
+            labels: ['A', 'A'],
+        );
+
+        $this->assertIsFloat($score);
+
+        [$min, $max] = $this->metric->range()->list();
+
+        $this->assertGreaterThanOrEqual($min, $score);
+        $this->assertLessThanOrEqual($max, $score);
+    }
+
     /**
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels

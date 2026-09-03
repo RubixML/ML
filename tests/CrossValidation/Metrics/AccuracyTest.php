@@ -88,6 +88,14 @@ class AccuracyTest extends TestCase
         $this->assertEquals($expected, $this->metric->compatibility());
     }
 
+    #[Test]
+    public function scoreOnEmptySet() : void
+    {
+        $score = $this->metric->score(predictions: [], labels: []);
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+    }
+
     /**
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels

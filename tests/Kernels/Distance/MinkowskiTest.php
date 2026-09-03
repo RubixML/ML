@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -54,5 +55,13 @@ class MinkowskiTest extends TestCase
 
         $this->assertGreaterThanOrEqual(0., $distance);
         $this->assertEquals($expected, $distance);
+    }
+
+    #[Test]
+    public function badLambda() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Minkowski(0.5);
     }
 }

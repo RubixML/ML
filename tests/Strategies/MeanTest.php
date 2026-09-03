@@ -9,6 +9,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Strategies\Mean;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Strategies')]
@@ -44,5 +46,21 @@ class MeanTest extends TestCase
         $guess = $this->strategy->guess();
 
         $this->assertEquals(3.0, $guess);
+    }
+
+    #[Test]
+    public function guessThrowsWhenUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->strategy->guess();
+    }
+
+    #[Test]
+    public function fitRejectsEmptySet() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->strategy->fit([]);
     }
 }

@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\ImageResizer;
 use Rubix\ML\Transformers\ImageVectorizer;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -42,5 +43,17 @@ class ImageVectorizerTest extends TestCase
         ];
 
         $this->assertEqualsWithDelta($expected, $dataset->samples(), 1.0);
+    }
+
+    #[Test]
+    public function transformUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = [
+            [imagecreate(1, 1), 'something else'],
+        ];
+
+        $this->transformer->transform($samples);
     }
 }
