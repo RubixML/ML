@@ -108,7 +108,7 @@ class Filesystem implements Persister
         if ($this->history and is_file($this->path)) {
             $timestamp = (string) time();
 
-            $filename = "{$this->path}-$timestamp." . self::HISTORY_EXT;
+            $filename = "{$this->path}-{$timestamp}." . self::HISTORY_EXT;
 
             $num = 0;
 
@@ -147,7 +147,7 @@ class Filesystem implements Persister
             }
 
             if (!fclose($handle)) {
-                throw new RuntimeException("Could not finalise the write to temp file {$temp}.");
+                throw new RuntimeException("Could not finalize the write to temp file {$temp}.");
             }
 
             if (!rename($temp, $this->path)) {
