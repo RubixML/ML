@@ -2,12 +2,19 @@
 
 namespace Rubix\ML\Serializers;
 
+use Rubix\ML\Set;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\JSON;
+use ReflectionClass;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\warn;
+use function is_object;
+use function is_array;
+use function serialize;
+use function unserialize;
+use function str_starts_with;
 use function strlen;
 use function substr;
 use function hash;
@@ -18,17 +25,18 @@ use function explode;
 use const Rubix\ML\VERSION as LIBRARY_VERSION;
 
 /**
- * RBX
+ * RBXV2
  *
- * Rubix Object File format (RBX) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native
- * serialization format, RBX adds additional layers of compression, data integrity checks, and class compatibility detection all
- * in one robust format.
+ * Rubix Object File format v2 (RBX) is a format designed to reliably store and share serialized PHP
+ * objects. RBX is built directly on PHP's native serialization format and layers data-integrity
+ * checksums, class-compatibility detection, and a hardened deserialization path that restricts
+ * which classes are permitted to be reconstructed, all in one compact format.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RBX implements Serializer
+class RBXV2 implements Serializer
 {
     /**
      * The identifier or "magic number" of the format.
@@ -38,18 +46,18 @@ class RBX implements Serializer
     protected const IDENTIFIER_STRING = "\241RBX\r\n\032\n";
 
     /**
-     * The version of the format.
+     * The current version of the format.
      *
      * @var int
      */
-    protected const VERSION = 1;
+    protected const VERSION = 2;
 
     /**
      * The hashing function used to generate checksums.
      *
      * @var string
      */
-    protected const CHECKSUM_HASH_TYPE = 'crc32b';
+    protected const CHECKSUM_HASH_TYPE = 'sha256';
 
     /**
      * The end of line character.
@@ -59,18 +67,58 @@ class RBX implements Serializer
     protected const EOL = "\n";
 
     /**
-     * The base Gzip Native serializer.
+     * Collect the set of class names present in an object's property graph.
      *
-     * @var GzipNative
+     * @internal
+     *
+     * @param object $root
+     * @return Set
      */
-    protected GzipNative $base;
-
-    /**
-     * @param int $level
-     */
-    public function __construct(int $level = 6)
+    protected static function collectClassSet(object $root) : Set
     {
-        $this->base = new GzipNative($level);
+        $stack = [$root];
+
+        $classes = new Set();
+
+        while ($stack) {
+            $current = array_pop($stack);
+
+            switch (gettype($current)) {
+                case 'object':
+                    $reflector = new ReflectionClass($current);
+
+                    $className = $reflector->getName();
+
+                    $classes->add($className);
+
+                    $properties = $reflector->getProperties();
+
+                    foreach ($properties as $property) {
+                        if (!$property->isInitialized($current)) {
+                            continue;
+                        }
+
+                        $value = $property->getValue($current);
+
+                        if (is_object($value) or is_array($value)) {
+                            $stack[] = $value;
+                        }
+                    }
+
+                    break;
+
+                case 'array':
+                    foreach ($current as $element) {
+                        if (is_object($element) or is_array($element)) {
+                            $stack[] = $element;
+                        }
+                    }
+
+                    break;
+            }
+        }
+
+        return $classes;
     }
 
     /**
@@ -83,9 +131,11 @@ class RBX implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
-        $encoding = $this->base->serialize($persistable);
+        $classSet = self::collectClassSet($persistable);
 
-        $hash = hash(self::CHECKSUM_HASH_TYPE, $encoding);
+        $payload = serialize($persistable);
+
+        $payloadHash = hash(self::CHECKSUM_HASH_TYPE, $payload);
 
         $header = JSON::encode([
             'library' => [
@@ -94,25 +144,26 @@ class RBX implements Serializer
             'class' => [
                 'name' => get_class($persistable),
                 'revision' => $persistable->revision(),
+                'allowed' => $classSet->toArray(),
             ],
             'data' => [
                 'checksum' => [
                     'type' => self::CHECKSUM_HASH_TYPE,
-                    'hash' => $hash,
+                    'hash' => $payloadHash,
                 ],
-                'length' => $encoding->bytes(),
+                'length' => strlen($payload),
             ],
         ]);
 
-        $hash = hash(self::CHECKSUM_HASH_TYPE, $header);
+        $headerHash = hash(self::CHECKSUM_HASH_TYPE, $header);
 
-        $checksum = self::CHECKSUM_HASH_TYPE . ':' . $hash;
+        $checksum = self::CHECKSUM_HASH_TYPE . ':' . $headerHash;
 
         $data = self::IDENTIFIER_STRING;
         $data .= self::VERSION . self::EOL;
         $data .= $checksum . self::EOL;
         $data .= $header . self::EOL;
-        $data .= $encoding;
+        $data .= $payload;
 
         return new Encoding($data);
     }
@@ -176,16 +227,22 @@ class RBX implements Serializer
             throw new RuntimeException('Data checksum verification failed.');
         }
 
-        $persistable = $this->base->deserialize(new Encoding($payload));
+        $allowedClasses = $header['class']['allowed'] ?? [];
 
-        $expectedRevision = $expected = $header['class']['revision'] ?? null;
+        $persistable = unserialize($payload, ['allowed_classes' => $allowedClasses]);
+
+        if (!$persistable instanceof Persistable) {
+            throw new RuntimeException('Missing class for object data.');
+        }
+
+        $expectedRevision = $header['class']['revision'] ?? null;
 
         if ($persistable->revision() !== $expectedRevision) {
             warn("Class revision mismatch, expected $expectedRevision but"
                 . " got {$persistable->revision()}. ");
         }
 
-        if (get_class($persistable) !== $header['class']['name'] ?? null) {
+        if (get_class($persistable) !== $header['class']['name']) {
             throw new RuntimeException('Class name mismatch.');
         }
 
@@ -201,6 +258,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return "RBX (level: {$this->base->level()})";
+        return 'RBXV2';
     }
 }

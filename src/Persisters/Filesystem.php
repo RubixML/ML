@@ -13,8 +13,16 @@ use function is_file;
 use function is_readable;
 use function is_writable;
 use function file_get_contents;
-use function file_put_contents;
 use function time;
+use function tempnam;
+use function rename;
+use function unlink;
+use function dirname;
+use function fopen;
+use function fwrite;
+use function fflush;
+use function fsync;
+use function fclose;
 
 /**
  * Filesystem
@@ -77,16 +85,18 @@ class Filesystem implements Persister
      */
     public function save(Encoding $encoding) : void
     {
-        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
+        if ($encoding->bytes() === 0) {
+            throw new RuntimeException('Encoding does not contain any data.');
+        }
+
+        $dir = dirname($this->path);
+
+        if (!is_dir($dir) or !is_writable($dir)) {
             throw new RuntimeException('Folder does not exist or is not writable');
         }
 
         if (is_file($this->path) and !is_writable($this->path)) {
             throw new RuntimeException("File {$this->path} is not writable.");
-        }
-
-        if ($encoding->bytes() === 0) {
-            throw new RuntimeException('Encoding does not contain any data.');
         }
 
         if ($this->history and is_file($this->path)) {
@@ -105,10 +115,43 @@ class Filesystem implements Persister
             }
         }
 
-        $success = file_put_contents($this->path, $encoding->data(), LOCK_EX);
+        $temp = tempnam($dir, 'rubixml');
 
-        if (!$success) {
-            throw new RuntimeException('Could not write to the filesystem.');
+        if ($temp === false) {
+            throw new RuntimeException('Could not create a temporary storage file in ' . $dir . '.');
+        }
+
+        try {
+            $handle = fopen($temp, 'w');
+
+            if ($handle === false) {
+                throw new RuntimeException("Could not open temp file {$temp} for writing.");
+            }
+
+            if (fwrite($handle, $encoding->data()) !== $encoding->bytes()) {
+                throw new RuntimeException("Could not write all bytes to temp file {$temp}.");
+            }
+
+            if (!fflush($handle)) {
+                throw new RuntimeException("Could not flush the temp file {$temp}.");
+            }
+
+            if (!fsync($handle)) {
+                throw new RuntimeException("Could not sync the temp file {$temp}.");
+            }
+
+            if (!fclose($handle)) {
+                throw new RuntimeException("Could not finalise the write to temp file {$temp}.");
+            }
+
+            if (!rename($temp, $this->path)) {
+                throw new RuntimeException('Could not finalize the save at ' . $this->path . '.');
+            }
+
+        } finally {
+            if (is_file($temp)) {
+                unlink($temp);
+            }
         }
     }
 

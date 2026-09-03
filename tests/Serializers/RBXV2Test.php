@@ -1,0 +1,243 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rubix\ML\Tests\Serializers;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Encoding;
+use Rubix\ML\Persistable;
+use Rubix\ML\Helpers\JSON;
+use Rubix\ML\Serializers\RBXV2;
+use Rubix\ML\Classifiers\AdaBoost;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
+
+use function serialize;
+use function strlen;
+use function hash;
+
+#[Group('Serializers')]
+#[CoversClass(RBXV2::class)]
+class RBXV2Test extends TestCase
+{
+    protected const IDENTIFIER = "\241RBX\r\n\032\n";
+
+    protected RBXV2 $serializer;
+
+    protected function setUp() : void
+    {
+        $this->serializer = new RBXV2();
+    }
+
+    #[Test]
+    public function serializeDeserialize() : void
+    {
+        $data = $this->serializer->serialize(new AdaBoost());
+
+        $persistable = $this->serializer->deserialize($data);
+
+        $this->assertInstanceOf(AdaBoost::class, $persistable);
+    }
+
+    #[Test]
+    public function preservesNestedObjects() : void
+    {
+        $estimator = new KNearestNeighbors(3, false, new Manhattan());
+        $data = $this->serializer->serialize($estimator);
+
+        $persistable = $this->serializer->deserialize($data);
+
+        $this->assertInstanceOf(KNearestNeighbors::class, $persistable);
+        $this->assertInstanceOf(Manhattan::class, $persistable->params()['kernel']);
+    }
+
+    #[Test]
+    public function rejectsBadMagic() : void
+    {
+        $data = $this->serializer->serialize(new AdaBoost());
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unrecognized message format.');
+
+        $this->serializer->deserialize(new Encoding("\x00" . substr((string) $data, 1)));
+    }
+
+    #[Test]
+    public function rejectsUnsupportedVersion() : void
+    {
+        $persistable = new AdaBoost();
+        $payload = serialize($persistable);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Incompatible with RBX');
+
+        $this->serializer->deserialize(new Encoding(
+            $this->makeFile('9', AdaBoost::class, $persistable->revision(), [AdaBoost::class], $payload)
+        ));
+    }
+
+    #[Test]
+    public function rejectsUnsupportedAlgoName() : void
+    {
+        $persistable = new AdaBoost();
+        $payload = serialize($persistable);
+        $revision = $persistable->revision();
+        $set = [AdaBoost::class];
+
+        $header = $this->makeHeader(AdaBoost::class, $revision, $set, $payload);
+
+        $file = self::IDENTIFIER . "2\n" . 'sha1:' . hash('sha1', $header) . "\n" . $header . "\n" . $payload;
+
+        $this->expectException(RuntimeException::class);
+
+        $this->serializer->deserialize(new Encoding($file));
+    }
+
+    #[Test]
+    public function rejectsCorruptedHeaderChecksum() : void
+    {
+        $persistable = new AdaBoost();
+        $payload = serialize($persistable);
+        $revision = $persistable->revision();
+        $set = [AdaBoost::class];
+
+        $header = $this->makeHeader(AdaBoost::class, $revision, $set, $payload);
+
+        $good = hash('sha256', $header);
+        $bad = substr($good, 0, -1) . ($good[-1] === '0' ? '1' : '0');
+
+        $file = self::IDENTIFIER . "2\n" . "sha256:$bad\n" . $header . "\n" . $payload;
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Header checksum verification failed.');
+
+        $this->serializer->deserialize(new Encoding($file));
+    }
+
+    #[Test]
+    public function rejectsCorruptedPayload() : void
+    {
+        $persistable = new AdaBoost();
+        $goodPayload = serialize($persistable);
+        $badPayload = 'P' . substr($goodPayload, 1);
+        $revision = $persistable->revision();
+        $set = [AdaBoost::class];
+
+        $header = $this->makeHeader(AdaBoost::class, $revision, $set, $goodPayload);
+        $file = self::IDENTIFIER . "2\n" . 'sha256:' . hash('sha256', $header) . "\n" . $header . "\n" . $badPayload;
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Data checksum verification failed.');
+
+        $this->serializer->deserialize(new Encoding($file));
+    }
+
+    #[Test]
+    public function rejectsClassMismatch() : void
+    {
+        $persistable = new GaussianNB();
+        $payload = serialize($persistable);
+        $revision = $persistable->revision();
+
+        $file = $this->makeFile(
+            '2',
+            AdaBoost::class,
+            $revision,
+            [AdaBoost::class, GaussianNB::class],
+            $payload
+        );
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Class name mismatch.');
+
+        $this->serializer->deserialize(new Encoding($file));
+    }
+
+    #[Test]
+    public function doesNotConstructClassesOutsideDeclaredSet() : void
+    {
+        Gadget::$ran = false;
+
+        $carrier = new RBXV2Carrier(new Gadget());
+        $payload = serialize($carrier);
+        $file = $this->makeFile('2', RBXV2Carrier::class, 'carrier-rev', [RBXV2Carrier::class], $payload);
+
+        $result = $this->serializer->deserialize(new Encoding($file));
+
+        $this->assertSame(RBXV2Carrier::class, get_class($result));
+        $this->assertFalse(Gadget::$ran, 'A class not in the declared set must not have its deserialization hook run.');
+    }
+
+    #[Test]
+    public function stringRepresentation() : void
+    {
+        $this->assertIsString((string) $this->serializer);
+    }
+
+    protected function makeHeader(string $name, string $revision, array $set, string $payload, string $library = '3') : string
+    {
+        return JSON::encode([
+            'library' => ['version' => $library],
+            'class' => [
+                'name' => $name,
+                'revision' => $revision,
+                'allowed' => $set,
+            ],
+            'data' => [
+                'checksum' => ['type' => 'sha256', 'hash' => hash('sha256', $payload)],
+                'length' => strlen($payload),
+            ],
+        ]);
+    }
+
+    protected function makeFile(
+        string $version,
+        string $name,
+        string $revision,
+        array $set,
+        string $payload,
+        string $library = '3'
+    ) : string {
+        $header = $this->makeHeader($name, $revision, $set, $payload, $library);
+        $checksum = 'sha256:' . hash('sha256', $header);
+
+        return self::IDENTIFIER . $version . "\n" . $checksum . "\n" . $header . "\n" . $payload;
+    }
+}
+
+class Gadget
+{
+    public static bool $ran = false;
+
+    public ?int $x = null;
+
+    public function __unserialize(array $data) : void
+    {
+        self::$ran = true;
+        $this->x = $data['x'] ?? null;
+    }
+}
+
+class RBXV2Carrier implements Persistable
+{
+    public $inner;
+
+    public function __construct($inner)
+    {
+        $this->inner = $inner;
+    }
+
+    /**
+     * @return string
+     */
+    public function revision() : string
+    {
+        return 'carrier-rev';
+    }
+}
