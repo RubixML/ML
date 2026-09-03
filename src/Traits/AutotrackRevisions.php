@@ -48,9 +48,7 @@ trait AutotrackRevisions
         while ($frames) {
             [$node, $properties, $index] = array_pop($frames);
 
-            $total = count($properties);
-
-            if ($index === $total) {
+            if ($index === count($properties)) {
                 unset($seen[$node]);
 
                 continue;
