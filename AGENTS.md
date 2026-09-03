@@ -22,7 +22,7 @@ The project documentation is located in the `/docs` folder in the project root.
 | Command | Action |
 | --- | --- |
 | `composer test` | Run PHPUnit tests |
-| `composer analyze` | PHPStan static analysis (level 6) |
+| `composer analyze` | PHPStan static analysis |
 | `composer check` | PHP-CS-Fixer dry-run (style check) |
 | `composer fix` | PHP code style auto-fixer |
 | `composer phplint` | PHP syntax lint |
@@ -83,7 +83,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 3. Create PHPUnit test in `tests/` with `#[CoversClass]` attribute
 4. For learners: end-to-end test — generate synthetic data, train, validate against minimum score; seed the RNG for determinism
 5. Create benchmark in `benchmarks/`
-6. Run `composer analyze && composer test && composer check`
+6. Run `composer analyze && composer test && composer fix`
 7. Add documentation page under `docs/`
 
 ### Adding a New Transformer

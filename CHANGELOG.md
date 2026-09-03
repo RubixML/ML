@@ -12,9 +12,7 @@
     - Adaboost now uses validation set with early stopping window
     - Renamed TF-IDF dampening parameter to sublinear
     - Exportable Extractors now append by default with option to overwrite
-    - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX Serializer tracks major library version number, not minor
-    - Removed window early stopping from TSNE
     - Added Class/Cluster Purity clustering metrics
     - V-measure, Completeness, and Homogeneity now use entropy-based formula
     - Fixed KDTree edge pruning + optimize traversal
@@ -28,13 +26,16 @@
     - Parallel Backends now default to max physical cores not logical
     - Added workers() method to the Backend interface (Serial returns 1)
     - No longer save/load Backend state, transient per environment
-    - Removed Word Stemmer tokenizer
+    - Added Emoji preset to Regex Filter
     - Added Float Type Converter numeric string and ints to float
     - Boolean Converter now converts truthy and falsy
     - Interval Discretizer now encodes values as integers
+    - Polynomial Expander now limited to 10'th degree
     - Updated to PSR-3 Log version 3
     - Update Amp Backend to Amp version 2.0
-    - Added Emoji preset to Regex Filter
+    - Removed Word Stemmer tokenizer
+    - Removed window early stopping from TSNE
+    - Removed output layer L2 Penalty parameter from MLP Learners
     
 - 2.5.11
     - Optimize DBSCAN inference
