@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
-use Rubix\ML\Traits\AssertsShapes;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+
 use const Rubix\ML\EPSILON;
 
 /**
@@ -22,8 +23,6 @@ use const Rubix\ML\EPSILON;
  */
 class MulticlassCrossEntropy implements ClassificationLoss
 {
-    use AssertsShapes;
-
     /**
      * Compute the loss score.
      *
@@ -35,7 +34,9 @@ class MulticlassCrossEntropy implements ClassificationLoss
      */
     public function compute(Matrix $output, Matrix $target) : float
     {
-        $this->assertSameShape($output, $target);
+        if ($output->shape() !== $target->shape()) {
+            throw new InvalidArgumentException('Output and target must have the same shape.');
+        }
 
         $clippedOutput = $output->clip(EPSILON, 1.0);
 
@@ -57,7 +58,9 @@ class MulticlassCrossEntropy implements ClassificationLoss
      */
     public function differentiate(Matrix $output, Matrix $target) : Matrix
     {
-        $this->assertSameShape($output, $target);
+        if ($output->shape() !== $target->shape()) {
+            throw new InvalidArgumentException('Output and target must have the same shape.');
+        }
 
         return $target->negate()->divide($output->clip(EPSILON, 1.0));
     }

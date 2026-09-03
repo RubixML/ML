@@ -6,8 +6,8 @@ use Rubix\ML\Set;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\JSON;
-use ReflectionClass;
 use Rubix\ML\Exceptions\RuntimeException;
+use ReflectionClass;
 
 use function Rubix\ML\warn;
 use function is_object;
@@ -25,7 +25,7 @@ use function explode;
 use const Rubix\ML\VERSION as LIBRARY_VERSION;
 
 /**
- * RBXV2
+ * RBX V2
  *
  * Rubix Object File format v2 (RBX) is a format designed to reliably store and share serialized PHP
  * objects. RBX is built directly on PHP's native serialization format and layers data-integrity
@@ -143,8 +143,8 @@ class RBXV2 implements Serializer
             ],
             'class' => [
                 'name' => get_class($persistable),
-                'revision' => $persistable->revision(),
                 'allowed' => $classSet->toArray(),
+                'revision' => $persistable->revision(),
             ],
             'data' => [
                 'checksum' => [
@@ -192,7 +192,8 @@ class RBXV2 implements Serializer
         }
 
         if ($version != self::VERSION) {
-            throw new RuntimeException("Incompatible with RBX version $version format.");
+            throw new RuntimeException('Incompatible version format, use the'
+                . " RBX V{$version} serializer instead.");
         }
 
         [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
@@ -258,6 +259,6 @@ class RBXV2 implements Serializer
      */
     public function __toString() : string
     {
-        return 'RBXV2';
+        return 'RBX V2';
     }
 }
