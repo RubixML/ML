@@ -43,8 +43,6 @@ trait AutotrackRevisions
             $properties = $reflector->getProperties();
 
             foreach ($properties as $property) {
-                $property->setAccessible(true);
-
                 if ($property->isInitialized($current)) {
                     $value = $property->getValue($current);
 
@@ -62,7 +60,7 @@ trait AutotrackRevisions
 
                     $name = $property->getName();
 
-                    $tokens[] = "$type:$name";
+                    $tokens[] = "{$type}:{$name}";
                 }
             }
         }
