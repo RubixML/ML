@@ -7,11 +7,11 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Exceptions\RuntimeException;
+use SplObjectStorage;
 use ReflectionClass;
 
 use function Rubix\ML\warn;
 use function is_object;
-use function is_array;
 use function serialize;
 use function unserialize;
 use function str_starts_with;
@@ -29,8 +29,7 @@ use const Rubix\ML\VERSION as LIBRARY_VERSION;
  *
  * Rubix Object File format v2 (RBX) is a format designed to reliably store and share serialized PHP
  * objects. RBX is built directly on PHP's native serialization format and layers data-integrity
- * checksums, class-compatibility detection, and a hardened deserialization path that restricts
- * which classes are permitted to be reconstructed, all in one compact format.
+ * checksums, class-compatibility detection, and enhanced security, all in one compact format.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -78,47 +77,52 @@ class RBXV2 implements Serializer
     {
         $stack = [$root];
 
-        $classes = new Set();
+        $seen = new SplObjectStorage();
+        $classNames = new Set();
 
         while ($stack) {
             $current = array_pop($stack);
 
-            switch (gettype($current)) {
-                case 'object':
-                    $reflector = new ReflectionClass($current);
+            if (isset($seen[$current])) {
+                continue;
+            }
 
-                    $className = $reflector->getName();
+            $seen[$current] = true;
 
-                    $classes->add($className);
+            $reflector = new ReflectionClass($current);
 
-                    $properties = $reflector->getProperties();
+            $className = $reflector->getName();
 
-                    foreach ($properties as $property) {
-                        if (!$property->isInitialized($current)) {
-                            continue;
+            $classNames->add($className);
+
+            $properties = $reflector->getProperties();
+
+            foreach ($properties as $property) {
+                if (!$property->isInitialized($current)) {
+                    continue;
+                }
+
+                $value = $property->getValue($current);
+
+                switch (gettype($value)) {
+                    case 'object':
+                        $stack[] = $value;
+
+                        break;
+
+                    case 'array':
+                        foreach ($value as $element) {
+                            if (is_object($element)) {
+                                $stack[] = $element;
+                            }
                         }
 
-                        $value = $property->getValue($current);
-
-                        if (is_object($value) or is_array($value)) {
-                            $stack[] = $value;
-                        }
-                    }
-
-                    break;
-
-                case 'array':
-                    foreach ($current as $element) {
-                        if (is_object($element) or is_array($element)) {
-                            $stack[] = $element;
-                        }
-                    }
-
-                    break;
+                        break;
+                }
             }
         }
 
-        return $classes;
+        return $classNames;
     }
 
     /**
@@ -212,7 +216,9 @@ class RBXV2 implements Serializer
 
         $header = JSON::decode($header);
 
-        if (strlen($payload) !== $header['data']['length'] ?? null) {
+        $length = $header['data']['length'] ?? null;
+
+        if (strlen($payload) !== $length) {
             throw new RuntimeException('Data length does not match header.');
         }
 
@@ -224,7 +230,9 @@ class RBXV2 implements Serializer
 
         $hash = hash($dataChecksumType, $payload);
 
-        if ($hash !== $header['data']['checksum']['hash'] ?? null) {
+        $expectedHash = $header['data']['checksum']['hash'] ?? null;
+
+        if ($hash !== $expectedHash) {
             throw new RuntimeException('Data checksum verification failed.');
         }
 
@@ -243,7 +251,9 @@ class RBXV2 implements Serializer
                 . " got {$persistable->revision()}. ");
         }
 
-        if (get_class($persistable) !== $header['class']['name']) {
+        $className = $header['class']['name'] ?? null;
+
+        if (get_class($persistable) !== $className) {
             throw new RuntimeException('Class name mismatch.');
         }
 

@@ -11,14 +11,14 @@ use Rubix\ML\Serializers\RBXV1;
  * @Groups({"Serializers"})
  * @BeforeMethods({"setUp"})
  */
-class RBXBench
+class RBXV1Bench
 {
     protected const TRAINING_SIZE = 10000;
 
     /**
      * @var RBXV1
      */
-    protected $serializer;
+    protected RBXV1 $serializer;
 
     /**
      * @var \Rubix\ML\Persistable

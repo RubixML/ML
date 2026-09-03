@@ -3,7 +3,6 @@
 namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Encoding;
-use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -37,6 +36,13 @@ use function fclose;
  */
 class Filesystem implements Persister
 {
+    /**
+     * The prefix to give temporary files created during the save process.
+     *
+     * @var string
+     */
+    public const TEMP_PREFIX = 'rubix';
+
     /**
      * The extension to give files created as part of a persistable's save history.
      *
@@ -115,7 +121,7 @@ class Filesystem implements Persister
             }
         }
 
-        $temp = tempnam($dir, 'rubixml');
+        $temp = tempnam($dir, self::TEMP_PREFIX);
 
         if ($temp === false) {
             throw new RuntimeException('Could not create a temporary storage file in ' . $dir . '.');

@@ -161,7 +161,9 @@ class RBXV1 implements Serializer
 
         $header = JSON::decode($header);
 
-        if (strlen($payload) !== $header['data']['length'] ?? null) {
+        $length = $header['data']['length'] ?? null;
+
+        if (strlen($payload) !== $length) {
             throw new RuntimeException('Data length does not match header.');
         }
 
@@ -173,20 +175,24 @@ class RBXV1 implements Serializer
 
         $hash = hash($dataChecksumType, $payload);
 
-        if ($hash !== $header['data']['checksum']['hash'] ?? null) {
+        $expectedHash = $header['data']['checksum']['hash'] ?? null;
+
+        if ($hash !== $expectedHash) {
             throw new RuntimeException('Data checksum verification failed.');
         }
 
         $persistable = $this->base->deserialize(new Encoding($payload));
 
-        $expectedRevision = $expected = $header['class']['revision'] ?? null;
+        $expectedRevision = $header['class']['revision'] ?? null;
 
         if ($persistable->revision() !== $expectedRevision) {
             warn("Class revision mismatch, expected $expectedRevision but"
                 . " got {$persistable->revision()}. ");
         }
 
-        if (get_class($persistable) !== $header['class']['name'] ?? null) {
+        $className = $header['class']['name'] ?? null;
+
+        if (get_class($persistable) !== $className) {
             throw new RuntimeException('Class name mismatch.');
         }
 
