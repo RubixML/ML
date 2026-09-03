@@ -27,7 +27,7 @@ use function iterator_to_array;
  * @author      Andrew DalPino
  *
  * @implements ArrayAccess<int|string, bool>
- * @implements IteratorAggregate<int|string, mixed>
+ * @implements IteratorAggregate<int, int|string>
  */
 class Set implements ArrayAccess, IteratorAggregate, Countable
 {
