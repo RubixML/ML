@@ -12,6 +12,7 @@ use ReflectionClass;
 
 use function Rubix\ML\warn;
 use function is_object;
+use function is_array;
 use function serialize;
 use function unserialize;
 use function str_starts_with;
@@ -111,20 +112,18 @@ class RBXV2 implements Serializer
 
                 $value = $property->getValue($current);
 
-                switch (gettype($value)) {
-                    case 'object':
-                        $stack[] = $value;
+                if (is_object($value)) {
+                    $stack[] = $value;
 
-                        break;
+                    continue;
+                }
 
-                    case 'array':
-                        foreach ($value as $element) {
-                            if (is_object($element)) {
-                                $stack[] = $element;
-                            }
+                if (is_array($value)) {
+                    foreach ($value as $element) {
+                        if (is_object($element)) {
+                            $stack[] = $element;
                         }
-
-                        break;
+                    }
                 }
             }
         }
