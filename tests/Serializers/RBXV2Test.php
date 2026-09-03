@@ -19,7 +19,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 use function serialize;
-use function strlen;
 use function hash;
 
 #[Group('Serializers')]

@@ -18,7 +18,7 @@ use function explode;
 use const Rubix\ML\VERSION as LIBRARY_VERSION;
 
 /**
- * RBXV1 V1
+ * RBX V1
  *
  * Rubix Object File format (RBXV1) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native
  * serialization format, RBXV1 adds additional layers of compression, data integrity checks, and class compatibility detection all
