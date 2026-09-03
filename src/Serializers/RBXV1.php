@@ -18,17 +18,17 @@ use function explode;
 use const Rubix\ML\VERSION as LIBRARY_VERSION;
 
 /**
- * RBX
+ * RBXV1 V1
  *
- * Rubix Object File format (RBX) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native
- * serialization format, RBX adds additional layers of compression, data integrity checks, and class compatibility detection all
+ * Rubix Object File format (RBXV1) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native
+ * serialization format, RBXV1 adds additional layers of compression, data integrity checks, and class compatibility detection all
  * in one robust format.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RBX implements Serializer
+class RBXV1 implements Serializer
 {
     /**
      * The identifier or "magic number" of the format.
@@ -141,7 +141,8 @@ class RBX implements Serializer
         }
 
         if ($version != self::VERSION) {
-            throw new RuntimeException("Incompatible with RBX version $version format.");
+            throw new RuntimeException('Incompatible version format, use the'
+                . " RBXV1 V{$version} serializer instead.");
         }
 
         [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
@@ -201,6 +202,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return "RBX (level: {$this->base->level()})";
+        return "RBXV1 V1 (level: {$this->base->level()})";
     }
 }

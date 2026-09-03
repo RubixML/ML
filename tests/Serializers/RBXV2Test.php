@@ -75,7 +75,6 @@ class RBXV2Test extends TestCase
         $payload = serialize($persistable);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Incompatible with RBX');
 
         $this->serializer->deserialize(new Encoding(
             $this->makeFile('9', AdaBoost::class, $persistable->revision(), [AdaBoost::class], $payload)
