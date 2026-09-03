@@ -170,8 +170,7 @@ class RBXV2Test extends TestCase
                 'allowed' => $set,
             ],
             'data' => [
-                'checksum' => ['type' => 'crc32', 'hash' => hash('crc32', $payload)],
-                'length' => strlen($payload),
+                'checksum' => ['type' => 'crc32b', 'hash' => hash('crc32b', $payload)],
             ],
         ]);
     }
