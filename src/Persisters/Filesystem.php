@@ -128,7 +128,7 @@ class Filesystem implements Persister
         }
 
         try {
-            $handle = fopen($temp, 'w');
+            $handle = fopen($temp, 'wb');
 
             if ($handle === false) {
                 throw new RuntimeException("Could not open temp file {$temp} for writing.");
