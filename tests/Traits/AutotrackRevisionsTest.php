@@ -56,6 +56,29 @@ class AutotrackRevisionsTest extends TestCase
 
         $this->assertNotEquals($one->revision(), $two->revision());
     }
+
+    #[Test]
+    public function revisionSurvivesCyclicGraph() : void
+    {
+        $one = new CycleRevisionableOne();
+        $two = new CycleRevisionableTwo();
+
+        $one->other = $two;
+        $two->other = $one;
+
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{8}$/', $one->revision());
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{8}$/', $two->revision());
+    }
+
+    #[Test]
+    public function revisionSurvivesSelfReference() : void
+    {
+        $self = new SelfRefRevisionable();
+
+        $self->self = $self;
+
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{8}$/', $self->revision());
+    }
 }
 
 /**
@@ -117,4 +140,40 @@ class ChildRevisionableAlpha
 class ChildRevisionableBeta
 {
     public int $y = 2;
+}
+
+/**
+ * A revisionable fixture that references another cycle fixture.
+ *
+ * @internal
+ */
+class CycleRevisionableOne
+{
+    use AutotrackRevisions;
+
+    public object $other;
+}
+
+/**
+ * A revisionable fixture that pairs with a sibling cycle fixture.
+ *
+ * @internal
+ */
+class CycleRevisionableTwo
+{
+    use AutotrackRevisions;
+
+    public object $other;
+}
+
+/**
+ * A revisionable fixture holding a reference to itself.
+ *
+ * @internal
+ */
+class SelfRefRevisionable
+{
+    use AutotrackRevisions;
+
+    public object $self;
 }
