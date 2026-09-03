@@ -52,4 +52,25 @@ class HotDeckImputerTest extends TestCase
         $this->assertEquals(10, $dataset[1][0]);
         $this->assertEquals(0.001, $dataset[3][1]);
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = new Unlabeled(samples: [
+            [30.0, 0.001],
+            [NAN, 0.055],
+            [50.0, -2.0],
+            [60.0, NAN],
+            [10.0, 1.0],
+            [100.0, 9.0],
+        ]);
+
+        $this->transformer->fit($dataset);
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+    }
 }

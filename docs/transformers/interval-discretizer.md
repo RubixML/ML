@@ -13,7 +13,7 @@ Assigns continuous features to ordered categories using variable width per-featu
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | bins | 5 | int | The number of bins per histogram. |
-| 2 | equiWidth | false | bool | Should the bins be equal width? |
+| 2 | equiWidth | false | bool | Should the bins be equal width? If not, they will be equal height. |
 
 ## Example
 

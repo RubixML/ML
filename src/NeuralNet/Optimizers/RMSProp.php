@@ -114,6 +114,16 @@ class RMSProp implements Optimizer, Adaptive
     }
 
     /**
+     * Reset the parameter cache.
+     *
+     * @internal
+     */
+    public function reset() : void
+    {
+        $this->cache = [];
+    }
+
+    /**
      * Take a step of gradient descent for a given parameter.
      *
      * RMSProp update (element-wise):

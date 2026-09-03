@@ -78,6 +78,9 @@
     <testsuite name="Tokenizers">
       <directory>tests/Tokenizers</directory>
     </testsuite>
+    <testsuite name="Traits">
+      <directory>tests/Traits</directory>
+    </testsuite>
     <testsuite name="Transformers">
       <directory>tests/Transformers</directory>
     </testsuite>

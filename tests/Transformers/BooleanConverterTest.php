@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Transformers\BooleanConverter;
 use PHPUnit\Framework\TestCase;
 
@@ -38,5 +39,13 @@ class BooleanConverterTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
+    }
+
+    #[Test]
+    public function mismatchedDataTypesThrow() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new BooleanConverter(trueValue: 1, falseValue: 'false');
     }
 }

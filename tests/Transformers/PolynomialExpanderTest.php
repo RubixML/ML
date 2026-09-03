@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Transformers\PolynomialExpander;
 use PHPUnit\Framework\TestCase;
 
@@ -40,5 +41,13 @@ class PolynomialExpanderTest extends TestCase
         ];
 
         $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);
+    }
+
+    #[Test]
+    public function degreeBelowOneThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new PolynomialExpander(0);
     }
 }

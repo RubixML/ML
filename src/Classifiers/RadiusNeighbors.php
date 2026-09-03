@@ -232,7 +232,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @param list<string|int|float> $sample
      * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
         [, $labels, $distances] = $this->tree->range($sample, $this->radius);
 

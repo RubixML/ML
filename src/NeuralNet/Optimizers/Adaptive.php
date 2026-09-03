@@ -22,4 +22,9 @@ interface Adaptive extends Optimizer
      * @param Parameter $param
      */
     public function warm(Parameter $param) : void;
+
+    /**
+     * Reset the parameter cache.
+     */
+    public function reset() : void;
 }

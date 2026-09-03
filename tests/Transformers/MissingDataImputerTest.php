@@ -48,4 +48,24 @@ class MissingDataImputerTest extends TestCase
         $this->assertThat($dataset[1][0], $this->logicalAnd($this->greaterThan(20), $this->lessThan(55)));
         $this->assertContains($dataset[3][1], ['friendly', 'mean']);
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = new Unlabeled(samples: [
+            [30.0, 'friendly'],
+            [NAN, 'mean'],
+            [50.0, 'friendly'],
+            [60.0, '?'],
+            [10.0, 'mean'],
+        ]);
+
+        $this->transformer->fit($dataset);
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+    }
 }

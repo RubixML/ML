@@ -47,4 +47,18 @@ class MultibyteTextNormalizerTest extends TestCase
 
         $this->assertEquals($expected, $dataset->samples());
     }
+
+    #[Test]
+    public function transformToUppercase() : void
+    {
+        $transformer = new MultibyteTextNormalizer(true);
+
+        $dataset = Unlabeled::quick(samples: [
+            ['déjà vu à côté', 42],
+        ]);
+
+        $dataset->apply($transformer);
+
+        $this->assertEquals([['DÉJÀ VU À CÔTÉ', 42]], $dataset->samples());
+    }
 }

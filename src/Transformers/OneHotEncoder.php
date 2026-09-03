@@ -40,7 +40,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
      *
      * @var list<string|int>
      */
-    protected array $excludedCategories = [
+    protected array $ignoredCategories = [
         //
     ];
 
@@ -52,23 +52,23 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     protected ?array $categories = null;
 
     /**
-     * Build a new one hot encoder with an array of categories to be excluded from encoding.
+     * Build a new one hot encoder with an array of categories to be ignored during encoding.
      *
-     * @param mixed[] $excludedCategories
+     * @param mixed[] $ignoredCategories
      * @throws InvalidArgumentException
      */
-    public function __construct(array $excludedCategories = [])
+    public function __construct(array $ignoredCategories = [])
     {
-        foreach ($excludedCategories as $category) {
+        foreach ($ignoredCategories as $category) {
             if (!is_string($category) and !is_int($category)) {
                 throw new InvalidArgumentException(
-                    'Excluded category must be a string or integer, '
+                    'Ignored category must be a string or integer, '
                     . gettype($category) . ' found.'
                 );
             }
         }
 
-        $this->excludedCategories = array_values($excludedCategories);
+        $this->ignoredCategories = array_values($ignoredCategories);
     }
 
     /**
@@ -120,8 +120,8 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
 
                 $categories = array_unique($categories);
 
-                if ($this->excludedCategories) {
-                    $categories = array_diff($categories, $this->excludedCategories);
+                if ($this->ignoredCategories) {
+                    $categories = array_diff($categories, $this->ignoredCategories);
                 }
 
                 $categories = array_values($categories);

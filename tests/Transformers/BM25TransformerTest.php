@@ -51,4 +51,22 @@ class BM25TransformerTest extends TestCase
 
         $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);
     }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = new Unlabeled([
+            [1.0, 3.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 4.0, 1.0, 0.0, 1.0],
+            [0.0, 1.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ]);
+
+        $this->transformer->fit($dataset);
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+        $this->assertEquals($this->transformer->dfs(), $restored->dfs());
+    }
 }

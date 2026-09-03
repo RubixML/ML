@@ -11,6 +11,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use const PHP_INT_MAX;
+
 use function Rubix\ML\linspace;
 use function array_slice;
 use function min;
@@ -47,34 +49,9 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
     /**
      * The bin intervals of the fitted data.
      *
-     * @var array<(int|float)[]>|null
+     * @var array<float[]>|null
      */
     protected ?array $intervals = null;
-
-    /**
-     * Convert an integer to a base 26 string.
-     *
-     * @param int $value
-     * @return string
-     */
-    protected static function base26(int $value) : string
-    {
-        if ($value < 0) {
-            return '-' . self::base26(-$value);
-        }
-
-        $base26 = '';
-
-        while ($value >= 0) {
-            $base26 = chr(97 + $value % 26) . $base26;
-
-            $value = intdiv($value, 26);
-
-            --$value;
-        }
-
-        return $base26;
-    }
 
     /**
      * @param int $bins
@@ -83,9 +60,9 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
      */
     public function __construct(int $bins = 5, bool $equiWidth = false)
     {
-        if ($bins < 3) {
+        if ($bins < 3 or $bins > PHP_INT_MAX) {
             throw new InvalidArgumentException('Number of bins must be'
-                . " greater than 3, $bins given.");
+                . ' between 3 and ' . PHP_INT_MAX . ", $bins given.");
         }
 
         $this->bins = $bins;
@@ -182,7 +159,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
 
                 foreach ($interval as $ordinal => $edge) {
                     if ($value <= $edge) {
-                        $value = self::base26($ordinal);
+                        $value = $ordinal;
 
                         break;
                     }

@@ -51,7 +51,7 @@ class IntervalDiscretizerTest extends TestCase
 
         $this->assertCount(4, $sample);
 
-        $expected = ['a', 'b', 'c', 'd', 'e'];
+        $expected = [0, 1, 2, 3, 4];
 
         $this->assertContains($sample[0], $expected);
         $this->assertContains($sample[1], $expected);
@@ -67,5 +67,20 @@ class IntervalDiscretizerTest extends TestCase
         $samples = $this->generator->generate(1)->samples();
 
         $this->transformer->transform($samples);
+    }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $dataset = $this->generator->generate(30);
+
+        $this->transformer->fit($dataset);
+
+        $this->assertTrue($this->transformer->fitted());
+
+        $restored = unserialize(serialize($this->transformer));
+
+        $this->assertTrue($restored->fitted());
+        $this->assertEquals($this->transformer->intervals(), $restored->intervals());
     }
 }
