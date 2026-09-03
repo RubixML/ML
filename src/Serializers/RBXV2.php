@@ -52,11 +52,18 @@ class RBXV2 implements Serializer
     protected const VERSION = 2;
 
     /**
-     * The hashing function used to generate checksums.
+     * The hashing function used to generate header checksums.
      *
      * @var string
      */
-    protected const CHECKSUM_HASH_TYPE = 'sha256';
+    protected const HEADER_CHECKSUM_TYPE = 'sha256';
+
+    /**
+     * The hashing function used to generate payload checksums.
+     *
+     * @var string
+     */
+    protected const PAYLOAD_CHECKSUM_TYPE = 'crc32b';
 
     /**
      * The end of line character.
@@ -135,33 +142,35 @@ class RBXV2 implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
+        $className = get_class($persistable);
+
         $classSet = self::collectClassSet($persistable);
 
         $payload = serialize($persistable);
 
-        $payloadHash = hash(self::CHECKSUM_HASH_TYPE, $payload);
+        $payloadHash = hash(self::PAYLOAD_CHECKSUM_TYPE, $payload);
 
         $header = JSON::encode([
             'library' => [
                 'version' => LIBRARY_VERSION,
             ],
             'class' => [
-                'name' => get_class($persistable),
+                'name' => $className,
                 'allowed' => $classSet->toArray(),
                 'revision' => $persistable->revision(),
             ],
             'data' => [
                 'checksum' => [
-                    'type' => self::CHECKSUM_HASH_TYPE,
+                    'type' => self::PAYLOAD_CHECKSUM_TYPE,
                     'hash' => $payloadHash,
                 ],
                 'length' => strlen($payload),
             ],
         ]);
 
-        $headerHash = hash(self::CHECKSUM_HASH_TYPE, $header);
+        $headerHash = hash(self::HEADER_CHECKSUM_TYPE, $header);
 
-        $checksum = self::CHECKSUM_HASH_TYPE . ':' . $headerHash;
+        $checksum = self::HEADER_CHECKSUM_TYPE . ':' . $headerHash;
 
         $data = self::IDENTIFIER_STRING;
         $data .= self::VERSION . self::EOL;
@@ -206,7 +215,7 @@ class RBXV2 implements Serializer
             throw new RuntimeException('Invalid header digest.');
         }
 
-        if ($type != self::CHECKSUM_HASH_TYPE) {
+        if ($type != self::HEADER_CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid header checksum type.');
         }
 
@@ -224,7 +233,7 @@ class RBXV2 implements Serializer
 
         $dataChecksumType = $header['data']['checksum']['type'] ?? null;
 
-        if ($dataChecksumType != self::CHECKSUM_HASH_TYPE) {
+        if ($dataChecksumType !== self::PAYLOAD_CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid data checksum type.');
         }
 
