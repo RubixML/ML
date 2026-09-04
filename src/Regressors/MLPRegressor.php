@@ -24,6 +24,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Online;
@@ -536,6 +537,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Training complete');
+        }
+    }
+
+    /**
+     * Clean up any residual state after training.
+     */
+    public function cleanup() : void
+    {
+        if ($this->optimizer instanceof Adaptive) {
+            $this->optimizer->reset();
         }
     }
 
