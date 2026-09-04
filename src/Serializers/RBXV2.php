@@ -30,8 +30,8 @@ use const Rubix\ML\VERSION as LIBRARY_VERSION;
  * RBX V2
  *
  * Rubix Object File format v2 (RBX) is an improvement upon the RBX V1 format that adds
- * additional layers of security and integrity checks to ensure that serialized objects
- * are not tampered with or corrupted during storage or transmission.
+ * a class allow-list and integrity checks to help detect corruption during storage or
+ * transmission.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
