@@ -40,7 +40,6 @@
     - Class revision hash now compensates for circular references
     - Filesystem Persister now does atomic writes
     - Added cleanup() method to remove neural network residual state
-    - Deprecated Gzip Native serializer
     
 - 2.5.11
     - Optimize DBSCAN inference
