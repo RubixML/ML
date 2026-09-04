@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/SoftmaxClassifier.php">[source]</a></span>
 
 # Softmax Classifier
+
 A multiclass generalization of [Logistic Regression](logistic-regression.md) using a single layer neural network with a [Softmax](../neural-network/activation-functions/softmax.md) output layer. In addition, the learner features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
 !!! note
@@ -38,6 +39,12 @@ $estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, 3,
 
 ## Additional Methods
 
+Clean up any residual state after training:
+
+```php
+public cleanup() : void
+```
+
 Return an iterable progress table with the steps from the last training session:
 
 ```php
@@ -59,6 +66,7 @@ public losses() : float[]|null
 ```
 
 Return the validation score for each epoch from the last training session:
+
 ```php
 public scores() : float[]|null
 ```
@@ -70,6 +78,7 @@ public network() : Network|null
 ```
 
 Set the path of the temporary snapshot file used to store network parameters during training:
+
 ```php
 public setSnapshotPath(?string $path) : void
 ```

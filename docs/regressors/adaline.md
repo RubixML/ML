@@ -1,6 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Regressors/Adaline.php">[source]</a></span>
 
 # Adaline
+
 *Adaptive Linear Neuron* is a single layer feed-forward neural network with a continuous linear output neuron suitable for regression tasks. Training is equivalent to solving L2 regularized linear regression ([Ridge](ridge.md)) online using Mini Batch Gradient Descent. In addition, the learner features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
 !!! note
@@ -37,6 +38,12 @@ $estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 3, 5, 0.1, new H
 ```
 
 ## Additional Methods
+
+Clean up any residual state after training:
+
+```php
+public cleanup() : void
+```
 
 Return an iterable progress table with the steps from the last training session:
 
