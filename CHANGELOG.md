@@ -2,10 +2,9 @@
 
 - 3.0.0
     - Integers are now considered a categorical data type
-    - Added new default RBX V2 serializer for persistence
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and inference is now parallelized
-    - Added disk-based neural network snapshotting
+    - Added disk-based streaming neural network snapshotting
     - Can now clear neural network Adaptive optimizer state
     - Added validation interval parameter to MLPs and GBM Learners
     - Cross Entropy loss function now split into Binary and Multiclass
@@ -37,9 +36,9 @@
     - Removed Word Stemmer tokenizer
     - Removed window early stopping from TSNE
     - Removed output layer L2 Penalty parameter from MLP Learners
-    - RBX serializers now emits warning on class revision mismatch
-    - Filesystem Persister now does atomic writes
+    - RBX serializer now emits warning on class revision mismatch
     - Class revision hash now compensates for circular references
+    - Filesystem Persister now does atomic writes
     - Added cleanup() method to remove neural network residual state
     
 - 2.5.11
