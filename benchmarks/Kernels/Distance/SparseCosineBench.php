@@ -15,17 +15,17 @@ class SparseCosineBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var SparseCosine
      */
-    protected $kernel;
+    protected SparseCosine $kernel;
 
     public function setUp() : void
     {

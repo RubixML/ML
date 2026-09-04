@@ -59,32 +59,32 @@ class CyclicalTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->optimizer = new Cyclical(lower: 0.001, upper: 0.006, losses: 2000);
+        $this->optimizer = new Cyclical(lower: 0.001, upper: 0.006, length: 2000);
     }
 
     #[TestDox('Can be cast to a string')]
     public function testToString() : void
     {
-        self::assertEquals('Cyclical (lower: 0.001, upper: 0.006, steps: 2000, decay: 0.99994)', (string) $this->optimizer);
+        self::assertEquals('Cyclical (lower: 0.001, upper: 0.006, length: 2000, decay: 0.99994)', (string) $this->optimizer);
     }
 
     /**
      * @param float $lower
      * @param float $upper
-     * @param int $losses
+     * @param int $length
      * @param float|null $decay
      */
     #[Test]
     #[DataProvider('invalidConstructorProvider')]
     #[TestDox('Throws exception when constructed with invalid arguments')]
-    public function constructorInvalidArgs(float $lower, float $upper, int $losses, ?float $decay) : void
+    public function constructorInvalidArgs(float $lower, float $upper, int $length, ?float $decay) : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         if ($decay === null) {
-            new Cyclical(lower: $lower, upper: $upper, losses: $losses);
+            new Cyclical(lower: $lower, upper: $upper, length: $length);
         } else {
-            new Cyclical(lower: $lower, upper: $upper, losses: $losses, decay: $decay);
+            new Cyclical(lower: $lower, upper: $upper, length: $length, decay: $decay);
         }
     }
 

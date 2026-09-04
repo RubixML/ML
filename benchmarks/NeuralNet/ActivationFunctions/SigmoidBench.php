@@ -15,17 +15,17 @@ class SigmoidBench
     /**
      * @var NDArray
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var NDArray
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var Sigmoid
      */
-    protected $activationFn;
+    protected Sigmoid $activationFn;
 
     public function setUp() : void
     {

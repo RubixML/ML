@@ -5,6 +5,7 @@ namespace Rubix\ML\Benchmarks\Graph\Trees;
 use Rubix\ML\Graph\Trees\VantageTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Trees"})
@@ -15,14 +16,14 @@ class VantageTreeBench
     protected const DATASET_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
-    protected $dataset;
+    protected Labeled $dataset;
 
     /**
      * @var VantageTree
      */
-    protected $tree;
+    protected VantageTree $tree;
 
     public function setUp() : void
     {

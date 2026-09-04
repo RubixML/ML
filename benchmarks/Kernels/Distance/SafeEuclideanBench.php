@@ -17,17 +17,17 @@ class SafeEuclideanBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var SafeEuclidean
      */
-    protected $kernel;
+    protected SafeEuclidean $kernel;
 
     public function setUp() : void
     {

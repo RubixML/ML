@@ -15,17 +15,17 @@ class SoftPlusBench
     /**
      * @var NDArray
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var NDArray
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var SoftPlus
      */
-    protected $activationFn;
+    protected SoftPlus $activationFn;
 
     public function setUp() : void
     {

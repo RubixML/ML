@@ -576,7 +576,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     }
 
     /**
-     * Clean up any residual state after training.
+     * Clean up any leftover state after training.
      */
     public function cleanup() : void
     {

@@ -15,17 +15,17 @@ class SoftmaxBench
     /**
      * @var NDArray
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var NDArray
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var Softmax
      */
-    protected $activationFn;
+    protected Softmax $activationFn;
 
     public function setUp() : void
     {

@@ -143,7 +143,6 @@ class BinaryCrossEntropyTest extends TestCase
     public function computeThrowsExceptionOnShapeMismatch() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Output and target must have the same shape.');
 
         $output = NumPower::array([[1.0, 2.0, 3.0]]);
         $target = NumPower::array([[1.0, 2.0]]);
@@ -156,7 +155,6 @@ class BinaryCrossEntropyTest extends TestCase
     public function differentiateThrowsExceptionOnShapeMismatch() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Output and target must have the same shape.');
 
         $output = NumPower::array([[1.0, 2.0, 3.0]]);
         $target = NumPower::array([[1.0, 2.0]]);

@@ -567,7 +567,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
-     * Clean up any residual state after training.
+     * Clean up any leftover state after training.
      */
     public function cleanup() : void
     {

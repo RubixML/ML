@@ -15,17 +15,17 @@ class HyperbolicTangentBench
     /**
      * @var NDArray
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var NDArray
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var HyperbolicTangent
      */
-    protected $activationFn;
+    protected HyperbolicTangent $activationFn;
 
     public function setUp() : void
     {

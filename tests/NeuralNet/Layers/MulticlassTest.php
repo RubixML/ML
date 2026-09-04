@@ -107,7 +107,7 @@ class MulticlassTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Multiclass(classes: ['only-one-class']);
+        new Multiclass(classes: ['only-one-class'], costFn: new MulticlassCrossEntropy());
     }
 
     #[Test]

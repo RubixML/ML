@@ -56,21 +56,21 @@ class IsolationForest implements Estimator, Learner, Scoring, Parallel, Persista
      *
      * @var float
      */
-    public const DEFAULT_THRESHOLD = 0.5;
+    public const float DEFAULT_THRESHOLD = 0.5;
 
     /**
      * The minimum size of each training subset.
      *
      * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const int MIN_SUBSAMPLE = 1;
 
     /**
      * The default sample size of each training subset.
      *
      * @var int
      */
-    protected const DEFAULT_SUBSAMPLE = 256;
+    protected const int DEFAULT_SUBSAMPLE = 256;
 
     /**
      * The number of estimators to train in the ensemble.

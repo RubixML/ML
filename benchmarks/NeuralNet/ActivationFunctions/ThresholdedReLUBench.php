@@ -15,17 +15,17 @@ class ThresholdedReLUBench
     /**
      * @var NDArray
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var NDArray
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var ThresholdedReLU
      */
-    protected $activationFn;
+    protected ThresholdedReLU $activationFn;
 
     public function setUp() : void
     {

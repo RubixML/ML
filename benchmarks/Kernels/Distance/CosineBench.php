@@ -15,17 +15,17 @@ class CosineBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var Cosine
      */
-    protected $kernel;
+    protected Cosine $kernel;
 
     public function setUp() : void
     {

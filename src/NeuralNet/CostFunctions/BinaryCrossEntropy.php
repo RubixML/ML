@@ -9,7 +9,9 @@ use NumPower;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Traits\AssertsShapes;
+
 use const Rubix\ML\EPSILON;
 
 /**

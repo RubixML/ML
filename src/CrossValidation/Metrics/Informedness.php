@@ -6,6 +6,7 @@ use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
+use Rubix\ML\Set;
 
 use const Rubix\ML\EPSILON;
 
@@ -81,7 +82,9 @@ class Informedness implements Metric
             return 0.0;
         }
 
-        $classes = array_unique(array_merge($predictions, $labels));
+        $classes = new Set(...$predictions, ...$labels);
+
+        $classes = $classes->toArray();
 
         $n = count($predictions);
 

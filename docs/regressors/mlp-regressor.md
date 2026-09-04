@@ -51,7 +51,7 @@ $estimator = new MLPRegressor([
 
 ## Additional Methods
 
-Clean up any residual state after training:
+Clean up any leftover state after training. Only do this if you plan to use the model for inference.
 
 ```php
 public cleanup() : void

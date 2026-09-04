@@ -4,6 +4,7 @@ namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Datasets\Dataset;
 
 /**
  * @Groups({"Transformers"})
@@ -18,14 +19,14 @@ class OneHotEncoderBench
     protected const CATEGORIES = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 
     /**
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
-    public $dataset;
+    public Dataset $dataset;
 
     /**
      * @var OneHotEncoder
      */
-    protected $transformer;
+    protected OneHotEncoder $transformer;
 
     public function setUp() : void
     {

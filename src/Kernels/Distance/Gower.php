@@ -32,7 +32,7 @@ class Gower implements Distance, Subadditive, Monotonic, NaNSafe
      *
      * @var float
      */
-    protected $range;
+    protected float $range;
 
     /**
      * @param float $range
