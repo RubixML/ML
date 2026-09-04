@@ -2,6 +2,7 @@
 
 - 3.0.0
     - Integers are now considered a categorical data type
+    - Added new default RBX V2 serializer for persistence
     - K Nearest Neighbors and KNN Regressor inference is now parallelized
     - Isolation Forest training and inference is now parallelized
     - Added disk-based neural network snapshotting
@@ -36,6 +37,9 @@
     - Removed Word Stemmer tokenizer
     - Removed window early stopping from TSNE
     - Removed output layer L2 Penalty parameter from MLP Learners
+    - RBX serializers now emits warning on class revision mismatch
+    - Filesystem Persister now does atomic writes
+    - Deprecated Gzip Native serializer
     - Added cleanup() method to remove neural network residual state
     
 - 2.5.11

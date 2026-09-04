@@ -1,6 +1,6 @@
 # Rubix ML
 
-High-level machine learning and deep learning library with 40 learning algorithms including ETL and cross-validation for the PHP language.
+A high-level machine learning and deep learning library with 40+ learning algorithms including ETL and cross-validation for the PHP language.
 
 ## Documentation
 
@@ -25,7 +25,6 @@ The project documentation is located in the `/docs` folder in the project root.
 | `composer analyze` | PHPStan static analysis |
 | `composer check` | PHP-CS-Fixer dry-run (style check) |
 | `composer fix` | PHP code style auto-fixer |
-| `composer phplint` | PHP syntax lint |
 | `composer benchmark` | PHPBench benchmarks |
 | `composer coverage` | Analyze test coverage |
 | `composer build` | Full pipeline: install → analyze → test → check |
