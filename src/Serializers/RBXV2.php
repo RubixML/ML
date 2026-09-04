@@ -215,7 +215,7 @@ class RBXV2 implements Serializer
             throw new RuntimeException('Invalid header digest.');
         }
 
-        if ($type != self::HEADER_CHECKSUM_TYPE) {
+        if ($type !== self::HEADER_CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid header checksum type.');
         }
 

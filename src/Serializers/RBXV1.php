@@ -178,7 +178,7 @@ class RBXV1 implements Serializer
             throw new RuntimeException('Invalid header digest.');
         }
 
-        if ($type != self::CHECKSUM_TYPE) {
+        if ($type !== self::CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid header checksum type.');
         }
 
@@ -200,7 +200,7 @@ class RBXV1 implements Serializer
             throw new RuntimeException('Data length does not match header.');
         }
 
-        if ($type != self::CHECKSUM_TYPE) {
+        if ($type !== self::CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid data checksum type.');
         }
 
