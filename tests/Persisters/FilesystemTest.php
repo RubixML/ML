@@ -155,4 +155,41 @@ class FilesystemTest extends TestCase
 
         $persister->load();
     }
+
+    #[Test]
+    public function saveCleansUpTempFileWhenWriteFails() : void
+    {
+        $dir = sys_get_temp_dir() . '/rubix-ml-failing-' . uniqid();
+
+        mkdir($dir);
+
+        $persister = new Filesystem(path: $dir . '/model', history: false);
+
+        $threw = false;
+
+        try {
+            $persister->save(new FailingEncoding('some data'));
+        } catch (RuntimeException) {
+            $threw = true;
+        } finally {
+            $leftover = glob($dir . '/*') ?: [];
+
+            foreach ($leftover as $filename) {
+                unlink($filename);
+            }
+
+            rmdir($dir);
+        }
+
+        $this->assertTrue($threw, 'Expected the save to fail when the write fails.');
+        $this->assertSame([], $leftover, 'A failed write should not leave temp files behind.');
+    }
+}
+
+class FailingEncoding extends Encoding
+{
+    public function __toString() : string
+    {
+        throw new RuntimeException('Simulated write failure.');
+    }
 }
