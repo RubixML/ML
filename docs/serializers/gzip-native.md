@@ -4,6 +4,9 @@
 
 Gzip Native wraps the native PHP serialization format in an outer compression layer based on the DEFLATE algorithm with a header and CRC32 checksum.
 
+!!! note
+    This serializer is deprecated and will be removed in 4.0, use [RBX V1](./rbx-v1.md) instead.
+
 ## Parameters
 
 | # | Name | Default | Type | Description |

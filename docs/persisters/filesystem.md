@@ -15,7 +15,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 
 ```php
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Serializers\RBX;
+use Rubix\ML\Serializers\RBXV2;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
@@ -23,7 +23,7 @@ $persistable = new KNearestNeighbors(3, false, new Manhattan());
 
 $persister = new Filesystem('/path/to/example.rbx', true);
 
-$serializer = new RBX();
+$serializer = new RBXV2();
 
 $encoding = $serializer->serialize($persistable);
 
@@ -34,13 +34,13 @@ $persister->save($encoding);
 
 ```php
 use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Serializers\RBX;
+use Rubix\ML\Serializers\RBXV2;
 
 $persister = new Filesystem('/path/to/example.rbx', true);
 
 $encoding = $persister->load();
 
-$serializer = new RBX();
+$serializer = new RBXV2();
 
 $persistable = $serializer->deserialize($encoding);
 ```
