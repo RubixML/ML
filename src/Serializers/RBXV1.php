@@ -5,6 +5,7 @@ namespace Rubix\ML\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\JSON;
+use Rubix\ML\Specifications\RBXV1HeaderSchemaIsValid;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
@@ -187,11 +188,13 @@ class RBXV1 implements Serializer
 
         $header = JSON::decode($header);
 
-        $className = $header['class']['name'] ?? null;
-        $revision = $header['class']['revision'] ?? null;
-        $type = $header['data']['checksum']['type'] ?? null;
-        $hash = $header['data']['checksum']['hash'] ?? null;
-        $length = $header['data']['length'] ?? null;
+        RBXV1HeaderSchemaIsValid::with($header)->check();
+
+        $className = $header['class']['name'];
+        $revision = $header['class']['revision'];
+        $type = $header['data']['checksum']['type'];
+        $hash = $header['data']['checksum']['hash'];
+        $length = $header['data']['length'];
 
         if (strlen($payload) !== $length) {
             throw new RuntimeException('Data length does not match header.');

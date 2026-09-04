@@ -7,6 +7,7 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\RBXV2HeaderSchemaIsValid;
 use SplObjectStorage;
 use ReflectionClass;
 
@@ -224,12 +225,14 @@ class RBXV2 implements Serializer
 
         $header = JSON::decode($header);
 
-        $className = $header['class']['name'] ?? null;
-        $allowed = $header['class']['allowed'] ?? [];
-        $revision = $header['class']['revision'] ?? null;
-        $type = $header['data']['checksum']['type'] ?? null;
-        $hash = $header['data']['checksum']['hash'] ?? null;
-        $length = $header['data']['length'] ?? null;
+        RBXV2HeaderSchemaIsValid::with($header)->check();
+
+        $className = $header['class']['name'];
+        $allowed = $header['class']['allowed'];
+        $revision = $header['class']['revision'];
+        $type = $header['data']['checksum']['type'];
+        $hash = $header['data']['checksum']['hash'];
+        $length = $header['data']['length'];
 
         if (strlen($payload) !== $length) {
             throw new RuntimeException('Data length does not match header.');
