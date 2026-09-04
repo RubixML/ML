@@ -19,7 +19,7 @@ class HyperbolicTangentTest extends TestCase
     /**
      * @var HyperbolicTangent
      */
-    protected $activationFn;
+    protected HyperbolicTangent $activationFn;
 
     /**
      * @return Generator<mixed[]>

@@ -19,7 +19,7 @@ class SELUTest extends TestCase
     /**
      * @var SELU
      */
-    protected $activationFn;
+    protected SELU $activationFn;
 
     /**
      * @return Generator<mixed[]>

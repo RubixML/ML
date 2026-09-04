@@ -3,10 +3,10 @@
 namespace Rubix\ML\Helpers;
 
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Set;
 use Stringable;
 
 use function count;
-use function in_array;
 use function get_class;
 use function gettype;
 use function max;
@@ -50,17 +50,13 @@ class Params
                 . ' unique integers than within range of.');
         }
 
-        $dist = [];
+        $dist = new Set();
 
-        while (count($dist) < $n) {
-            $r = rand($min, $max);
-
-            if (!in_array($r, $dist)) {
-                $dist[] = $r;
-            }
+        while ($dist->count() < $n) {
+            $dist->add(rand($min, $max));
         }
 
-        return $dist;
+        return $dist->toArray();
     }
 
     /**

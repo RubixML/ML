@@ -21,7 +21,7 @@ class CyclicalTest extends TestCase
     /**
      * @var Cyclical
      */
-    protected $optimizer;
+    protected Cyclical $optimizer;
 
     /**
      * @return Generator<mixed[]>

@@ -19,7 +19,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @var LeastSquares
      */
-    protected $costFn;
+    protected LeastSquares $costFn;
 
     /**
      * @return Generator<mixed[]>

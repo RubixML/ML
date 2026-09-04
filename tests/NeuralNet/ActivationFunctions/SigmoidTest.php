@@ -19,7 +19,7 @@ class SigmoidTest extends TestCase
     /**
      * @var Sigmoid
      */
-    protected $activationFn;
+    protected Sigmoid $activationFn;
 
     /**
      * @return Generator<mixed[]>

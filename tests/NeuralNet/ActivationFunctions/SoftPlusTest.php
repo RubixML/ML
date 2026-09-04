@@ -19,7 +19,7 @@ class SoftPlusTest extends TestCase
     /**
      * @var SoftPlus
      */
-    protected $activationFn;
+    protected SoftPlus $activationFn;
 
     /**
      * @return Generator<mixed[]>

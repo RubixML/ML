@@ -17,17 +17,17 @@ class GowerBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var Gower
      */
-    protected $kernel;
+    protected Gower $kernel;
 
     public function setUp() : void
     {

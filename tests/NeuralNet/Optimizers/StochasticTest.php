@@ -21,7 +21,7 @@ class StochasticTest extends TestCase
     /**
      * @var Stochastic
      */
-    protected $optimizer;
+    protected Stochastic $optimizer;
 
     /**
      * @return Generator<mixed[]>

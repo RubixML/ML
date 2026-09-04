@@ -548,7 +548,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
-     * Clean up any residual state after training.
+     * Clean up any leftover state after training.
      */
     public function cleanup() : void
     {

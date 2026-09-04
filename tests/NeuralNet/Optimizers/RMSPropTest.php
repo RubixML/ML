@@ -22,7 +22,7 @@ class RMSPropTest extends TestCase
     /**
      * @var RMSProp
      */
-    protected $optimizer;
+    protected RMSProp $optimizer;
 
     /**
      * @return Generator<mixed[]>

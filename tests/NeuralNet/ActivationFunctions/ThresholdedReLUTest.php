@@ -19,7 +19,7 @@ class ThresholdedReLUTest extends TestCase
     /**
      * @var ThresholdedReLU
      */
-    protected $activationFn;
+    protected ThresholdedReLU $activationFn;
 
     /**
      * @return Generator<mixed[]>

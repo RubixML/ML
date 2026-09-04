@@ -21,12 +21,12 @@ class TruncatedSVDTest extends TestCase
     /**
      * @var Blob
      */
-    protected $generator;
+    protected Blob $generator;
 
     /**
      * @var TruncatedSVD
      */
-    protected $transformer;
+    protected TruncatedSVD $transformer;
 
     protected function setUp() : void
     {

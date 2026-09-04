@@ -535,7 +535,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     }
 
     /**
-     * Clean up any residual state after training.
+     * Clean up any leftover state after training.
      */
     public function cleanup() : void
     {

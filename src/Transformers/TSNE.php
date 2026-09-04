@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Set;
 use Generator;
 
 use function count;
@@ -465,7 +466,7 @@ class TSNE implements Transformer, Verbose
         $minBetas = array_fill(0, $m, -INF);
         $maxBetas = array_fill(0, $m, INF);
 
-        $converged = array_fill(0, $m, false);
+        $converged = new Set();
 
         $active = $m;
 
@@ -496,12 +497,12 @@ class TSNE implements Transformer, Verbose
                 ->asArray();
 
             for ($i = 0; $i < $m; ++$i) {
-                if ($converged[$i]) {
+                if ($converged->has($i)) {
                     continue;
                 }
 
                 if (abs($diff[$i]) < self::PERPLEXITY_TOLERANCE) {
-                    $converged[$i] = true;
+                    $converged->add($i);
 
                     --$active;
 

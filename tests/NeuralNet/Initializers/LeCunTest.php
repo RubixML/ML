@@ -17,7 +17,7 @@ class LeCunTest extends TestCase
     /**
      * @var LeCun
      */
-    protected $initializer;
+    protected LeCun $initializer;
 
     protected function setUp() : void
     {

@@ -39,7 +39,7 @@ $estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 3, 5, 0.1, new H
 
 ## Additional Methods
 
-Clean up any residual state after training:
+Clean up any leftover state after training. Only do this if you plan to use the model for inference.
 
 ```php
 public cleanup() : void

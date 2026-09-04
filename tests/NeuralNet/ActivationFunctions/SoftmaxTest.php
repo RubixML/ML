@@ -19,7 +19,7 @@ class SoftmaxTest extends TestCase
     /**
      * @var Softmax
      */
-    protected $activationFn;
+    protected Softmax $activationFn;
 
     /**
      * @return Generator<mixed[]>

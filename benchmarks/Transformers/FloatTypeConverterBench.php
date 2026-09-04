@@ -5,6 +5,7 @@ namespace Rubix\ML\Benchmarks\Transformers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\LambdaFunction;
 use Rubix\ML\Transformers\FloatTypeConverter;
+use Rubix\ML\Datasets\Dataset;
 
 /**
  * @Groups({"Transformers"})
@@ -15,14 +16,14 @@ class FloatTypeConverterBench
     protected const DATASET_SIZE = 100000;
 
     /**
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
-    public $dataset;
+    public Dataset $dataset;
 
     /**
      * @var FloatTypeConverter
      */
-    protected $transformer;
+    protected FloatTypeConverter $transformer;
 
     public function setUp() : void
     {

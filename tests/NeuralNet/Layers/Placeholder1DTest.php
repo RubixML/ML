@@ -18,12 +18,12 @@ class Placeholder1DTest extends TestCase
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Placeholder1D
      */
-    protected $layer;
+    protected Placeholder1D $layer;
 
     protected function setUp() : void
     {

@@ -124,7 +124,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var int
      */
-    protected $evalInterval;
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.

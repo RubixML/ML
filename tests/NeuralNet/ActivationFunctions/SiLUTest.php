@@ -19,7 +19,7 @@ class SiLUTest extends TestCase
     /**
      * @var SiLU
      */
-    protected $activationFn;
+    protected SiLU $activationFn;
 
     /**
      * @return Generator<mixed[]>

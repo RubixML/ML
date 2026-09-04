@@ -17,7 +17,7 @@ class HeTest extends TestCase
     /**
      * @var He
      */
-    protected $initializer;
+    protected He $initializer;
 
     protected function setUp() : void
     {

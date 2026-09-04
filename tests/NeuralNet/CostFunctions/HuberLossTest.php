@@ -19,7 +19,7 @@ class HuberLossTest extends TestCase
     /**
      * @var HuberLoss
      */
-    protected $costFn;
+    protected HuberLoss $costFn;
 
     /**
      * @return Generator<mixed[]>

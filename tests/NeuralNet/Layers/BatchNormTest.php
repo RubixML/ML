@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(BatchNorm::class)]
@@ -22,27 +23,27 @@ class BatchNormTest extends TestCase
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Deferred
      */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var BatchNorm
      */
-    protected $layer;
+    protected BatchNorm $layer;
 
     protected function setUp() : void
     {

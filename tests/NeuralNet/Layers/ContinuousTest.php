@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Continuous::class)]
@@ -23,22 +24,22 @@ class ContinuousTest extends TestCase
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var (int|float)[]
      */
-    protected $labels;
+    protected array $labels;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Continuous
      */
-    protected $layer;
+    protected Continuous $layer;
 
     protected function setUp() : void
     {

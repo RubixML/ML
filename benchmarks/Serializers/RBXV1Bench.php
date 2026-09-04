@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Benchmarks\Persisters\Serializers;
 
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -21,9 +22,9 @@ class RBXV1Bench
     protected RBXV1 $serializer;
 
     /**
-     * @var \Rubix\ML\Persistable
+     * @var Persistable
      */
-    protected $persistable;
+    protected Persistable $persistable;
 
     public function setUp() : void
     {

@@ -16,17 +16,17 @@ class MinkowskiBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var Minkowski
      */
-    protected $kernel;
+    protected Minkowski $kernel;
 
     public function setUp() : void
     {

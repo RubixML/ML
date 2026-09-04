@@ -16,17 +16,17 @@ class EuclideanBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var Euclidean
      */
-    protected $kernel;
+    protected Euclidean $kernel;
 
     public function setUp() : void
     {

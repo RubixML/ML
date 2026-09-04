@@ -21,7 +21,7 @@ class StepDecayTest extends TestCase
     /**
      * @var StepDecay
      */
-    protected $optimizer;
+    protected StepDecay $optimizer;
 
     /**
      * @return Generator<mixed[]>

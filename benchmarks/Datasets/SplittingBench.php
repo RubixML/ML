@@ -4,6 +4,7 @@ namespace Rubix\ML\Benchmarks\Datasets;
 
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Datasets"})
@@ -14,9 +15,9 @@ class SplittingBench
     protected const DATASET_SIZE = 25000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
-    protected $dataset;
+    protected Labeled $dataset;
 
     public function setUp() : void
     {

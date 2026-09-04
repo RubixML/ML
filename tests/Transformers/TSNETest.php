@@ -39,12 +39,12 @@ class TSNETest extends TestCase
     /**
      * @var Agglomerate
      */
-    protected $generator;
+    protected Agglomerate $generator;
 
     /**
      * @var TSNE
      */
-    protected $embedder;
+    protected TSNE $embedder;
 
     protected function setUp() : void
     {

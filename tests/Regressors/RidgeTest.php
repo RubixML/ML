@@ -55,17 +55,17 @@ class RidgeTest extends TestCase
     /**
      * @var Hyperplane
      */
-    protected $generator;
+    protected Hyperplane $generator;
 
     /**
      * @var Ridge
      */
-    protected $estimator;
+    protected Ridge $estimator;
 
     /**
      * @var RSquared
      */
-    protected $metric;
+    protected RSquared $metric;
 
     protected function setUp() : void
     {

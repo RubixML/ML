@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Layers\Input;
 
 #[Group('NeuralNet')]
 #[CoversClass(FeedForward::class)]
@@ -25,27 +26,27 @@ class FeedForwardTest extends TestCase
     /**
      * @var Labeled
      */
-    protected $dataset;
+    protected Labeled $dataset;
 
     /**
      * @var FeedForward
      */
-    protected $network;
+    protected FeedForward $network;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Layers\Input
+     * @var Input
      */
-    protected $input;
+    protected Input $input;
 
     /**
      * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
-    protected $hidden;
+    protected array $hidden;
 
     /**
      * @var Output
      */
-    protected $output;
+    protected Output $output;
 
     protected function setUp() : void
     {

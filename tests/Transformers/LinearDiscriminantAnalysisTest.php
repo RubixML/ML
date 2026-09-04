@@ -22,12 +22,12 @@ class LinearDiscriminantAnalysisTest extends TestCase
     /**
      * @var Agglomerate
      */
-    protected $generator;
+    protected Agglomerate $generator;
 
     /**
      * @var LinearDiscriminantAnalysis
      */
-    protected $transformer;
+    protected LinearDiscriminantAnalysis $transformer;
 
     protected function setUp() : void
     {
