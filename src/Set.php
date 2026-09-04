@@ -13,8 +13,6 @@ use Countable;
 use function count;
 use function array_keys;
 use function array_key_exists;
-use function is_iterable;
-use function iterator_to_array;
 
 /**
  * Set
@@ -49,10 +47,6 @@ class Set implements ArrayAccess, IteratorAggregate, Countable
      */
     public function __construct(mixed ...$members)
     {
-        if (count($members) === 1 and is_iterable($members[0])) {
-            $members = is_array($members[0]) ? $members[0] : iterator_to_array($members[0]);
-        }
-
         foreach ($members as $member) {
             $this->add($member);
         }
