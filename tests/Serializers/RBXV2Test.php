@@ -57,6 +57,34 @@ class RBXV2Test extends TestCase
     }
 
     #[Test]
+    public function collectsParentPrivateProperty() : void
+    {
+        $carrier = new ChildCarrier(new ParentPrivateGadget());
+        $data = $this->serializer->serialize($carrier);
+
+        $this->assertContains(ParentPrivateGadget::class, $this->allowedClasses($data));
+
+        $persistable = $this->serializer->deserialize($data);
+
+        $this->assertInstanceOf(ChildCarrier::class, $persistable);
+        $this->assertInstanceOf(ParentPrivateGadget::class, $persistable->gadget());
+    }
+
+    #[Test]
+    public function collectsNestedArrayObjects() : void
+    {
+        $carrier = new ArrayCarrier(['one' => ['two' => ['three' => new ArrayLeaf()]]]);
+        $data = $this->serializer->serialize($carrier);
+
+        $this->assertContains(ArrayLeaf::class, $this->allowedClasses($data));
+
+        $persistable = $this->serializer->deserialize($data);
+
+        $this->assertInstanceOf(ArrayCarrier::class, $persistable);
+        $this->assertInstanceOf(ArrayLeaf::class, $persistable->deep['one']['two']['three']);
+    }
+
+    #[Test]
     public function rejectsBadMagic() : void
     {
         $data = $this->serializer->serialize(new AdaBoost());
@@ -187,35 +215,68 @@ class RBXV2Test extends TestCase
 
         return self::IDENTIFIER . $version . "\n" . $checksum . "\n" . $header . "\n" . $payload;
     }
-}
 
-class Gadget
-{
-    public static bool $ran = false;
-
-    public ?int $x = null;
-
-    public function __unserialize(array $data) : void
+    protected function allowedClasses(Encoding $data) : array
     {
-        self::$ran = true;
-        $this->x = $data['x'] ?? null;
+        $body = substr((string) $data, strlen(self::IDENTIFIER));
+
+        [, , $header] = array_pad(explode("\n", $body, 4), 4, null);
+
+        return JSON::decode($header)['class']['allowed'];
     }
 }
 
-class RBXV2Carrier implements Persistable
+class ArrayLeaf
 {
-    public $inner;
+}
 
-    public function __construct($inner)
+class ArrayCarrier implements Persistable
+{
+    public array $deep;
+
+    public function __construct(array $deep)
+    {
+        $this->deep = $deep;
+    }
+
+    public function revision() : string
+    {
+        return 'array-carrier-rev';
+    }
+}
+
+class PrivateHolder implements Persistable
+{
+    private $inner;
+
+    public function __construct(object $inner)
     {
         $this->inner = $inner;
     }
 
-    /**
-     * @return string
-     */
+    public function inner() : object
+    {
+        return $this->inner;
+    }
+
     public function revision() : string
     {
-        return 'carrier-rev';
+        return 'private-holder-rev';
     }
+}
+
+class ParentCarrier extends PrivateHolder
+{
+}
+
+class ChildCarrier extends ParentCarrier
+{
+    public function gadget() : object
+    {
+        return $this->inner();
+    }
+}
+
+class ParentPrivateGadget
+{
 }
