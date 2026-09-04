@@ -51,6 +51,12 @@ $estimator = new MLPRegressor([
 
 ## Additional Methods
 
+Clean up any residual state after training:
+
+```php
+public cleanup() : void
+```
+
 Return an iterable progress table with the steps from the last training session:
 
 ```php
