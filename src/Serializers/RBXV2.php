@@ -82,7 +82,7 @@ class RBXV2 implements Serializer
      * @param object $root
      * @return Set
      */
-    protected static function collectClassSet(object $root) : Set
+    protected static function collectClassNames(object $root) : Set
     {
         $stack = [$root];
 
@@ -90,46 +90,68 @@ class RBXV2 implements Serializer
         $classNames = new Set();
 
         while ($stack) {
-            $current = array_pop($stack);
+            $value = array_pop($stack);
 
-            if (isset($seen[$current])) {
+            if (is_array($value)) {
+                foreach ($value as $element) {
+                    $stack[] = $element;
+                }
+
                 continue;
             }
 
-            $seen[$current] = true;
+            if (!is_object($value)) {
+                continue;
+            }
 
-            $reflector = new ReflectionClass($current);
+            if (isset($seen[$value])) {
+                continue;
+            }
 
-            $className = $reflector->getName();
+            $seen[$value] = true;
 
-            $classNames->add($className);
+            $reflector = new ReflectionClass($value);
 
-            $properties = $reflector->getProperties();
+            $classNames->add($reflector->getName());
+
+            $properties = self::collectProperties($reflector);
 
             foreach ($properties as $property) {
-                if (!$property->isInitialized($current)) {
-                    continue;
-                }
-
-                $value = $property->getValue($current);
-
-                if (is_object($value)) {
-                    $stack[] = $value;
-
-                    continue;
-                }
-
-                if (is_array($value)) {
-                    foreach ($value as $element) {
-                        if (is_object($element)) {
-                            $stack[] = $element;
-                        }
-                    }
+                if ($property->isInitialized($value)) {
+                    $stack[] = $property->getValue($value);
                 }
             }
         }
 
         return $classNames;
+    }
+
+    /**
+     * Enumerate the properties declared throughout a class's inheritance hierarchy,
+     * including private members of its parent classes.
+     *
+     * @internal
+     *
+     * @param ReflectionClass<object> $reflector
+     * @return \ReflectionProperty[]
+     */
+    protected static function collectProperties(ReflectionClass $reflector) : array
+    {
+        $properties = [];
+
+        $class = $reflector;
+
+        while ($class) {
+            foreach ($class->getProperties() as $property) {
+                if ($property->getDeclaringClass()->getName() === $class->getName()) {
+                    $properties[] = $property;
+                }
+            }
+
+            $class = $class->getParentClass();
+        }
+
+        return $properties;
     }
 
     /**
@@ -144,7 +166,7 @@ class RBXV2 implements Serializer
     {
         $className = get_class($persistable);
 
-        $classSet = self::collectClassSet($persistable);
+        $classSet = self::collectClassNames($persistable);
 
         $payload = serialize($persistable);
 
