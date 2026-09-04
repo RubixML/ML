@@ -39,7 +39,6 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX serializers now emits warning on class revision mismatch
     - Filesystem Persister now does atomic writes
-    - Deprecated Gzip Native serializer
     - Added cleanup() method to remove neural network residual state
     - Deprecated Gzip Native serializer
     
