@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
-use Rubix\ML\Serializers\RBXV1;
+use Rubix\ML\Serializers\RBX;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -19,12 +19,12 @@ use stdClass;
 use function serialize;
 
 #[Group('Serializers')]
-#[CoversClass(RBXV1::class)]
-class RBXV1Test extends TestCase
+#[CoversClass(RBX::class)]
+class RBXTest extends TestCase
 {
     protected Persistable $persistable;
 
-    protected RBXV1 $serializer;
+    protected RBX $serializer;
 
     /**
      * @return array<array<int>|array<object>>
@@ -39,7 +39,7 @@ class RBXV1Test extends TestCase
 
     protected function setUp() : void
     {
-        $this->serializer = new RBXV1();
+        $this->serializer = new RBX();
 
         $this->persistable = new AdaBoost();
     }

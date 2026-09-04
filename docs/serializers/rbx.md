@@ -1,11 +1,8 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Persisters/Serializers/RBXV1.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Persisters/Serializers/RBX.php">[source]</a></span>
 
-# RBX V1
+# RBX
 
 Rubix Object File format (RBX) is a format designed to reliably store and share serialized PHP objects. Based on PHP's native serialization format, RBX adds additional layers of compression, data integrity checks, and class compatibility detection all in one robust format.
-
-!!! warning
-    This is the legacy RBX v1 format, which was gzip-based. It has been superseded by [RBX V2](rbxv2.md), which is the default serializer.
 
 !!! note
     We recommend to use the `.rbx` file extension when storing RBX-serialized PHP objects.
@@ -19,7 +16,7 @@ Rubix Object File format (RBX) is a format designed to reliably store and share 
 ## Example
 
 ```php
-use Rubix\ML\Serializers\RBXV1;
+use Rubix\ML\Serializers\RBX;
 
-$serializer = new RBXV1(6);
+$serializer = new RBX(6);
 ```

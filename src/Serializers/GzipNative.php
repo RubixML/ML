@@ -7,8 +7,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function Rubix\ML\warn_deprecated;
-
 /**
  * Gzip Native
  *
@@ -21,8 +19,6 @@ use function Rubix\ML\warn_deprecated;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- *
- * @deprecated This serializer is deprecated and will be removed in 4.0, use RBX V1 instead.
  */
 class GzipNative implements Serializer
 {
@@ -50,8 +46,6 @@ class GzipNative implements Serializer
             throw new InvalidArgumentException('Level must be'
                 . " between 0 and 9, $level given.");
         }
-
-        warn_deprecated('The Gzip Native serializer is deprecated, use RBX V1 instead.');
 
         $this->level = $level;
         $this->base = new Native();

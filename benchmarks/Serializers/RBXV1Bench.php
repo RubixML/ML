@@ -5,20 +5,20 @@ namespace Rubix\ML\Benchmarks\Persisters\Serializers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Serializers\RBXV2;
+use Rubix\ML\Serializers\RBX;
 
 /**
  * @Groups({"Serializers"})
  * @BeforeMethods({"setUp"})
  */
-class RBXV2Bench
+class RBXV1Bench
 {
     protected const TRAINING_SIZE = 10000;
 
     /**
-     * @var RBXV2
+     * @var RBX
      */
-    protected RBXV2 $serializer;
+    protected RBX $serializer;
 
     /**
      * @var \Rubix\ML\Persistable
@@ -41,7 +41,7 @@ class RBXV2Bench
 
         $this->persistable = $estimator;
 
-        $this->serializer = new RBXV2();
+        $this->serializer = new RBX();
     }
 
     /**

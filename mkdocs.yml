@@ -276,8 +276,7 @@ nav:
       - API Reference: serializers/api.md
       - Gzip Native: serializers/gzip-native.md
       - Native: serializers/native.md
-      - RBX V1: serializers/rbx-v1.md
-      - RBX V2: serializers/rbx-v2.md
+      - RBX: serializers/rbx.md
     - Loggers:
       - Screen: loggers/screen.md
     - Backends:
