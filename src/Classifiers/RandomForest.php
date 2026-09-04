@@ -60,7 +60,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @var class-string[]
      */
-    public const COMPATIBLE_LEARNERS = [
+    public const array COMPATIBLE_LEARNERS = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,
     ];
@@ -70,7 +70,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const int MIN_SUBSAMPLE = 1;
 
     /**
      * The base learner.

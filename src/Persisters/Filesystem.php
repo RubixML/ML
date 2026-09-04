@@ -43,14 +43,14 @@ class Filesystem implements Persister
      *
      * @var string
      */
-    public const TEMP_PREFIX = 'rubix';
+    public const string TEMP_PREFIX = 'rubix';
 
     /**
      * The extension to give files created as part of a persistable's save history.
      *
      * @var string
      */
-    public const HISTORY_EXT = 'old';
+    public const string HISTORY_EXT = 'old';
 
     /**
      * The path to the model file on the filesystem.
