@@ -22,6 +22,7 @@ use function fwrite;
 use function fflush;
 use function fsync;
 use function fclose;
+use function is_resource;
 use function substr;
 
 /**
@@ -128,6 +129,8 @@ class Filesystem implements Persister
             throw new RuntimeException('Could not create a temporary storage file in ' . $dir . '.');
         }
 
+        $handle = null;
+
         try {
             $handle = fopen($temp, 'wb');
 
@@ -164,6 +167,10 @@ class Filesystem implements Persister
             }
 
         } finally {
+            if (is_resource($handle)) {
+                @fclose($handle);
+            }
+
             if (is_file($temp)) {
                 unlink($temp);
             }

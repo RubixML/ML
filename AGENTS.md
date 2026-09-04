@@ -1,6 +1,6 @@
 # Rubix ML
 
-High-level machine learning and deep learning library with 40 learning algorithms including ETL and cross-validation for the PHP language.
+A high-level machine learning and deep learning library with 40+ learning algorithms including ETL and cross-validation for the PHP language.
 
 ## Documentation
 
