@@ -35,7 +35,7 @@ class Preset implements Seeder
      *
      * @var int
      */
-    protected $dimensions;
+    protected int $dimensions;
 
     /**
      * @param array<array<string|int|float>> $centroids

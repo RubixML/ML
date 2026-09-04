@@ -22,7 +22,7 @@ class AdaGradTest extends TestCase
     /**
      * @var AdaGrad
      */
-    protected $optimizer;
+    protected AdaGrad $optimizer;
 
     /**
      * @return Generator<mixed[]>

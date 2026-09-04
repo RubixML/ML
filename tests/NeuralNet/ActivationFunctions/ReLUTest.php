@@ -19,7 +19,7 @@ class ReLUTest extends TestCase
     /**
      * @var ReLU
      */
-    protected $activationFn;
+    protected ReLU $activationFn;
 
     /**
      * @return Generator<mixed[]>

@@ -19,7 +19,7 @@ class RelativeEntropyTest extends TestCase
     /**
      * @var RelativeEntropy
      */
-    protected $costFn;
+    protected RelativeEntropy $costFn;
 
     /**
      * @return Generator<mixed[]>

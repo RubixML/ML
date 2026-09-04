@@ -19,7 +19,7 @@ class LeakyReLUTest extends TestCase
     /**
      * @var LeakyReLU
      */
-    protected $activationFn;
+    protected LeakyReLU $activationFn;
 
     /**
      * @return Generator<mixed[]>

@@ -17,7 +17,7 @@ class UniformTest extends TestCase
     /**
      * @var Uniform
      */
-    protected $initializer;
+    protected Uniform $initializer;
 
     protected function setUp() : void
     {

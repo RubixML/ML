@@ -17,7 +17,7 @@ class Xavier2Test extends TestCase
     /**
      * @var Xavier2
      */
-    protected $initializer;
+    protected Xavier2 $initializer;
 
     protected function setUp() : void
     {

@@ -16,17 +16,17 @@ class JaccardBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var Jaccard
      */
-    protected $kernel;
+    protected Jaccard $kernel;
 
     public function setUp() : void
     {

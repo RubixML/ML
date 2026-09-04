@@ -21,12 +21,12 @@ class PrincipalComponentAnalysisTest extends TestCase
     /**
      * @var Blob
      */
-    protected $generator;
+    protected Blob $generator;
 
     /**
      * @var PrincipalComponentAnalysis
      */
-    protected $transformer;
+    protected PrincipalComponentAnalysis $transformer;
 
     protected function setUp() : void
     {

@@ -19,7 +19,7 @@ class SoftsignTest extends TestCase
     /**
      * @var Softsign
      */
-    protected $activationFn;
+    protected Softsign $activationFn;
 
     /**
      * @return Generator<mixed[]>

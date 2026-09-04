@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Multiclass::class)]
@@ -23,22 +24,22 @@ class MulticlassTest extends TestCase
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var string[]
      */
-    protected $labels;
+    protected array $labels;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Multiclass
      */
-    protected $layer;
+    protected Multiclass $layer;
 
     protected function setUp() : void
     {

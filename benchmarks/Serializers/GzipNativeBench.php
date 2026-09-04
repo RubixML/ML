@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Serializers\GzipNative;
+use Rubix\ML\Persistable;
 
 /**
  * @Groups({"Serializers"})
@@ -18,12 +19,12 @@ class GzipNativeBench
     /**
      * @var GzipNative
      */
-    protected $serializer;
+    protected GzipNative $serializer;
 
     /**
-     * @var \Rubix\ML\Persistable
+     * @var Persistable
      */
-    protected $persistable;
+    protected Persistable $persistable;
 
     public function setUp() : void
     {

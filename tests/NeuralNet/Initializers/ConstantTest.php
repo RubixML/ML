@@ -17,7 +17,7 @@ class ConstantTest extends TestCase
     /**
      * @var Constant
      */
-    protected $initializer;
+    protected Constant $initializer;
 
     protected function setUp() : void
     {

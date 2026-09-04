@@ -23,7 +23,7 @@ class SortingBench
      *
      * @var \Rubix\ML\Datasets\Labeled[]
      */
-    protected $datasets = [];
+    protected array $datasets = [];
 
     public function setUp() : void
     {

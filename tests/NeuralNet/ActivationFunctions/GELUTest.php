@@ -19,7 +19,7 @@ class GELUTest extends TestCase
     /**
      * @var GELU
      */
-    protected $activationFn;
+    protected GELU $activationFn;
 
     /**
      * @return Generator<array<mixed>>

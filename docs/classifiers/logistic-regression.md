@@ -39,13 +39,13 @@ $estimator = new LogisticRegression(64, new Adam(0.001), 1e-4, 100, 1e-4, 3, 5, 
 
 ## Additional Methods
 
-Clean up any residual state after training:
+Clean up any leftover state after training. Only do this if you plan to use the model for inference.
 
 ```php
 public cleanup() : void
 ```
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -59,25 +59,25 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the loss for each epoch from the last training session:
+Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null
 ```
 
-Return the validation score for each epoch from the last training session:
+Return the validation score for each epoch from the last training session.
 
 ```php
 public scores() : float[]|null
 ```
 
-Return the underlying neural network instance or `null` if untrained:
+Return the underlying neural network instance or `null` if untrained.
 
 ```php
 public network() : Network|null
 ```
 
-Set the path of the temporary snapshot file used to store network parameters during training:
+Set the path of the temporary snapshot file used to store network parameters during training.
 
 ```php
 public setSnapshotPath(?string $path) : void

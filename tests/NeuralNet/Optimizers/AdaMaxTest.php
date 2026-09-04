@@ -22,7 +22,7 @@ class AdaMaxTest extends TestCase
     /**
      * @var AdaMax
      */
-    protected $optimizer;
+    protected AdaMax $optimizer;
 
     /**
      * @return Generator<mixed[]>

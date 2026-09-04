@@ -17,7 +17,7 @@ class NormalTest extends TestCase
     /**
      * @var Normal
      */
-    protected $initializer;
+    protected Normal $initializer;
 
     protected function setUp() : void
     {

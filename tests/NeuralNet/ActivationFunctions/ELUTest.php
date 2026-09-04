@@ -20,7 +20,7 @@ class ELUTest extends TestCase
     /**
      * @var ELU
      */
-    protected $activationFn;
+    protected ELU $activationFn;
 
     /**
      * @return Generator<mixed[]>

@@ -22,7 +22,7 @@ class MomentumTest extends TestCase
     /**
      * @var Momentum
      */
-    protected $optimizer;
+    protected Momentum $optimizer;
 
     /**
      * @return Generator<mixed[]>

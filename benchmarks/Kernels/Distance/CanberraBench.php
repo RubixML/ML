@@ -16,17 +16,17 @@ class CanberraBench
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var Canberra
      */
-    protected $kernel;
+    protected Canberra $kernel;
 
     public function setUp() : void
     {

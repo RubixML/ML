@@ -113,7 +113,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @var int
      */
-    protected $evalInterval;
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -568,7 +568,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
-     * Clean up any residual state after training.
+     * Clean up any leftover state after training.
      */
     public function cleanup() : void
     {

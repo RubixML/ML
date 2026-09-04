@@ -22,7 +22,7 @@ class AdamTest extends TestCase
     /**
      * @var Adam
      */
-    protected $optimizer;
+    protected Adam $optimizer;
 
     /**
      * @return Generator<mixed[]>
