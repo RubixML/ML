@@ -6,6 +6,7 @@ use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\JSON;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function Rubix\ML\warn;
 use function strlen;
@@ -14,6 +15,8 @@ use function hash;
 use function get_class;
 use function array_pad;
 use function explode;
+use function gzencode;
+use function gzdecode;
 
 use const Rubix\ML\VERSION as LIBRARY_VERSION;
 
@@ -59,18 +62,31 @@ class RBXV1 implements Serializer
     protected const EOL = "\n";
 
     /**
-     * The base Gzip Native serializer.
+     * The level of gzip compression.
      *
-     * @var GzipNative
+     * @var int
      */
-    protected GzipNative $base;
+    protected int $level;
+
+    /**
+     * The base serializer.
+     *
+     * @var Native
+     */
+    protected Native $base;
 
     /**
      * @param int $level
      */
     public function __construct(int $level = 6)
     {
-        $this->base = new GzipNative($level);
+        if ($level < 0 or $level > 9) {
+            throw new InvalidArgumentException('Level must be'
+                . " between 0 and 9, $level given.");
+        }
+
+        $this->level = $level;
+        $this->base = new Native();
     }
 
     /**
@@ -86,6 +102,14 @@ class RBXV1 implements Serializer
         $className = get_class($persistable);
 
         $encoding = $this->base->serialize($persistable);
+
+        $data = gzencode($encoding, $this->level);
+
+        if ($data === false) {
+            throw new RuntimeException('Failed to compress data.');
+        }
+
+        $encoding = new Encoding($data);
 
         $hash = hash(self::CHECKSUM_TYPE, $encoding);
 
@@ -144,7 +168,7 @@ class RBXV1 implements Serializer
 
         if ($version != self::VERSION) {
             throw new RuntimeException('Incompatible version format, use the'
-                . " RBXV1 V{$version} serializer instead.");
+                . " RBX V{$version} serializer instead.");
         }
 
         [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
@@ -163,34 +187,36 @@ class RBXV1 implements Serializer
 
         $header = JSON::decode($header);
 
+        $className = $header['class']['name'] ?? null;
+        $revision = $header['class']['revision'] ?? null;
+        $type = $header['data']['checksum']['type'] ?? null;
+        $hash = $header['data']['checksum']['hash'] ?? null;
         $length = $header['data']['length'] ?? null;
 
         if (strlen($payload) !== $length) {
             throw new RuntimeException('Data length does not match header.');
         }
 
-        $type = $header['data']['checksum']['type'] ?? null;
-
         if ($type != self::CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid data checksum type.');
         }
-
-        $hash = $header['data']['checksum']['hash'] ?? null;
 
         if (hash($type, $payload) !== $hash) {
             throw new RuntimeException('Data checksum verification failed.');
         }
 
-        $persistable = $this->base->deserialize(new Encoding($payload));
+        $data = gzdecode($payload);
 
-        $expectedRevision = $header['class']['revision'] ?? null;
-
-        if ($persistable->revision() !== $expectedRevision) {
-            warn("Class revision mismatch, expected $expectedRevision but"
-                . " got {$persistable->revision()}. ");
+        if ($data === false) {
+            throw new RuntimeException('Failed to decompress data.');
         }
 
-        $className = $header['class']['name'] ?? null;
+        $persistable = $this->base->deserialize(new Encoding($data));
+
+        if ($persistable->revision() !== $revision) {
+            warn("Class revision mismatch, expected $revision but"
+                . " got {$persistable->revision()}. ");
+        }
 
         if (get_class($persistable) !== $className) {
             throw new RuntimeException('Class name mismatch.');
@@ -208,6 +234,6 @@ class RBXV1 implements Serializer
      */
     public function __toString() : string
     {
-        return "RBXV1 V1 (level: {$this->base->level()})";
+        return "RBX V1 (level: {$this->level})";
     }
 }

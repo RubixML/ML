@@ -224,40 +224,37 @@ class RBXV2 implements Serializer
 
         $header = JSON::decode($header);
 
+        $className = $header['class']['name'] ?? null;
+        $allowed = $header['class']['allowed'] ?? [];
+        $revision = $header['class']['revision'] ?? null;
+        $type = $header['data']['checksum']['type'] ?? null;
+        $hash = $header['data']['checksum']['hash'] ?? null;
         $length = $header['data']['length'] ?? null;
 
         if (strlen($payload) !== $length) {
             throw new RuntimeException('Data length does not match header.');
         }
 
-        $type = $header['data']['checksum']['type'] ?? null;
-
         if ($type !== self::PAYLOAD_CHECKSUM_TYPE) {
             throw new RuntimeException('Invalid data checksum type.');
         }
-
-        $hash = $header['data']['checksum']['hash'] ?? null;
 
         if (hash($type, $payload) !== $hash) {
             throw new RuntimeException('Data checksum verification failed.');
         }
 
-        $allowedClasses = $header['class']['allowed'] ?? [];
-
-        $persistable = unserialize($payload, ['allowed_classes' => $allowedClasses]);
+        $persistable = unserialize($payload, [
+            'allowed_classes' => $allowed,
+        ]);
 
         if (!$persistable instanceof Persistable) {
             throw new RuntimeException('Missing class for object data.');
         }
 
-        $expectedRevision = $header['class']['revision'] ?? null;
-
-        if ($persistable->revision() !== $expectedRevision) {
-            warn("Class revision mismatch, expected $expectedRevision but"
+        if ($persistable->revision() !== $revision) {
+            warn("Class revision mismatch, expected $revision but"
                 . " got {$persistable->revision()}. ");
         }
-
-        $className = $header['class']['name'] ?? null;
 
         if (get_class($persistable) !== $className) {
             throw new RuntimeException('Class name mismatch.');

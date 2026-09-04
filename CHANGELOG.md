@@ -40,6 +40,7 @@
     - Added cleanup() method to remove neural network residual state
     - RBX serializers now emits warning on class revision mismatch
     - Filesystem Persister now does atomic writes
+    - Deprecated Gzip Native serializer
     
 - 2.5.11
     - Optimize DBSCAN inference
