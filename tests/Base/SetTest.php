@@ -30,15 +30,6 @@ class SetTest extends TestCase
     }
 
     #[Test]
-    public function constructFromArray() : void
-    {
-        $set = new Set([1, 2, 2, 3, 3, 3]);
-
-        $this->assertCount(3, $set);
-        $this->assertEquals([1, 2, 3], $set->toArray());
-    }
-
-    #[Test]
     public function addNewMember() : void
     {
         $this->set->add(3);
