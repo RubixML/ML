@@ -22,6 +22,7 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
@@ -557,6 +558,16 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         if ($this->logger) {
             $this->logger->info('Training complete');
+        }
+    }
+
+    /**
+     * Clean up any residual state after training.
+     */
+    public function cleanup() : void
+    {
+        if ($this->optimizer instanceof Adaptive) {
+            $this->optimizer->reset();
         }
     }
 

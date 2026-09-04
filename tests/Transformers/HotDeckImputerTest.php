@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\HotDeckImputer;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -51,6 +52,19 @@ class HotDeckImputerTest extends TestCase
 
         $this->assertEquals(10, $dataset[1][0]);
         $this->assertEquals(0.001, $dataset[3][1]);
+    }
+
+    #[Test]
+    public function transformUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = [
+            [30.0, 0.001],
+            [NAN, 0.055],
+        ];
+
+        $this->transformer->transform($samples);
     }
 
     #[Test]

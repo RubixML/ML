@@ -20,6 +20,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\FeedForward;
@@ -589,6 +590,16 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         if ($this->logger) {
             $this->logger->info('Training complete');
+        }
+    }
+
+    /**
+     * Clean up any residual state after training.
+     */
+    public function cleanup() : void
+    {
+        if ($this->optimizer instanceof Adaptive) {
+            $this->optimizer->reset();
         }
     }
 

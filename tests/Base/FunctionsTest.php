@@ -440,4 +440,56 @@ class FunctionsTest extends TestCase
 
         $this->assertSame(E_USER_DEPRECATED, $level);
     }
+
+    #[Test]
+    public function logsumexpWithInfinity() : void
+    {
+        $this->assertSame(INF, logsumexp([INF, 1.0]));
+    }
+
+    #[Test]
+    public function combWithKGreaterThanN() : void
+    {
+        $this->assertSame(0, comb(3, 5));
+    }
+
+    #[Test]
+    public function arrayTransposeOnEmptyTable() : void
+    {
+        $this->assertSame([], array_transpose([]));
+    }
+
+    #[Test]
+    public function iteratorMapWithGeneratorInput() : void
+    {
+        $values = iterator_map((function () {
+            yield 1;
+            yield 2;
+            yield 3;
+        })(), function ($value) {
+            return $value * 2;
+        });
+
+        $this->assertEquals([2, 4, 6], iterator_to_array($values));
+    }
+
+    #[Test]
+    public function iteratorFilterWithGeneratorInput() : void
+    {
+        $values = iterator_filter((function () {
+            yield 1;
+            yield 2;
+            yield 3;
+        })(), function ($value) {
+            return $value >= 2;
+        });
+
+        $this->assertEquals([2, 3], iterator_to_array($values));
+    }
+
+    #[Test]
+    public function arrayPackOnEmptySamples() : void
+    {
+        $this->assertSame([], array_pack([]));
+    }
 }

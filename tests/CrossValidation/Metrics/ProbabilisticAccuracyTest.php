@@ -100,6 +100,14 @@ class ProbabilisticAccuracyTest extends TestCase
         $this->assertGreaterThan($tuple[0], $tuple[1]);
     }
 
+    #[Test]
+    public function scoreOnEmptySet() : void
+    {
+        $score = $this->metric->score(probabilities: [], labels: []);
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+    }
+
     /**
      * @param list<array<string,int|float>> $probabilities
      * @param list<string|int> $labels

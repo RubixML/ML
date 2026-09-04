@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\BM25Transformer;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -50,6 +51,18 @@ class BM25TransformerTest extends TestCase
         ];
 
         $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);
+    }
+
+    #[Test]
+    public function transformUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = [
+            [1.0, 3.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 4.0, 1.0, 0.0, 1.0],
+        ];
+
+        $this->transformer->transform($samples);
     }
 
     #[Test]

@@ -55,7 +55,7 @@ class Cyclical implements Optimizer
      *
      * @var int
      */
-    protected int $losses;
+    protected int $length;
 
     /**
      * The exponential scaling factor applied to each step as decay.
@@ -74,14 +74,14 @@ class Cyclical implements Optimizer
     /**
      * @param float $lower
      * @param float $upper
-     * @param int $losses
+     * @param int $length
      * @param float $decay
      * @throws InvalidArgumentException
      */
     public function __construct(
         float $lower = 0.001,
         float $upper = 0.006,
-        int $losses = 2000,
+        int $length = 2000,
         float $decay = 0.99994
     ) {
         if ($lower <= 0.0) {
@@ -91,15 +91,13 @@ class Cyclical implements Optimizer
         }
 
         if ($lower > $upper) {
-            throw new InvalidArgumentException(
-                'Lower bound cannot be greater than the upper bound.'
-            );
+            throw new InvalidArgumentException('Lower bound cannot be'
+                . ' greater than the upper bound.');
         }
 
-        if ($losses < 1) {
-            throw new InvalidArgumentException(
-                "The number of steps per cycle must be greater than 0, $losses given."
-            );
+        if ($length < 1) {
+            throw new InvalidArgumentException('The cycle length must be'
+                . " greater than 0, $length given.");
         }
 
         if ($decay <= 0.0 or $decay >= 1.0) {
@@ -116,7 +114,7 @@ class Cyclical implements Optimizer
         $this->lower = $lower;
         $this->upper = $upper;
         $this->range = $upper - $lower;
-        $this->losses = $losses;
+        $this->length = $length;
         $this->decay = $decay;
     }
 
@@ -145,9 +143,9 @@ class Cyclical implements Optimizer
      */
     public function step(Parameter $param, NDArray $gradient) : NDArray
     {
-        $cycle = floor(1 + $this->t / (2 * $this->losses));
+        $cycle = floor(1 + $this->t / (2 * $this->length));
 
-        $x = abs($this->t / $this->losses - 2 * $cycle + 1);
+        $x = abs($this->t / $this->length - 2 * $cycle + 1);
 
         $scale = $this->decay ** $this->t;
 
@@ -168,6 +166,6 @@ class Cyclical implements Optimizer
     public function __toString() : string
     {
         return "Cyclical (lower: {$this->lower}, upper: {$this->upper},"
-            . " steps: {$this->losses}, decay: {$this->decay})";
+            . " length: {$this->length}, decay: {$this->decay})";
     }
 }

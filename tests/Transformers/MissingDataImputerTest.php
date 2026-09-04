@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Strategies\KMostFrequent;
 use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Transformers')]
@@ -47,6 +48,19 @@ class MissingDataImputerTest extends TestCase
 
         $this->assertThat($dataset[1][0], $this->logicalAnd($this->greaterThan(20), $this->lessThan(55)));
         $this->assertContains($dataset[3][1], ['friendly', 'mean']);
+    }
+
+    #[Test]
+    public function transformUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = [
+            [30.0, 'friendly'],
+            [NAN, 'mean'],
+        ];
+
+        $this->transformer->transform($samples);
     }
 
     #[Test]

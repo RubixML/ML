@@ -25,6 +25,7 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Initializers\Xavier1Uniform;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -570,6 +571,16 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         if ($this->logger) {
             $this->logger->info('Training complete');
+        }
+    }
+
+    /**
+     * Clean up any residual state after training.
+     */
+    public function cleanup() : void
+    {
+        if ($this->optimizer instanceof Adaptive) {
+            $this->optimizer->reset();
         }
     }
 

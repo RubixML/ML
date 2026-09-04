@@ -9,6 +9,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Strategies\KMostFrequent;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Strategies')]
@@ -46,5 +48,29 @@ class KMostFrequentTest extends TestCase
         $value = $this->strategy->guess();
 
         $this->assertContains($value, $values);
+    }
+
+    #[Test]
+    public function guessThrowsWhenUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->strategy->guess();
+    }
+
+    #[Test]
+    public function fitRejectsEmptySet() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->strategy->fit([]);
+    }
+
+    #[Test]
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KMostFrequent(0);
     }
 }

@@ -88,6 +88,43 @@ class FBetaTest extends TestCase
         $this->assertEquals($expected, $this->metric->compatibility());
     }
 
+    #[Test]
+    public function scoreOnEmptySet() : void
+    {
+        $score = $this->metric->score(predictions: [], labels: []);
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+    }
+
+    #[Test]
+    public function scoreAllMissSingleClass() : void
+    {
+        $score = $this->metric->score(
+            predictions: ['dog', 'dog'],
+            labels: ['cat', 'cat'],
+        );
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+    }
+
+    #[Test]
+    public function betaZero() : void
+    {
+        $metric = new FBeta(0.0);
+
+        $score = $metric->score(
+            predictions: ['cat', 'dog'],
+            labels: ['cat', 'dog'],
+        );
+
+        $this->assertIsFloat($score);
+
+        [$min, $max] = $metric->range()->list();
+
+        $this->assertGreaterThanOrEqual($min, $score);
+        $this->assertLessThanOrEqual($max, $score);
+    }
+
     /**
      * @param (string|int)[] $predictions
      * @param (string|int)[] $labels

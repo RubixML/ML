@@ -3,7 +3,6 @@
 namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Encoding;
-use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -13,8 +12,18 @@ use function is_file;
 use function is_readable;
 use function is_writable;
 use function file_get_contents;
-use function file_put_contents;
 use function time;
+use function tempnam;
+use function rename;
+use function unlink;
+use function dirname;
+use function fopen;
+use function fwrite;
+use function fflush;
+use function fsync;
+use function fclose;
+use function is_resource;
+use function substr;
 
 /**
  * Filesystem
@@ -29,6 +38,13 @@ use function time;
  */
 class Filesystem implements Persister
 {
+    /**
+     * The prefix to give temporary files created during the save process.
+     *
+     * @var string
+     */
+    public const TEMP_PREFIX = 'rubix';
+
     /**
      * The extension to give files created as part of a persistable's save history.
      *
@@ -77,7 +93,13 @@ class Filesystem implements Persister
      */
     public function save(Encoding $encoding) : void
     {
-        if (!is_file($this->path) and !is_writable(dirname($this->path))) {
+        if ($encoding->bytes() === 0) {
+            throw new RuntimeException('Encoding does not contain any data.');
+        }
+
+        $dir = dirname($this->path);
+
+        if (!is_dir($dir) or !is_writable($dir)) {
             throw new RuntimeException('Folder does not exist or is not writable');
         }
 
@@ -85,14 +107,10 @@ class Filesystem implements Persister
             throw new RuntimeException("File {$this->path} is not writable.");
         }
 
-        if ($encoding->bytes() === 0) {
-            throw new RuntimeException('Encoding does not contain any data.');
-        }
-
         if ($this->history and is_file($this->path)) {
             $timestamp = (string) time();
 
-            $filename = "{$this->path}-$timestamp." . self::HISTORY_EXT;
+            $filename = "{$this->path}-{$timestamp}." . self::HISTORY_EXT;
 
             $num = 0;
 
@@ -105,10 +123,57 @@ class Filesystem implements Persister
             }
         }
 
-        $success = file_put_contents($this->path, $encoding->data(), LOCK_EX);
+        $temp = tempnam($dir, self::TEMP_PREFIX);
 
-        if (!$success) {
-            throw new RuntimeException('Could not write to the filesystem.');
+        if ($temp === false) {
+            throw new RuntimeException('Could not create a temporary storage file in ' . $dir . '.');
+        }
+
+        $handle = null;
+
+        try {
+            $handle = fopen($temp, 'wb');
+
+            if ($handle === false) {
+                throw new RuntimeException("Could not open temp file {$temp} for writing.");
+            }
+
+            $offset = 0;
+
+            while ($offset < $encoding->bytes()) {
+                $written = fwrite($handle, substr($encoding, $offset));
+
+                if (!$written) {
+                    throw new RuntimeException("Could not write all bytes to temp file {$temp}.");
+                }
+
+                $offset += $written;
+            }
+
+            if (!fflush($handle)) {
+                throw new RuntimeException("Could not flush the temp file {$temp}.");
+            }
+
+            if (!fsync($handle)) {
+                throw new RuntimeException("Could not sync the temp file {$temp}.");
+            }
+
+            if (!fclose($handle)) {
+                throw new RuntimeException("Could not finalize the write to temp file {$temp}.");
+            }
+
+            if (!rename($temp, $this->path)) {
+                throw new RuntimeException('Could not finalize the save at ' . $this->path . '.');
+            }
+
+        } finally {
+            if (is_resource($handle)) {
+                @fclose($handle);
+            }
+
+            if (is_file($temp)) {
+                unlink($temp);
+            }
         }
     }
 

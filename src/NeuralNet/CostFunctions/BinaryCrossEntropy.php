@@ -50,7 +50,9 @@ class BinaryCrossEntropy implements ClassificationLoss
      */
     public function compute(NDArray $output, NDArray $target) : float
     {
-        $this->assertSameShape($output, $target);
+        if ($output->shape() !== $target->shape()) {
+            throw new InvalidArgumentException('Output and target must have the same shape.');
+        }
 
         $output = NumPower::clip($output, EPSILON, 1.0 - EPSILON);
         $target = NumPower::clip($target, EPSILON, 1.0 - EPSILON);
@@ -78,7 +80,9 @@ class BinaryCrossEntropy implements ClassificationLoss
      */
     public function differentiate(NDArray $output, NDArray $target) : NDArray
     {
-        $this->assertSameShape($output, $target);
+        if ($output->shape() !== $target->shape()) {
+            throw new InvalidArgumentException('Output and target must have the same shape.');
+        }
 
         $numerator = NumPower::subtract($output, $target);
 

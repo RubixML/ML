@@ -9,6 +9,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Strategies\Prior;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Strategies')]
@@ -46,5 +48,21 @@ class PriorTest extends TestCase
     public function preConditions() : void
     {
         $this->assertFalse($this->strategy->fitted());
+    }
+
+    #[Test]
+    public function guessThrowsWhenUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->strategy->guess();
+    }
+
+    #[Test]
+    public function fitRejectsEmptySet() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->strategy->fit([]);
     }
 }
