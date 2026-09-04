@@ -2,7 +2,7 @@
 
 # RBX V2
 
-Rubix Object File format v2 (RBX) is an improvement upon the RBX V1 format that adds additional layers of security and integrity checks to ensure that serialized objects are not tampered with or corrupted during storage or transmission.
+Rubix Object File format v2 (RBX) is an improvement upon the RBX V1 format that adds a class allow-list and integrity checks to help detect corruption during storage or transmission.
 
 RBX V2 is the default serializer used by the [Persistent Model](../persistent-model.md) meta-estimator. It replaces the legacy gzip-based [RBX V1](rbx-v1.md) format.
 
