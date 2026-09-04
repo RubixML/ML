@@ -69,7 +69,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var class-string[]
      */
-    public const COMPATIBLE_BOOSTERS = [
+    public const array COMPATIBLE_BOOSTERS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
     ];

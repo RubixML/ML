@@ -41,14 +41,14 @@ class DBSCAN implements Estimator
      *
      * @var int
      */
-    public const START_CLUSTER = 0;
+    public const int START_CLUSTER = 0;
 
     /**
      * The cluster number assigned to noise samples.
      *
      * @var int
      */
-    public const NOISE = -1;
+    public const int NOISE = -1;
 
     /**
      * The maximum distance between two points to be considered neighbors. The smaller the value,

@@ -43,9 +43,9 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * The value to assign to outliers when making a prediction.
      *
-     * @var mixed
+     * @var float
      */
-    public const OUTLIER_VALUE = NAN;
+    public const float OUTLIER_VALUE = NAN;
 
     /**
      * The radius within which points are considered neighbors.

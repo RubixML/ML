@@ -72,7 +72,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var class-string[]
      */
-    public const COMPATIBLE_BOOSTERS = [
+    public const array COMPATIBLE_BOOSTERS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
     ];
@@ -82,7 +82,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var int
      */
-    protected const MIN_SUBSAMPLE = 2;
+    protected const int MIN_SUBSAMPLE = 2;
 
     /**
      * The regressor used to fix up error residuals.

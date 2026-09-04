@@ -40,7 +40,7 @@ use function iterator_to_array;
  */
 class Snapshot
 {
-    public const ALLOWED_CLASSES = [
+    public const array ALLOWED_CLASSES = [
         Parameter::class,
         Matrix::class,
         Vector::class,
