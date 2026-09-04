@@ -1,10 +1,10 @@
 <span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Serializers/RBXV2.php">[source]</a></span>
 
-# RBXV2
+# RBX V2
 
-Rubix Object File format v2 (RBX) is a format designed to reliably store and share serialized PHP objects. It is built directly on PHP's native serialization format and layers on top of it data-integrity checksums, class-compatibility detection, and a hardened deserialization path that restricts which classes are permitted to be reconstructed, all in one compact format.
+Rubix Object File format v2 (RBX) is an improvement upon the RBX V1 format that adds additional layers of security and integrity checks to ensure that serialized objects are not tampered with or corrupted during storage or transmission.
 
-RBX V2 is the default serializer used by the [Persistent Model](../persistent-model.md) meta-estimator. It replaces the legacy gzip-based [RBX V1](rbx-v1.md) format, which is no longer read by this serializer.
+RBX V2 is the default serializer used by the [Persistent Model](../persistent-model.md) meta-estimator. It replaces the legacy gzip-based [RBX V1](rbx-v1.md) format.
 
 !!! note
     We recommend to use the `.rbx` file extension when storing RBX-serialized PHP objects.

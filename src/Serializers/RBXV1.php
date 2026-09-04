@@ -38,28 +38,28 @@ class RBXV1 implements Serializer
      *
      * @var string
      */
-    protected const IDENTIFIER_STRING = "\241RBX\r\n\032\n";
+    protected const string IDENTIFIER_STRING = "\241RBX\r\n\032\n";
 
     /**
      * The version of the format.
      *
-     * @var int
+     * @var string
      */
-    protected const VERSION = 1;
+    protected const string VERSION = '1';
 
     /**
      * The hashing function used to generate checksums.
      *
      * @var string
      */
-    protected const CHECKSUM_TYPE = 'crc32b';
+    protected const string CHECKSUM_TYPE = 'crc32b';
 
     /**
      * The end of line character.
      *
      * @var string
      */
-    protected const EOL = "\n";
+    protected const string EOL = "\n";
 
     /**
      * The level of gzip compression.
@@ -166,7 +166,7 @@ class RBXV1 implements Serializer
             throw new RuntimeException('Invalid message format.');
         }
 
-        if ($version != self::VERSION) {
+        if ($version !== self::VERSION) {
             throw new RuntimeException('Incompatible version format, use the'
                 . " RBX V{$version} serializer instead.");
         }
