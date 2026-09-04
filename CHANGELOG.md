@@ -39,6 +39,7 @@
     - Removed output layer L2 Penalty parameter from MLP Learners
     - RBX serializers now emits warning on class revision mismatch
     - Filesystem Persister now does atomic writes
+    - Class revision hash now compensates for circular references
     - Added cleanup() method to remove neural network residual state
     
 - 2.5.11
