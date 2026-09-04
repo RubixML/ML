@@ -2,11 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace Rubix\ML\Tests\Persisters\Serializers;
+namespace Rubix\ML\Tests\Serializers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Serializers\GzipNative;
@@ -14,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 #[Group('Serializers')]
 #[CoversClass(GzipNative::class)]
+#[IgnoreDeprecations]
 class GzipNativeTest extends TestCase
 {
     protected Persistable $persistable;
