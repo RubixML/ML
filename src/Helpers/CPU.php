@@ -3,8 +3,7 @@
 namespace Rubix\ML\Helpers;
 
 use Rubix\ML\Exceptions\RuntimeException;
-
-use function count;
+use Rubix\ML\Set;
 
 /**
  * CPU
@@ -101,7 +100,7 @@ class CPU
      */
     protected static function extractPhysicalCoreCount(string $cpuinfo) : int
     {
-        $cores = [];
+        $cores = new Set();
         $logical = 0;
 
         foreach (preg_split(self::PROCESSOR_REGEX, $cpuinfo) as $block) {
@@ -118,10 +117,10 @@ class CPU
                 continue;
             }
 
-            $cores["{$physical}-{$core}"] = true;
+            $cores->add("{$physical}-{$core}");
         }
 
-        return $cores !== [] ? count($cores) : $logical;
+        return $cores->count() ?: $logical;
     }
 
     /**
