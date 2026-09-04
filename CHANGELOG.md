@@ -37,6 +37,9 @@
     - Removed Word Stemmer tokenizer
     - Removed window early stopping from TSNE
     - Removed output layer L2 Penalty parameter from MLP Learners
+    - RBX serializers now emits warning on class revision mismatch
+    - Filesystem Persister now does atomic writes
+    - Deprecated Gzip Native serializer
     - Added cleanup() method to remove neural network residual state
     - RBX serializers now emits warning on class revision mismatch
     - Filesystem Persister now does atomic writes
