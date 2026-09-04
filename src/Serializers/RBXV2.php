@@ -90,35 +90,35 @@ class RBXV2 implements Serializer
         $classNames = new Set();
 
         while ($stack) {
-            $value = array_pop($stack);
+            $current = array_pop($stack);
 
-            if (is_array($value)) {
-                foreach ($value as $element) {
+            if (is_array($current)) {
+                foreach ($current as $element) {
                     $stack[] = $element;
                 }
 
                 continue;
             }
 
-            if (!is_object($value)) {
+            if (!is_object($current)) {
                 continue;
             }
 
-            if (isset($seen[$value])) {
+            if (isset($seen[$current])) {
                 continue;
             }
 
-            $seen[$value] = true;
+            $seen[$current] = true;
 
-            $reflector = new ReflectionClass($value);
+            $reflector = new ReflectionClass($current);
 
             $classNames->add($reflector->getName());
 
             $properties = self::collectProperties($reflector);
 
             foreach ($properties as $property) {
-                if ($property->isInitialized($value)) {
-                    $stack[] = $property->getValue($value);
+                if ($property->isInitialized($current)) {
+                    $stack[] = $property->getValue($current);
                 }
             }
         }
@@ -166,7 +166,7 @@ class RBXV2 implements Serializer
     {
         $className = get_class($persistable);
 
-        $classSet = self::collectClassNames($persistable);
+        $classNames = self::collectClassNames($persistable);
 
         $payload = serialize($persistable);
 
@@ -178,7 +178,7 @@ class RBXV2 implements Serializer
             ],
             'class' => [
                 'name' => $className,
-                'allowed' => $classSet->toArray(),
+                'allowed' => $classNames->toArray(),
                 'revision' => $persistable->revision(),
             ],
             'data' => [
