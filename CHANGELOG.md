@@ -36,6 +36,7 @@
     - Removed Word Stemmer tokenizer
     - Removed window early stopping from TSNE
     - Removed output layer L2 Penalty parameter from MLP Learners
+    - Added cleanup() method to remove neural network residual state
     
 - 2.5.11
     - Optimize DBSCAN inference
