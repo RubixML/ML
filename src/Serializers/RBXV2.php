@@ -28,9 +28,9 @@ use const Rubix\ML\VERSION as LIBRARY_VERSION;
 /**
  * RBX V2
  *
- * Rubix Object File format v2 (RBX) is a format designed to reliably store and share serialized PHP
- * objects. RBX is built directly on PHP's native serialization format and layers data-integrity
- * checksums, class-compatibility detection, and enhanced security, all in one compact format.
+ * Rubix Object File format v2 (RBX) is an improvement upon the RBX V1 format that adds
+ * additional layers of security and integrity checks to ensure that serialized objects
+ * are not tampered with or corrupted during storage or transmission.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -43,35 +43,35 @@ class RBXV2 implements Serializer
      *
      * @var string
      */
-    protected const IDENTIFIER_STRING = "\241RBX\r\n\032\n";
+    protected const string IDENTIFIER_STRING = "\241RBX\r\n\032\n";
 
     /**
      * The current version of the format.
      *
-     * @var int
+     * @var string
      */
-    protected const VERSION = 2;
+    protected const string VERSION = '2';
 
     /**
      * The hashing function used to generate header checksums.
      *
      * @var string
      */
-    protected const HEADER_CHECKSUM_TYPE = 'sha256';
+    protected const string HEADER_CHECKSUM_TYPE = 'sha256';
 
     /**
      * The hashing function used to generate payload checksums.
      *
      * @var string
      */
-    protected const PAYLOAD_CHECKSUM_TYPE = 'crc32b';
+    protected const string PAYLOAD_CHECKSUM_TYPE = 'crc32b';
 
     /**
      * The end of line character.
      *
      * @var string
      */
-    protected const EOL = "\n";
+    protected const string EOL = "\n";
 
     /**
      * Collect the set of class names present in an object's property graph.
@@ -203,7 +203,7 @@ class RBXV2 implements Serializer
             throw new RuntimeException('Invalid message format.');
         }
 
-        if ($version != self::VERSION) {
+        if ($version !== self::VERSION) {
             throw new RuntimeException('Incompatible version format, use the'
                 . " RBX V{$version} serializer instead.");
         }
