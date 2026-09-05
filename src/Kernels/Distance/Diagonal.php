@@ -45,7 +45,11 @@ class Diagonal implements Distance, Subadditive, Monotonic
         $distance = 0.0;
 
         foreach ($a as $i => $value) {
-            $distance = max($distance, abs($value - $b[$i]));
+            $delta = abs($value - $b[$i]);
+
+            if ($delta > $distance) {
+                $distance = $delta;
+            }
         }
 
         return $distance;

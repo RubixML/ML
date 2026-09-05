@@ -11,7 +11,7 @@ use Rubix\ML\Kernels\Distance\Diagonal;
  */
 class DiagonalBench
 {
-    protected const NUM_SAMPLES = 10000;
+    protected const NUM_SAMPLES = 20000;
 
     /**
      * @var list<list<float>>

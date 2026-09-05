@@ -12,7 +12,7 @@ use Rubix\ML\Transformers\LambdaFunction;
  */
 class GowerBench
 {
-    protected const NUM_SAMPLES = 10000;
+    protected const NUM_SAMPLES = 20000;
 
     /**
      * @var list<list<float>>

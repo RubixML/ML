@@ -10,7 +10,7 @@ use Rubix\ML\Kernels\Distance\Cosine;
  */
 class CosineBench
 {
-    protected const NUM_SAMPLES = 10000;
+    protected const NUM_SAMPLES = 20000;
 
     /**
      * @var list<list<float>>
