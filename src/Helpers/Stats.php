@@ -27,7 +27,7 @@ class Stats
     /**
      * Compute the mean of a set of values.
      *
-     * @param mixed[] $values
+     * @param array<float|int> $values
      * @return float
      */
     public static function mean(array $values) : float
@@ -42,8 +42,8 @@ class Stats
     /**
      * Compute the weighted mean of a set of values.
      *
-     * @param mixed[] $values
-     * @param mixed[] $weights
+     * @param list<float|int> $values
+     * @param list<float|int> $weights
      * @return float
      */
     public static function weightedMean(array $values, array $weights) : float

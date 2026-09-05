@@ -207,6 +207,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      */
     public function predictSample(array $sample)
     {
+        /** @var list<float> $labels */
         [$labels, $distances] = $this->nearest($sample);
 
         if ($this->weighted) {
