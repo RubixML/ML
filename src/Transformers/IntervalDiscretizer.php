@@ -14,9 +14,8 @@ use Rubix\ML\Exceptions\RuntimeException;
 use const PHP_INT_MAX;
 
 use function Rubix\ML\linspace;
+use function Rubix\ML\minmax;
 use function array_slice;
-use function min;
-use function max;
 
 /**
  * Interval Discretizer
@@ -126,8 +125,7 @@ class IntervalDiscretizer implements Transformer, Stateful, Persistable
                 if (isset($q)) {
                     $edges = Stats::quantiles($values, $q);
                 } else {
-                    $min = min($values);
-                    $max = max($values);
+                    [$min, $max] = minmax($values);
 
                     $edges = linspace($min, $max, $this->bins + 1);
 

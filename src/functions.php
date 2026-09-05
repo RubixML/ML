@@ -72,6 +72,31 @@ namespace Rubix\ML
     }
 
     /**
+     * Compute the minimum and maximum of the given values in a single pass.
+     *
+     * @internal
+     *
+     * @param (int|float)[] $values
+     * @return array{int|float, int|float}
+     */
+    function minmax(array $values) : array
+    {
+        $min = $max = $values[0];
+
+        foreach ($values as $value) {
+            if ($value < $min) {
+                $min = $value;
+            }
+
+            if ($value > $max) {
+                $max = $value;
+            }
+        }
+
+        return [$min, $max];
+    }
+
+    /**
      * Compute the log of the sum of exponential values.
      *
      * @internal

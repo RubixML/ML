@@ -241,6 +241,33 @@ class FunctionsTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider minmaxProvider
+     *
+     * @param (float|int)[] $input
+     * @param float|int $min
+     * @param float|int $max
+     */
+    public function minmax(array $input, $min, $max) : void
+    {
+        $this->assertEquals([$min, $max], minmax($input));
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function minmaxProvider() : Generator
+    {
+        yield [[4.2], 4.2, 4.2];
+
+        yield [[1, 2, 3, 4, 5], 1, 5];
+
+        yield [[-3.5, 0.1, 2.7, -3.5], -3.5, 2.7];
+
+        yield [[42, 'yes' => 0.8, 7], 0.8, 42];
+    }
+
+    /**
      * @param float $value
      * @param float $expected
      */

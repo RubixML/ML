@@ -20,11 +20,11 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\minmax;
 use function count;
 use function is_null;
 use function array_fill;
 use function round;
-use function min;
 use function max;
 use function log;
 use function sqrt;
@@ -258,8 +258,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
 
         foreach ($projections as $values) {
             /** @var non-empty-array<float|int> $values */
-            $min = (float) min($values);
-            $max = (float) max($values);
+            [$min, $max] = minmax($values);
 
             $width = $max > $min ? ($max - $min) / $this->bins : 0.0;
 

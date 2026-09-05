@@ -7,7 +7,9 @@ use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\minmax;
 use function is_int;
+use function min;
 use function array_fill;
 use function array_unique;
 use function array_rand;
@@ -89,8 +91,7 @@ abstract class ExtraTree extends DecisionTree
             $type = $dataset->featureType($column);
 
             if ($type->isContinuous()) {
-                $min = min($values);
-                $max = max($values);
+                [$min, $max] = minmax($values);
 
                 $maxAbs = max(abs($max), abs($min));
 

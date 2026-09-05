@@ -43,6 +43,10 @@
     - Murmur3 new default Token Hashing Vectorizer hash function
     - Dataset fold() now returns excess samples in last fold
     
+- 2.5.12
+    - Optimize minmax operations
+    - Optimize Diagnoal distance kernel
+
 - 2.5.11
     - Optimize DBSCAN inference
     - Optimize K-means and FCM training
