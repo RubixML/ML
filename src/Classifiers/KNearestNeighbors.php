@@ -95,7 +95,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
     /**
      * The training labels.
      *
-     * @var string[]
+     * @var (string|int)[]
      */
     protected array $labels = [
         //

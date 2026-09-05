@@ -72,7 +72,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var float[]
+     * @var array<string|int,float>
      */
     protected array $classes = [
         //

@@ -54,7 +54,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * The list of possible class outcomes.
      *
-     * @var list<string>
+     * @var list<string|int>
      */
     protected array $classes = [
         //

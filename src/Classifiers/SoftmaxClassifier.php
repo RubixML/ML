@@ -143,7 +143,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     /**
      * The unique class labels.
      *
-     * @var string[]|null
+     * @var (string|int)[]|null
      */
     protected ?array $classes = null;
 

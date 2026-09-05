@@ -158,7 +158,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var array<string,float>|null
+     * @var array<string|int,float>|null
      */
     protected ?array $classes = null;
 

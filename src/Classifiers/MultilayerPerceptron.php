@@ -153,7 +153,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The unique class labels.
      *
-     * @var string[]|null
+     * @var (string|int)[]|null
      */
     protected ?array $classes = null;
 

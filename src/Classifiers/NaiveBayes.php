@@ -74,7 +74,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var array<string,int>
+     * @var array<string|int,int>
      */
     protected array $classCounts = [
         //
@@ -83,7 +83,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The count of each category from the training set on a class basis.
      *
-     * @var array<string, array<int, array<int|string, int>>>
+     * @var array<string|int, array<int, array<int|string, int>>>
      */
     protected array $counts = [
         //

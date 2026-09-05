@@ -171,7 +171,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * The unique class labels.
      *
-     * @var list<string>|null
+     * @var list<string|int>|null
      */
     protected ?array $classes = null;
 

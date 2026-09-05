@@ -145,7 +145,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * The unique class labels.
      *
-     * @var string[]|null
+     * @var (string|int)[]|null
      */
     protected ?array $classes = null;
 

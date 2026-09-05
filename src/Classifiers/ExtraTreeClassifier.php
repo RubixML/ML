@@ -55,7 +55,7 @@ class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Proba
     /**
      * The list of possible class outcomes.
      *
-     * @var string[]
+     * @var (string|int)[]
      */
     protected array $classes = [
         //
