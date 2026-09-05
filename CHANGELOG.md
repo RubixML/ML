@@ -40,6 +40,7 @@
     - Class revision hash now compensates for circular references
     - Filesystem Persister now does atomic writes
     - Added cleanup() method to remove neural network residual state
+    - Murmur3 new default Token Hashing Vectorizer hash function
     
 - 2.5.11
     - Optimize DBSCAN inference
