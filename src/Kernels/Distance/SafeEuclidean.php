@@ -5,8 +5,8 @@ namespace Rubix\ML\Kernels\Distance;
 use Rubix\ML\DataType;
 
 use function count;
-use function is_float;
 use function is_nan;
+use function sqrt;
 
 /**
  * Safe Euclidean
@@ -44,8 +44,8 @@ class SafeEuclidean implements Distance, Subadditive, Monotonic, NaNSafe
      *
      * @internal
      *
-     * @param list<int|float> $a
-     * @param list<int|float> $b
+     * @param list<float> $a
+     * @param list<float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float
@@ -56,13 +56,13 @@ class SafeEuclidean implements Distance, Subadditive, Monotonic, NaNSafe
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
 
-            if (is_float($valueA) and is_nan($valueA)) {
+            if (is_nan($valueA)) {
                 ++$numNaNs;
 
                 continue;
             }
 
-            if (is_float($valueB) and is_nan($valueB)) {
+            if (is_nan($valueB)) {
                 ++$numNaNs;
 
                 continue;

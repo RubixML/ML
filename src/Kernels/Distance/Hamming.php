@@ -38,8 +38,8 @@ class Hamming implements Distance, Subadditive
      *
      * @internal
      *
-     * @param list<string> $a
-     * @param list<string> $b
+     * @param list<string|int> $a
+     * @param list<string|int> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

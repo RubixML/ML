@@ -42,8 +42,8 @@ class Canberra implements Distance, Subadditive, Monotonic
      *
      * @internal
      *
-     * @param list<int|float> $a
-     * @param list<int|float> $b
+     * @param list<float> $a
+     * @param list<float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float
