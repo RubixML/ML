@@ -4,6 +4,7 @@ namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Datasets\Dataset;
 
 /**
  * @Groups({"Transformers"})
@@ -18,14 +19,14 @@ class OneHotEncoderBench
     protected const CATEGORIES = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 
     /**
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
-    public $dataset;
+    public Dataset $dataset;
 
     /**
      * @var OneHotEncoder
      */
-    protected $transformer;
+    protected OneHotEncoder $transformer;
 
     public function setUp() : void
     {
@@ -46,8 +47,6 @@ class OneHotEncoderBench
         }
 
         $this->dataset = Unlabeled::quick($samples);
-
-        $this->transformer = new OneHotEncoder();
     }
 
     /**
@@ -57,6 +56,20 @@ class OneHotEncoderBench
      */
     public function apply() : void
     {
-        $this->dataset->apply($this->transformer);
+        $transformer = new OneHotEncoder();
+
+        $this->dataset->apply($transformer);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function applyWithExclusions() : void
+    {
+        $transformer = new OneHotEncoder(['red', 'green', 'blue']);
+
+        $this->dataset->apply($transformer);
     }
 }

@@ -153,7 +153,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 . " between 0 and 100, $percentile given.");
         }
 
-        $kernel = $kernel ?? new Euclidean();
+        $kernel ??= new Euclidean();
 
         $samples = $dataset->samples();
 
@@ -522,6 +522,18 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         unset($properties['losses'], $properties['logger']);
 
         return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

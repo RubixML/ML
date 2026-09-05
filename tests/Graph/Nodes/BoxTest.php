@@ -1,124 +1,98 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Nodes;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Box
- */
+#[Group('Nodes')]
+#[CoversClass(Box::class)]
 class BoxTest extends TestCase
 {
-    protected const COLUMN = 1;
+    protected const int COLUMN = 1;
 
-    protected const VALUE = 3.;
+    protected const float VALUE = 3.;
 
-    protected const SAMPLES = [
+    protected const array SAMPLES = [
         [5., 2., -3],
         [6., 4., -5],
     ];
 
-    protected const LABELS = [22, 13];
+    protected const array LABELS = [22, 13];
 
-    protected const MIN = [5., 2., -5];
+    protected const array MIN = [5., 2., -5];
 
-    protected const MAX = [6., 4., -3];
+    protected const array MAX = [6., 4., -3];
 
-    protected const BOX = [
+    protected const array BOX = [
         self::MIN, self::MAX,
     ];
 
-    /**
-     * @var Box
-     */
-    protected $node;
+    protected Box $node;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $subsets = [
-            Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
-            Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
+            Labeled::quick(samples: [self::SAMPLES[0]], labels: [self::LABELS[0]]),
+            Labeled::quick(samples: [self::SAMPLES[1]], labels: [self::LABELS[1]]),
         ];
 
-        $this->node = new Box(self::COLUMN, self::VALUE, $subsets, self::MIN, self::MAX);
+        $this->node = new Box(
+            column: self::COLUMN,
+            value: self::VALUE,
+            subsets: $subsets,
+            min: self::MIN,
+            max: self::MAX
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Box::class, $this->node);
-        $this->assertInstanceOf(Hypercube::class, $this->node);
-        $this->assertInstanceOf(Node::class, $this->node);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function split() : void
     {
-        $node = Box::split(Labeled::quick(self::SAMPLES, self::LABELS));
+        $node = Box::split(Labeled::quick(samples: self::SAMPLES, labels: self::LABELS));
 
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function subsets() : void
     {
         $expected = [
-            Labeled::quick([self::SAMPLES[0]], [self::LABELS[0]]),
-            Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
+            Labeled::quick(samples: [self::SAMPLES[0]], labels: [self::LABELS[0]]),
+            Labeled::quick(samples: [self::SAMPLES[1]], labels: [self::LABELS[1]]),
         ];
 
         $this->assertEquals($expected, $this->node->subsets());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sides() : void
     {
         $this->assertEquals(self::BOX, iterator_to_array($this->node->sides()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cleanup() : void
     {
-        $subsets = $this->node->subsets();
-
-        $this->assertIsArray($subsets);
-        $this->assertCount(2, $subsets);
-
         $this->node->cleanup();
 
         $this->expectException(RuntimeException::class);

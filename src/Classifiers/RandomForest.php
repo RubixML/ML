@@ -10,11 +10,11 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Backends\Tasks\Proba;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Backends\Tasks\Predict;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -29,6 +29,9 @@ use Rubix\ML\Exceptions\RuntimeException;
 use function Rubix\ML\argmax;
 use function Rubix\ML\array_transpose;
 use function array_count_values;
+use function array_fill_keys;
+use function array_merge;
+use function ceil;
 use function get_class;
 use function in_array;
 
@@ -56,7 +59,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @var class-string[]
      */
-    public const COMPATIBLE_LEARNERS = [
+    public const array COMPATIBLE_LEARNERS = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,
     ];
@@ -66,7 +69,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const int MIN_SUBSAMPLE = 1;
 
     /**
      * The base learner.
@@ -127,7 +130,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     public function __construct(
         ?Learner $base = null,
         int $estimators = 100,
-        float $ratio = 0.2,
+        float $ratio = 0.5,
         bool $balanced = false
     ) {
         if ($base and !in_array(get_class($base), self::COMPATIBLE_LEARNERS)) {
@@ -140,16 +143,15 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
                 . " must be greater than 0, $estimators given.");
         }
 
-        if ($ratio <= 0.0 or $ratio > 1.5) {
+        if ($ratio <= 0.0 or $ratio > 1.0) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0 and 1.5, $ratio given.");
+                . " 0 and 1, $ratio given.");
         }
 
         $this->base = $base ?? new ClassificationTree();
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->balanced = $balanced;
-        $this->backend = new Serial();
     }
 
     /**
@@ -194,6 +196,19 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -222,7 +237,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         if ($this->balanced) {
             $counts = array_count_values($dataset->labels());
 
-            $min = min($counts);
+            $min = $counts ? min($counts) : 1;
 
             $weights = [];
 
@@ -231,7 +246,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
             }
         }
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         for ($i = 0; $i < $this->estimators; ++$i) {
             $estimator = clone $this->base;
@@ -242,10 +257,12 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
                 $subset = $dataset->randomSubsetWithReplacement($p);
             }
 
-            $this->backend->enqueue(new TrainLearner($estimator, $subset));
+            $task = new TrainLearner($estimator, $subset);
+
+            $this->backend()->enqueue($task);
         }
 
-        $this->trees = $this->backend->process();
+        $this->trees = $this->backend()->process();
 
         $this->classes = array_fill_keys($dataset->possibleOutcomes(), 0.0);
 
@@ -257,7 +274,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -267,19 +284,53 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $this->backend->flush();
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
 
-        foreach ($this->trees as $estimator) {
-            $this->backend->enqueue(new Predict($estimator, $dataset));
+        $this->backend()->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
-
-        $aggregate = array_transpose($this->backend->process());
 
         $predictions = [];
 
-        foreach ($aggregate as $votes) {
-            /** @var array<string,int> $counts */
-            $counts = array_count_values($votes);
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<string|int> $output */
+            $predictions = array_merge($predictions, $output);
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @throws RuntimeException
+     * @return list<string|int>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        if (!$this->trees) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $votes = [];
+
+        foreach ($this->trees as $tree) {
+            $votes[] = $tree->predict($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
+
+        $predictions = [];
+
+        foreach ($aggregate as $sampleVotes) {
+            $counts = array_count_values($sampleVotes);
 
             $predictions[] = argmax($counts);
         }
@@ -292,7 +343,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -302,17 +353,46 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $probabilities = array_fill(0, $dataset->numSamples(), $this->classes);
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
-        foreach ($this->trees as $estimator) {
-            $this->backend->enqueue(new Proba($estimator, $dataset));
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'probaChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
-        $aggregate = $this->backend->process();
+        $probabilities = [];
 
-        foreach ($aggregate as $proba) {
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<array<string|int,float>> $output */
+            $probabilities = array_merge($probabilities, $output);
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Estimate the joint probabilities of each possible outcome for a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @throws RuntimeException
+     * @return list<array<string|int,float>>
+     */
+    public function probaChunk(Dataset $chunk) : array
+    {
+        if (!$this->trees or !$this->classes) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $probabilities = array_fill(0, $chunk->numSamples(), $this->classes);
+
+        foreach ($this->trees as $tree) {
+            $proba = $tree->proba($chunk);
+
             /** @var int $i */
             foreach ($proba as $i => $joint) {
                 foreach ($joint as $class => $probability) {
@@ -355,6 +435,32 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
         }
 
         return $importances;
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

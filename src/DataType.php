@@ -27,28 +27,28 @@ class DataType implements Stringable
      *
      * @var int
      */
-    public const CONTINUOUS = 1;
+    public const int CONTINUOUS = 1;
 
     /**
      * The categorical data type code.
      *
      * @var int
      */
-    public const CATEGORICAL = 2;
+    public const int CATEGORICAL = 2;
 
     /**
      * The image data type code.
      *
      * @var int
      */
-    public const IMAGE = 3;
+    public const int IMAGE = 3;
 
     /**
      * Any other data type that is not supported natively.
      *
      * @var int
      */
-    public const OTHER = 0;
+    public const int OTHER = 0;
 
     /**
      * The human-readable string representations of the high-level data types.
@@ -97,27 +97,19 @@ class DataType implements Stringable
      * @param mixed $value
      * @return self
      */
-    public static function detect($value) : self
+    public static function detect(mixed $value) : self
     {
         switch (gettype($value)) {
             case 'double':
-            case 'integer':
                 return new self(self::CONTINUOUS);
 
+            case 'integer':
             case 'string':
                 return new self(self::CATEGORICAL);
 
             case 'object':
                 if (class_exists(GdImage::class) and $value instanceof GdImage) {
                     return new self(self::IMAGE);
-                }
-
-                return new self(self::OTHER);
-
-            case 'resource':
-                switch (get_resource_type($value)) {
-                    case 'gd':
-                        return new self(self::IMAGE);
                 }
 
                 return new self(self::OTHER);

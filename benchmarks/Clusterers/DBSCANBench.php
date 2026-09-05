@@ -5,6 +5,7 @@ namespace Rubix\ML\Benchmarks\Clusterers;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Clusterers"})
@@ -15,14 +16,14 @@ class DBSCANBench
     protected const TESTING_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled;
+     * @var Labeled
      */
-    protected $testing;
+    protected Labeled $testing;
 
     /**
      * @var DBSCAN
      */
-    protected $estimator;
+    protected DBSCAN $estimator;
 
     public function setUp() : void
     {

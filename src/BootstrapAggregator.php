@@ -4,11 +4,12 @@ namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Backends\Tasks\Predict;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -19,8 +20,10 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function in_array;
 use function array_count_values;
+use function array_merge;
+use function ceil;
+use function in_array;
 
 /**
  * Bootstrap Aggregator
@@ -46,7 +49,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @var list<int>
      */
-    protected const COMPATIBLE_ESTIMATOR_TYPES = [
+    protected const array COMPATIBLE_ESTIMATOR_TYPES = [
         EstimatorType::CLASSIFIER,
         EstimatorType::REGRESSOR,
         EstimatorType::ANOMALY_DETECTOR,
@@ -54,29 +57,21 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
     /**
      * The minimum size of each training subset.
-     *
-     * @var int
      */
-    protected const MIN_SUBSAMPLE = 1;
+    protected const int MIN_SUBSAMPLE = 1;
 
     /**
      * The base learner.
-     *
-     * @var Learner
      */
     protected Learner $base;
 
     /**
      * The number of base learners to train in the ensemble.
-     *
-     * @var int
      */
     protected int $estimators;
 
     /**
      * The ratio of samples from the training set to randomly subsample to train each base learner.
-     *
-     * @var float
      */
     protected float $ratio;
 
@@ -116,7 +111,43 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->backend = new Serial();
+    }
+
+    /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<string|int|float>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        $votes = [];
+
+        foreach ($this->ensemble as $estimator) {
+            $votes[] = $estimator->predict($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
+
+        $predictions = [];
+
+        $type = $this->type();
+
+        if ($type->isClassifier() or $type->isAnomalyDetector()) {
+            foreach ($aggregate as $votes) {
+                $predictions[] = $this->decideDiscrete($votes);
+            }
+
+            return $predictions;
+        }
+
+        foreach ($aggregate as $votes) {
+            $predictions[] = Stats::mean($votes);
+        }
+
+        return $predictions;
     }
 
     /**
@@ -160,6 +191,19 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -195,7 +239,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $dataset->numSamples()));
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         for ($i = 0; $i < $this->estimators; ++$i) {
             $estimator = clone $this->base;
@@ -204,10 +248,12 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
             $task = new TrainLearner($estimator, $subset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $this->ensemble = $this->backend->process();
+        /** @var list<Learner> $process */
+        $process = $this->backend()->process();
+        $this->ensemble = $process;
     }
 
     /**
@@ -215,7 +261,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return mixed[]
+     * @return list<string|int|float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -223,24 +269,24 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $this->backend->flush();
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
 
-        foreach ($this->ensemble as $estimator) {
-            $task = new Predict($estimator, $dataset);
+        $this->backend()->flush();
 
-            $this->backend->enqueue($task);
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
-        $aggregate = array_transpose($this->backend->process());
+        $predictions = [];
 
-        switch ($this->type()) {
-            case EstimatorType::classifier():
-            case EstimatorType::anomalyDetector():
-                return array_map([$this, 'decideDiscrete'], $aggregate);
-
-            default:
-                return array_map([Stats::class, 'mean'], $aggregate);
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<string|int|float> $output */
+            $predictions = array_merge($predictions, $output);
         }
+
+        return $predictions;
     }
 
     /**
@@ -251,10 +297,36 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     protected function decideDiscrete(array $votes) : string
     {
-        /** @var array<string,int> $counts */
+        /** @var array<string,int<1, max>> $counts */
         $counts = array_count_values($votes);
 
         return argmax($counts);
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

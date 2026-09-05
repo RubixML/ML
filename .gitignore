@@ -11,8 +11,9 @@ debug.log
 pyvenv.cfg
 .venv
 .idea
+.opencode
 .vscode
 .vs
-.opencode
-/runtime
+.phpbench
+/runtime/
 /worktrees

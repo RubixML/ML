@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Classifiers;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
@@ -22,112 +22,94 @@ use PHPUnit\Framework\TestCase;
 
 use function Rubix\ML\argmax;
 
-/**
- * @group Classifiers
- * @covers \Rubix\ML\Classifiers\AdaBoost
- */
+#[Group('Classifiers')]
+#[CoversClass(AdaBoost::class)]
 class AdaBoostTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var AdaBoost
-     */
-    protected $estimator;
+    protected AdaBoost $estimator;
 
-    /**
-     * @var FBeta
-     */
-    protected $metric;
+    protected FBeta $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 50.0),
-            'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 30.0),
-        ], [0.5, 0.2, 0.3]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'red' => new Blob(
+                    center: [255, 32, 0],
+                    stdDev: 50.0
+                ),
+                'green' => new Blob(
+                    center: [0, 128, 0],
+                    stdDev: 10.0
+                ),
+                'blue' => new Blob(
+                    center: [0, 32, 255],
+                    stdDev: 30.0
+                ),
+            ],
+            weights: [0.5, 0.2, 0.3]
+        );
 
-        $this->estimator = new AdaBoost(new ClassificationTree(1), 1.0, 0.5, 100, 1e-4, 2);
+        $this->estimator = new AdaBoost(
+            base: new ClassificationTree(1),
+            rate: 1.0,
+            ratio: 0.5,
+            epochs: 100,
+            minChange: 1e-4,
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            metric: new FBeta()
+        );
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(AdaBoost::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function badLearningRate() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new AdaBoost(null, -1e-3);
+        new AdaBoost(base: null, rate: -1e-3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function compatibility() : void
     {
         $expected = [
@@ -138,9 +120,7 @@ class AdaBoostTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function params() : void
     {
         $expected = [
@@ -149,15 +129,16 @@ class AdaBoostTest extends TestCase
             'ratio' => 0.5,
             'epochs' => 100,
             'min change' => 0.0001,
-            'window' => 2,
+            'eval interval' => 3,
+            'window' => 5,
+            'hold out' => 0.1,
+            'metric' => new FBeta(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -172,18 +153,24 @@ class AdaBoostTest extends TestCase
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
+
+        $scores = $this->estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertContainsOnlyFloat($scores);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $testing->labels()
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trainPredictProba() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -237,5 +224,40 @@ class AdaBoostTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $restored = unserialize(serialize($this->estimator));
+
+        $this->assertTrue($restored->trained());
+
+        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
+    }
+
+    #[Test]
+    public function probaRowsSumToOne() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertIsArray($probabilities);
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        foreach ($probabilities as $probability) {
+            $this->assertEqualsWithDelta(1.0, array_sum($probability), 1e-8);
+        }
     }
 }

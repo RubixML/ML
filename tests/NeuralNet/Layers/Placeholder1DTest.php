@@ -6,27 +6,25 @@ use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Placeholder1D
- */
+#[Group('Layers')]
+#[CoversClass(Placeholder1D::class)]
 class Placeholder1DTest extends TestCase
 {
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Placeholder1D
      */
-    protected $layer;
+    protected Placeholder1D $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
@@ -38,9 +36,7 @@ class Placeholder1DTest extends TestCase
         $this->layer = new Placeholder1D(3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Placeholder1D::class, $this->layer);
@@ -48,9 +44,7 @@ class Placeholder1DTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forwardInfer() : void
     {
         $this->assertEquals(3, $this->layer->width());

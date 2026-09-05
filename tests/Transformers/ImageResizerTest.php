@@ -1,44 +1,30 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\ImageResizer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @requires extension gd
- * @covers \Rubix\ML\Transformers\ImageResizer
- */
+#[Group('Transformers')]
+#[RequiresPhpExtension('gd')]
+#[CoversClass(ImageResizer::class)]
 class ImageResizerTest extends TestCase
 {
-    /**
-     * @var ImageResizer
-     */
-    protected $transformer;
+    protected ImageResizer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new ImageResizer(32, 32);
+        $this->transformer = new ImageResizer(width: 32, height: 32);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ImageResizer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function transform() : void
     {
         $dataset = Unlabeled::quick([

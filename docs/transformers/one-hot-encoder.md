@@ -10,14 +10,16 @@ The One Hot Encoder takes a categorical feature column and produces an n-dimensi
 
 ## Parameters
 
-This transformer does not have any parameters.
+| # | Name | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| 1 | ignoredCategories | [] | array | The list of categories to drop (ignore) during one-hot encoding. |
 
 ## Example
 
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
-$transformer = new OneHotEncoder();
+$transformer = new OneHotEncoder(['ugly', 'mean']);
 ```
 
 ## Additional Methods

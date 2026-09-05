@@ -10,42 +10,41 @@ use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\BatchNorm
- */
+#[Group('Layers')]
+#[CoversClass(BatchNorm::class)]
 class BatchNormTest extends TestCase
 {
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Deferred
      */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var BatchNorm
      */
-    protected $layer;
+    protected BatchNorm $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -69,9 +68,7 @@ class BatchNormTest extends TestCase
         $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(BatchNorm::class, $this->layer);
@@ -80,9 +77,7 @@ class BatchNormTest extends TestCase
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
@@ -123,9 +118,7 @@ class BatchNormTest extends TestCase
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function normalizesOverBatchSize() : void
     {
         $fanIn = 3;

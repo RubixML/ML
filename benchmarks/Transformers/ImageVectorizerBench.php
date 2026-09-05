@@ -4,6 +4,7 @@ namespace Rubix\ML\Benchmarks\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\ImageVectorizer;
+use Rubix\ML\Datasets\Dataset;
 
 /**
  * @Groups({"Transformers"})
@@ -14,14 +15,14 @@ class ImageVectorizerBench
     protected const DATASET_SIZE = 1000;
 
     /**
-     * @var \Rubix\ML\Datasets\Dataset
+     * @var Dataset
      */
-    public $dataset;
+    public Dataset $dataset;
 
     /**
      * @var ImageVectorizer
      */
-    protected $transformer;
+    protected ImageVectorizer $transformer;
 
     public function setUp() : void
     {

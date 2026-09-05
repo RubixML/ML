@@ -1,92 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Nodes;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Clique;
-use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Nodes
- * @covers \Rubix\ML\Graph\Nodes\Clique
- */
+#[Group('Nodes')]
+#[CoversClass(Clique::class)]
 class CliqueTest extends TestCase
 {
-    protected const SAMPLES = [
-        [5.0, 2.0, -3],
-        [6.0, 4.0, -5],
+    protected const array SAMPLES = [
+        [5.0, 2.0, -3.0],
+        [6.0, 4.0, -5.0],
     ];
 
-    protected const LABELS = [22, 13];
+    protected const array LABELS = [22, 13];
 
-    protected const CENTER = [5.5, 3.0, -4];
+    protected const array CENTER = [5.5, 3.0, -4];
 
-    protected const RADIUS = 1.5;
+    protected const float RADIUS = 1.5;
 
-    /**
-     * @var Clique
-     */
-    protected $node;
+    protected Clique $node;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
+        $dataset = Labeled::quick(samples: self::SAMPLES, labels: self::LABELS);
 
-        $this->node = new Clique($dataset, self::CENTER, self::RADIUS);
+        $this->node = new Clique(
+            dataset: $dataset,
+            center: self::CENTER,
+            radius: self::RADIUS
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Clique::class, $this->node);
-        $this->assertInstanceOf(Hypersphere::class, $this->node);
-        $this->assertInstanceOf(Node::class, $this->node);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function terminate() : void
     {
-        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
+        $dataset = Labeled::quick(samples: self::SAMPLES, labels: self::LABELS);
 
-        $node = Clique::terminate($dataset, new Euclidean());
+        $node = Clique::terminate(dataset: $dataset, kernel: new Euclidean());
 
-        $this->assertInstanceOf(Clique::class, $node);
-        $this->assertInstanceOf(Labeled::class, $node->dataset());
         $this->assertEquals(self::CENTER, $node->center());
         $this->assertEquals(self::RADIUS, $node->radius());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function dataset() : void
     {
-        $this->assertInstanceOf(Labeled::class, $this->node->dataset());
         $this->assertEquals(self::SAMPLES, $this->node->dataset()->samples());
         $this->assertEquals(self::LABELS, $this->node->dataset()->labels());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function center() : void
     {
         $this->assertEquals(self::CENTER, $this->node->center());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function radius() : void
     {
         $this->assertEquals(self::RADIUS, $this->node->radius());

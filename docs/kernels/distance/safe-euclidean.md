@@ -4,6 +4,8 @@
 
 An Euclidean distance metric suitable for samples that may contain NaN (not a number) values i.e. missing data. The Safe Euclidean metric approximates the Euclidean distance function by dropping NaN values and scaling the distance according to the proportion of non-NaNs (in either a or b or both) to compensate.
 
+**Interfaces:** Monotonic, Subadditive, NaNSafe
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

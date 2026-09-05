@@ -4,7 +4,7 @@
 
 An ensemble of Isolation Trees that each specialize on a unique subset of the training set. Isolation Trees are a type of randomized decision tree that assign anomaly scores based on the depth a sample reaches when traversing the tree. Based on the premise that anomalies are isolated into their own nodes sooner, samples that receive high anomaly scores achieve the shallowest depth during traversal.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Scoring](../scoring.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Scoring](../scoring.md), [Parallel](../parallel.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous
 
@@ -22,6 +22,16 @@ An ensemble of Isolation Trees that each specialize on a unique subset of the tr
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 
 $estimator = new IsolationForest(100, 0.2, 0.05);
+```
+
+## Parallel
+
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole());
 ```
 
 ## Additional Methods

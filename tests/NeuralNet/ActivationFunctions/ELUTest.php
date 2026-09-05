@@ -5,70 +5,31 @@ namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;
 
-/**
- * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\ELU
- */
+#[Group('ActivationFunctions')]
+#[CoversClass(ELU::class)]
 class ELUTest extends TestCase
 {
     /**
      * @var ELU
      */
-    protected $activationFn;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->activationFn = new ELU(1.0);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ELU::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
-    }
-
-    /**
-     * @test
-     */
-    public function badAlpha() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new ELU(-346);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    public function activate(Matrix $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->asArray();
-
-        $this->assertEquals($expected, $activations);
-    }
+    protected ELU $activationFn;
 
     /**
      * @return Generator<mixed[]>
      */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
-                [1.0, -0.5, 0.0, 20.0, -10.0]
+                [1.0, -0.5, 0.0, 20.0, -10.0],
             ]),
             [
                 [1.0, -0.3934693402873666, 0.0, 20.0, -0.9999546000702375],
@@ -90,24 +51,9 @@ class ELUTest extends TestCase
     }
 
     /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
-
-        $this->assertEquals($expected, $derivatives);
-    }
-
-    /**
      * @return Generator<mixed[]>
      */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -138,5 +84,52 @@ class ELUTest extends TestCase
                 [1.0, 0.5945205479701944, 1.0],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->activationFn = new ELU(1.0);
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(ELU::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
+    }
+
+    #[Test]
+    public function badAlpha() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ELU(-346);
+    }
+
+    /**
+     * @param Matrix $input
+     * @param list<list<float>> $expected $expected
+     */
+    #[DataProvider('computeProvider')]
+    #[Test]
+    public function activate(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEquals($expected, $activations);
+    }
+
+    /**
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    #[Test]
+    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+
+        $this->assertEquals($expected, $derivatives);
     }
 }

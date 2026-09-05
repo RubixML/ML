@@ -9,9 +9,10 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Backends\Tasks\Proba;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
@@ -28,7 +29,9 @@ use function Rubix\ML\array_transpose;
 use function array_combine;
 use function array_keys;
 use function array_map;
+use function array_merge;
 use function array_sum;
+use function ceil;
 
 /**
  * One Vs Rest
@@ -86,7 +89,6 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
         }
 
         $this->base = $base;
-        $this->backend = new Serial();
     }
 
     /**
@@ -128,6 +130,19 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -153,7 +168,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($classes as $class) {
             $estimator = clone $this->base;
@@ -167,10 +182,10 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
             $task = new TrainLearner($estimator, $subset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $classifiers = $this->backend->process();
+        $classifiers = $this->backend()->process();
 
         $classifiers = array_combine($classes, $classifiers) ?: [];
 
@@ -184,7 +199,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -196,7 +211,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -206,27 +221,53 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
-        $this->backend->flush();
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
 
-        /** @var Probabilistic $estimator */
-        foreach ($this->classifiers as $estimator) {
-            $task = new Proba($estimator, $dataset);
+        $this->backend()->flush();
 
-            $this->backend->enqueue($task);
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'probaChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
-
-        $aggregate = $this->backend->process();
-
-        $aggregate = array_transpose($aggregate);
-
-        $classes = array_keys($this->classifiers);
 
         $probabilities = [];
 
-        foreach ($aggregate as $votes) {
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<array<string,float>> $output */
+            $probabilities = array_merge($probabilities, $output);
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Estimate the joint probabilities of each possible outcome for a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<array<string|int,float>>
+     */
+    public function probaChunk(Dataset $chunk) : array
+    {
+        $classes = array_keys($this->classifiers);
+
+        $votes = [];
+
+        /** @var Probabilistic $estimator */
+        foreach ($this->classifiers as $estimator) {
+            $votes[] = $estimator->proba($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
+
+        $probabilities = [];
+
+        foreach ($aggregate as $sampleVotes) {
             $dist = [];
 
-            foreach ($votes as $j => $proba) {
+            foreach ($sampleVotes as $j => $proba) {
                 $dist[$classes[$j]] = $proba['y'];
             }
 
@@ -240,6 +281,32 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

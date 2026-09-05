@@ -4,11 +4,12 @@ namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Backends\Tasks\Predict;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -19,6 +20,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function array_merge;
+use function ceil;
 use function count;
 use function in_array;
 
@@ -99,10 +102,6 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $compatibilities = [];
 
         foreach ($experts as $expert) {
-            if (!$expert instanceof Learner) {
-                throw new InvalidArgumentException('Expert must implement the Learner interface.');
-            }
-
             if (!in_array($expert->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
                 throw new InvalidArgumentException('Committee only supports'
                     . ' classifiers, regressors, and anomaly detectors, '
@@ -153,7 +152,41 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
         $this->experts = array_values($experts);
         $this->influences = $influences;
         $this->compatibility = $compatibility;
-        $this->backend = new Serial();
+    }
+
+    /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<string|int|float>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        $votes = [];
+
+        foreach ($this->experts as $estimator) {
+            $votes[] = $estimator->predict($chunk);
+        }
+
+        $aggregate = array_transpose($votes);
+
+        $predictions = [];
+
+        $type = $this->type();
+
+        if ($type->isClassifier() or $type->isAnomalyDetector()) {
+            foreach ($aggregate as $votes) {
+                $predictions[] = $this->decideDiscrete($votes);
+            }
+        } else {
+            foreach ($aggregate as $votes) {
+                $predictions[] = $this->decideContinuous($votes);
+            }
+        }
+
+        return $predictions;
     }
 
     /**
@@ -165,6 +198,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      */
     public function type() : EstimatorType
     {
+        if ($this->experts === []) {
+            throw new RuntimeException('Committee has no experts.');
+        }
+
         return $this->experts[array_key_first($this->experts)]->type();
     }
 
@@ -193,6 +230,19 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
             'experts' => $this->experts,
             'influences' => $this->influences,
         ];
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**
@@ -248,15 +298,15 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
 
         SpecificationChain::with($specifications)->check();
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($this->experts as $estimator) {
             $task = new TrainLearner($estimator, $dataset);
 
-            $this->backend->enqueue($task);
+            $this->backend()->enqueue($task);
         }
 
-        $this->experts = $this->backend->process();
+        $this->experts = $this->backend()->process();
 
         switch ($this->type()) {
             case EstimatorType::classifier():
@@ -285,24 +335,24 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $this->backend->flush();
+        $chunkSize = (int) max(1, ceil($dataset->numSamples() / $this->backend()->workers()));
 
-        foreach ($this->experts as $estimator) {
-            $task = new Predict($estimator, $dataset);
+        $this->backend()->flush();
 
-            $this->backend->enqueue($task);
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
         }
 
-        $aggregate = array_transpose($this->backend->process());
+        $predictions = [];
 
-        switch ($this->type()) {
-            case EstimatorType::classifier():
-            case EstimatorType::anomalyDetector():
-                return array_map([$this, 'decideDiscrete'], $aggregate);
-
-            default:
-                return array_map([$this, 'decideContinuous'], $aggregate);
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<string|int|float> $output */
+            $predictions = array_merge($predictions, $output);
         }
+
+        return $predictions;
     }
 
     /**
@@ -311,7 +361,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      * @param list<int|string> $votes
      * @return string|int
      */
-    protected function decideDiscrete(array $votes)
+    protected function decideDiscrete(array $votes) : string|int
     {
         $scores = $this->classes;
 
@@ -331,6 +381,32 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     protected function decideContinuous(array $votes) : float
     {
         return Stats::weightedMean($votes, $this->influences);
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

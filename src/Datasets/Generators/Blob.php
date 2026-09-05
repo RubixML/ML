@@ -39,7 +39,7 @@ class Blob implements Generator
      *
      * @var Vector|int|float
      */
-    protected $stdDev;
+    protected Vector|int|float $stdDev;
 
     /**
      * Fit a Blob generator to the samples in a dataset.

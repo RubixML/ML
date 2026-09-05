@@ -86,13 +86,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
-     *
-     * @var int
-     */
-    protected int $window;
-
-    /**
      * The distance function to use when computing the distances.
      *
      * @var Distance
@@ -136,7 +129,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
      * @param int $batchSize
      * @param int $epochs
      * @param float $minChange
-     * @param int $window
      * @param Distance|null $kernel
      * @param Seeder|null $seeder
      * @throws InvalidArgumentException
@@ -146,7 +138,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         int $batchSize = 128,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $window = 5,
         ?Distance $kernel = null,
         ?Seeder $seeder = null
     ) {
@@ -170,16 +161,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 . " greater than 0, $minChange given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
-                . " greater than 0, $window given.");
-        }
-
         $this->k = $k;
         $this->batchSize = $batchSize;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->window = $window;
         $this->kernel = $kernel ?? new Euclidean();
         $this->seeder = $seeder ?? new PlusPlus($kernel);
     }
@@ -218,7 +203,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             'batch size' => $this->batchSize,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
-            'window' => $this->window,
             'kernel' => $this->kernel,
             'seeder' => $this->seeder,
         ];
@@ -336,8 +320,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
 
         $dataset = Labeled::quick($dataset->samples(), $labels);
 
-        $prevLoss = $bestLoss = INF;
-        $numWorseEpochs = 0;
+        $prevLoss = INF;
 
         $this->losses = [];
 
@@ -398,11 +381,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "Inertia: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
+                $message = "Epoch: $epoch, Inertia: $loss";
 
                 $this->logger->info($message);
             }
@@ -420,18 +399,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
             }
 
             if ($lossChange < $this->minChange) {
-                break;
-            }
-
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 
@@ -554,6 +521,18 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         unset($properties['losses'], $properties['logger']);
 
         return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

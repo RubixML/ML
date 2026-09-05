@@ -54,7 +54,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * The list of possible class outcomes.
      *
-     * @var list<string>
+     * @var list<string|int>
      */
     protected array $classes = [
         //
@@ -69,7 +69,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
-        int $maxLeafSize = 3,
+        int $maxLeafSize = 5,
         float $minPurityIncrease = 1e-7,
         ?int $maxFeatures = null,
         ?int $maxBins = null
@@ -156,7 +156,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -175,9 +175,9 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return string
+     * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
         /** @var Best $node */
         $node = $this->search($sample);
@@ -190,11 +190,11 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare() or !isset($this->featureCount, $this->classes)) {
+        if ($this->bare() or !isset($this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -249,7 +249,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     /**
      * Calculate the impurity of a set of labels using gini coefficient.
      *
-     * @param list<string|int> $labels
+     * @param list<int|float|string> $labels
      * @return float
      */
     protected function impurity(array $labels) : float

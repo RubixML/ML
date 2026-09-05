@@ -36,16 +36,16 @@ class Box implements Hypercube, HasBinaryChildren
     /**
      * The value that the node splits on.
      *
-     * @var int|float|string
+     * @var string|int|float
      */
-    protected $value;
+    protected string|int|float $value;
 
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{Labeled,Labeled}
+     * @var array{Labeled,Labeled}|null
      */
-    protected array $subsets;
+    protected ?array $subsets;
 
     /**
      * The minimum vector containing all the points.
@@ -97,7 +97,7 @@ class Box implements Hypercube, HasBinaryChildren
      * @param list<int|float> $min
      * @param list<int|float> $max
      */
-    public function __construct(int $column, $value, array $subsets, array $min, array $max)
+    public function __construct(int $column, string|int|float $value, array $subsets, array $min, array $max)
     {
         $this->column = $column;
         $this->value = $value;
@@ -119,9 +119,9 @@ class Box implements Hypercube, HasBinaryChildren
     /**
      * Return the split value.
      *
-     * @return int|float|string
+     * @return string|int|float
      */
-    public function value()
+    public function value() : string|int|float
     {
         return $this->value;
     }
@@ -167,6 +167,6 @@ class Box implements Hypercube, HasBinaryChildren
      */
     public function cleanup() : void
     {
-        unset($this->subsets);
+        $this->subsets = null;
     }
 }

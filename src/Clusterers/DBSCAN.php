@@ -41,14 +41,14 @@ class DBSCAN implements Estimator
      *
      * @var int
      */
-    public const START_CLUSTER = 0;
+    public const int START_CLUSTER = 0;
 
     /**
      * The cluster number assigned to noise samples.
      *
      * @var int
      */
-    public const NOISE = -1;
+    public const int NOISE = -1;
 
     /**
      * The maximum distance between two points to be considered neighbors. The smaller the value,
@@ -78,7 +78,7 @@ class DBSCAN implements Estimator
      * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
-    public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
+    public function __construct(float $radius = 1.0, int $minDensity = 5, ?Spatial $tree = null)
     {
         if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'

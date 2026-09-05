@@ -5,16 +5,19 @@ namespace Rubix\ML\Serializers;
 use Rubix\ML\Encoding;
 use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\JSON;
-use Rubix\ML\Exceptions\ClassRevisionMismatch;
+use Rubix\ML\Specifications\RBXV1HeaderSchemaIsValid;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function Rubix\ML\warn;
 use function strlen;
-use function strpos;
 use function substr;
 use function hash;
 use function get_class;
 use function array_pad;
 use function explode;
+use function gzencode;
+use function gzdecode;
 
 use const Rubix\ML\VERSION as LIBRARY_VERSION;
 
@@ -36,42 +39,55 @@ class RBX implements Serializer
      *
      * @var string
      */
-    protected const IDENTIFIER_STRING = "\241RBX\r\n\032\n";
+    protected const string IDENTIFIER_STRING = "\241RBX\r\n\032\n";
 
     /**
-     * The current version of the format.
+     * The version of the format.
      *
-     * @var int
+     * @var string
      */
-    protected const VERSION = 1;
+    protected const string VERSION = '1';
 
     /**
      * The hashing function used to generate checksums.
      *
      * @var string
      */
-    protected const CHECKSUM_HASH_TYPE = 'crc32b';
+    protected const string CHECKSUM_TYPE = 'crc32b';
 
     /**
      * The end of line character.
      *
      * @var string
      */
-    protected const EOL = "\n";
+    protected const string EOL = "\n";
 
     /**
-     * The base Gzip Native serializer.
+     * The level of gzip compression.
      *
-     * @var GzipNative
+     * @var int
      */
-    protected GzipNative $base;
+    protected int $level;
+
+    /**
+     * The base serializer.
+     *
+     * @var Native
+     */
+    protected Native $base;
 
     /**
      * @param int $level
      */
     public function __construct(int $level = 6)
     {
-        $this->base = new GzipNative($level);
+        if ($level < 0 or $level > 9) {
+            throw new InvalidArgumentException('Level must be'
+                . " between 0 and 9, $level given.");
+        }
+
+        $this->level = $level;
+        $this->base = new Native();
     }
 
     /**
@@ -84,30 +100,40 @@ class RBX implements Serializer
      */
     public function serialize(Persistable $persistable) : Encoding
     {
+        $className = get_class($persistable);
+
         $encoding = $this->base->serialize($persistable);
 
-        $hash = hash(self::CHECKSUM_HASH_TYPE, $encoding);
+        $data = gzencode($encoding, $this->level);
+
+        if ($data === false) {
+            throw new RuntimeException('Failed to compress data.');
+        }
+
+        $encoding = new Encoding($data);
+
+        $hash = hash(self::CHECKSUM_TYPE, $encoding);
 
         $header = JSON::encode([
             'library' => [
                 'version' => LIBRARY_VERSION,
             ],
             'class' => [
-                'name' => get_class($persistable),
+                'name' => $className,
                 'revision' => $persistable->revision(),
             ],
             'data' => [
                 'checksum' => [
-                    'type' => self::CHECKSUM_HASH_TYPE,
+                    'type' => self::CHECKSUM_TYPE,
                     'hash' => $hash,
                 ],
                 'length' => $encoding->bytes(),
             ],
         ]);
 
-        $hash = hash(self::CHECKSUM_HASH_TYPE, $header);
+        $hash = hash(self::CHECKSUM_TYPE, $header);
 
-        $checksum = self::CHECKSUM_HASH_TYPE . ':' . $hash;
+        $checksum = self::CHECKSUM_TYPE . ':' . $hash;
 
         $data = self::IDENTIFIER_STRING;
         $data .= self::VERSION . self::EOL;
@@ -129,7 +155,7 @@ class RBX implements Serializer
      */
     public function deserialize(Encoding $encoding) : Persistable
     {
-        if (strpos($encoding, self::IDENTIFIER_STRING) !== 0) {
+        if (!str_starts_with($encoding, self::IDENTIFIER_STRING)) {
             throw new RuntimeException('Unrecognized message format.');
         }
 
@@ -137,40 +163,66 @@ class RBX implements Serializer
 
         [$version, $checksum, $header, $payload] = array_pad(explode(self::EOL, $data, 4), 4, null);
 
-        if (!$version or !$checksum or !$header or !$payload) {
+        if (empty($version) or empty($checksum) or empty($header) or empty($payload)) {
             throw new RuntimeException('Invalid message format.');
         }
 
-        if ($version != self::VERSION) {
-            throw new RuntimeException("Incompatible with RBX version $version.");
+        if ($version !== self::VERSION) {
+            throw new RuntimeException('Incompatible version format, use the'
+                . " RBX V{$version} serializer instead.");
         }
 
         [$type, $hash] = array_pad(explode(':', $checksum, 2), 2, null);
 
-        if ($hash !== hash($type, $header)) {
+        if (empty($type) or empty($hash)) {
+            throw new RuntimeException('Invalid header digest.');
+        }
+
+        if ($type !== self::CHECKSUM_TYPE) {
+            throw new RuntimeException('Invalid header checksum type.');
+        }
+
+        if (hash($type, $header) !== $hash) {
             throw new RuntimeException('Header checksum verification failed.');
         }
 
         $header = JSON::decode($header);
 
-        if (strlen($payload) !== $header['data']['length']) {
-            throw new RuntimeException('Data is corrupted.');
+        RBXV1HeaderSchemaIsValid::with($header)->check();
+
+        $className = $header['class']['name'];
+        $revision = $header['class']['revision'];
+        $type = $header['data']['checksum']['type'];
+        $hash = $header['data']['checksum']['hash'];
+        $length = $header['data']['length'];
+
+        if (strlen($payload) !== $length) {
+            throw new RuntimeException('Data length does not match header.');
         }
 
-        $hash = hash($header['data']['checksum']['type'], $payload);
+        if ($type !== self::CHECKSUM_TYPE) {
+            throw new RuntimeException('Invalid data checksum type.');
+        }
 
-        if ($header['data']['checksum']['hash'] !== $hash) {
+        if (hash($type, $payload) !== $hash) {
             throw new RuntimeException('Data checksum verification failed.');
         }
 
-        $persistable = $this->base->deserialize(new Encoding($payload));
+        $data = gzdecode($payload);
 
-        if (get_class($persistable) !== $header['class']['name']) {
-            throw new RuntimeException('Class name mismatch.');
+        if ($data === false) {
+            throw new RuntimeException('Failed to decompress data.');
         }
 
-        if ($persistable->revision() !== $header['class']['revision']) {
-            throw new ClassRevisionMismatch($header['library']['version']);
+        $persistable = $this->base->deserialize(new Encoding($data));
+
+        if ($persistable->revision() !== $revision) {
+            warn("Class revision mismatch, expected $revision but"
+                . " got {$persistable->revision()}. ");
+        }
+
+        if (get_class($persistable) !== $className) {
+            throw new RuntimeException('Class name mismatch.');
         }
 
         return $persistable;
@@ -185,6 +237,6 @@ class RBX implements Serializer
      */
     public function __toString() : string
     {
-        return "RBX (level: {$this->base->level()})";
+        return "RBX (level: {$this->level})";
     }
 }

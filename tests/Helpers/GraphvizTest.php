@@ -1,20 +1,23 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Helpers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Encoding;
 use Rubix\ML\Helpers\Graphviz;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Helpers
- * @covers \Rubix\ML\Helpers\Graphviz
- */
+#[Group('Helpers')]
+#[CoversClass(Graphviz::class)]
 class GraphvizTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Converts a DOT graph description to an image encoding')]
     public function dotToImage() : void
     {
         // Almost always skip this test, needed to appease Stan.
@@ -54,6 +57,6 @@ class GraphvizTest extends TestCase
 
         $encoding = Graphviz::dotToImage($dot, 'png');
 
-        $this->assertInstanceOf(Encoding::class, $encoding);
+        self::assertInstanceOf(Encoding::class, $encoding);
     }
 }

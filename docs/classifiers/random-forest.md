@@ -17,7 +17,7 @@ Random Forest (RF) is a classifier that trains an ensemble of Decision Trees ([C
 | --- | --- | --- | --- | --- |
 | 1 | base | ClassificationTree | Learner | The base learner. |
 | 2 | estimators | 100 | int | The number of learners to train in the ensemble. |
-| 3 | ratio | 0.2 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
+| 3 | ratio | 0.5 | float | The ratio of samples from the training set to randomly subsample to train each base learner. |
 | 4 | balanced | false | bool | Should we sample the bootstrap set to compensate for imbalanced class labels? |
 
 ## Example
@@ -27,6 +27,16 @@ use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 
 $estimator = new RandomForest(new ClassificationTree(10), 300, 0.1, true);
+```
+
+## Parallel
+
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole(16));
 ```
 
 ## Additional Methods

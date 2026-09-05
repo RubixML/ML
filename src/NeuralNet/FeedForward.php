@@ -132,6 +132,14 @@ class FeedForward implements Network
     }
 
     /**
+     * Return the optimizer used to train the network.
+     */
+    public function optimizer() : Optimizer
+    {
+        return $this->optimizer;
+    }
+
+    /**
      * Return the number of trainable parameters in the network.
      *
      * @return int

@@ -14,17 +14,17 @@ class SiLUBench
     /**
      * @var Matrix
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var Matrix
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var SiLU
      */
-    protected $activationFn;
+    protected SiLU $activationFn;
 
     public function setUp() : void
     {

@@ -5,39 +5,33 @@ namespace Rubix\ML\Tests\NeuralNet\Initializers;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Initializers
- * @covers \Rubix\ML\NeuralNet\Initializers\He
- */
+#[Group('Initializers')]
+#[CoversClass(He::class)]
 class HeTest extends TestCase
 {
     /**
      * @var He
      */
-    protected $initializer;
+    protected He $initializer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->initializer = new He();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(He::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);
