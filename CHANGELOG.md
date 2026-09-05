@@ -24,7 +24,7 @@
     - You can now exclude certain categories from one-hot encoding
     - Fixed SVC save/load using class map sidecar
     - Parallel Backends now default to max physical cores not logical
-    - Added workers() method to the Backend interface (Serial returns 1)
+    - Added workers() method to the Backend interface
     - No longer save/load Backend state, transient per environment
     - Added Emoji preset to Regex Filter
     - Added Float Type Converter numeric string and ints to float

@@ -206,7 +206,7 @@ class KDTree implements BinaryTree, Spatial
                 $radius = $heap->count() === $k ? $heap->top()[0] : INF;
 
                 foreach ($current->children() as $child) {
-                    if (!$visited->offsetExists($child)) {
+                    if (!isset($visited[$child])) {
                         if ($child instanceof Hypercube) {
                             $distance = $this->minDistance($sample, $child);
 
@@ -217,11 +217,11 @@ class KDTree implements BinaryTree, Spatial
                             }
                         }
 
-                        $visited->attach($child);
+                        $visited[$child] = true;
                     }
                 }
 
-                $visited->attach($current);
+                $visited[$current] = true;
 
                 continue;
             }
@@ -251,7 +251,7 @@ class KDTree implements BinaryTree, Spatial
                     $heap->insert([$distance, $neighbor, $labels[$i]]);
                 }
 
-                $visited->attach($current);
+                $visited[$current] = true;
             }
         }
 
@@ -339,7 +339,7 @@ class KDTree implements BinaryTree, Spatial
         $path = [$current];
 
         while ($current instanceof Box) {
-            if ($sample[$current->column()] < $current->value()) {
+            if ($sample[$current->column()] <= $current->value()) {
                 $current = $current->left();
             } else {
                 $current = $current->right();

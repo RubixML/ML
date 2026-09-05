@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\KDTree;
+use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -23,6 +24,7 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Kernels\Distance\SparseCosine;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 #[Group('Trees')]
 #[CoversClass(KDTree::class)]
@@ -153,6 +155,29 @@ class KDTreeTest extends TestCase
 
         $this->assertEqualsWithDelta(5.09901951359278, $distances[0], 1e-6);
         $this->assertEqualsWithDelta(5.09901951359278, $distances[1], 1e-6);
+    }
+
+    #[Test]
+    public function pathReachesLeafContainingSplitValue() : void
+    {
+        $tree = new KDTree(2, new Euclidean());
+
+        $tree->grow(Labeled::quick(
+            [[2.0], [4.0], [6.0]],
+            ['a', 'b', 'c']
+        ));
+
+        $path = (new ReflectionMethod(KDTree::class, 'path'))->invoke($tree, [4.0]);
+
+        $leaf = end($path);
+
+        $this->assertInstanceOf(Neighborhood::class, $leaf);
+        $this->assertContains([4.0], $leaf->dataset()->samples());
+
+        [$neighbors, $neighborLabels, $distances] = $tree->nearest([4.0], 3);
+
+        $this->assertContains('b', $neighborLabels);
+        $this->assertContains(0.0, $distances);
     }
 
     #[Test]

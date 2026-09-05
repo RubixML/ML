@@ -196,7 +196,7 @@ class BallTree implements BinaryTree, Spatial
                 $radius = $heap->count() === $k ? $heap->top()[0] : INF;
 
                 foreach ($current->children() as $child) {
-                    if (!$visited->offsetExists($child)) {
+                    if (!isset($visited[$child])) {
                         if ($child instanceof Hypersphere) {
                             $distance = $this->kernel->compute($sample, $child->center());
 
@@ -207,11 +207,11 @@ class BallTree implements BinaryTree, Spatial
                             }
                         }
 
-                        $visited->attach($child);
+                        $visited[$child] = true;
                     }
                 }
 
-                $visited->attach($current);
+                $visited[$current] = true;
 
                 continue;
             }
@@ -241,7 +241,7 @@ class BallTree implements BinaryTree, Spatial
                     $heap->insert([$distance, $neighbor, $labels[$i]]);
                 }
 
-                $visited->attach($current);
+                $visited[$current] = true;
             }
         }
 
