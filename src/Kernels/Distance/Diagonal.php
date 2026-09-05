@@ -42,13 +42,17 @@ class Diagonal implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $deltas = [];
+        $distance = 0.0;
 
         foreach ($a as $i => $value) {
-            $deltas[] = abs($value - $b[$i]);
+            $delta = abs($value - $b[$i]);
+
+            if ($delta > $distance) {
+                $distance = $delta;
+            }
         }
 
-        return max($deltas) ?: 0.0;
+        return $distance;
     }
 
     /**

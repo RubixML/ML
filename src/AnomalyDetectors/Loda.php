@@ -21,12 +21,12 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function Rubix\ML\linspace;
+use function Rubix\ML\minmax;
 use function count;
 use function is_null;
 use function array_slice;
 use function array_fill;
 use function round;
-use function min;
 use function max;
 use function log;
 use function sqrt;
@@ -239,10 +239,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->asArray();
 
         foreach ($projections as $values) {
-            $min = (float) min($values);
-            $max = (float) max($values);
+            [$min, $max] = minmax($values);
 
-            $edges = linspace($min, $max, $this->bins + 1);
+            $edges = linspace((float) $min, (float) $max, $this->bins + 1);
 
             $edges = array_slice($edges, 1, -1);
 

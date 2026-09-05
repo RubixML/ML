@@ -8,8 +8,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function Rubix\ML\argmax;
-use function min;
-use function max;
+use function Rubix\ML\minmax;
 
 /**
  * Box
@@ -74,8 +73,10 @@ class Box implements Hypercube, HasBinaryChildren
         $mins = $maxs = $ranges = [];
 
         foreach ($dataset->features() as $values) {
-            $mins[] = $min = min($values);
-            $maxs[] = $max = max($values);
+            [$min, $max] = minmax($values);
+
+            $mins[] = $min;
+            $maxs[] = $max;
 
             $ranges[] = $max - $min;
         }

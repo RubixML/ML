@@ -5,6 +5,8 @@ namespace Rubix\ML\Graph\Nodes;
 use Rubix\ML\Datasets\Labeled;
 use Traversable;
 
+use function Rubix\ML\minmax;
+
 /**
  * Neighborhood
  *
@@ -51,8 +53,7 @@ class Neighborhood implements Hypercube, BinaryNode
         $min = $max = [];
 
         foreach ($dataset->features() as $values) {
-            $min[] = min($values);
-            $max[] = max($values);
+            [$min[], $max[]] = minmax($values);
         }
 
         return new self($dataset, $min, $max);

@@ -9,6 +9,7 @@ use Generator;
 use function Rubix\ML\argmin;
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
+use function Rubix\ML\minmax;
 use function Rubix\ML\sigmoid;
 use function Rubix\ML\comb;
 use function Rubix\ML\linspace;
@@ -32,6 +33,7 @@ use function is_infinite;
  * @covers \Rubix\ML\iterator_map
  * @covers \Rubix\ML\linspace
  * @covers \Rubix\ML\logsumexp
+ * @covers \Rubix\ML\minmax
  * @covers \Rubix\ML\sigmoid
  * @covers \Rubix\ML\warn_deprecated
  */
@@ -95,6 +97,33 @@ class FunctionsTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         argmax([NAN, NAN, NAN]);
+    }
+
+    /**
+     * @test
+     * @dataProvider minmaxProvider
+     *
+     * @param (float|int)[] $input
+     * @param float|int $min
+     * @param float|int $max
+     */
+    public function minmax(array $input, $min, $max) : void
+    {
+        $this->assertEquals([$min, $max], minmax($input));
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function minmaxProvider() : Generator
+    {
+        yield [[4.2], 4.2, 4.2];
+
+        yield [[1, 2, 3, 4, 5], 1, 5];
+
+        yield [[-3.5, 0.1, 2.7, -3.5], -3.5, 2.7];
+
+        yield [[42, 'yes' => 0.8, 7], 0.8, 42];
     }
 
     /**
