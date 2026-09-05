@@ -16,6 +16,7 @@ nav:
     - What is Machine Learning?: what-is-machine-learning.md
     - Installation: installation.md
     - Basic Introduction: basic-introduction.md
+    - Upgrade Guide: upgrading-to-3.md
   - User Guide:
     - Representing Your Data: representing-your-data.md
     - Extracting Data: extracting-data.md
