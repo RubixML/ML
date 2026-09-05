@@ -45,7 +45,7 @@
     
 - 2.5.12
     - Optimize minmax operations
-    - Optimize Diagnoal distance kernel
+    - Optimize Diagonal distance kernel
 
 - 2.5.11
     - Optimize DBSCAN inference
