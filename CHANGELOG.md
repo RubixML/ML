@@ -44,6 +44,7 @@
     - Dataset fold() now returns excess samples in last fold
     
 - 2.5.12
+    - Fix Adaboost proba() probability normalization
     - Optimize minmax operations
     - Optimize Diagonal distance kernel
 

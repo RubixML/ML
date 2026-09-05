@@ -25,12 +25,12 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function Rubix\ML\logsumexp;
 use function count;
 use function is_nan;
 use function array_slice;
 use function array_fill;
 use function array_fill_keys;
-use function array_sum;
 use function get_object_vars;
 use function round;
 use function max;
@@ -568,12 +568,12 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $probabilities = [];
 
         foreach ($scores as $influences) {
-            $total = array_sum($influences) ?: EPSILON;
+            $total = logsumexp($influences);
 
             $dist = [];
 
             foreach ($influences as $class => $influence) {
-                $dist[$class] = $influence / $total;
+                $dist[$class] = exp($influence - $total);
             }
 
             $probabilities[] = $dist;
