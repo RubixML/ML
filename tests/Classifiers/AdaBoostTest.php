@@ -20,6 +20,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+use function Rubix\ML\argmax;
+
 /**
  * @group Classifiers
  * @covers \Rubix\ML\Classifiers\AdaBoost
@@ -175,6 +177,54 @@ class AdaBoostTest extends TestCase
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function trainPredictProba() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $probabilities = $this->estimator->proba($testing);
+
+        $this->assertIsArray($probabilities);
+        $this->assertCount(self::TEST_SIZE, $probabilities);
+
+        $labels = $testing->labels();
+
+        $correct = 0;
+
+        foreach ($probabilities as $offset => $classProbabilities) {
+            $this->assertIsArray($classProbabilities);
+
+            $sum = 0.0;
+
+            foreach ($classProbabilities as $probability) {
+                $this->assertIsNumeric($probability);
+                $this->assertGreaterThanOrEqual(0.0, $probability);
+                $this->assertLessThanOrEqual(1.0, $probability);
+
+                $sum += $probability;
+            }
+
+            $this->assertEqualsWithDelta(1.0, $sum, 1e-9);
+
+            if (argmax($classProbabilities) === $labels[$offset]) {
+                ++$correct;
+            }
+        }
+
+        $score = $correct / self::TEST_SIZE;
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }

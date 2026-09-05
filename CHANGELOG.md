@@ -1,6 +1,7 @@
 # Changelog
 
 - 2.5.12
+    - Fix Adaboost proba() probability normalization
     - Optimize minmax operations
     - Optimize Diagonal distance kernel
 
