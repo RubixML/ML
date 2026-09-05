@@ -507,7 +507,8 @@ class Labeled extends Dataset
     }
 
     /**
-     * Fold the dataset k - 1 times to form k equal size datasets.
+     * Fold the dataset k - 1 times to form k datasets of as equal size as
+     * possible. Any remaining samples are added to the last fold.
      *
      * @param int $k
      * @throws InvalidArgumentException
@@ -527,12 +528,14 @@ class Labeled extends Dataset
 
         $folds = [];
 
-        while (count($folds) < $k) {
+        while (count($folds) < $k - 1) {
             $folds[] = self::quick(
                 array_splice($samples, 0, $n),
                 array_splice($labels, 0, $n)
             );
         }
+
+        $folds[] = self::quick($samples, $labels);
 
         return $folds;
     }

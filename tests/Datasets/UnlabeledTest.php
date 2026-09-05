@@ -322,6 +322,25 @@ class UnlabeledTest extends TestCase
     }
 
     #[Test]
+    public function foldAllocatesAllSamples() : void
+    {
+        $total = $this->dataset->numSamples();
+        $k = 4;
+        $n = (int) floor($total / $k);
+        $folds = $this->dataset->fold($k);
+
+        $this->assertCount($k, $folds);
+        $this->assertSame($n, $folds[0]->numSamples());
+        $this->assertSame($n, $folds[1]->numSamples());
+        $this->assertSame($n, $folds[2]->numSamples());
+        $this->assertSame($total - 3 * $n, $folds[3]->numSamples());
+        $this->assertSame(
+            $total,
+            array_sum(array_map(static fn (Unlabeled $fold) => $fold->numSamples(), $folds))
+        );
+    }
+
+    #[Test]
     public function batch() : void
     {
         $batches = $this->dataset->batch(2);
