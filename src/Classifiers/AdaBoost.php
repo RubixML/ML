@@ -404,6 +404,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
+        $bestEnsembleSize = 0;
         $score = null;
         $prevLoss = INF;
         $lossThreshold = 1.0 - (1.0 / $k);
@@ -481,6 +482,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestEpoch = $epoch;
+                    $bestEnsembleSize = count($this->ensemble);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -529,8 +531,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         }
 
         if ($this->scores and end($this->scores) < $bestScore) {
-            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
-            $this->influences = array_slice($this->influences, 0, $bestEpoch);
+            $this->ensemble = array_slice($this->ensemble, 0, $bestEnsembleSize);
+            $this->influences = array_slice($this->influences, 0, $bestEnsembleSize);
 
             if ($this->logger) {
                 $this->logger->info("Model state restored to epoch $bestEpoch");
