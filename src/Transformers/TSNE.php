@@ -181,13 +181,6 @@ class TSNE implements Transformer, Verbose
     protected float $minGradient;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
-     *
-     * @var int
-     */
-    protected int $window;
-
-    /**
      * The distance metric used to measure distances between samples in both high and low dimensions.
      *
      * @var Distance
@@ -208,7 +201,6 @@ class TSNE implements Transformer, Verbose
      * @param float $exaggeration
      * @param int $epochs
      * @param float $minGradient
-     * @param int $window
      * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
@@ -219,7 +211,6 @@ class TSNE implements Transformer, Verbose
         float $exaggeration = 12.0,
         int $epochs = 1000,
         float $minGradient = 1e-7,
-        int $window = 5,
         ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
@@ -252,11 +243,6 @@ class TSNE implements Transformer, Verbose
                 . " greater than 0, $minGradient given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
-                . " greater than 0, $window given.");
-        }
-
         $dofs = max($dimensions - 1, 1);
 
         $this->dimensions = $dimensions;
@@ -269,7 +255,6 @@ class TSNE implements Transformer, Verbose
         $this->epochs = $epochs;
         $this->early = min(self::MAX_EARLY_EPOCHS, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
-        $this->window = $window;
         $this->kernel = $kernel ?? new Euclidean();
     }
 
@@ -387,18 +372,6 @@ class TSNE implements Transformer, Verbose
             }
 
             if ($loss < $this->minGradient) {
-                break;
-            }
-
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 
@@ -593,7 +566,6 @@ class TSNE implements Transformer, Verbose
             'exaggeration' => $this->exaggeration,
             'epochs' => $this->epochs,
             'min gradient' => $this->minGradient,
-            'window' => $this->window,
             'kernel' => $this->kernel,
         ]) . ')';
     }

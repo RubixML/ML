@@ -54,7 +54,7 @@ class TSNETest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, new Euclidean());
 
         $this->embedder->setLogger(new BlackHole());
 
@@ -125,7 +125,7 @@ class TSNETest extends TestCase
     #[Test]
     public function gradientWeight() : void
     {
-        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, new Euclidean());
 
         $p = Matrix::quick([
             [0.0, 0.3, 0.2],
@@ -223,7 +223,7 @@ class TSNETest extends TestCase
     #[Test]
     public function affinities() : void
     {
-        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, new Euclidean());
 
         $distances = [
             [0.0, 1.0, 2.0, 3.0],
