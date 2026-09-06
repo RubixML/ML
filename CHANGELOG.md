@@ -26,7 +26,6 @@
     - Parallel Backends now default to max physical cores not logical
     - Added workers() method to the Backend interface
     - No longer save/load Backend state, transient per environment
-    - Added Emoji preset to Regex Filter
     - Added Float Type Converter numeric string and ints to float
     - Boolean Converter now converts truthy and falsy
     - Interval Discretizer now encodes values as integers

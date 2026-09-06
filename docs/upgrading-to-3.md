@@ -241,14 +241,89 @@ $tsne = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
 
 ## New Features
 
-The following changes are additive and require no action, but are worth knowing about:
+The following changes are additive. They require no action to keep existing code working, but you can take advantage of them as part of your upgrade.
 
-- **Parallelized inference and training** — [K Nearest Neighbors](classifiers/k-nearest-neighbors.md), [KNN Regressor](regressors/knn-regressor.md), and [Isolation Forest](anomaly-detectors/isolation-forest.md) now parallelize their computations.
-- **Disk-based neural network snapshots** — MLP-style learners (MLP, MLP Regressor, Adaline, Logistic Regression, Softmax) stream parameter snapshots to disk and recover from numerical instability. Set a snapshot path with `setSnapshotPath()`.
-- **Clearable optimizer state** — adaptive optimizers such as [Adam](neural-network/optimizers/adam.md) implement `reset()`, which is invoked by the new `cleanup()` method on neural network learners to remove residual state.
-- **Validation interval** — windowed gradient-based learners such as the MLP, [Gradient Boost](regressors/gradient-boost.md), [AdaBoost](classifiers/adaboost.md), Logistic Regression, and Softmax now take a `$evalInterval` parameter controlling how often the hold-out set is evaluated during training.
-- **Per-class and per-cluster smoothing** — [Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) computes a per-class epsilon and [Gaussian Mixture](clusterers/gaussian-mixture.md) a per-cluster epsilon during fitting.
-- **One-hot category exclusion** — the [One Hot Encoder](transformers/one-hot-encoder.md) accepts an `$ignoredCategories` array to exclude certain categories from encoding.
-- **New clustering metrics** — [Class Purity](cross-validation/metrics/class-purity.md) and [Cluster Purity](cross-validation/metrics/cluster-purity.md) metrics were added.
-- **New transformer capabilities** — the [Regex Filter](transformers/regex-filter.md) gained an Emoji preset, and the new [Float Type Converter](transformers/float-type-converter.md) converts numeric strings and integers to floats.
-- **Atomic and append-friendly exports** — see the [Exportable Extractors](#5-exportable-extractors-now-append-by-default) and [Persistence](#15-persistence-changes) sections above.
+### 19. Parallelized nearest neighbors and Isolation Forest
+
+[K Nearest Neighbors](classifiers/k-nearest-neighbors.md), the [KNN Regressor](regressors/knn-regressor.md), and [Isolation Forest](anomaly-detectors/isolation-forest.md) now implement the [Parallel](parallel.md) interface. K-nearest neighbors splits inference across worker processes, and Isolation Forest splits both training and inference — each tree grows and scores independently.
+
+Like all parallel estimators, they use a backend to process tasks. The default is the [Serial](backends/serial.md) backend, which runs everything in a single process and behaves exactly as before. To actually parallelize, set one of the multiprocessing backends:
+
+```php
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Backends\Amp;
+
+$estimator = new KNearestNeighbors(5);
+
+$estimator->setBackend(new Amp());
+```
+
+!!! note
+    Backends now default to the number of *physical* CPU cores rather than logical cores — see the backend changes in [item 7](#7-the-backend-interface-gained-a-workers-method).
+
+### 20. Disk-based neural network snapshots
+
+The neural network learners — [MLP](classifiers/multilayer-perceptron.md), [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), and [Softmax Classifier](classifiers/softmax-classifier.md) — now stream their parameters to a snapshot file on disk during training. This keeps a copy of the best-performing weights available without holding them in memory, and if training diverges into numerical instability the learner restores from the snapshot instead of the last (possibly unstable) epoch.
+
+By default snapshots are written to a temporary file under `sys_get_temp_dir()`. Point the learner at a specific location with `setSnapshotPath()`, or pass `null` to reset to the default:
+
+```php
+use Rubix\ML\Classifiers\MultilayerPerceptron;
+
+$mlp = new MultilayerPerceptron([new Dense(100)]);
+
+$mlp->setSnapshotPath('/var/tmp/mlp-snapshot.dat');
+```
+
+### 21. Clearable adaptive optimizer state
+
+Adaptive optimizers such as [Adam](neural-network/optimizers/adam.md), RMS Prop, AdaGrad, and Momentum maintain per-parameter state (gradient caches, momentum velocities) that is only needed during training. The neural network learners now expose a `cleanup()` method that discards this residual state by calling `reset()` on any optimizer that implements the `Adaptive` interface — useful before reusing an estimator in a long-running process or to free memory after training:
+
+```php
+$mlp->train($dataset);
+
+// free residual optimizer state
+$mlp->cleanup();
+```
+
+### 22. Validation interval for hold-out evaluation
+
+The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Gradient Boost](regressors/gradient-boost.md), and [AdaBoost](classifiers/adaboost.md) — now accept a `$evalInterval` constructor parameter (default `3`). It controls how often the hold-out set is scored during training, working in tandem with the `window` parameter for early stopping:
+
+```php
+$mlp = new MultilayerPerceptron([new Dense(100)], epochs: 1000, evalInterval: 5, window: 10);
+```
+
+!!! note
+    In the MLP and MLP Regressor the new parameter is inserted into the constructor after `minChange` and before `window`, and the `l2Penalty` parameter was removed (see [item 3](#3-the-l2-penalty-parameter-was-removed-from-mlp-learners)). Re-check any constructor calls that pass arguments positionally past the optimizer.
+
+### 23. Per-class and per-cluster variance smoothing
+
+[Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) and [Gaussian Mixture](clusterers/gaussian-mixture.md) now compute an independent variance epsilon for *each* class (or cluster) instead of a single global epsilon across all of them. This keeps fitting numerically stable even when classes or clusters have very different variance scales. There is no API change — the existing `$smoothing` parameter behaves as before, only the per-class application of it is new.
+
+### 24. One Hot Encoder category exclusion
+
+The [One Hot Encoder](transformers/one-hot-encoder.md) now accepts a list of `$ignoredCategories` to exclude from encoding. Categories in the list are skipped when the encoder is fitted, so they produce no columns. Only string and integer categories can be ignored:
+
+```php
+use Rubix\ML\Transformers\OneHotEncoder;
+
+$encoder = new OneHotEncoder(['unknown', -1]); // ignore these categories
+```
+
+### 25. Class Purity and Cluster Purity metrics
+
+Two new ground-truth clustering metrics were added — [Class Purity](cross-validation/metrics/class-purity.md) and [Cluster Purity](cross-validation/metrics/cluster-purity.md). They measure the extent to which each class (or cluster) is dominated by a single cluster (or class), returning a score between 0.0 and 1.0 where higher is better. They are complementary to the entropy-based [V-measure](cross-validation/metrics/v-measure.md), [Completeness](cross-validation/metrics/completeness.md), and [Homogeneity](cross-validation/metrics/homogeneity.md) metrics, and are only compatible with clusterers.
+
+### 26. Float Type Converter
+
+The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integer and numeric-string values to their floating point equivalents. It is the drop-in remedy for the integers-as-categorical change in [item 1](#1-integers-are-now-a-categorical-data-type) — apply it to a dataset directly or add it to a Pipeline so that numeric features are always presented to the estimator as continuous:
+
+```php
+use Rubix\ML\Transformers\FloatTypeConverter;
+
+$dataset->apply(new FloatTypeConverter());
+
+// or inside a pipeline
+$estimator = new Pipeline(new FloatTypeConverter(), new KMeans(5));
+```
