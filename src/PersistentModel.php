@@ -3,7 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\Serializers\RBX;
+use Rubix\ML\Serializers\RBXV2;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Serializers\Serializer;
@@ -54,7 +54,7 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
      */
     public static function load(Persister $persister, ?Serializer $serializer = null) : self
     {
-        $serializer ??= new RBX();
+        $serializer ??= new RBXV2();
 
         $base = $serializer->deserialize($persister->load());
 
@@ -81,7 +81,7 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
 
         $this->base = $base;
         $this->persister = $persister;
-        $this->serializer = $serializer ?? new RBX();
+        $this->serializer = $serializer ?? new RBXV2();
     }
 
     /**
