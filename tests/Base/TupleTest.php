@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Tuple;
+use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Base')]
@@ -45,18 +46,44 @@ class TupleTest extends TestCase
     }
 
     #[Test]
-    public function offsetExists() : void
-    {
-        $this->assertTrue(isset($this->tuple[0]));
-        $this->assertFalse(isset($this->tuple[3]));
-    }
-
-    #[Test]
     public function offsetGetThrowsOnMissingOffset() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->tuple[5];
+    }
+
+    #[Test]
+    public function offsetExists() : void
+    {
+        $this->assertTrue(isset($this->tuple[0]));
+        $this->assertTrue(isset($this->tuple[2]));
+        $this->assertFalse(isset($this->tuple[3]));
+    }
+
+    #[Test]
+    public function negativeOffsetThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->tuple[-1];
+    }
+
+    #[Test]
+    public function negativeOffsetDoesNotExist() : void
+    {
+        $this->assertFalse(isset($this->tuple[-1]));
+    }
+
+    #[Test]
+    public function tupleWithNullElements() : void
+    {
+        $tuple = new Tuple(0, null, false);
+
+        $this->assertSame(0, $tuple[0]);
+        $this->assertNull($tuple[1]);
+        $this->assertSame(false, $tuple[2]);
+        $this->assertTrue(isset($tuple[1]));
     }
 
     #[Test]
@@ -79,6 +106,21 @@ class TupleTest extends TestCase
     public function iterationYieldsAllElements() : void
     {
         $this->assertEquals([1, 'two', 3.0], iterator_to_array($this->tuple));
+    }
+
+    #[Test]
+    public function jsonSerializeReturnsArray() : void
+    {
+        $this->assertSame([1, 'two', 3.0], $this->tuple->jsonSerialize());
+        $this->assertInstanceOf(JsonSerializable::class, $this->tuple);
+        $this->assertSame('[1,"two",3]', json_encode($this->tuple));
+    }
+
+    #[Test]
+    public function toStringReturnsTupleString() : void
+    {
+        $this->assertSame('(1, two, 3)', (string) $this->tuple);
+        $this->assertSame('()', (string) new Tuple());
     }
 
     #[Test]
