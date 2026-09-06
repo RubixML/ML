@@ -26,32 +26,34 @@ This affects you in two important ways:
 - Estimators and transformers that require continuous features will now **reject** datasets with integer columns. For example, training a [K Means](clusterers/k-means.md), [Ridge](regressors/ridge.md), or any neural network on a column of `[1, 2, 3]` will throw an `InvalidArgumentException` because the features are no longer continuous.
 - A column that mixes integers and floats such as `[1, 2, 3.0]` is no longer homogeneous and will fail **dataset validation** with an `InvalidArgumentException`.
 
-**How to migrate** — Cast integer features to floats. The simplest way is to cast your data before instantiating a dataset object:
+The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a Pipeline:
 
 ```php
-$samples = array_map(
-    fn ($sample) => array_map(fn ($value) => is_int($value) ? (float) $value : $value, $sample),
-    $samples,
-);
+use Rubix\ML\Transformers\FloatTypeConverter;
 
-$dataset = new Labeled($samples, $labels);
+$dataset->apply(new FloatTypeConverter());
 ```
 
-Alternatively, the new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a Pipeline:
+Or within a [Pipeline](./pipeline.md):
 
 ```php
 use Rubix\ML\Pipeline;
 use Rubix\ML\Clusterers\KMeans;
-use Rubix\ML\Transformers\FloatTypeConverter;
 
-$dataset = $dataset->apply(new FloatTypeConverter());
-
-// or inside a pipeline
-$estimator = new Pipeline([new FloatTypeConverter()], new KMeans(5));
+$estimator = new Pipeline([
+    new FloatTypeConverter(),
+    // ...
+], new KMeans(5));
 ```
 
-!!! warning
-    It is a good idea to cast integer features to floats at the point of extraction (i.e. from CSV, JSON, or a database) so that your dataset objects remain constructible. If a column is *intended* to be categorical, no action is needed.
+Output of certain Transformers such as [One Hot Encoder](transformers/one-hot-encoder.md), [Word Count Vectorizer](transformers/word-count-vectorizer.md), and [Token Hashing Vectorizer](transformers/token-hashing-vectorizer.md) are now interpretted as categorical by default. Use [Float Type Converter](transformers/float-type-converter.md) after the initial transformation to recover the old behavior.
+
+```php
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\FloatTypeConverter;
+
+$dataset->apply(new OneHotEncoder())->apply(new FloatTypeConverter());
+```
 
 ### 2. Cross Entropy loss was split into Binary and Multiclass
 
