@@ -70,7 +70,7 @@ $mlp = new MultilayerPerceptron([], costFn: new CrossEntropy());
 $mlp = new MultilayerPerceptron([], costFn: new MulticlassCrossEntropy());
 ```
 
-If you did not pass a `CrossEntropy` cost function explicitly, no change is needed — [Logistic Regression](classifiers/logistic-regression.md) defaults to `BinaryCrossEntropy`, while the [MLP](classifiers/multilayer-perceptron.md), [Softmax Classifier](classifiers/softmax-classifier.md), and [MLP Regressor](regressors/mlp-regressor.md) default to `MulticlassCrossEntropy`.
+If you did not pass a `CrossEntropy` cost function explicitly, no change is needed — [Logistic Regression](classifiers/logistic-regression.md) defaults to `BinaryCrossEntropy`, while the [MLP](classifiers/multilayer-perceptron.md) and [Softmax Classifier](classifiers/softmax-classifier.md) default to `MulticlassCrossEntropy`. [MLP Regressor](regressors/mlp-regressor.md) defaults to `LeastSquares`.
 
 ### 3. The L2 Penalty parameter was removed from MLP learners
 
