@@ -41,7 +41,6 @@
     - Added cleanup() method to remove neural network residual state
     - Murmur3 new default Token Hashing Vectorizer hash function
     - Dataset fold() now returns excess samples in last fold
-    - One Hot Encoder casts features to floats instead of integers
     
 - 2.5.12
     - Fix Adaboost proba() probability normalization
