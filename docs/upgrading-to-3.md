@@ -47,7 +47,7 @@ use Rubix\ML\Transformers\FloatTypeConverter;
 $dataset = $dataset->apply(new FloatTypeConverter());
 
 // or inside a pipeline
-$estimator = new Pipeline(new FloatTypeConverter(), new KMeans(5));
+$estimator = new Pipeline([new FloatTypeConverter()], new KMeans(5));
 ```
 
 !!! warning
