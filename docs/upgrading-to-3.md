@@ -26,15 +26,13 @@ This affects you in two important ways:
 - Estimators and transformers that require continuous features will now **reject** datasets with integer columns. For example, training a [K Means](clusterers/k-means.md), [Ridge](regressors/ridge.md), or any neural network on a column of `[1, 2, 3]` will throw an `InvalidArgumentException` because the features are no longer continuous.
 - A column that mixes integers and floats such as `[1, 2, 3.0]` is no longer homogeneous and will fail **dataset validation** with an `InvalidArgumentException`.
 
-The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a Pipeline:
+The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a [Pipeline](./pipeline.md):
 
 ```php
 use Rubix\ML\Transformers\FloatTypeConverter;
 
 $dataset->apply(new FloatTypeConverter());
 ```
-
-Or within a [Pipeline](./pipeline.md):
 
 ```php
 use Rubix\ML\Pipeline;
@@ -72,7 +70,7 @@ $mlp = new MultilayerPerceptron([], costFn: new CrossEntropy());
 $mlp = new MultilayerPerceptron([], costFn: new MulticlassCrossEntropy());
 ```
 
-If you did not pass a `CrossEntropy` cost function explicitly, no change is needed — [Logistic Regression](classifiers/logistic-regression.md) defaults to `BinaryCrossEntropy`, while the [MLP](classifiers/multilayer-perceptron.md) and [Softmax Classifier](classifiers/softmax-classifier.md) default to `MulticlassCrossEntropy`. [MLP Regressor](regressors/mlp-regressor.md) defaults to `LeastSquares`.
+If you did not pass a `CrossEntropy` cost function explicitly, no change is needed — [Logistic Regression](classifiers/logistic-regression.md) defaults to `BinaryCrossEntropy`, while the [MLP](classifiers/multilayer-perceptron.md) and [Softmax Classifier](classifiers/softmax-classifier.md) default to `MulticlassCrossEntropy`.
 
 ### 3. The L2 Penalty parameter was removed from MLP learners
 
