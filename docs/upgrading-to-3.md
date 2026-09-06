@@ -121,7 +121,7 @@ $csv->export($iterator, true);            // overwrite, as before
 
 ### 6. Spatial trees now constrain their distance kernels
 
-The [Ball Tree](graph/trees/ball-tree.md) and [Vantage Tree](graph/trees/vantage-tree.md) now require a Subadditive distance kernel, and the [K-d Tree](graph/trees/k-d-tree.md) requires a *Monotonic* kernel. Passing any other kernel, including a custom one, throws an `InvalidArgumentException`.
+The [Ball Tree](graph/trees/ball-tree.md) and [Vantage Tree](graph/trees/vantage-tree.md) now require a Subadditive distance kernel, and the [K-d Tree](graph/trees/k-d-tree.md) requires a *Monotonic* kernel. Passing any other kernel, including a custom one that doesn't implement the new interfaces, throws an `InvalidArgumentException`.
 
 - Ball Tree / Vantage Tree kernels must implement `Rubix\ML\Kernels\Distance\Subadditive`
 - K-d Tree kernels must implement `Rubix\ML\Kernels\Distance\Monotonic`
@@ -197,7 +197,7 @@ The `fold()` method of both [Unlabeled](datasets/unlabeled.md) and [Labeled](dat
 
 ### 14. Interval Discretizer now outputs integers
 
-The [Interval Discretizer](transformers/interval-discretizer.md) now encodes intervals as integer categories instead of numeric strings. Consumers that expect string output — for example, when feeding a one-hot encoder or writing to CSV — should cast the values to strings. The change aligns with integers now being interpreted as categorical data.
+The [Interval Discretizer](transformers/interval-discretizer.md) now casts intervals as integers instead of strings. Consumers that expect string output — for example, when feeding a one-hot encoder or writing to CSV — should cast the values to strings. The change aligns with integers now being interpreted as categorical data.
 
 ```php
 use Rubix\ML\Transformers\IntervalDiscretizer;
@@ -210,7 +210,7 @@ $transformer = new IntervalDiscretizer(5); // outputs ints, e.g. 0 .. 4
 A few changes affect [model persistence](model-persistence.md):
 
 - **RBX major-version tracking** — the [RBX serializer](serializers/rbx.md) now tracks the *major* library version rather than the minor version.
-- **Revision mismatch warning** — the RBX serializer now emits a warning (instead of failing or proceeding silently) when a class revision mismatch is detected.
+- **Revision mismatch warning** — the RBX serializer now emits a warning instead of an exception when a class revision mismatch is detected.
 - **Atomic writes** — the [Filesystem persister](persisters/filesystem.md) now writes files atomically, so writes either fully succeed or leave the previous file intact.
 - **SVC class map sidecar** — [SVC](classifiers/svc.md) now saves and restores its class label map via a sidecar file. Re-save any SVC/SVR models trained with 2.x to capture their class maps.
 
@@ -249,19 +249,24 @@ The following changes are additive. They require no action to keep existing code
 
 [K Nearest Neighbors](classifiers/k-nearest-neighbors.md), the [KNN Regressor](regressors/knn-regressor.md), and [Isolation Forest](anomaly-detectors/isolation-forest.md) now implement the [Parallel](parallel.md) interface. K-nearest neighbors splits inference across worker processes, and Isolation Forest splits both training and inference — each tree grows and scores independently.
 
-Like all parallel estimators, they use a backend to process tasks. The default is the [Serial](backends/serial.md) backend, which runs everything in a single process and behaves exactly as before. To actually parallelize, set one of the multiprocessing backends:
+Like all parallel estimators, they use a Backend to process tasks. The default is the [Serial](backends/serial.md) backend, which runs everything in a single process and behaves exactly as before. To actually parallelize, set one of the multiprocessing backends:
 
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
 
 $estimator = new KNearestNeighbors(5);
 
 $estimator->setBackend(new Amp());
+
+// or ...
+
+$estimator->setBackend(new Swoole(16));
 ```
 
 !!! note
-    Backends now default to the number of *physical* CPU cores rather than logical cores — see the backend changes in [item 7](#7-the-backend-interface-gained-a-workers-method).
+    Number of workers now default to the number of *physical* CPU cores rather than logical cores — see the Backend changes in [item 7](#7-the-backend-interface-gained-a-workers-method).
 
 ### 20. Disk-based neural network snapshots
 
@@ -271,8 +276,14 @@ By default snapshots are written to a temporary file under `sys_get_temp_dir()`.
 
 ```php
 use Rubix\ML\Classifiers\MultilayerPerceptron;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 
-$mlp = new MultilayerPerceptron([new Dense(100)]);
+$mlp = new MultilayerPerceptron([
+    new Dense(100),
+    new Activation(new SiLU()),
+]);
 
 $mlp->setSnapshotPath('/var/tmp/mlp-snapshot.dat');
 ```
@@ -325,7 +336,4 @@ The new [Float Type Converter](transformers/float-type-converter.md) transformer
 use Rubix\ML\Transformers\FloatTypeConverter;
 
 $dataset->apply(new FloatTypeConverter());
-
-// or inside a pipeline
-$estimator = new Pipeline(new FloatTypeConverter(), new KMeans(5));
 ```
