@@ -13,6 +13,7 @@ use Countable;
 use function count;
 use function array_keys;
 use function array_key_exists;
+use function array_walk;
 
 /**
  * Set
@@ -47,9 +48,7 @@ class Set implements ArrayAccess, IteratorAggregate, Countable
      */
     public function __construct(mixed ...$members)
     {
-        foreach ($members as $member) {
-            $this->add($member);
-        }
+        array_walk($members, [$this, 'add']);
     }
 
     /**
