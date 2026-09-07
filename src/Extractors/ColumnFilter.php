@@ -4,6 +4,9 @@ namespace Rubix\ML\Extractors;
 
 use Traversable;
 
+use function array_key_exists;
+use function array_values;
+
 /**
  * Column Filter
  *

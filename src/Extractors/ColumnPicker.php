@@ -5,6 +5,9 @@ namespace Rubix\ML\Extractors;
 use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
+use function array_key_exists;
+use function array_values;
+
 /**
  * Column Picker
  *
