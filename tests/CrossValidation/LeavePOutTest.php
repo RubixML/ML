@@ -19,6 +19,7 @@ use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[Group('Validators')]
@@ -110,6 +111,20 @@ class LeavePOutTest extends TestCase
                 $this->greaterThanOrEqual($min),
                 $this->lessThanOrEqual($max)
             )
+        );
+    }
+
+    #[Test]
+    public function tooFewSamplesThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $dataset = $this->generator->generate(5);
+
+        $this->validator->test(
+            estimator: $this->estimator,
+            dataset: $dataset,
+            metric: $this->metric
         );
     }
 }
