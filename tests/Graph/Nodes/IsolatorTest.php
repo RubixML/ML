@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\Isolator;
+use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
@@ -39,6 +40,35 @@ class IsolatorTest extends TestCase
             value: self::VALUE,
             subsets: $subsets
         );
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(Isolator::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+    }
+
+    #[Test]
+    public function split() : void
+    {
+        $dataset = Unlabeled::quick(self::SAMPLES);
+
+        $node = Isolator::split($dataset);
+
+        $this->assertInstanceOf(Isolator::class, $node);
+    }
+
+    #[Test]
+    public function splitConstantZeroColumn() : void
+    {
+        $dataset = Unlabeled::quick([[0.0], [0.0], [0.0]]);
+
+        $node = Isolator::split($dataset);
+
+        $this->assertInstanceOf(Isolator::class, $node);
+
+        $this->assertEquals(0.0, $node->value());
     }
 
     #[Test]

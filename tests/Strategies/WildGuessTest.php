@@ -69,4 +69,14 @@ class WildGuessTest extends TestCase
 
         $this->strategy->fit([]);
     }
+
+    #[Test]
+    public function fitGuessConstantZero() : void
+    {
+        $this->strategy->fit([0.0, 0.0, 0.0]);
+
+        $this->assertTrue($this->strategy->fitted());
+
+        $this->assertEquals(0.0, $this->strategy->guess());
+    }
 }
