@@ -1,5 +1,9 @@
 # Changelog
 
+- 2.5.13
+    - Fix SQL Table offset syntax to work with Postgres
+    - Prevent SQL Table injection attack
+
 - 2.5.12
     - Fix Adaboost proba() probability normalization
     - Optimize minmax operations
