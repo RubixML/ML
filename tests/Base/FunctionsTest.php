@@ -16,6 +16,7 @@ use Generator;
 use function Rubix\ML\argmin;
 use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
+use function Rubix\ML\minmax;
 use function Rubix\ML\sigmoid;
 use function Rubix\ML\comb;
 use function Rubix\ML\linspace;
@@ -41,6 +42,7 @@ use function is_infinite;
 #[CoversFunction('\Rubix\ML\iterator_map')]
 #[CoversFunction('\Rubix\ML\linspace')]
 #[CoversFunction('\Rubix\ML\logsumexp')]
+#[CoversFunction('\Rubix\ML\minmax')]
 #[CoversFunction('\Rubix\ML\sigmoid')]
 #[CoversFunction('\Rubix\ML\warn')]
 #[CoversFunction('\Rubix\ML\warn_deprecated')]
@@ -197,6 +199,20 @@ class FunctionsTest extends TestCase
         yield [10.0, 0.9999546021312976];
     }
 
+    /**
+     * @return Generator<mixed[]>
+     */
+    public static function minmaxProvider() : Generator
+    {
+        yield [[4.2], 4.2, 4.2];
+
+        yield [[1, 2, 3, 4, 5], 1, 5];
+
+        yield [[-3.5, 0.1, 2.7, -3.5], -3.5, 2.7];
+
+        yield [[42, 'yes' => 0.8, 7], 0.8, 42];
+    }
+
     #[Test]
     public function logsumexp() : void
     {
@@ -241,30 +257,15 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @test
-     * @dataProvider minmaxProvider
-     *
      * @param (float|int)[] $input
      * @param float|int $min
      * @param float|int $max
      */
+    #[Test]
+    #[DataProvider('minmaxProvider')]
     public function minmax(array $input, $min, $max) : void
     {
         $this->assertEquals([$min, $max], minmax($input));
-    }
-
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function minmaxProvider() : Generator
-    {
-        yield [[4.2], 4.2, 4.2];
-
-        yield [[1, 2, 3, 4, 5], 1, 5];
-
-        yield [[-3.5, 0.1, 2.7, -3.5], -3.5, 2.7];
-
-        yield [[42, 'yes' => 0.8, 7], 0.8, 42];
     }
 
     /**
@@ -386,6 +387,14 @@ class FunctionsTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         argmin([NAN, NAN]);
+    }
+
+    #[Test]
+    public function minmaxUndefinedOnEmptySet() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        minmax([]);
     }
 
     #[Test]

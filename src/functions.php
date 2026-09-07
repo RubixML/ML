@@ -77,10 +77,15 @@ namespace Rubix\ML
      * @internal
      *
      * @param (int|float)[] $values
+     * @throws InvalidArgumentException
      * @return array{int|float, int|float}
      */
     function minmax(array $values) : array
     {
+        if (empty($values)) {
+            throw new InvalidArgumentException('MinMax is undefined for empty set.');
+        }
+
         $min = $max = $values[0];
 
         foreach ($values as $value) {
