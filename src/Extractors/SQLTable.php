@@ -11,6 +11,7 @@ use PDO;
 use function Rubix\ML\iterator_first;
 use function count;
 use function array_keys;
+use function preg_match;
 
 /**
  * SQL Table
@@ -25,6 +26,11 @@ use function array_keys;
  */
 class SQLTable implements Extractor
 {
+    /**
+     * The regex pattern for validating table names.
+     */
+    protected const string TABLE_NAME_PATTERN = '/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/';
+
     /**
      * The PDO connection to the database.
      *
@@ -60,13 +66,17 @@ class SQLTable implements Extractor
             throw new InvalidArgumentException('Table name cannot be empty.');
         }
 
+        if (!preg_match(self::TABLE_NAME_PATTERN, $table)) {
+            throw new InvalidArgumentException("Table name '{$table}' is not a valid identifier.");
+        }
+
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
         }
 
         $this->connection = $connection;
-        $this->table = $connection->quote($table);
+        $this->table = $table;
         $this->batchSize = $batchSize;
     }
 
@@ -87,7 +97,7 @@ class SQLTable implements Extractor
      */
     public function getIterator() : Traversable
     {
-        $query = "SELECT * FROM {$this->table} LIMIT :offset, {$this->batchSize}";
+        $query = "SELECT * FROM {$this->table} LIMIT {$this->batchSize} OFFSET :offset";
 
         $statement = $this->connection->prepare($query);
 
