@@ -79,7 +79,9 @@ class WildGuess implements Strategy
 
         [$min, $max] = minmax($values);
 
-        $phi = getrandmax() / max(abs($max), abs($min));
+        $maxAbs = max(abs($max), abs($min));
+
+        $phi = $maxAbs > 0.0 ? getrandmax() / $maxAbs : getrandmax();
 
         $this->min = (int) floor($min * $phi);
         $this->max = (int) ceil($max * $phi);
