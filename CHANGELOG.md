@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.13
+    - Pipeline add missing traided guard on score method
+
 - 2.5.12
     - Fix Adaboost proba() probability normalization
     - Optimize minmax operations
