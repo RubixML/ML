@@ -16,6 +16,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\AnomalyDetectors\IsolationForest;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -25,6 +26,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use ReflectionProperty;
 
 #[Group('MetaEstimators')]
 #[CoversClass(BootstrapAggregator::class)]
@@ -188,6 +190,53 @@ class BootstrapAggregatorTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Integer labels are preserved through the ensemble')]
+    public function integerLabelsArePreserved() : void
+    {
+        $estimator = new BootstrapAggregator(
+            new IsolationForest(contamination: 0.5),
+            estimators: 5,
+            ratio: 0.7
+        );
+
+        $dataset = Unlabeled::quick([
+            [0, 0],
+            [1, 0],
+            [0, 1],
+            [1, 1],
+            [0, 0],
+            [1, 1],
+            [0.5, 0.5],
+            [10, 10],
+        ]);
+
+        $estimator->train($dataset);
+
+        $predictions = $estimator->predict($dataset);
+
+        foreach ($predictions as $prediction) {
+            $this->assertIsInt($prediction);
+            $this->assertContains($prediction, [0, 1]);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Trained only when every base estimator in the ensemble is trained')]
+    public function trainedRequiresAllEstimatorsTrained() : void
+    {
+        $trained = new IsolationForest();
+        $untrained = new IsolationForest();
+
+        $dataset = Unlabeled::quick([[0, 0], [1, 1]]);
+        $trained->train($dataset);
+
+        $accessor = new ReflectionProperty(BootstrapAggregator::class, 'ensemble');
+        $accessor->setValue($this->estimator, [$trained, $untrained]);
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     #[Test]

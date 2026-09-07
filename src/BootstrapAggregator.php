@@ -210,7 +210,17 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     public function trained() : bool
     {
-        return !empty($this->ensemble);
+        if (empty($this->ensemble)) {
+            return false;
+        }
+
+        foreach ($this->ensemble as $estimator) {
+            if (!$estimator->trained()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -265,7 +275,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->ensemble)) {
+        if (!$this->trained()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -292,12 +302,11 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * Decide on a discrete-valued outcome.
      *
-     * @param string[] $votes
-     * @return string
+     * @param list<int|string> $votes
+     * @return int|string
      */
-    protected function decideDiscrete(array $votes) : string
+    protected function decideDiscrete(array $votes) : int|string
     {
-        /** @var array<string,int<1, max>> $counts */
         $counts = array_count_values($votes);
 
         return argmax($counts);
