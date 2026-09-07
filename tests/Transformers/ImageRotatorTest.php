@@ -63,12 +63,12 @@ class ImageRotatorTest extends TestCase
      */
     public function transformWideImage90Degrees() : void
     {
-        $source = imagecreatetruecolor(80, 40);
-        $dataset = Unlabeled::quick([
-            [$source, 'whatever', 69],
-        ]);
-
         foreach ([90.0, 270.0] as $degrees) {
+            $source = imagecreatetruecolor(80, 40);
+            $dataset = Unlabeled::quick([
+                [$source, 'whatever', 69],
+            ]);
+
             $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
             $mock->method('rotationAngle')->will($this->returnValue($degrees));
 
@@ -79,7 +79,11 @@ class ImageRotatorTest extends TestCase
             $this->assertSame(40, imagesy($sample[0]));
             $this->assertSame('whatever', $sample[1]);
 
-            imagedestroy($sample[0]);
+            if ($sample[0] !== $source) {
+                imagedestroy($sample[0]);
+            }
+
+            imagedestroy($source);
         }
     }
 
