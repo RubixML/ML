@@ -41,6 +41,7 @@
     - Added cleanup() method to remove neural network residual state
     - Murmur3 new default Token Hashing Vectorizer hash function
     - Dataset fold() now returns excess samples in last fold
+    - Increase default Decision Tree max leaf node size from 3 to 5
     
 - 2.5.12
     - Fix Adaboost proba() probability normalization

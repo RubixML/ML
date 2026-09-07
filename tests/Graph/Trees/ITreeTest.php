@@ -11,6 +11,7 @@ use Rubix\ML\Graph\Nodes\Depth;
 use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Trees')]
@@ -72,5 +73,21 @@ class ITreeTest extends TestCase
         $this->tree->grow($dataset);
 
         $this->assertEquals(2, $this->tree->height());
+    }
+
+    #[Test]
+    public function searchEqualSplitValue() : void
+    {
+        $dataset = new Labeled(
+            [[2], [2], [2], [2], [2], [7]],
+            array_fill(0, 6, 'anomaly')
+        );
+
+        $this->tree->grow($dataset);
+
+        $this->assertGreaterThan(
+            $this->tree->search([7])->depth(),
+            $this->tree->search([2])->depth()
+        );
     }
 }

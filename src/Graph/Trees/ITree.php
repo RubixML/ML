@@ -165,14 +165,14 @@ class ITree implements BinaryTree
             if ($current instanceof Isolator) {
                 $value = $current->value();
 
-                if (is_string($value)) {
-                    if ($sample[$current->column()] === $value) {
+                if (is_float($value)) {
+                    if ($sample[$current->column()] <= $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
                     }
                 } else {
-                    if ($sample[$current->column()] < $value) {
+                    if ($sample[$current->column()] === $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
