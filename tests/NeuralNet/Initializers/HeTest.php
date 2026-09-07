@@ -10,6 +10,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use function max;
+use function sqrt;
+
 #[Group('Initializers')]
 #[CoversClass(He::class)]
 class HeTest extends TestCase
@@ -38,5 +41,19 @@ class HeTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $w);
         $this->assertEquals([3, 4], $w->shape());
+    }
+
+    #[Test]
+    public function initializeHasCorrectScale() : void
+    {
+        $fanIn = 1000;
+        $fanOut = 100;
+        $limit = sqrt(6.0 / $fanIn);
+
+        $w = $this->initializer->initialize($fanIn, $fanOut);
+        $maxAbs = max($w->abs()->max()->asArray());
+
+        $this->assertLessThanOrEqual($limit * 1.0001, $maxAbs);
+        $this->assertGreaterThanOrEqual(0.98 * $limit, $maxAbs);
     }
 }

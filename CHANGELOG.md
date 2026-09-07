@@ -42,6 +42,8 @@
     - Murmur3 new default Token Hashing Vectorizer hash function
     - Dataset fold() now returns excess samples in last fold
     - Increase default Decision Tree max leaf node size from 3 to 5
+    - Canonicalized `He` and `Xavier 2` initializers
+    - `Xavier 2` now extends `He` as a backward-compatible alias
     
 - 2.5.13
     - Pipeline add missing traided guard on score method

@@ -10,7 +10,7 @@ use function sqrt;
  * Xavier 1
  *
  * The Xavier 1 initializer draws from a uniform distribution [-limit, limit]
- * where *limit* is squal to sqrt(6 / (fanIn + fanOut)). This initializer is
+ * where *limit* is equal to sqrt(6 / (fanIn + fanOut)). This initializer is
  * best suited for layers that feed into an activation layer that outputs a
  * value between 0 and 1 such as Softmax or Sigmoid.
  *
