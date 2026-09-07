@@ -414,6 +414,11 @@ class Unlabeled extends Dataset
      */
     public function randomSubsetWithReplacement(int $n) : self
     {
+        if ($this->empty()) {
+            throw new InvalidArgumentException('Cannot generate'
+                . ' a random subset from an empty dataset.');
+        }
+
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a subset of'
                 . " less than 1 sample, $n given.");
@@ -440,6 +445,11 @@ class Unlabeled extends Dataset
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
     {
+        if ($this->empty()) {
+            throw new InvalidArgumentException('Cannot generate'
+                . ' a random subset from an empty dataset.');
+        }
+
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a'
                 . " subset of less than 1 sample, $n given.");

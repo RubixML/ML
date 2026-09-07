@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
@@ -492,6 +493,22 @@ class LabeledTest extends TestCase
         $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, self::WEIGHTS);
 
         $this->assertCount(3, $subset);
+    }
+
+    #[Test]
+    public function randomSubsetWithReplacementEmptyDataset() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Labeled::quick([], [])->randomSubsetWithReplacement(3);
+    }
+
+    #[Test]
+    public function randomWeightedSubsetWithReplacementEmptyDataset() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Labeled::quick([], [])->randomWeightedSubsetWithReplacement(3, []);
     }
 
     #[Test]

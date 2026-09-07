@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function Rubix\ML\array_transpose;
@@ -382,6 +383,22 @@ class UnlabeledTest extends TestCase
         $subset = $this->dataset->randomWeightedSubsetWithReplacement(n: 3, weights: self::WEIGHTS);
 
         $this->assertCount(3, $subset);
+    }
+
+    #[Test]
+    public function randomSubsetWithReplacementEmptyDataset() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Unlabeled::quick([])->randomSubsetWithReplacement(3);
+    }
+
+    #[Test]
+    public function randomWeightedSubsetWithReplacementEmptyDataset() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Unlabeled::quick([])->randomWeightedSubsetWithReplacement(3, []);
     }
 
     #[Test]
