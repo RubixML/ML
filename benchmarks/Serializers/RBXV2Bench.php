@@ -2,29 +2,28 @@
 
 namespace Rubix\ML\Benchmarks\Persisters\Serializers;
 
-use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Serializers\RBXV1;
+use Rubix\ML\Serializers\RBXV2;
 
 /**
  * @Groups({"Serializers"})
  * @BeforeMethods({"setUp"})
  */
-class RBXV1Bench
+class RBXV2Bench
 {
     protected const TRAINING_SIZE = 10000;
 
     /**
-     * @var RBXV1
+     * @var RBXV2
      */
-    protected RBXV1 $serializer;
+    protected RBXV2 $serializer;
 
     /**
-     * @var Persistable
+     * @var \Rubix\ML\Persistable
      */
-    protected Persistable $persistable;
+    protected $persistable;
 
     public function setUp() : void
     {
@@ -42,7 +41,7 @@ class RBXV1Bench
 
         $this->persistable = $estimator;
 
-        $this->serializer = new RBXV1();
+        $this->serializer = new RBXV2();
     }
 
     /**

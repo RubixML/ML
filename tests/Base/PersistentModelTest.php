@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\PersistentModel;
-use Rubix\ML\Serializers\RBX;
+use Rubix\ML\Serializers\RBXV2;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Classifiers\GaussianNB;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ class PersistentModelTest extends TestCase
         $this->estimator = new PersistentModel(
             base: new GaussianNB(),
             persister: new Filesystem('test.model'),
-            serializer: new RBX()
+            serializer: new RBXV2()
         );
     }
 
@@ -53,7 +53,7 @@ class PersistentModelTest extends TestCase
         $expected = [
             'base' => new GaussianNB(),
             'persister' => new Filesystem('test.model'),
-            'serializer' => new RBX(),
+            'serializer' => new RBXV2(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
