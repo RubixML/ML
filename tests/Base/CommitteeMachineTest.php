@@ -224,6 +224,23 @@ class CommitteeMachineTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Predict partially trained')]
+    public function predictPartiallyTrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $experts = $this->estimator->experts();
+
+        $experts[count($experts) - 1]->train($training);
+
+        self::assertFalse($this->estimator->trained());
+
+        $this->estimator->predict($training);
+    }
+
+    #[Test]
     #[TestDox('Backend is transient and resolved lazily')]
     public function backendIsTransient() : void
     {

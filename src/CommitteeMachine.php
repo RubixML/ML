@@ -252,7 +252,13 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
      */
     public function trained() : bool
     {
-        return $this->experts ? end($this->experts)->trained() : false;
+        foreach ($this->experts as $expert) {
+            if (!$expert->trained()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
