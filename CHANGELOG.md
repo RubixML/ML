@@ -43,6 +43,9 @@
     - Dataset fold() now returns excess samples in last fold
     - Increase default Decision Tree max leaf node size from 3 to 5
     
+- 2.5.13
+    - Pipeline add missing traided guard on score method
+
 - 2.5.12
     - Fix Adaboost proba() probability normalization
     - Optimize minmax operations
