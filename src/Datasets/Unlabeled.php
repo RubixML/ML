@@ -284,7 +284,12 @@ class Unlabeled extends Dataset
 
         $samples = $this->samples;
 
-        $n = (int) floor(count($samples) / $k);
+        if ($k > $this->numSamples()) {
+            throw new InvalidArgumentException('K must be less than or equal '
+                . 'to the number of samples.');
+        }
+
+        $n = (int) floor($this->numSamples() / $k);
 
         $folds = [];
 

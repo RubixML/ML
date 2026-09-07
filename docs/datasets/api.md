@@ -178,7 +178,7 @@ public fold(int $k = 10) : self[]
 ```
 
 !!! note
-    If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.
+    If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds. If *k* is greater than the number of samples then an `InvalidArgumentException` is thrown.
 
 ```php
 $folds = $dataset->fold(8);

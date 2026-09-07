@@ -521,6 +521,11 @@ class Labeled extends Dataset
                 . " 1 fold, $k given.");
         }
 
+        if ($k > $this->numSamples()) {
+            throw new InvalidArgumentException('K must be less than or equal '
+                . 'to the number of samples.');
+        }
+
         $n = (int) floor($this->numSamples() / $k);
 
         $samples = $this->samples;
@@ -554,9 +559,19 @@ class Labeled extends Dataset
                 . " 2 folds, $k given.");
         }
 
+        $strata = $this->stratifyByLabel();
+
+        foreach ($strata as $label => $stratum) {
+            if ($stratum->numSamples() < $k) {
+                throw new InvalidArgumentException('K must be less than or '
+                    . 'equal to the number of samples in the smallest '
+                    . 'stratum.');
+            }
+        }
+
         $folds = [];
 
-        foreach ($this->stratifyByLabel() as $stratum) {
+        foreach ($strata as $stratum) {
             foreach ($stratum->fold($k) as $j => $fold) {
                 $folds[$j][] = $fold;
             }

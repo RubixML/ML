@@ -430,6 +430,14 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
+    public function foldTooManyFolds() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->fold(7);
+    }
+
+    #[Test]
     public function stratifiedFold() : void
     {
         $folds = $this->dataset->stratifiedFold(2);
@@ -437,6 +445,14 @@ class LabeledTest extends TestCase
         $this->assertCount(2, $folds);
         $this->assertCount(3, $folds[0]);
         $this->assertCount(3, $folds[1]);
+    }
+
+    #[Test]
+    public function stratifiedFoldTooManyFolds() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->stratifiedFold(3);
     }
 
     #[Test]

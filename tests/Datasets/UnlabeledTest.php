@@ -342,6 +342,14 @@ class UnlabeledTest extends TestCase
     }
 
     #[Test]
+    public function foldTooManyFolds() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->fold(7);
+    }
+
+    #[Test]
     public function batch() : void
     {
         $batches = $this->dataset->batch(2);

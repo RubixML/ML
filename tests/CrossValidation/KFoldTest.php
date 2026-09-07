@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
@@ -110,6 +112,23 @@ class KFoldTest extends TestCase
                 $this->greaterThanOrEqual($min),
                 $this->lessThanOrEqual($max)
             )
+        );
+    }
+
+    #[Test]
+    public function tooManyFoldsForDatasetThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $dataset = Labeled::quick(
+            samples: [[0.1], [0.2], [0.3], [0.4]],
+            labels: [0, 0, 1, 1]
+        );
+
+        (new KFold(5))->test(
+            estimator: $this->estimator,
+            dataset: $dataset,
+            metric: $this->metric
         );
     }
 }

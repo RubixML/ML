@@ -109,6 +109,9 @@ Return *k* equal size subsets of the dataset such that class proportions remain 
 public stratifiedFold($k = 10) : array
 ```
 
+!!! note
+    *k* must be less than or equal to the number of samples in the *smallest* stratum, otherwise an `InvalidArgumentException` is thrown.
+
 ```php
 $folds = $dataset->stratifiedFold(3);
 ```
