@@ -26,10 +26,7 @@ use function preg_match;
  */
 class SQLTable implements Extractor
 {
-    /**
-     * The regex pattern for validating table names.
-     */
-    protected const string TABLE_NAME_PATTERN = '/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/';
+    protected const TABLE_NAME_PATTERN = '/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/';
 
     /**
      * The PDO connection to the database.
