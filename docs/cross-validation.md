@@ -81,8 +81,10 @@ Clustering metrics derive their scores from a contingency table which can be tho
 
 | Name | Range | Formula | Notes |
 | --- | --- | --- | --- |
-| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | $1-\frac{H(K, C)}{H(K)}$ | Not suited for hyper-parameter tuning |
-| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | $1-\frac{H(C, K)}{H(C)}$ | Not suited for hyper-parameter tuning |
+| [Class Purity](cross-validation/metrics/class-purity.md) | [0, 1] | ${\frac {1}{m}}\sum _{j=1}^{m}{\frac {\max _{i}n_{ij}}{n_{j}}}$ | Not suited for hyper-parameter tuning |
+| [Cluster Purity](cross-validation/metrics/cluster-purity.md) | [0, 1] | ${\frac {1}{k}}\sum _{i=1}^{k}{\frac {\max _{j}n_{ij}}{n_{i}}}$ | Not suited for hyper-parameter tuning |
+| [Completeness](cross-validation/metrics/completeness.md) | [0, 1] | $1-\frac{H(K \mid C)}{H(K)}$ | Not suited for hyper-parameter tuning |
+| [Homogeneity](cross-validation/metrics/homogeneity.md) | [0, 1] | $1-\frac{H(C \mid K)}{H(C)}$ | Not suited for hyper-parameter tuning |
 | [Rand Index](cross-validation/metrics/rand-index.md) | [-1, 1] | ${\frac {\left.\sum _{ij}{\binom {n_{ij}}{2}}-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}{\left.{\frac {1}{2}}\left[\sum _{i}{\binom {a_{i}}{2}}+\sum _{j}{\binom {b_{j}}{2}}\right]-\left[\sum _{i}{\binom {a_{i}}{2}}\sum _{j}{\binom {b_{j}}{2}}\right]\right/{\binom {n}{2}}}}$ | |
 | [V Measure](cross-validation/metrics/v-measure.md) | [0, 1] | $\frac{(1+\beta)hc}{\beta h + c}$ | |
 

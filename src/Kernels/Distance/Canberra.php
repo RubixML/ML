@@ -21,7 +21,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Canberra implements Distance
+class Canberra implements Distance, Subadditive, Monotonic
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -42,8 +42,8 @@ class Canberra implements Distance
      *
      * @internal
      *
-     * @param list<int|float> $a
-     * @param list<int|float> $b
+     * @param list<float> $a
+     * @param list<float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

@@ -14,17 +14,17 @@ class SoftPlusBench
     /**
      * @var Matrix
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var Matrix
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var SoftPlus
      */
-    protected $activationFn;
+    protected SoftPlus $activationFn;
 
     public function setUp() : void
     {

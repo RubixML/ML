@@ -14,17 +14,17 @@ class LeakyReLUBench
     /**
      * @var Matrix
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var Matrix
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var LeakyReLU
      */
-    protected $activationFn;
+    protected LeakyReLU $activationFn;
 
     public function setUp() : void
     {

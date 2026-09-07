@@ -9,12 +9,14 @@ use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Continuous
- */
+#[Group('Layers')]
+#[CoversClass(Continuous::class)]
 class ContinuousTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -22,26 +24,23 @@ class ContinuousTest extends TestCase
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var (int|float)[]
      */
-    protected $labels;
+    protected array $labels;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Continuous
      */
-    protected $layer;
+    protected Continuous $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
@@ -57,9 +56,7 @@ class ContinuousTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Continuous::class, $this->layer);
@@ -67,9 +64,7 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize(1);

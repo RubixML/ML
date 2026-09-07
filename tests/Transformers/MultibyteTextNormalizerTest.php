@@ -1,51 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\MultibyteTextNormalizer;
-use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\MultibyteTextNormalizer
- */
+#[Group('Transformers')]
+#[CoversClass(MultibyteTextNormalizer::class)]
 class MultibyteTextNormalizerTest extends TestCase
 {
-    /**
-     * @var Unlabeled
-     */
-    protected $dataset;
+    protected Unlabeled $dataset;
 
-    /**
-     * @var MultibyteTextNormalizer
-     */
-    protected $transformer;
+    protected MultibyteTextNormalizer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->transformer = new MultibyteTextNormalizer(false);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(MultibyteTextNormalizer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function transform() : void
     {
-        $dataset = Unlabeled::quick([
+        $dataset = Unlabeled::quick(samples: [
             ['The quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of Coke'],
             ['with a Dandy   umbrella'],
@@ -64,5 +46,19 @@ class MultibyteTextNormalizerTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
+    }
+
+    #[Test]
+    public function transformToUppercase() : void
+    {
+        $transformer = new MultibyteTextNormalizer(true);
+
+        $dataset = Unlabeled::quick(samples: [
+            ['déjà vu à côté', 42],
+        ]);
+
+        $dataset->apply($transformer);
+
+        $this->assertEquals([['DÉJÀ VU À CÔTÉ', 42]], $dataset->samples());
     }
 }

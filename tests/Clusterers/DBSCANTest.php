@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Clusterers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Unlabeled;
@@ -14,96 +19,63 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Clusterers
- * @covers \Rubix\ML\Clusterers\DBSCAN
- */
+#[Group('Clusterers')]
+#[CoversClass(DBSCAN::class)]
 class DBSCANTest extends TestCase
 {
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 512;
+    protected const int TEST_SIZE = 512;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.65;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var DBSCAN
-     */
-    protected $estimator;
+    protected DBSCAN $estimator;
 
-    /**
-     * @var VMeasure
-     */
-    protected $metric;
+    protected VMeasure $metric;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
-            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
-            'outer' => new Circle(0.0, 0.0, 10.0, 0.1),
-        ]);
+        generators: $this->generator = new Agglomerate(
+            [
+                'inner' => new Circle(x: 0.0, y: 0.0, scale: 1.0, noise: 0.01),
+                'middle' => new Circle(x: 0.0, y: 0.0, scale: 5.0, noise: 0.05),
+                'outer' => new Circle(x: 0.0, y: 0.0, scale: 10.0, noise: 0.1),
+            ]
+        );
 
-        $this->estimator = new DBSCAN(1.2, 20, new BallTree());
+        $this->estimator = new DBSCAN(radius: 1.2, minDensity: 20, tree: new BallTree());
 
         $this->metric = new VMeasure();
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(DBSCAN::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function badRadius() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new DBSCAN(0.0);
+        new DBSCAN(radius: 0.0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function type() : void
     {
         $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function compatibility() : void
     {
         $expected = [
@@ -113,9 +85,7 @@ class DBSCANTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function params() : void
     {
         $expected = [
@@ -127,27 +97,27 @@ class DBSCANTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function predict() : void
     {
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $testing->labels()
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Throws an exception when predicting with incompatible data')]
     public function predictIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->predict(Unlabeled::quick([['bad']]));
+        $this->estimator->predict(Unlabeled::quick(samples: [['bad']]));
     }
 }

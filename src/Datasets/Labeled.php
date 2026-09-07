@@ -10,7 +10,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function count;
-use function get_class;
 use function gettype;
 use function is_string;
 use function is_numeric;
@@ -78,9 +77,10 @@ class Labeled extends Dataset
      * Build a dataset with the rows from an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $verify
      * @return self
      */
-    public static function fromIterator(iterable $iterator) : self
+    public static function fromIterator(iterable $iterator, bool $verify = true) : self
     {
         $samples = $labels = [];
 
@@ -89,7 +89,7 @@ class Labeled extends Dataset
             $samples[] = $record;
         }
 
-        return self::build($samples, $labels);
+        return new self($samples, $labels, $verify);
     }
 
     /**
@@ -104,12 +104,6 @@ class Labeled extends Dataset
         $samples = $labels = [];
 
         foreach ($datasets as $i => $dataset) {
-            if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Dataset must be'
-                    . ' an instance of Labeled, ' . get_class($dataset)
-                    . ' given.');
-            }
-
             if ($dataset->empty()) {
                 continue;
             }
@@ -192,7 +186,7 @@ class Labeled extends Dataset
      * @throws InvalidArgumentException
      * @return int|float|string
      */
-    public function label(int $offset)
+    public function label(int $offset) : int|float|string
     {
         if (!isset($this->labels[$offset])) {
             throw new InvalidArgumentException("Row at offset $offset not found.");
@@ -513,7 +507,8 @@ class Labeled extends Dataset
     }
 
     /**
-     * Fold the dataset k - 1 times to form k equal size datasets.
+     * Fold the dataset k - 1 times to form k datasets of as equal size as
+     * possible. Any remaining samples are added to the last fold.
      *
      * @param int $k
      * @throws InvalidArgumentException
@@ -533,12 +528,14 @@ class Labeled extends Dataset
 
         $folds = [];
 
-        while (count($folds) < $k) {
+        while (count($folds) < $k - 1) {
             $folds[] = self::quick(
                 array_splice($samples, 0, $n),
                 array_splice($labels, 0, $n)
             );
         }
+
+        $folds[] = self::quick($samples, $labels);
 
         return $folds;
     }
@@ -600,7 +597,7 @@ class Labeled extends Dataset
      * @throws InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByFeature(int $column, $value) : array
+    public function splitByFeature(int $column, string|int|float $value) : array
     {
         $type = $this->featureType($column);
 

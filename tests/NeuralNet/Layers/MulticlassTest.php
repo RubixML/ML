@@ -8,13 +8,15 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Multiclass
- */
+#[Group('Layers')]
+#[CoversClass(Multiclass::class)]
 class MulticlassTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -22,26 +24,23 @@ class MulticlassTest extends TestCase
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var string[]
      */
-    protected $labels;
+    protected array $labels;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Multiclass
      */
-    protected $layer;
+    protected Multiclass $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
@@ -54,14 +53,12 @@ class MulticlassTest extends TestCase
 
         $this->optimizer = new Stochastic(0.001);
 
-        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new CrossEntropy());
+        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new MulticlassCrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Multiclass::class, $this->layer);
@@ -69,9 +66,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize(3);

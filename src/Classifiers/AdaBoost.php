@@ -12,12 +12,15 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
@@ -25,6 +28,7 @@ use Generator;
 use function Rubix\ML\logsumexp;
 use function count;
 use function is_nan;
+use function array_slice;
 use function array_fill;
 use function array_fill_keys;
 use function get_object_vars;
@@ -110,11 +114,32 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected float $minChange;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
+     * The number of epochs to train before evaluating the model with the holdout set.
+     *
+     * @var int
+     */
+    protected int $evalInterval;
+
+    /**
+     * The number of epochs without improvement in the validation score to wait before considering an early stop.
      *
      * @var positive-int
      */
     protected int $window;
+
+    /**
+     * The proportion of training samples to use for validation and progress monitoring.
+     *
+     * @var float
+     */
+    protected float $holdOut;
+
+    /**
+     * The metric used to score the generalization performance of the model during training.
+     *
+     * @var Metric
+     */
+    protected Metric $metric;
 
     /**
      * The ensemble of *weak* classifiers.
@@ -133,16 +158,23 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var array<string,float>|null
+     * @var array<string|int,float>|null
      */
     protected ?array $classes = null;
 
     /**
      * The loss at each epoch from the last training session.
      *
-     * @var list<float>]|null
+     * @var list<float>|null
      */
     protected ?array $losses = null;
+
+    /**
+     * The validation scores at each epoch from the last training session.
+     *
+     * @var float[]|null
+     */
+    protected ?array $scores = null;
 
     /**
      * The dimensionality of the training set.
@@ -157,7 +189,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
+     * @param int $evalInterval
      * @param int $window
+     * @param float $holdOut
+     * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -166,7 +201,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         float $ratio = 0.8,
         int $epochs = 100,
         float $minChange = 1e-4,
-        int $window = 5
+        int $evalInterval = 3,
+        int $window = 5,
+        float $holdOut = 0.1,
+        ?Metric $metric = null
     ) {
         if ($base and !$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base Estimator must be'
@@ -193,9 +231,23 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " greater than 0, $minChange given.");
         }
 
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Eval interval must be'
+                . " greater than 0, $evalInterval given.");
+        }
+
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
+        }
+
+        if ($holdOut < 0.0 or $holdOut > 0.5) {
+            throw new InvalidArgumentException('Hold out ratio must be'
+                . " between 0 and 0.5, $holdOut given.");
+        }
+
+        if ($metric) {
+            EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         $this->base = $base ?? new ClassificationTree(1);
@@ -203,7 +255,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->evalInterval = $evalInterval;
         $this->window = $window;
+        $this->holdOut = $holdOut;
+        $this->metric = $metric ?? new FBeta();
     }
 
     /**
@@ -245,7 +300,10 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
+            'eval interval' => $this->evalInterval,
             'window' => $this->window,
+            'hold out' => $this->holdOut,
+            'metric' => $this->metric,
         ];
     }
 
@@ -273,6 +331,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
+                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
             ];
         }
@@ -281,11 +340,21 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Return the loss at each epoch of the last training session.
      *
-     * @return float[]|null
+     * @return list<float>|null
      */
     public function losses() : ?array
     {
         return $this->losses;
+    }
+
+    /**
+     * Return the validation score at each epoch from the last training session.
+     *
+     * @return float[]|null
+     */
+    public function scores() : ?array
+    {
+        return $this->scores;
     }
 
     /**
@@ -308,9 +377,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $classes = $dataset->possibleOutcomes();
 
-        [$m, $n] = $dataset->shape();
+        [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
 
-        $labels = $dataset->labels();
+        [$minScore, $maxScore] = $this->metric->range()->list();
+
+        [$m, $n] = $training->shape();
+
+        $labels = $training->labels();
 
         $k = count($classes);
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -322,20 +395,28 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $this->classes = array_fill_keys($classes, 0.0);
         $this->featureCount = $n;
 
-        $this->ensemble = $this->influences = $this->losses = [];
+        $this->ensemble = $this->influences = $this->scores = $this->losses = [];
 
-        $prevLoss = $bestLoss = INF;
+        if ($testing->empty() and $this->logger) {
+            $this->logger->notice('Insufficient validation data, '
+                . 'some features are disabled');
+        }
+
+        $bestScore = $minScore;
+        $bestEpoch = $numWorseEpochs = 0;
+        $bestEnsembleSize = 0;
+        $score = null;
+        $prevLoss = INF;
         $lossThreshold = 1.0 - (1.0 / $k);
-        $numWorseEpochs = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $estimator = clone $this->base;
 
-            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
+            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
 
             $estimator->train($subset);
 
-            $predictions = $estimator->predict($dataset);
+            $predictions = $estimator->predict($training);
 
             $loss = 0.0;
 
@@ -346,9 +427,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             }
 
             if (is_nan($loss)) {
-                if ($this->logger) {
-                    $this->logger->warning('Numerical instability detected');
-                }
+                $this->logger?->warning('Numerical instability detected');
 
                 break;
             }
@@ -358,16 +437,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
-
-            if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "Exponential Loss: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
-
-                $this->logger->info($message);
-            }
 
             if ($loss > $lossThreshold) {
                 if ($this->logger) {
@@ -384,19 +453,48 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->ensemble[] = $estimator;
             $this->influences[] = $influence;
 
+            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+
+            if ($evalThisStep) {
+                $score = $this->metric->score(
+                    $this->predict($testing),
+                    $testing->labels()
+                );
+
+                $this->scores[$epoch] = $score;
+            }
+
+            if ($this->logger) {
+                $message = "Epoch: $epoch, Exponential Loss: $loss";
+
+                if ($evalThisStep) {
+                    $message .= ", {$this->metric}: $score";
+                }
+
+                $this->logger->info($message);
+            }
+
+            if ($evalThisStep) {
+                if ($score >= $maxScore) {
+                    break;
+                }
+
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestEpoch = $epoch;
+                    $bestEnsembleSize = count($this->ensemble);
+
+                    $numWorseEpochs = 0;
+                } else {
+                    ++$numWorseEpochs;
+                }
+
+                if ($numWorseEpochs >= $this->window) {
+                    break;
+                }
+            }
+
             if ($lossChange < $this->minChange) {
-                break;
-            }
-
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
                 break;
             }
 
@@ -432,6 +530,15 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $prevLoss = $loss;
         }
 
+        if ($this->scores and end($this->scores) < $bestScore) {
+            $this->ensemble = array_slice($this->ensemble, 0, $bestEnsembleSize);
+            $this->influences = array_slice($this->influences, 0, $bestEnsembleSize);
+
+            if ($this->logger) {
+                $this->logger->info("Model state restored to epoch $bestEpoch");
+            }
+        }
+
         if ($this->logger) {
             $this->logger->info('Training complete');
         }
@@ -452,7 +559,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Estimate the joint probabilities for each possible outcome.
      *
      * @param Dataset $dataset
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -514,9 +621,21 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['logger']);
+        unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

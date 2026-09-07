@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Set;
 use Generator;
 
 use function count;
@@ -180,13 +181,6 @@ class TSNE implements Transformer, Verbose
     protected float $minGradient;
 
     /**
-     * The number of epochs without improvement in the training loss to wait before considering an early stop.
-     *
-     * @var int
-     */
-    protected int $window;
-
-    /**
      * The distance metric used to measure distances between samples in both high and low dimensions.
      *
      * @var Distance
@@ -207,7 +201,6 @@ class TSNE implements Transformer, Verbose
      * @param float $exaggeration
      * @param int $epochs
      * @param float $minGradient
-     * @param int $window
      * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
@@ -218,7 +211,6 @@ class TSNE implements Transformer, Verbose
         float $exaggeration = 12.0,
         int $epochs = 1000,
         float $minGradient = 1e-7,
-        int $window = 5,
         ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
@@ -251,11 +243,6 @@ class TSNE implements Transformer, Verbose
                 . " greater than 0, $minGradient given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Window must be'
-                . " greater than 0, $window given.");
-        }
-
         $dofs = max($dimensions - 1, 1);
 
         $this->dimensions = $dimensions;
@@ -268,7 +255,6 @@ class TSNE implements Transformer, Verbose
         $this->epochs = $epochs;
         $this->early = min(self::MAX_EARLY_EPOCHS, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
-        $this->window = $window;
         $this->kernel = $kernel ?? new Euclidean();
     }
 
@@ -389,18 +375,6 @@ class TSNE implements Transformer, Verbose
                 break;
             }
 
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-
-                $numWorseEpochs = 0;
-            } else {
-                ++$numWorseEpochs;
-            }
-
-            if ($numWorseEpochs >= $this->window) {
-                break;
-            }
-
             if ($epoch === $this->early) {
                 $p = $p->divide($this->exaggeration);
 
@@ -465,7 +439,7 @@ class TSNE implements Transformer, Verbose
         $minBetas = array_fill(0, $m, -INF);
         $maxBetas = array_fill(0, $m, INF);
 
-        $converged = array_fill(0, $m, false);
+        $converged = new Set();
 
         $active = $m;
 
@@ -496,12 +470,12 @@ class TSNE implements Transformer, Verbose
                 ->asArray();
 
             for ($i = 0; $i < $m; ++$i) {
-                if ($converged[$i]) {
+                if ($converged->has($i)) {
                     continue;
                 }
 
                 if (abs($diff[$i]) < self::PERPLEXITY_TOLERANCE) {
-                    $converged[$i] = true;
+                    $converged->add($i);
 
                     --$active;
 
@@ -592,7 +566,6 @@ class TSNE implements Transformer, Verbose
             'exaggeration' => $this->exaggeration,
             'epochs' => $this->epochs,
             'min gradient' => $this->minGradient,
-            'window' => $this->window,
             'kernel' => $this->kernel,
         ]) . ')';
     }

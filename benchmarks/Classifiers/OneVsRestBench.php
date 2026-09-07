@@ -2,11 +2,15 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\Datasets\Labeled;
+use Generator;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Backends\Serial;
 
 /**
  * @Groups({"Classifiers"})
@@ -14,24 +18,27 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  */
 class OneVsRestBench
 {
-    protected const TRAINING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected Labeled $training;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $testing;
+
+    protected OneVsRest $estimator;
 
     /**
-     * @var OneVsRest
+     * @return Generator<string, array{backend: Backend}>
      */
-    protected $estimator;
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+    }
 
     public function setUp() : void
     {
@@ -52,9 +59,13 @@ class OneVsRestBench
      * @Subject
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function trainPredict() : void
+    public function trainPredict(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

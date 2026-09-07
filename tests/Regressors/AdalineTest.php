@@ -1,112 +1,137 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Regressors;
 
-use Rubix\ML\Online;
-use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
-use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\RanksFeatures;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Loggers\BlackHole;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\Adaline;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Datasets\Generators\Hyperplane;
+use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
-use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
+use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\DataType;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\TestCase;
+use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Regressors\Adaline;
 
-/**
- * @group Regressors
- * @covers \Rubix\ML\Regressors\Adaline
- */
+use function sys_get_temp_dir;
+use function uniqid;
+
+#[Group('Regressors')]
+#[CoversClass(Adaline::class)]
 class AdalineTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
+
+    protected Hyperplane $generator;
+
+    protected Adaline $estimator;
+
+    protected RSquared $metric;
 
     /**
-     * @var Hyperplane
+     * @return Generator<string, array{0: list<list<int>>, 1: list<int>, 2: list<int>}>
      */
-    protected $generator;
+    public static function trainPredictProvider() : Generator
+    {
+        yield '1 feature linear sample' => [
+            [
+                [0.0],
+                [1.0],
+                [2.0],
+                [3.0],
+            ],
+            [3.0, 5.0, 7.0, 9.0],
+            [4.0],
+        ];
 
-    /**
-     * @var Adaline
-     */
-    protected $estimator;
+        yield '2 feature linear sample' => [
+            [
+                [0.0, 0.0],
+                [1.0, 1.0],
+                [2.0, 1.0],
+                [1.0, 2.0],
+            ],
+            [3.0, 6.0, 7.0, 8.0],
+            [2.0, 2.0],
+        ];
 
-    /**
-     * @var RSquared
-     */
-    protected $metric;
+        yield '3 feature linear sample' => [
+            [
+                [0.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0],
+                [0.0, 0.0, 1.0],
+            ],
+            [4.0, 5.0, 6.0, 7.0],
+            [1.0, 1.0, 1.0],
+        ];
+    }
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 0.0, 1.0);
+        $this->generator = new Hyperplane(
+            coefficients: [1.0, 5.5, -7, 0.01],
+            intercept: 0.0,
+            noise: 1.0
+        );
 
-        $this->estimator = new Adaline(32, new Adam(0.001), 1e-4, 100, 1e-4, 5, new HuberLoss(1.0));
+        $this->estimator = new Adaline(
+            batchSize: 32,
+            optimizer: new Adam(rate: 0.001),
+            l2Penalty: 1e-4,
+            epochs: 100,
+            minChange: 1e-4,
+            evalInterval: 3,
+            window: 5,
+            holdOut: 0.1,
+            costFn: new HuberLoss(1.0),
+            metric: new RMSE()
+        );
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    #[Test]
+    #[TestDox('Assert pre conditions')]
+    public function preConditions() : void
     {
-        $this->assertFalse($this->estimator->trained());
+        self::assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Adaline::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Throws an exception for a bad batch size')]
     public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -114,29 +139,26 @@ class AdalineTest extends TestCase
         new Adaline(-100);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Reports the estimator type')]
     public function type() : void
     {
-        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Reports compatibility')]
     public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->compatibility());
+        self::assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Reports parameters')]
     public function params() : void
     {
         $expected = [
@@ -145,16 +167,18 @@ class AdalineTest extends TestCase
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
+            'eval interval' => 3,
             'window' => 5,
+            'hold out' => 0.1,
             'cost fn' => new HuberLoss(1.0),
+            'metric' => new RMSE(),
         ];
 
-        $this->assertEquals($expected, $this->estimator->params());
+        self::assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Can train, predict, and provide feature importances')]
     public function trainPredictImportances() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -164,43 +188,118 @@ class AdalineTest extends TestCase
 
         $this->estimator->train($training);
 
-        $this->assertTrue($this->estimator->trained());
+        self::assertTrue($this->estimator->trained());
 
         $losses = $this->estimator->losses();
 
-        $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        self::assertIsArray($losses);
+        self::assertContainsOnlyFloat($losses);
+
+        $scores = $this->estimator->scores();
+
+        self::assertIsArray($scores);
+        self::assertContainsOnlyFloat($scores);
 
         $importances = $this->estimator->featureImportances();
 
-        $this->assertIsArray($importances);
-        $this->assertCount(4, $importances);
-        $this->assertContainsOnly('float', $importances);
+        self::assertCount(4, $importances);
+        self::assertContainsOnlyFloat($importances);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        /** @var list<float> $labels */
+        $labels = $testing->labels();
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
 
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Snapshot path is transient and resolved lazily')]
+    public function snapshotPathIsTransientAndResolvedLazily() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
+
+        $this->estimator->setSnapshotPath($snapshotPath);
+
+        $this->estimator->train($dataset->fold(2)[0]);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('snapshotPath', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertTrue($copy->trained());
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+
+        $copy->partial($dataset->fold(2)[0]);
+
+        self::assertArrayNotHasKey('snapshotPath', $copy->__serialize());
+    }
+
+    #[Test]
+    #[TestDox('Snapshot path rejects a directory')]
+    public function snapshotPathRejectsDirectory() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->setSnapshotPath(sys_get_temp_dir());
+    }
+
+    #[Test]
+    #[TestDox('Throws an exception when training with incompatible data')]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([['bad']], [2]));
+        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Throws an exception when predicting before training')]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Trains, predicts, and returns acceptable Adaline values')]
+    #[DataProvider('trainPredictProvider')]
+    public function trainPredict(array $samples, array $labels, array $prediction) : void
+    {
+        $estimator = new Adaline(
+            batchSize: 32,
+            optimizer: new Adam(rate: 0.001),
+            l2Penalty: 1e-4,
+            epochs: 100,
+            minChange: 1e-4,
+            costFn: new HuberLoss(1.0)
+        );
+
+        $training = Labeled::quick($samples, $labels);
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+        $params = $estimator->params();
+
+        self::assertSame(32, $params['batch size']);
+        self::assertEquals(1e-4, $params['l2 penalty']);
+        self::assertSame(100, $params['epochs']);
+        self::assertEquals(1e-4, $params['min change']);
+
+        $predictions = $estimator->predict(Unlabeled::quick([$prediction]));
+
+        self::assertIsFloat($predictions[0]);
     }
 }

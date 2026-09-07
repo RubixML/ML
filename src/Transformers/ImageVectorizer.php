@@ -140,6 +140,8 @@ class ImageVectorizer implements Transformer, Stateful
 
             $sample = array_merge($sample, ...$vectors);
         }
+
+        unset($sample);
     }
 
     /**

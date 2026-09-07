@@ -1,47 +1,32 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\ImageResizer;
 use Rubix\ML\Transformers\ImageVectorizer;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @requires extension gd
- * @covers \Rubix\ML\Transformers\ImageVectorizer
- */
+#[Group('Transformers')]
+#[RequiresPhpExtension('gd')]
+#[CoversClass(ImageVectorizer::class)]
 class ImageVectorizerTest extends TestCase
 {
-    /**
-     * @var ImageVectorizer
-     */
-    protected $transformer;
+    protected ImageVectorizer $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->transformer = new ImageVectorizer(false);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ImageVectorizer::class, $this->transformer);
-        $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function fitTransform() : void
     {
         $dataset = Unlabeled::quick([
@@ -58,5 +43,17 @@ class ImageVectorizerTest extends TestCase
         ];
 
         $this->assertEqualsWithDelta($expected, $dataset->samples(), 1.0);
+    }
+
+    #[Test]
+    public function transformUnfitted() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = [
+            [imagecreate(1, 1), 'something else'],
+        ];
+
+        $this->transformer->transform($samples);
     }
 }

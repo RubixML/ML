@@ -11,22 +11,22 @@ use Rubix\ML\Kernels\Distance\Manhattan;
  */
 class ManhattanBench
 {
-    protected const NUM_SAMPLES = 10000;
+    protected const NUM_SAMPLES = 20000;
 
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var Manhattan
      */
-    protected $kernel;
+    protected Manhattan $kernel;
 
     public function setUp() : void
     {

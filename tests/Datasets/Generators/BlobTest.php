@@ -1,37 +1,32 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Datasets\Generators;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Generators
- * @covers \Rubix\ML\Datasets\Generators\Blob
- */
+#[Group('Generators')]
+#[CoversClass(Blob::class)]
 class BlobTest extends TestCase
 {
-    protected const DATASET_SIZE = 30;
+    protected const int DATASET_SIZE = 30;
 
-    /**
-     * @var Blob
-     */
-    protected $generator;
+    protected Blob $generator;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Blob([0, 0, 0], 1.0);
+        $this->generator = new Blob(center: [0, 0, 0], stdDev: 1.0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function simulate() : void
     {
         $dataset = $this->generator->generate(100);
@@ -42,34 +37,19 @@ class BlobTest extends TestCase
         $this->assertInstanceOf(Generator::class, $generator);
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(Blob::class, $this->generator);
-        $this->assertInstanceOf(Generator::class, $this->generator);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function center() : void
     {
         $this->assertEquals([0, 0, 0], $this->generator->center());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function dimensions() : void
     {
         $this->assertEquals(3, $this->generator->dimensions());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generate() : void
     {
         $dataset = $this->generator->generate(self::DATASET_SIZE);

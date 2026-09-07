@@ -14,7 +14,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Euclidean implements Distance
+class Euclidean implements Distance, Subadditive, Monotonic
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -35,8 +35,8 @@ class Euclidean implements Distance
      *
      * @internal
      *
-     * @param list<int|float> $a
-     * @param list<int|float> $b
+     * @param list<float> $a
+     * @param list<float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

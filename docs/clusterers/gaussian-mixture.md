@@ -13,7 +13,7 @@ A Gaussian Mixture model (GMM) is a probabilistic model for representing the pre
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | k | | int | The number of target clusters. |
-| 2 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the variance of each feature. |
+| 2 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the variance of each feature within each cluster. |
 | 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 4 | minChange | 1e-3 | float | The minimum change in the components necessary for the algorithm to continue training. |
 | 5 | seeder | PlusPlus | Seeder | The seeder used to initialize the Gaussian components. |

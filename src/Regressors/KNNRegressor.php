@@ -5,12 +5,17 @@ namespace Rubix\ML\Regressors;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
+use Rubix\ML\Parallel;
 use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Traits\Multiprocessing;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -38,9 +43,10 @@ use SplMaxHeap;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNRegressor implements Estimator, Learner, Online, Persistable
+class KNNRegressor implements Estimator, Learner, Online, Parallel, Persistable
 {
     use AutotrackRevisions;
+    use Multiprocessing;
 
     /**
      * The number of neighbors to consider when making a prediction.
@@ -100,6 +106,19 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     }
 
     /**
+     * Make predictions on a chunk of samples.
+     *
+     * @internal
+     *
+     * @param Dataset $chunk
+     * @return list<int|float>
+     */
+    public function predictChunk(Dataset $chunk) : array
+    {
+        return array_map([$this, 'predictSample'], $chunk->samples());
+    }
+
+    /**
      * Return the estimator type.
      *
      * @internal
@@ -137,6 +156,19 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
             'weighted' => $this->weighted,
             'kernel' => $this->kernel,
         ];
+    }
+
+    /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
     }
 
     /**
@@ -184,7 +216,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<int|float>
+     * @return list<float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -194,7 +226,24 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        return array_map([$this, 'predictSample'], $dataset->samples());
+        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
+
+        $this->backend()->flush();
+
+        foreach ($dataset->batch($chunkSize) as $chunk) {
+            $task = new Task([$this, 'predictChunk'], [$chunk]);
+
+            $this->backend()->enqueue($task);
+        }
+
+        $predictions = [];
+
+        foreach ($this->backend()->process() as $output) {
+            /** @var list<int|float> $output */
+            $predictions = array_merge($predictions, $output);
+        }
+
+        return $predictions;
     }
 
     /**
@@ -203,9 +252,9 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return int|float
+     * @return float
      */
-    public function predictSample(array $sample)
+    public function predictSample(array $sample) : float
     {
         /** @var list<float> $labels */
         [$labels, $distances] = $this->nearest($sample);
@@ -227,7 +276,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * Find the K nearest neighbors to the given sample vector using the brute force method.
      *
      * @param list<string|int|float> $sample
-     * @return array{list<string|int|float>,list<float>}
+     * @return array{list<int|float|string>,list<float>}
      */
     protected function nearest(array $sample) : array
     {
@@ -264,6 +313,32 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
         }
 
         return [$labels, $distances];
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

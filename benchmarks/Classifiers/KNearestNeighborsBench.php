@@ -2,9 +2,16 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
+use Generator;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Classifiers"})
@@ -12,24 +19,41 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  */
 class KNearestNeighborsBench
 {
-    protected const TRAINING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected Labeled $training;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $testing;
+
+    protected KNearestNeighbors $estimator;
 
     /**
-     * @var KNearestNeighbors
+     * @return Generator<string, array{backend: Backend}>
      */
-    protected $estimator;
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        $ampBackend = new Amp();
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
+    }
 
     public function setUp() : void
     {
@@ -50,9 +74,13 @@ class KNearestNeighborsBench
      * @Subject
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function trainPredict() : void
+    public function trainPredict(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

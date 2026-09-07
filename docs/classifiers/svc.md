@@ -38,6 +38,9 @@ Save the model data to the filesystem:
 public save(string $path) : void
 ```
 
+!!! note
+    An additional class map in JSON format will be saved alongside the model weights.
+
 Load the model data from the filesystem:
 
 ```php

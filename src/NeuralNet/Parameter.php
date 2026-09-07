@@ -21,7 +21,7 @@ class Parameter
      *
      * @var int
      */
-    protected static $counter = 0;
+    protected static int $counter = 0;
 
     /**
      * The unique identifier of the parameter.

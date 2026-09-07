@@ -20,10 +20,18 @@ interface Backend extends Stringable
      * @internal
      *
      * @param Task $task
-     * @param callable(mixed,mixed):void $after
-     * @param mixed $context
+     * @param ?callable $after
      */
-    public function enqueue(Task $task, ?callable $after = null, $context = null) : void;
+    public function enqueue(Task $task, ?callable $after = null) : void;
+
+    /**
+     * Return the number of concurrent worker processes.
+     *
+     * @internal
+     *
+     * @return int
+     */
+    public function workers() : int;
 
     /**
      * Process the queue and return the results.
@@ -40,4 +48,11 @@ interface Backend extends Stringable
      * @internal
      */
     public function flush() : void;
+
+    /**
+     * Gracefully shut down the backend and release any resources.
+     *
+     * @internal
+     */
+    public function shutdown() : void;
 }

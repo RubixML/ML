@@ -1,53 +1,77 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\CrossValidation;
 
-use Rubix\ML\Parallel;
+use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\CrossValidation\LeavePOut;
-use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
-/**
- * @group Validators
- * @covers \Rubix\ML\CrossValidation\LeavePOut
- */
+#[Group('Validators')]
+#[CoversClass(LeavePOut::class)]
 class LeavePOutTest extends TestCase
 {
-    protected const DATASET_SIZE = 50;
+    protected const int DATASET_SIZE = 50;
+
+    protected Agglomerate $generator;
+
+    protected GaussianNB $estimator;
+
+    protected LeavePOut $validator;
+
+    protected Accuracy $metric;
+
+    protected ?Backend $backend = null;
 
     /**
-     * @var Agglomerate
+     * @return Generator<string, array{backend: Backend}>
      */
-    protected $generator;
+    public static function provideBackends() : Generator
+    {
+        $ampBackend = new Amp();
 
-    /**
-     * @var GaussianNB
-     */
-    protected $estimator;
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
 
-    /**
-     * @var LeavePOut
-     */
-    protected $validator;
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
 
-    /**
-     * @var Accuracy
-     */
-    protected $metric;
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
+    }
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
-            'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
-        ], [0.45, 0.55]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'male' => new Blob(
+                    center: [69.2, 195.7, 40.0],
+                    stdDev: [1.0, 3.0, 0.3]
+                ),
+                'female' => new Blob(
+                    center: [63.7, 168.5, 38.1],
+                    stdDev: [0.8, 2.5, 0.4]
+                ),
+            ],
+            weights: [0.45, 0.55]
+        );
 
         $this->estimator = new GaussianNB();
 
@@ -56,26 +80,29 @@ class LeavePOutTest extends TestCase
         $this->metric = new Accuracy();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
+    protected function tearDown() : void
     {
-        $this->assertInstanceOf(LeavePOut::class, $this->validator);
-        $this->assertInstanceOf(Validator::class, $this->validator);
-        $this->assertInstanceOf(Parallel::class, $this->validator);
+        $this->backend?->shutdown();
     }
 
-    /**
-     * @test
-     */
-    public function test() : void
+    #[DataProvider('provideBackends')]
+    #[Test]
+    #[RunInSeparateProcess]
+    public function estimator(Backend $backend) : void
     {
+        $this->backend = $backend;
+
+        $this->validator->setBackend($backend);
+
         [$min, $max] = $this->metric->range()->list();
 
         $dataset = $this->generator->generate(self::DATASET_SIZE);
 
-        $score = $this->validator->test($this->estimator, $dataset, $this->metric);
+        $score = $this->validator->test(
+            estimator: $this->estimator,
+            dataset: $dataset,
+            metric: $this->metric
+        );
 
         $this->assertThat(
             $score,

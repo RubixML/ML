@@ -1,33 +1,27 @@
 <?php
 
-namespace Rubix\ML\Tests\Persisters\Serializers;
+declare(strict_types = 1);
 
-use Rubix\ML\Encoding;
+namespace Rubix\ML\Tests\Serializers;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Serializers\GzipNative;
-use Rubix\ML\Serializers\Serializer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Serializers
- * @covers \Rubix\ML\Serializers\Gzip
- */
+#[Group('Serializers')]
+#[CoversClass(GzipNative::class)]
+#[IgnoreDeprecations]
 class GzipNativeTest extends TestCase
 {
-    /**
-     * @var Persistable
-     */
-    protected $persistable;
+    protected Persistable $persistable;
 
-    /**
-     * @var GzipNative
-     */
-    protected $serializer;
+    protected GzipNative $serializer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->serializer = new GzipNative(6);
@@ -35,27 +29,13 @@ class GzipNativeTest extends TestCase
         $this->persistable = new GaussianNB();
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(GzipNative::class, $this->serializer);
-        $this->assertInstanceOf(Serializer::class, $this->serializer);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function serializeDeserialize() : void
     {
         $data = $this->serializer->serialize($this->persistable);
 
-        $this->assertInstanceOf(Encoding::class, $data);
-
         $persistable = $this->serializer->deserialize($data);
 
         $this->assertInstanceOf(GaussianNB::class, $persistable);
-        $this->assertInstanceOf(Persistable::class, $persistable);
     }
 }

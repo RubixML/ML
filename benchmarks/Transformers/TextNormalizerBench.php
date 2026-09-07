@@ -18,12 +18,12 @@ class TextNormalizerBench
     /**
      * @var Unlabeled
      */
-    public $dataset;
+    public Unlabeled $dataset;
 
     /**
      * @var TextNormalizer
      */
-    protected $transformer;
+    protected TextNormalizer $transformer;
 
     public function setUp() : void
     {

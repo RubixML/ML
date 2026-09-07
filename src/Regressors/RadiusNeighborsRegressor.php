@@ -43,9 +43,9 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     /**
      * The value to assign to outliers when making a prediction.
      *
-     * @var mixed
+     * @var float
      */
-    public const OUTLIER_VALUE = NAN;
+    public const float OUTLIER_VALUE = NAN;
 
     /**
      * The radius within which points are considered neighbors.
@@ -177,7 +177,7 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<int|float>
+     * @return list<float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -196,11 +196,11 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return int|float
+     * @return float
      */
-    public function predictSample(array $sample)
+    public function predictSample(array $sample) : float
     {
-        [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
+        [, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
         if (empty($labels)) {
             return self::OUTLIER_VALUE;

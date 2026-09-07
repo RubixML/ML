@@ -31,9 +31,9 @@ class PolynomialExpander implements Transformer
      */
     public function __construct(int $degree = 2)
     {
-        if ($degree < 1) {
-            throw new InvalidArgumentException('The degree of the polynomial'
-                . " must be greater than 0, $degree given.");
+        if ($degree < 1 or $degree > 10) {
+            throw new InvalidArgumentException('The degree must be between'
+                . " 1 and 10, $degree given.");
         }
 
         $this->degree = $degree;

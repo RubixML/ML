@@ -16,6 +16,7 @@ nav:
     - What is Machine Learning?: what-is-machine-learning.md
     - Installation: installation.md
     - Basic Introduction: basic-introduction.md
+    - Upgrade Guide: upgrading-to-3.md
   - User Guide:
     - Representing Your Data: representing-your-data.md
     - Extracting Data: extracting-data.md
@@ -131,6 +132,7 @@ nav:
         - Interval Discretizer: transformers/interval-discretizer.md
         - One Hot Encoder: transformers/one-hot-encoder.md
         - Numeric String Converter: transformers/numeric-string-converter.md
+        - Float Type Converter: transformers/float-type-converter.md
         - Boolean Converter: transformers/boolean-converter.md
       - Feature Expansion:
         - Polynomial Expander: transformers/polynomial-expander.md
@@ -165,18 +167,22 @@ nav:
       - Activation Functions:
         - ELU: neural-network/activation-functions/elu.md
         - GELU: neural-network/activation-functions/gelu.md
+        - Hard Sigmoid: neural-network/activation-functions/hard-sigmoid.md
+        - Hard SiLU: neural-network/activation-functions/hard-silu.md
         - Hyperbolic Tangent: neural-network/activation-functions/hyperbolic-tangent.md
         - Leaky ReLU: neural-network/activation-functions/leaky-relu.md
         - ReLU: neural-network/activation-functions/relu.md
+        - ReLU6: neural-network/activation-functions/relu6.md
         - SELU: neural-network/activation-functions/selu.md
         - Sigmoid: neural-network/activation-functions/sigmoid.md
         - Softmax: neural-network/activation-functions/softmax.md
         - Soft Plus: neural-network/activation-functions/soft-plus.md
-        - Soft Sign: neural-network/activation-functions/softsign.md
+        - Softsign: neural-network/activation-functions/softsign.md
         - SiLU: neural-network/activation-functions/silu.md
         - Thresholded ReLU: neural-network/activation-functions/thresholded-relu.md
       - Cost Functions:
-        - Cross Entropy: neural-network/cost-functions/cross-entropy.md
+        - Binary Cross Entropy: neural-network/cost-functions/binary-cross-entropy.md
+        - Multiclass Cross Entropy: neural-network/cost-functions/multiclass-cross-entropy.md
         - Huber Loss: neural-network/cost-functions/huber-loss.md
         - Least Squares: neural-network/cost-functions/least-squares.md
         - Relative Entropy: neural-network/cost-functions/relative-entropy.md
@@ -186,8 +192,10 @@ nav:
         - LeCun: neural-network/initializers/lecun.md
         - Normal: neural-network/initializers/normal.md
         - Uniform: neural-network/initializers/uniform.md
-        - Xavier 1: neural-network/initializers/xavier-1.md
-        - Xavier 2: neural-network/initializers/xavier-2.md
+        - Xavier 1 Uniform: neural-network/initializers/xavier-1-uniform.md
+        - Xavier 1 Normal: neural-network/initializers/xavier-1-normal.md
+        - Xavier 2 Uniform: neural-network/initializers/xavier-2-uniform.md
+        - Xavier 2 Normal: neural-network/initializers/xavier-2-normal.md
       - Optimizers:
         - AdaGrad: neural-network/optimizers/adagrad.md
         - Adam: neural-network/optimizers/adam.md
@@ -235,7 +243,9 @@ nav:
         - RMSE: cross-validation/metrics/rmse.md
         - R Squared: cross-validation/metrics/r-squared.md
         - SMAPE: cross-validation/metrics/smape.md
+        - Class Purity: cross-validation/metrics/class-purity.md
         - Completeness: cross-validation/metrics/completeness.md
+        - Cluster Purity: cross-validation/metrics/cluster-purity.md
         - Homogeneity: cross-validation/metrics/homogeneity.md
         - Rand Index: cross-validation/metrics/rand-index.md
         - Top K Accuracy: cross-validation/metrics/top-k-accuracy.md

@@ -1,5 +1,47 @@
 # Changelog
 
+- 3.0.0
+    - Integers are now considered a categorical data type
+    - K Nearest Neighbors and KNN Regressor inference is now parallelized
+    - Isolation Forest training and inference is now parallelized
+    - Added disk-based streaming neural network snapshotting
+    - Can now clear neural network Adaptive optimizer state
+    - Added validation interval parameter to MLPs and GBM Learners
+    - Cross Entropy loss function now split into Binary and Multiclass
+    - Logistic Regression, Softmax, and Adaline now use hold out set
+    - Adaboost now uses validation set with early stopping window
+    - Renamed TF-IDF dampening parameter to sublinear
+    - Exportable Extractors now append by default with option to overwrite
+    - RBX Serializer tracks major library version number, not minor
+    - Added Class/Cluster Purity clustering metrics
+    - V-measure, Completeness, and Homogeneity now use entropy-based formula
+    - Fixed KDTree edge pruning + optimize traversal
+    - Ball and Vantage Trees now require Subadditive kernels
+    - K-d Trees now require Monotonic distance kernels
+    - Optimize Dataset sort(), sorting is now unstable
+    - Added per-class smoothing to Gaussian Naive Bayes
+    - Added per-cluster smoothing to Gaussian Mixture
+    - You can now exclude certain categories from one-hot encoding
+    - Fixed SVC save/load using class map sidecar
+    - Parallel Backends now default to max physical cores not logical
+    - Added workers() method to the Backend interface
+    - No longer save/load Backend state, transient per environment
+    - Added Float Type Converter numeric string and ints to float
+    - Boolean Converter now converts truthy and falsy
+    - Interval Discretizer now encodes values as integers
+    - Polynomial Expander now limited to 10'th degree
+    - Updated to PSR-3 Log version 3
+    - Update Amp Backend to Amp version 2.0
+    - Removed Word Stemmer tokenizer
+    - Removed window early stopping from TSNE
+    - Removed output layer L2 Penalty parameter from MLP Learners
+    - RBX serializer now emits warning on class revision mismatch
+    - Class revision hash now compensates for circular references
+    - Filesystem Persister now does atomic writes
+    - Added cleanup() method to remove neural network residual state
+    - Murmur3 new default Token Hashing Vectorizer hash function
+    - Dataset fold() now returns excess samples in last fold
+    
 - 2.5.12
     - Fix Adaboost proba() probability normalization
     - Optimize minmax operations
@@ -20,6 +62,8 @@
     - Symmetrize TSNE affinities matrix, fixes optimization
     - Add numerical stability to SoftPlus activation function
     - Fix Extra Tree leaf node entropy
+    - Fix SVC save/load dropping the class label map
+    - Validate the SVC class label map class count against the model on load
     - Add numerical stability to BM25 Transformer
 
 - 2.5.8
@@ -74,8 +118,8 @@
     - Added Vantage Point Spatial tree
     - Blob Generator can now `simulate()` a Dataset object
     - Added Wrapper interface
+    - Added Swoole Backend
     - Plus Plus added check for min number of sample seeds
-    - LOF prevent div by 0 local reachability density
 
 - 2.4.1
     - Sentence Tokenizer fix Arabic and Farsi language support

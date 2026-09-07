@@ -21,4 +21,8 @@ $backend = new Serial();
 
 ## Additional Methods
 
-This backend does not have any additional methods.
+Return the number of concurrent worker processes (always 1):
+
+```php
+public workers() : int
+```

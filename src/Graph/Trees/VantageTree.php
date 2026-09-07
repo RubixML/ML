@@ -8,6 +8,7 @@ use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Graph\Nodes\VantagePoint;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Subadditive;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use SplMaxHeap;
 use SplObjectStorage;
@@ -37,32 +38,37 @@ class VantageTree implements BinaryTree, Spatial
      *
      * @var int
      */
-    protected $maxLeafSize;
+    protected int $maxLeafSize;
 
     /**
      * The distance function to use when computing the distances.
      *
      * @var Distance
      */
-    protected $kernel;
+    protected Distance $kernel;
 
     /**
      * The root node of the tree.
      *
      * @var VantagePoint|null
      */
-    protected $root;
+    protected ?VantagePoint $root = null;
 
     /**
      * @param int $maxLeafSize
      * @param Distance|null $kernel
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(int $maxLeafSize = 30, ?Distance $kernel = null)
     {
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('Max leaf size must be'
                 . " greater than 0, $maxLeafSize given.");
+        }
+
+        if ($kernel and !$kernel instanceof Subadditive) {
+            throw new InvalidArgumentException('Distance kernel must implement'
+                . ' the Subadditive interface.');
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -122,10 +128,6 @@ class VantageTree implements BinaryTree, Spatial
      */
     public function grow(Labeled $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Tree requires a labeled dataset.');
-        }
-
         $this->root = VantagePoint::split($dataset, $this->kernel);
 
         $stack = [$this->root];
@@ -138,6 +140,7 @@ class VantageTree implements BinaryTree, Spatial
             if ($left->numSamples() > $this->maxLeafSize) {
                 $node = VantagePoint::split($left, $this->kernel);
 
+                // Left branch has potential to collapse into a point.
                 if ($node->isPoint()) {
                     $current->attachLeft(Clique::terminate($left, $this->kernel));
                 } else {
@@ -165,7 +168,7 @@ class VantageTree implements BinaryTree, Spatial
      * Run a k nearest neighbors search and return the samples, labels, and
      * distances in a 3-tuple.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param int $k
      * @throws InvalidArgumentException
      * @return array<array<mixed>>
@@ -188,7 +191,7 @@ class VantageTree implements BinaryTree, Spatial
                 $radius = $heap->count() === $k ? $heap->top()[0] : INF;
 
                 foreach ($current->children() as $child) {
-                    if (!$visited->contains($child)) {
+                    if (!isset($visited[$child])) {
                         if ($child instanceof Hypersphere) {
                             $distance = $this->kernel->compute($sample, $child->center());
 
@@ -199,11 +202,11 @@ class VantageTree implements BinaryTree, Spatial
                             }
                         }
 
-                        $visited->attach($child);
+                        $visited[$child] = true;
                     }
                 }
 
-                $visited->attach($current);
+                $visited[$current] = true;
 
                 continue;
             }
@@ -233,7 +236,7 @@ class VantageTree implements BinaryTree, Spatial
                     $heap->insert([$distance, $neighbor, $labels[$i]]);
                 }
 
-                $visited->attach($current);
+                $visited[$current] = true;
             }
         }
 
@@ -251,7 +254,7 @@ class VantageTree implements BinaryTree, Spatial
     /**
      * Return all samples, labels, and distances within a given radius of a sample.
      *
-     * @param (string|int|float)[] $sample
+     * @param list<string|int|float> $sample
      * @param float $radius
      * @throws InvalidArgumentException
      * @return array<array<mixed>>
@@ -305,15 +308,15 @@ class VantageTree implements BinaryTree, Spatial
      */
     public function destroy() : void
     {
-        unset($this->root);
+        $this->root = null;
     }
 
     /**
      * Return the path of a sample taken from the root node to a leaf node
      * in an array.
      *
-     * @param (string|int|float)[] $sample
-     * @return mixed[]
+     * @param list<string|int|float> $sample
+     * @return list<Hypersphere>
      */
     protected function path(array $sample) : array
     {
@@ -328,7 +331,7 @@ class VantageTree implements BinaryTree, Spatial
                 $left = $current->left();
                 $right = $current->right();
 
-                if ($left instanceof Hypersphere) {
+                if ($left instanceof Hypersphere and $right instanceof Hypersphere) {
                     $distance = $this->kernel->compute($sample, $left->center());
 
                     if ($distance <= $left->radius()) {
@@ -336,9 +339,21 @@ class VantageTree implements BinaryTree, Spatial
                     } else {
                         $current = $right;
                     }
+
+                    continue;
                 }
 
-                continue;
+                if ($left instanceof Hypersphere) {
+                    $current = $left;
+
+                    continue;
+                }
+
+                if ($right instanceof Hypersphere) {
+                    $current = $right;
+
+                    continue;
+                }
             }
 
             break;

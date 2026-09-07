@@ -23,11 +23,12 @@ use Rubix\ML\Backends\Backend;
 trait Multiprocessing
 {
     /**
-     * The parallel processing backend.
+     * The parallel processing backend. Null until it is set or lazily initialized during
+     * training or inference.
      *
-     * @var Backend
+     * @var Backend|null
      */
-    protected Backend $backend;
+    protected ?Backend $backend = null;
 
     /**
      * Set the parallel processing backend.

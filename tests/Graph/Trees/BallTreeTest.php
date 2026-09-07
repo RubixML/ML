@@ -1,70 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Trees\Tree;
-use Rubix\ML\Graph\Trees\Spatial;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Kernels\Distance\Canberra;
+use Rubix\ML\Kernels\Distance\Cosine;
+use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Gower;
+use Rubix\ML\Kernels\Distance\Hamming;
+use Rubix\ML\Kernels\Distance\Jaccard;
+use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
+use Rubix\ML\Kernels\Distance\SparseCosine;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Trees
- * @covers \Rubix\ML\Graph\Trees\BallTree
- */
+#[Group('Trees')]
+#[CoversClass(BallTree::class)]
 class BallTreeTest extends TestCase
 {
-    protected const DATASET_SIZE = 100;
+    protected const int DATASET_SIZE = 100;
 
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
 
-    /**
-     * @var Agglomerate
-     */
-    protected $generator;
+    protected Agglomerate $generator;
 
-    /**
-     * @var BallTree
-     */
-    protected $tree;
+    protected BallTree $tree;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'east' => new Blob([5, -2, -2]),
-            'west' => new Blob([0, 5, -3]),
-        ], [0.5, 0.5]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'east' => new Blob(center: [5, -2, -2]),
+                'west' => new Blob(center: [0, 5, -3]),
+            ],
+            weights: [0.5, 0.5]
+        );
 
-        $this->tree = new BallTree(20, new Euclidean());
+        $this->tree = new BallTree(
+            20,
+            new Euclidean()
+        );
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertEquals(0, $this->tree->height());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(BallTree::class, $this->tree);
-        $this->assertInstanceOf(Spatial::class, $this->tree);
-        $this->assertInstanceOf(BinaryTree::class, $this->tree);
-        $this->assertInstanceOf(Tree::class, $this->tree);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function growNeighborsRange() : void
     {
         $this->tree->grow($this->generator->generate(self::DATASET_SIZE));
@@ -90,13 +86,11 @@ class BallTreeTest extends TestCase
         $this->assertCount(1, array_unique($labels));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function growWithSameSamples() : void
     {
-        $generator = new Agglomerate([
-            'east' => new Blob([5, -2, 10], 0.0),
+        $generator = new Agglomerate(generators: [
+            'east' => new Blob(center: [5, -2, 10], stdDev: 0.0),
         ]);
 
         $dataset = $generator->generate(self::DATASET_SIZE);
@@ -104,5 +98,43 @@ class BallTreeTest extends TestCase
         $this->tree->grow($dataset);
 
         $this->assertEquals(2, $this->tree->height());
+    }
+
+    #[Test]
+    public function rejectCosineKernel() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new BallTree(kernel: new Cosine());
+    }
+
+    #[Test]
+    public function rejectSparseCosineKernel() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new BallTree(kernel: new SparseCosine());
+    }
+
+    #[Test]
+    public function compatibleKernels() : void
+    {
+        $kernels = [
+            new Euclidean(),
+            new Manhattan(),
+            new Minkowski(),
+            new SafeEuclidean(),
+            new Diagonal(),
+            new Canberra(),
+            new Gower(),
+            new Hamming(),
+            new Jaccard(),
+        ];
+
+        foreach ($kernels as $kernel) {
+            new BallTree(kernel: $kernel);
+        }
+
+        $this->assertTrue(true);
     }
 }

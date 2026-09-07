@@ -8,9 +8,10 @@ use IteratorAggregate;
 use ArrayAccess;
 use Traversable;
 use Countable;
+use JsonSerializable;
 
 use function count;
-use function func_get_args;
+use function implode;
 
 /**
  * Tuple
@@ -24,7 +25,7 @@ use function func_get_args;
  * @implements ArrayAccess<int, mixed>
  * @implements IteratorAggregate<int, mixed>
  */
-class Tuple implements ArrayAccess, IteratorAggregate, Countable
+class Tuple implements ArrayAccess, IteratorAggregate, Countable, JsonSerializable
 {
     /**
      * The elements of the tuple.
@@ -33,9 +34,12 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      */
     protected array $elements;
 
-    public function __construct()
+    /**
+     * @param mixed ...$elements
+     */
+    public function __construct(mixed ...$elements)
     {
-        $this->elements = func_get_args();
+        $this->elements = $elements;
     }
 
     /**
@@ -59,20 +63,19 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return a row from the dataset at the given offset.
+     * Return the element at the given offset.
      *
      * @param int $offset
      * @throws InvalidArgumentException
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset) : mixed
     {
-        if (isset($this->elements[$offset])) {
-            return $this->elements[$offset];
+        if ($offset < 0 or $offset >= $this->count()) {
+            throw new InvalidArgumentException("Element at offset $offset not found.");
         }
 
-        throw new InvalidArgumentException("Element at offset $offset not found.");
+        return $this->elements[$offset];
     }
 
     /**
@@ -86,14 +89,14 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Does a given row exist in the dataset.
+     * Does an element exist at the given offset.
      *
      * @param int $offset
      * @return bool
      */
-    public function offsetExists($offset) : bool
+    public function offsetExists(mixed $offset) : bool
     {
-        return isset($this->elements[$offset]);
+        return $offset >= 0 && $offset < $this->count();
     }
 
     /**
@@ -113,5 +116,27 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
     public function getIterator() : Traversable
     {
         yield from $this->elements;
+    }
+
+    /**
+     * Return the elements of the tuple as a JSON-serializable array.
+     *
+     * @return list<mixed>
+     */
+    public function jsonSerialize() : array
+    {
+        return $this->elements;
+    }
+
+    /**
+     * Return the string representation of the tuple.
+     *
+     * @internal
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return '(' . implode(', ', $this->elements) . ')';
     }
 }

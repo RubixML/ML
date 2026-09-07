@@ -12,22 +12,22 @@ use Rubix\ML\Transformers\LambdaFunction;
  */
 class SafeEuclideanBench
 {
-    protected const NUM_SAMPLES = 10000;
+    protected const NUM_SAMPLES = 20000;
 
     /**
      * @var list<list<float>>
      */
-    protected $aSamples;
+    protected array $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected $bSamples;
+    protected array $bSamples;
 
     /**
      * @var SafeEuclidean
      */
-    protected $kernel;
+    protected SafeEuclidean $kernel;
 
     public function setUp() : void
     {

@@ -110,6 +110,16 @@ class Adam implements Optimizer, Adaptive
     }
 
     /**
+     * Reset the parameter cache.
+     *
+     * @internal
+     */
+    public function reset() : void
+    {
+        $this->cache = [];
+    }
+
+    /**
      * Calculate a gradient descent step for a given parameter.
      *
      * @internal

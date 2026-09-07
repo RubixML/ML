@@ -5,56 +5,26 @@ namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group CostFunctions
- * @covers \Rubix\ML\NeuralNet\CostFunctions\LeastSquares
- */
+#[Group('CostFunctions')]
+#[CoversClass(LeastSquares::class)]
 class LeastSquaresTest extends TestCase
 {
     /**
      * @var LeastSquares
      */
-    protected $costFn;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->costFn = new LeastSquares();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(LeastSquares::class, $this->costFn);
-        $this->assertInstanceOf(CostFunction::class, $this->costFn);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param float $expected
-     */
-    public function compute(Matrix $output, Matrix $target, float $expected) : void
-    {
-        $loss = $this->costFn->compute($output, $target);
-
-        $this->assertEquals($expected, $loss);
-    }
+    protected LeastSquares $costFn;
 
     /**
      * @return Generator<mixed[]>
      */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -96,24 +66,9 @@ class LeastSquaresTest extends TestCase
     }
 
     /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param list<list<float>> $expected
-     */
-    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
-    {
-        $gradient = $this->costFn->differentiate($output, $target)->asArray();
-
-        $this->assertEquals($expected, $gradient);
-    }
-
-    /**
      * @return Generator<mixed[]>
      */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -162,5 +117,45 @@ class LeastSquaresTest extends TestCase
                 [0.5],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->costFn = new LeastSquares();
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(LeastSquares::class, $this->costFn);
+        $this->assertInstanceOf(CostFunction::class, $this->costFn);
+    }
+
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param float $expected
+     */
+    #[DataProvider('computeProvider')]
+    #[Test]
+    public function compute(Matrix $output, Matrix $target, float $expected) : void
+    {
+        $loss = $this->costFn->compute($output, $target);
+
+        $this->assertEquals($expected, $loss);
+    }
+
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    #[Test]
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
+    {
+        $gradient = $this->costFn->differentiate($output, $target)->asArray();
+
+        $this->assertEquals($expected, $gradient);
     }
 }

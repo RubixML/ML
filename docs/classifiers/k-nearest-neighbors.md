@@ -7,7 +7,7 @@ A brute-force distance-based learning algorithm that locates the *k* nearest sam
 !!! note
     For a faster spatial tree-accelerated version of KNN, see [KD Neighbors](kd-neighbors.md).
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Parallel](../parallel.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 
@@ -27,6 +27,15 @@ use Rubix\ML\Kernels\Distance\Manhattan;
 
 $estimator = new KNearestNeighbors(3, false, new Manhattan());
 ```
+
+## Parallel
+
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up inference and probability estimation:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole(16));
 
 ## Additional Methods
 

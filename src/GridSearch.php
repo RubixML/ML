@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
@@ -86,33 +87,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     protected ?array $scores = null;
 
     /**
-     * Return an array of all possible combinations of parameters. i.e their Cartesian product.
-     *
-     * @param list<list<mixed>> $params
-     * @return list<list<mixed>>
-     */
-    protected static function combine(array $params) : array
-    {
-        $combinations = [[]];
-
-        /** @var int<0,max> $i */
-        foreach ($params as $i => $params) {
-            $append = [];
-
-            foreach ($combinations as $product) {
-                foreach ($params as $param) {
-                    $product[$i] = $param;
-                    $append[] = $product;
-                }
-            }
-
-            $combinations = $append;
-        }
-
-        return $combinations;
-    }
-
-    /**
      * @param class-string $class
      * @param array<mixed[]> $params
      * @param Metric|null $metric
@@ -135,8 +109,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             throw new InvalidArgumentException('Base class must'
                 . ' implement the Learner Interface.');
         }
-
-        $params = array_values($params);
 
         foreach ($params as &$tuple) {
             $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
@@ -176,7 +148,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(3);
         $this->base = $proxy;
-        $this->backend = new Serial();
     }
 
     /**
@@ -223,6 +194,19 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return the parallel processing backend, initializing it with the default if it has
+     * not been set yet.
+     *
+     * @internal
+     *
+     * @return Backend
+     */
+    public function backend() : Backend
+    {
+        return $this->backend ??= new Serial();
+    }
+
+    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -240,6 +224,42 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     public function base() : Estimator
     {
         return $this->base;
+    }
+
+    /**
+     * Return the validation score for each parameter combination.
+     *
+     * @return float[]|null
+     */
+    public function scores() : ?array
+    {
+        return $this->scores;
+    }
+
+    /**
+     * Return a list of all possible combinations of parameters i.e their Cartesian product.
+     *
+     * @return list<list<mixed>>
+     */
+    public function combinations() : array
+    {
+        $combinations = [[]];
+
+        /** @var int<0,max> $i */
+        foreach ($this->params as $i => $params) {
+            $append = [];
+
+            foreach ($combinations as $product) {
+                foreach ($params as $param) {
+                    $product[$i] = $param;
+                    $append[] = $product;
+                }
+            }
+
+            $combinations = $append;
+        }
+
+        return $combinations;
     }
 
     /**
@@ -261,9 +281,9 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             $this->logger->info("Training $this");
         }
 
-        $combinations = self::combine($this->params);
+        $combinations = $this->combinations();
 
-        $this->backend->flush();
+        $this->backend()->flush();
 
         foreach ($combinations as $params) {
             /** @var Learner $estimator */
@@ -276,32 +296,37 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 $this->metric
             );
 
-            $this->backend->enqueue(
-                $task,
-                [$this, 'afterScore'],
-                $estimator->params()
-            );
+            $after = function (float $score) use ($params) {
+                if ($this->logger) {
+                    $this->logger->info("{$this->metric}: $score, "
+                        . 'params: [' . Params::stringify($params) . ']');
+                }
+            };
+
+            $this->backend()->enqueue($task, $after);
         }
 
-        $scores = $this->backend->process();
+        $scores = $this->backend()->process();
 
         array_multisort($scores, SORT_DESC, $combinations);
 
         $best = reset($combinations) ?: [];
 
-        $estimator = new $this->base(...array_values($best));
+        $estimator = new $this->base(...$best);
 
         if ($this->logger) {
-            $this->logger->info('Training with best hyper-parameters');
+            $this->logger->info('Now training with best hyper-parameters'
+                . Params::stringify($best) . ' on full dataset.');
         }
 
         $estimator->train($dataset);
 
-        $this->base = $estimator;
-
         if ($this->logger) {
             $this->logger->info('Training complete');
         }
+
+        $this->base = $estimator;
+        $this->scores = $scores;
     }
 
     /**
@@ -317,31 +342,41 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
-     * The callback that executes after the cross validation task.
-     *
-     * @internal
-     *
-     * @param float $score
-     * @param mixed[] $params
-     */
-    public function afterScore(float $score, array $params) : void
-    {
-        if ($this->logger) {
-            $this->logger->info("{$this->metric}: $score, "
-                . 'params: [' . Params::stringify($params) . ']');
-        }
-    }
-
-    /**
      * Allow methods to be called on the estimator from the wrapper.
      *
      * @param string $name
      * @param mixed[] $arguments
      * @return mixed
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments) : mixed
     {
         return $this->base->$name(...$arguments);
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['backend']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

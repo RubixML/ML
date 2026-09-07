@@ -5,12 +5,13 @@ namespace Rubix\ML\Tests\NeuralNet;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group NeuralNet
- * @covers \Rubix\ML\NeuralNet\Parameter
- */
+#[Group('NeuralNet')]
+#[CoversClass(Parameter::class)]
 class ParameterTest extends TestCase
 {
     /**
@@ -23,9 +24,6 @@ class ParameterTest extends TestCase
      */
     protected \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->param = new Parameter(Matrix::quick([
@@ -36,25 +34,19 @@ class ParameterTest extends TestCase
         $this->optimizer = new Stochastic();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Parameter::class, $this->param);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function id() : void
     {
         $this->assertIsInt($this->param->id());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update() : void
     {
         $gradient = Matrix::quick([
