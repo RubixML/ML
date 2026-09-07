@@ -120,7 +120,7 @@ class ImageRotator implements Transformer
                             throw new RuntimeException('Could not create placeholder image.');
                         }
 
-                        $success = imagecopyresized(
+                        $success = imagecopyresampled(
                             $resized,
                             $rotated,
                             0,
@@ -134,8 +134,12 @@ class ImageRotator implements Transformer
                         );
 
                         if (!$success) {
+                            imagedestroy($resized);
+
                             throw new RuntimeException('Failed to resize image back to its original size.');
                         }
+
+                        imagedestroy($rotated);
 
                         $rotated = $resized;
                     }
