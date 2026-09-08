@@ -61,23 +61,34 @@ class SparseRandomProjectorTest extends TestCase
     {
         $this->assertCount(10, $this->generator->generate(1)->sample(0));
 
-        $this->transformer->fit($this->generator->generate(30));
+        $dataset = $this->generator->generate(30);
+
+        $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
-        $expected = [
-            3.8861419746435,
-            -17.801078083484,
-            0.29819783331323,
-            -12.191560356574,
-        ];
+        $dataset = $this->generator->generate(30);
 
-        $sample = $this->generator->generate(1)
-            ->apply($this->transformer)
-            ->sample(0);
+        $originals = $dataset->samples();
 
-        $this->assertCount(4, $sample);
-        $this->assertEqualsWithDelta($expected, $sample, 1e-8);
+        $dataset->apply($this->transformer);
+
+        $projected = $dataset->samples();
+
+        $this->assertCount(4, $projected[0]);
+
+        $meanFactor = 0.0;
+
+        foreach ($originals as $idx => $original) {
+            $denominator = $this->squaredNorm($original);
+
+            $meanFactor += $this->squaredNorm($projected[$idx]) / $denominator;
+        }
+
+        $meanFactor /= count($originals);
+
+        $this->assertGreaterThan(0.7, $meanFactor, 'Projector does not preserve magnitude (too small).');
+        $this->assertLessThan(1.3, $meanFactor, 'Projector does not preserve magnitude (too large).');
     }
 
     /**
@@ -90,5 +101,20 @@ class SparseRandomProjectorTest extends TestCase
         $samples = $this->generator->generate(1)->samples();
 
         $this->transformer->transform($samples);
+    }
+
+    /**
+     * @param array<float> $x
+     * @return float
+     */
+    protected function squaredNorm(array $x) : float
+    {
+        $sum = 0.0;
+
+        foreach ($x as $value) {
+            $sum += $value ** 2;
+        }
+
+        return $sum;
     }
 }

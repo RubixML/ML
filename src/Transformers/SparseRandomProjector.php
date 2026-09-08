@@ -51,9 +51,9 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function __construct(int $dimensions, ?float $sparsity = self::TWO_THIRDS)
     {
-        if ($sparsity < 0.0 or $sparsity > 1.0) {
+        if ($sparsity < 0.0 or $sparsity >= 1.0) {
             throw new InvalidArgumentException('Sparsity must be'
-                . " between 0 and 1, $sparsity given.");
+                . " between 0 (inclusive) and 1 (exclusive), $sparsity given.");
         }
 
         parent::__construct($dimensions);
@@ -79,7 +79,7 @@ class SparseRandomProjector extends GaussianRandomProjector
             $density = 1.0 - $this->sparsity;
         }
 
-        $dHat = sqrt(1.0 / $density);
+        $dHat = 1.0 / sqrt($density * $this->dimensions);
 
         $distribution = [
             [-$dHat, 0.5 * $density],

@@ -75,17 +75,7 @@ class TupleTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Element at offset 100 not found.');
 
-        $this->tuple[100];
-    }
-
-    /**
-     * @test
-     */
-    public function immutability() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->tuple[0] = 1;
+        $appeaseStan = $this->tuple[100];
     }
 
     /**

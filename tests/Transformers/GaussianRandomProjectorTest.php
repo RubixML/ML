@@ -99,17 +99,36 @@ class GaussianRandomProjectorTest extends TestCase
      */
     public function fitTransform() : void
     {
+        $this->assertCount(20, $this->generator->generate(1)->sample(0));
+
         $dataset = $this->generator->generate(30);
 
         $this->transformer->fit($dataset);
 
         $this->assertTrue($this->transformer->fitted());
 
-        $sample = $this->generator->generate(1)
-            ->apply($this->transformer)
-            ->sample(0);
+        $dataset = $this->generator->generate(30);
 
-        $this->assertCount(5, $sample);
+        $originals = $dataset->samples();
+
+        $dataset->apply($this->transformer);
+
+        $projected = $dataset->samples();
+
+        $this->assertCount(5, $projected[0]);
+
+        $meanFactor = 0.0;
+
+        foreach ($originals as $idx => $original) {
+            $denominator = $this->squaredNorm($original);
+
+            $meanFactor += $this->squaredNorm($projected[$idx]) / $denominator;
+        }
+
+        $meanFactor /= count($originals);
+
+        $this->assertGreaterThan(0.7, $meanFactor, 'Projector does not preserve magnitude (too small).');
+        $this->assertLessThan(1.3, $meanFactor, 'Projector does not preserve magnitude (too large).');
     }
 
     /**
@@ -122,5 +141,20 @@ class GaussianRandomProjectorTest extends TestCase
         $samples = $this->generator->generate(1)->samples();
 
         $this->transformer->transform($samples);
+    }
+
+    /**
+     * @param array<float> $x
+     * @return float
+     */
+    protected function squaredNorm(array $x) : float
+    {
+        $sum = 0.0;
+
+        foreach ($x as $value) {
+            $sum += $value ** 2;
+        }
+
+        return $sum;
     }
 }

@@ -109,6 +109,6 @@ class ReportTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Attribute with key nonexistent not found.');
 
-        $this->results['nonexistent'];
+        $appeaseStan = $this->results['nonexistent'];
     }
 }
