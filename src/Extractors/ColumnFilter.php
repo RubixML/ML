@@ -4,6 +4,9 @@ namespace Rubix\ML\Extractors;
 
 use Traversable;
 
+use function array_key_exists;
+use function array_values;
+
 /**
  * Column Filter
  *
@@ -46,7 +49,7 @@ class ColumnFilter implements Extractor
     {
         foreach ($this->iterator as $record) {
             foreach ($this->columns as $column) {
-                if (isset($record[$column])) {
+                if (array_key_exists($column, $record)) {
                     unset($record[$column]);
                 }
             }
