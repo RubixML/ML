@@ -2,6 +2,8 @@
 
 - 2.5.14
     - Fix Report and Tuple null values
+    - Fix Random Projector mangitudes
+    - Prevent division by zero in Sparse Random Projector
 
 - 2.5.13
     - Fix SQL Table offset syntax to work with Postgres
