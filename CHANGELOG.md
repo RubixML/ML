@@ -45,6 +45,11 @@
     - Canonicalized `He` and `Xavier 2` initializers
     - `Xavier 2` now extends `He` as a backward-compatible alias
     
+- 2.5.14
+    - Fix Report and Tuple null values
+    - Fix Random Projector mangitudes
+    - Prevent division by zero in Sparse Random Projector
+
 - 2.5.13
     - Fix SQL Table offset syntax to work with Postgres
     - Prevent SQL Table injection attack
