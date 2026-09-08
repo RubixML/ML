@@ -17,7 +17,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class StepDecay implements Optimizer
+class StepDecay implements Optimizer, Scheduler
 {
     /**
      * The learning rate that controls the global step size.
@@ -90,9 +90,17 @@ class StepDecay implements Optimizer
 
         $rate = $this->rate * (1.0 / (1.0 + $floor * $this->decay));
 
-        ++$this->t;
-
         return $gradient->multiply($rate);
+    }
+
+    /**
+     * Advance the learning-rate schedule by one batch.
+     *
+     * @internal
+     */
+    public function tick() : void
+    {
+        ++$this->t;
     }
 
     /**
