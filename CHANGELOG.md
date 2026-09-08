@@ -3,7 +3,7 @@
 - 2.5.13
     - Fix SQL Table offset syntax to work with Postgres
     - Prevent SQL Table injection attack
-    - Pipeline add missing traided guard on score method
+    - Pipeline add missing trained guard on score method
     - Fix Column Picker/Filter on null columns
     - Fix Image Rotator mangling non-90° rotations
 
