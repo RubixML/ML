@@ -52,7 +52,104 @@ class ImageRotatorTest extends TestCase
         $this->assertSame('whatever', $sample[1]);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function transformWideImage90Degrees() : void
+    {
+        foreach ([90.0, 270.0] as $degrees) {
+            $source = imagecreatetruecolor(80, 40);
+            $dataset = Unlabeled::quick([
+                [$source, 'whatever', 69],
+            ]);
+
+            $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
+            $mock->method('rotationAngle')->will($this->returnValue($degrees));
+
+            $dataset->apply($mock);
+            $sample = $dataset->sample(0);
+
+            $this->assertSame(80, imagesx($sample[0]));
+            $this->assertSame(40, imagesy($sample[0]));
+            $this->assertSame('whatever', $sample[1]);
+
+            if ($sample[0] !== $source) {
+                imagedestroy($sample[0]);
+            }
+
+            imagedestroy($source);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function transformTallImage90Degrees() : void
+    {
+        $source = imagecreatetruecolor(20, 100);
+        $dataset = Unlabeled::quick([
+            [$source, 'whatever', 69],
+        ]);
+
+        foreach ([90.0, 270.0] as $degrees) {
+            $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
+            $mock->method('rotationAngle')->will($this->returnValue($degrees));
+
+            $dataset->apply($mock);
+            $sample = $dataset->sample(0);
+
+            $this->assertSame(20, imagesx($sample[0]));
+            $this->assertSame(100, imagesy($sample[0]));
+            $this->assertSame('whatever', $sample[1]);
+
+            imagedestroy($sample[0]);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function transformExtremeRatioImage90Degrees() : void
+    {
+        $source = imagecreatetruecolor(200, 5);
+        $dataset = Unlabeled::quick([
+            [$source, 'whatever', 69],
+        ]);
+
+        $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
+        $mock->method('rotationAngle')->will($this->returnValue(90.0));
+
+        $dataset->apply($mock);
+        $sample = $dataset->sample(0);
+
+        $this->assertSame(200, imagesx($sample[0]));
+        $this->assertSame(5, imagesy($sample[0]));
+    }
+
+    /**
+     * @test
+     */
+    public function transformSquareImage45Degrees() : void
+    {
+        $source = imagecreatetruecolor(32, 32);
+        $dataset = Unlabeled::quick([
+            [$source, 'whatever', 69],
+        ]);
+
+        $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
+        $mock->method('rotationAngle')->will($this->returnValue(45.0));
+
+        $dataset->apply($mock);
+        $sample = $dataset->sample(0);
+
+        $this->assertSame(32, imagesx($sample[0]));
+        $this->assertSame(32, imagesy($sample[0]));
+        $this->assertSame('whatever', $sample[1]);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
         $dataset = Unlabeled::quick([
