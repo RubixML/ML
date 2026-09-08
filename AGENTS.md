@@ -57,7 +57,6 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 
 ## Coding Conventions
 
-- `declare(strict_types=1)` in every file
 - PSR-2 with extended rules (enforced by PHP-CS-Fixer, see `.php-cs-fixer.dist.php`)
 - DocBlock on every class, property, method, constant, and function
 - No anonymous classes or functions (breaks serialization/persistence)
