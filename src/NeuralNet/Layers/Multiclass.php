@@ -199,10 +199,10 @@ class Multiclass implements Output
         $dLoss = $this->costFn->differentiate($output, $expected)
             ->divide($output->n());
 
-        $prod = $output->multiply($dLoss);
+$outputT = $output->transpose();
+$prod = $outputT->multiply($dLoss->transpose());
 
-        return $prod->subtract($output->multiply($prod->sum()));
-    }
+return $prod->subtract($outputT->multiply($prod->sum()))->transpose();
 
     /**
      * Compute the Softmax activation.
