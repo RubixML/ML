@@ -43,7 +43,7 @@
     - Dataset fold() now returns excess samples in last fold
     - Increase default Decision Tree max leaf node size from 3 to 5
     - Canonicalized `He` and `Xavier 2` initializers
-    - `Xavier 2` now extends `He` as a backward-compatible alias
+    - `Xavier 2` now extends `He` as a deprecated alias
     
 - 2.5.14
     - Fix Report and Tuple null values

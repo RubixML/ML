@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
@@ -13,6 +14,7 @@ use Rubix\ML\Transformers\ImageRotator;
 use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 #[Group('Transformers')]
 #[RequiresPhpExtension('gd')]
 #[CoversClass(ImageRotator::class)]
@@ -62,7 +64,7 @@ class ImageRotatorTest extends TestCase
             ]);
 
             $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-            $mock->method('rotationAngle')->will($this->returnValue($degrees));
+            $mock->method('rotationAngle')->willReturn($degrees);
 
             $dataset->apply($mock);
             $sample = $dataset->sample(0);
@@ -89,7 +91,7 @@ class ImageRotatorTest extends TestCase
 
         foreach ([90.0, 270.0] as $degrees) {
             $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-            $mock->method('rotationAngle')->will($this->returnValue($degrees));
+            $mock->method('rotationAngle')->willReturn($degrees);
 
             $dataset->apply($mock);
             $sample = $dataset->sample(0);
@@ -111,7 +113,7 @@ class ImageRotatorTest extends TestCase
         ]);
 
         $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-        $mock->method('rotationAngle')->will($this->returnValue(90.0));
+        $mock->method('rotationAngle')->willReturn(90.0);
 
         $dataset->apply($mock);
         $sample = $dataset->sample(0);
@@ -129,7 +131,7 @@ class ImageRotatorTest extends TestCase
         ]);
 
         $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-        $mock->method('rotationAngle')->will($this->returnValue(45.0));
+        $mock->method('rotationAngle')->willReturn(45.0);
 
         $dataset->apply($mock);
         $sample = $dataset->sample(0);
