@@ -59,6 +59,23 @@ class Multiclass implements Output
     protected ?Matrix $output = null;
 
     /**
+     * Compute the Softmax activation.
+     *
+     * @param Matrix $input
+     * @return Matrix
+     */
+    protected static function softmax(Matrix $input) : Matrix
+    {
+        $z = $input->transpose();
+
+        $z = $z->subtractColumnVector($z->max())->exp();
+
+        $total = $z->sum()->clipLower(EPSILON);
+
+        return $z->divide($total)->transpose();
+    }
+
+    /**
      * @param string[] $classes
      * @param ClassificationLoss $costFn
      * @throws InvalidArgumentException
@@ -121,7 +138,7 @@ class Multiclass implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        $output = $this->softmax($input);
+        $output = self::softmax($input);
 
         $this->input = $input;
         $this->output = $output;
@@ -137,7 +154,7 @@ class Multiclass implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->softmax($input);
+        return self::softmax($input);
     }
 
     /**
@@ -199,26 +216,10 @@ class Multiclass implements Output
         $dLoss = $this->costFn->differentiate($output, $expected)
             ->divide($output->n());
 
-$outputT = $output->transpose();
-$prod = $outputT->multiply($dLoss->transpose());
+        $outputT = $output->transpose();
+        $prod = $outputT->multiply($dLoss->transpose());
 
-return $prod->subtract($outputT->multiply($prod->sum()))->transpose();
-
-    /**
-     * Compute the Softmax activation.
-     *
-     * @param Matrix $input
-     * @return Matrix
-     */
-    private function softmax(Matrix $input) : Matrix
-    {
-        $z = $input->transpose();
-
-        $z = $z->subtractColumnVector($z->max())->exp();
-
-        $total = $z->sum()->clipLower(EPSILON);
-
-        return $z->divide($total)->transpose();
+        return $prod->subtract($outputT->multiply($prod->sum()))->transpose();
     }
 
     /**
