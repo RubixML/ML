@@ -52,9 +52,7 @@ class ImageRotatorTest extends TestCase
         $this->assertSame('whatever', $sample[1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWideImage90Degrees() : void
     {
         foreach ([90.0, 270.0] as $degrees) {
@@ -81,9 +79,7 @@ class ImageRotatorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformTallImage90Degrees() : void
     {
         $source = imagecreatetruecolor(20, 100);
@@ -106,9 +102,7 @@ class ImageRotatorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformExtremeRatioImage90Degrees() : void
     {
         $source = imagecreatetruecolor(200, 5);
@@ -126,9 +120,7 @@ class ImageRotatorTest extends TestCase
         $this->assertSame(5, imagesy($sample[0]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformSquareImage45Degrees() : void
     {
         $source = imagecreatetruecolor(32, 32);
@@ -147,9 +139,7 @@ class ImageRotatorTest extends TestCase
         $this->assertSame('whatever', $sample[1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform() : void
     {
         $dataset = Unlabeled::quick([

@@ -58,9 +58,7 @@ class ReportTest extends TestCase
         $this->assertEquals(5, $this->results['cardinality']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nullAttributesAreFound() : void
     {
         $report = new Report([
@@ -74,9 +72,7 @@ class ReportTest extends TestCase
         $this->assertEquals(0, $report['threshold']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function missingAttributes() : void
     {
         $this->assertFalse(isset($this->results['nonexistent']));

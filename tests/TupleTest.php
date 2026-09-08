@@ -2,15 +2,15 @@
 
 namespace Rubix\ML\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Results
- * @covers \Rubix\ML\Tuple
- */
+#[Group('Results')]
+#[CoversClass(Tuple::class)]
 class TupleTest extends TestCase
 {
     /**
@@ -18,33 +18,24 @@ class TupleTest extends TestCase
      */
     protected $tuple;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->tuple = new Tuple(10, 'twenty', null);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function list() : void
     {
         $this->assertEquals([10, 'twenty', null], $this->tuple->list());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function tupleCount() : void
     {
         $this->assertEquals(3, $this->tuple->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function arrayAccess() : void
     {
         $this->assertEquals(10, $this->tuple[0]);
@@ -52,9 +43,7 @@ class TupleTest extends TestCase
         $this->assertNull($this->tuple[2]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nullElementsAreFound() : void
     {
         $tuple = new Tuple(null, 0);
@@ -65,9 +54,7 @@ class TupleTest extends TestCase
         $this->assertEquals(0, $tuple[1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function missingElements() : void
     {
         $this->assertFalse(isset($this->tuple[100]));
@@ -78,9 +65,7 @@ class TupleTest extends TestCase
         $appeaseStan = $this->tuple[100];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function iteration() : void
     {
         $this->assertEquals([10, 'twenty', null], iterator_to_array($this->tuple));

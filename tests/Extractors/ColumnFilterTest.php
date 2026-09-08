@@ -44,9 +44,7 @@ class ColumnFilterTest extends TestCase
         $this->assertEquals($expected, $records);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function extractNullColumn() : void
     {
         $iterable = (function () {

@@ -52,9 +52,7 @@ class SQLTableTest extends TestCase
         $this->assertEquals($expected, $header);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rejectInvalidIdentifier() : void
     {
         $connection = new PDO('sqlite::memory:');
