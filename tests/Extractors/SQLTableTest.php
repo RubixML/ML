@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Extractors;
 
 use Rubix\ML\Extractors\SQLTable;
 use Rubix\ML\Extractors\Extractor;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use Traversable;
@@ -67,5 +68,17 @@ class SQLTableTest extends TestCase
         $header = $this->extractor->header();
 
         $this->assertEquals($expected, $header);
+    }
+
+    /**
+     * @test
+     */
+    public function rejectInvalidIdentifier() : void
+    {
+        $connection = new PDO('sqlite::memory:');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        new SQLTable($connection, "pets'; DROP TABLE users; --");
     }
 }
