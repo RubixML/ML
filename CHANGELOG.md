@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.14
+    - Fix Report and Tuple null values
+
 - 2.5.13
     - Fix SQL Table offset syntax to work with Postgres
     - Prevent SQL Table injection attack

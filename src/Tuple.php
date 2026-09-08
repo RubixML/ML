@@ -9,6 +9,7 @@ use ArrayAccess;
 use Traversable;
 use Countable;
 
+use function array_key_exists;
 use function count;
 use function func_get_args;
 
@@ -68,7 +69,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        if (isset($this->elements[$offset])) {
+        if (array_key_exists($offset, $this->elements)) {
             return $this->elements[$offset];
         }
 
@@ -93,7 +94,7 @@ class Tuple implements ArrayAccess, IteratorAggregate, Countable
      */
     public function offsetExists($offset) : bool
     {
-        return isset($this->elements[$offset]);
+        return array_key_exists($offset, $this->elements);
     }
 
     /**

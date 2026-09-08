@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests;
 
 use Rubix\ML\Report;
 use Rubix\ML\Encoding;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use IteratorAggregate;
 use JsonSerializable;
@@ -80,5 +81,34 @@ class ReportTest extends TestCase
         $this->assertEquals(0.9, $this->results['accuracy']);
         $this->assertEquals(0.75, $this->results['f1_score']);
         $this->assertEquals(5, $this->results['cardinality']);
+    }
+
+    /**
+     * @test
+     */
+    public function nullAttributesAreFound() : void
+    {
+        $report = new Report([
+            'accuracy' => null,
+            'threshold' => 0,
+        ]);
+
+        $this->assertTrue(isset($report['accuracy']));
+        $this->assertTrue(isset($report['threshold']));
+        $this->assertNull($report['accuracy']);
+        $this->assertEquals(0, $report['threshold']);
+    }
+
+    /**
+     * @test
+     */
+    public function missingAttributes() : void
+    {
+        $this->assertFalse(isset($this->results['nonexistent']));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute with key nonexistent not found.');
+
+        $this->results['nonexistent'];
     }
 }
