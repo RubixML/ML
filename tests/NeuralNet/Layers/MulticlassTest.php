@@ -9,6 +9,7 @@ use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -110,5 +111,36 @@ class MulticlassTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
+    }
+
+    /**
+     * The gradient with a non-cross-entropy loss exercises the Softmax Jacobian
+     * path and its off-diagonal coupling.
+     */
+    #[Test]
+    public function gradientWithSoftmaxJacobian() : void
+    {
+        $layer = new Multiclass(['hot', 'cold', 'ice cold'], new RelativeEntropy());
+
+        $layer->initialize(3);
+
+        $forward = $layer->forward($this->input);
+
+        $expected = [
+            [0.6, 0.3, 0.1],
+            [0.1, 0.6, 0.3],
+            [0.2, 0.1, 0.7],
+        ];
+
+        $gradient = $layer->gradient($this->input, $forward, Matrix::quick($expected));
+
+        $expected = [
+            [-0.012226206614022184, 0.20798936096906329, -0.01936779185108957],
+            [0.04300979395180523, -0.174718693728679, 0.21000640944179927],
+            [0.0025497459955502455, -0.033270667240384334, -0.223971950924043],
+        ];
+
+        $this->assertInstanceOf(Matrix::class, $gradient);
+        $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
     }
 }

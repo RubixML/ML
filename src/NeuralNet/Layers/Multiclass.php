@@ -5,13 +5,14 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use function count;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Multiclass
@@ -42,13 +43,6 @@ class Multiclass implements Output
      * @var ClassificationLoss
      */
     protected ClassificationLoss $costFn;
-
-    /**
-     * The softmax activation function.
-     *
-     * @var Softmax
-     */
-    protected Softmax $softmax;
 
     /**
      * The memorized input matrix.
@@ -84,8 +78,8 @@ class Multiclass implements Output
         }
 
         $this->classes = $classes;
+
         $this->costFn = $costFn;
-        $this->softmax = new Softmax();
     }
 
     /**
@@ -127,7 +121,7 @@ class Multiclass implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        $output = $this->softmax->activate($input);
+        $output = $this->softmax($input);
 
         $this->input = $input;
         $this->output = $output;
@@ -139,12 +133,11 @@ class Multiclass implements Output
      * Compute an inferential pass through the layer.
      *
      * @param Matrix $input
-     * @throws RuntimeException
      * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->softmax->activate($input);
+        return $this->softmax($input);
     }
 
     /**
@@ -206,8 +199,26 @@ class Multiclass implements Output
         $dLoss = $this->costFn->differentiate($output, $expected)
             ->divide($output->n());
 
-        return $this->softmax->differentiate($input, $output)
-            ->multiply($dLoss);
+        $prod = $output->multiply($dLoss);
+
+        return $prod->subtract($output->multiply($prod->sum()));
+    }
+
+    /**
+     * Compute the Softmax activation.
+     *
+     * @param Matrix $input
+     * @return Matrix
+     */
+    private function softmax(Matrix $input) : Matrix
+    {
+        $z = $input->transpose();
+
+        $z = $z->subtractColumnVector($z->max())->exp();
+
+        $total = $z->sum()->clipLower(EPSILON);
+
+        return $z->divide($total)->transpose();
     }
 
     /**

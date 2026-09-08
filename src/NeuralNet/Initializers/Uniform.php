@@ -49,8 +49,7 @@ class Uniform implements Initializer
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
-        return Matrix::uniform($fanOut, $fanIn)
-            ->multiply($this->beta);
+        return Matrix::uniform($fanOut, $fanIn)->multiply($this->beta);
     }
 
     /**

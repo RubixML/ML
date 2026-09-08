@@ -175,7 +175,6 @@ nav:
         - ReLU6: neural-network/activation-functions/relu6.md
         - SELU: neural-network/activation-functions/selu.md
         - Sigmoid: neural-network/activation-functions/sigmoid.md
-        - Softmax: neural-network/activation-functions/softmax.md
         - Soft Plus: neural-network/activation-functions/soft-plus.md
         - Softsign: neural-network/activation-functions/softsign.md
         - SiLU: neural-network/activation-functions/silu.md

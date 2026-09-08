@@ -44,6 +44,8 @@
     - Increase default Decision Tree max leaf node size from 3 to 5
     - Canonicalized `He` and `Xavier 2` initializers
     - `Xavier 2` now extends `He` as a backward-compatible alias
+    - Remove Softmax activation function
+    - Fix Multiclass layer gradient for non-Cross Entropy losses
     
 - 2.5.13
     - Pipeline add missing traided guard on score method
