@@ -5,6 +5,9 @@ namespace Rubix\ML\Extractors;
 use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
+use function array_key_exists;
+use function array_values;
+
 /**
  * Column Picker
  *
@@ -54,7 +57,7 @@ class ColumnPicker implements Extractor
             $picked = [];
 
             foreach ($this->columns as $column) {
-                if (!isset($record[$column])) {
+                if (!array_key_exists($column, $record)) {
                     throw new RuntimeException("Column '$column' not found"
                         . " at row offset $i.");
                 }
