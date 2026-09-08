@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests;
 
 use Rubix\ML\Tuple;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
