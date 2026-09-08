@@ -229,6 +229,10 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
      */
     public function score(Dataset $dataset) : array
     {
+        if (!$this->trained()) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $this->preprocess($dataset);
 
         if (!$this->base instanceof Scoring) {

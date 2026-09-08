@@ -3,6 +3,7 @@
 - 2.5.13
     - Fix SQL Table offset syntax to work with Postgres
     - Prevent SQL Table injection attack
+    - Pipeline add missing traided guard on score method
 
 - 2.5.12
     - Fix Adaboost proba() probability normalization

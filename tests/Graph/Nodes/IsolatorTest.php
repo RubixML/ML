@@ -65,6 +65,20 @@ class IsolatorTest extends TestCase
     /**
      * @test
      */
+    public function splitConstantZeroColumn() : void
+    {
+        $dataset = Unlabeled::quick([[0.0], [0.0], [0.0]]);
+
+        $node = Isolator::split($dataset);
+
+        $this->assertInstanceOf(Isolator::class, $node);
+
+        $this->assertEquals(0.0, $node->value());
+    }
+
+    /**
+     * @test
+     */
     public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
