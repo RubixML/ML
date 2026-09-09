@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Stringable;
 
 /**
@@ -19,6 +20,13 @@ use Stringable;
  */
 interface Optimizer extends Stringable
 {
+    /**
+     * Return the underlying learning rate scheduler instance.
+     *
+     * @internal
+     */
+    public function scheduler() : Scheduler;
+
     /**
      * Warm the parameter cache.
      *
@@ -40,16 +48,9 @@ interface Optimizer extends Stringable
     public function update(Parameter $param, Tensor $gradient) : Tensor;
 
     /**
-     * Advance the paired learning-rate schedule by one batch.
+     * Flush the parameter cache.
      *
      * @internal
      */
-    public function step() : void;
-
-    /**
-     * Reset the parameter cache.
-     *
-     * @internal
-     */
-    public function reset() : void;
+    public function flush() : void;
 }

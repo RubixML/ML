@@ -53,6 +53,16 @@ class AdaGrad implements Optimizer
     }
 
     /**
+     * The underlying learning rate scheduler instance.
+     *
+     * @internal
+     */
+    public function scheduler() : Scheduler
+    {
+        return $this->scheduler;
+    }
+
+    /**
      * Warm the parameter cache.
      *
      * @internal
@@ -93,21 +103,11 @@ class AdaGrad implements Optimizer
     }
 
     /**
-     * Advance the paired learning-rate schedule by one batch.
+     * Flush the parameter cache.
      *
      * @internal
      */
-    public function step() : void
-    {
-        $this->scheduler->tick();
-    }
-
-    /**
-     * Reset the parameter cache.
-     *
-     * @internal
-     */
-    public function reset() : void
+    public function flush() : void
     {
         $this->cache = [];
     }

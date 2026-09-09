@@ -572,7 +572,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      */
     public function cleanup() : void
     {
-        $this->optimizer->reset();
+        $this->optimizer->flush();
     }
 
     /**

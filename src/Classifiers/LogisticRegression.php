@@ -552,7 +552,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      */
     public function cleanup() : void
     {
-        $this->optimizer->reset();
+        $this->optimizer->flush();
     }
 
     /**

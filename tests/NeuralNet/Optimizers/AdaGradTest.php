@@ -70,8 +70,8 @@ class AdaGradTest extends TestCase
 
         $initialRate = $scheduler->rate();
 
-        $optimizer->step();
-        $optimizer->step();
+        $optimizer->scheduler()->tick();
+        $optimizer->scheduler()->tick();
 
         $decreasedRate = $scheduler->rate();
 
@@ -95,7 +95,7 @@ class AdaGradTest extends TestCase
     }
 
     #[Test]
-    public function reset() : void
+    public function flush() : void
     {
         $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
 
@@ -105,7 +105,7 @@ class AdaGradTest extends TestCase
 
         $this->optimizer->update($param, $gradient);
 
-        $this->optimizer->reset();
+        $this->optimizer->flush();
 
         $this->optimizer->warm($param);
 

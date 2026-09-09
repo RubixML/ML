@@ -539,7 +539,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      */
     public function cleanup() : void
     {
-        $this->optimizer->reset();
+        $this->optimizer->flush();
     }
 
     /**

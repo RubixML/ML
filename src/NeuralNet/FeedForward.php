@@ -210,7 +210,7 @@ class FeedForward implements Network
 
         $loss = $this->backpropagate($dataset->labels());
 
-        $this->optimizer->step();
+        $this->optimizer->scheduler()->tick();
 
         return $loss;
     }

@@ -550,7 +550,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      */
     public function cleanup() : void
     {
-        $this->optimizer->reset();
+        $this->optimizer->flush();
     }
 
     /**

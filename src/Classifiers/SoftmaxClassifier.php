@@ -554,7 +554,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      */
     public function cleanup() : void
     {
-        $this->optimizer->reset();
+        $this->optimizer->flush();
     }
 
     /**
