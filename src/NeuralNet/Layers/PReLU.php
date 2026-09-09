@@ -56,15 +56,6 @@ class PReLU implements Hidden, Parametric
     protected ?Matrix $input = null;
 
     /**
-     * The accumulated gradients of the parameters of the layer.
-     *
-     * @var array<Tensor<int|float|array>>
-     */
-    protected array $gradients = [
-        //
-    ];
-
-    /**
      * @param Initializer|null $initializer
      */
     public function __construct(?Initializer $initializer = null)
@@ -139,16 +130,15 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Calculate the gradient for the previous layer and record the gradient of
-     * the parameters of this layer.
+     * Calculate the gradient for the previous layer and return the gradients of the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
      * @throws RuntimeException
-     * @return Deferred
+     * @return array{Deferred, list<array{Parameter, Tensor<int|float|array>}>}
      */
-    public function back(Deferred $prevGradient) : Deferred
+    public function back(Deferred $prevGradient) : array
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -165,13 +155,13 @@ class PReLU implements Hidden, Parametric
 
         $dAlpha = $dOut->multiply($dIn)->sum();
 
-        $this->accumulate($this->alpha, $dAlpha);
+        $gradients = [[$this->alpha, $dAlpha]];
 
         $input = $this->input;
 
         $this->input = null;
 
-        return new Deferred([$this, 'gradient'], [$input, $dOut]);
+        return [new Deferred([$this, 'gradient'], [$input, $dOut]), $gradients];
     }
 
     /**
@@ -206,32 +196,6 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Return the accumulated gradients of the parameters of the layer.
-     *
-     * @internal
-     *
-     * @return Generator<array{Parameter, Tensor<int|float|array>}>
-     */
-    public function gradients() : Generator
-    {
-        foreach ($this->parameters() as $param) {
-            if (isset($this->gradients[$param->id()])) {
-                yield [$param, $this->gradients[$param->id()]];
-            }
-        }
-    }
-
-    /**
-     * Reset the accumulated gradients of the layer.
-     *
-     * @internal
-     */
-    public function resetGradients() : void
-    {
-        $this->gradients = [];
-    }
-
-    /**
      * Restore the parameters in the layer from an associative array.
      *
      * @internal
@@ -241,21 +205,6 @@ class PReLU implements Hidden, Parametric
     public function restore(array $parameters) : void
     {
         $this->alpha = $parameters['alpha'];
-    }
-
-    /**
-     * Accumulate the gradient of a parameter of the layer.
-     *
-     * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     */
-    protected function accumulate(Parameter $param, Tensor $gradient) : void
-    {
-        $id = $param->id();
-
-        $this->gradients[$id] = isset($this->gradients[$id])
-            ? $this->gradients[$id]->add($gradient)
-            : $gradient;
     }
 
     /**

@@ -3,7 +3,9 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
+use Tensor\Tensor;
 use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -138,15 +140,15 @@ class Dropout implements Hidden
     }
 
     /**
-     * Calculate the gradient for the previous layer.
+     * Calculate the gradient for the previous layer and return the gradients of the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
      * @throws RuntimeException
-     * @return Deferred
+     * @return array{Deferred, list<array{Parameter, Tensor<int|float|array>}>}
      */
-    public function back(Deferred $prevGradient) : Deferred
+    public function back(Deferred $prevGradient) : array
     {
         if (!$this->mask) {
             throw new RuntimeException('Must perform forward pass before backpropagating.');
@@ -156,7 +158,7 @@ class Dropout implements Hidden
 
         $this->mask = null;
 
-        return new Deferred([$this, 'gradient'], [$prevGradient, $mask]);
+        return [new Deferred([$this, 'gradient'], [$prevGradient, $mask]), []];
     }
 
     /**

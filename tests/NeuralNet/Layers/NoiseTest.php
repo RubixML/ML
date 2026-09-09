@@ -7,13 +7,10 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Noise;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Noise::class)]
@@ -37,11 +34,6 @@ class NoiseTest extends TestCase
     protected Deferred $prevGrad;
 
     /**
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
-
-    /**
      * @var Noise
      */
     protected Noise $layer;
@@ -63,8 +55,6 @@ class NoiseTest extends TestCase
                 [0.25, 0.1, 0.89],
             ]);
         });
-
-        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Noise(0.1);
 
@@ -97,7 +87,9 @@ class NoiseTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        [$gradient, $paramGradients] = $this->layer->back($this->prevGrad);
+
+        $gradient = $gradient->compute();
 
         $expected = [
             [0.25, 0.7, 0.1],
@@ -107,6 +99,8 @@ class NoiseTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
+
+        $this->assertSame([], $paramGradients);
 
         $expected = [
             [1.0, 2.5, -0.1],

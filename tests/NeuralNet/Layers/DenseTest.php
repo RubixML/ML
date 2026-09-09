@@ -99,7 +99,9 @@ class DenseTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        $gradient = $this->layer->back($this->prevGrad)->compute();
+        [$gradient, $paramGradients] = $this->layer->back($this->prevGrad);
+
+        $gradient = $gradient->compute();
 
         $expected = [
             [0.3124653598013489, 0.1249861439205396, 0.8680008614843256],
@@ -110,13 +112,7 @@ class DenseTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
-        $gradients = [];
-
-        foreach ($this->layer->gradients() as [$param, $gradient]) {
-            $gradients[] = [$param, $gradient];
-        }
-
-        $this->optimizer->step($gradients);
+        $this->optimizer->step($paramGradients);
 
         $expected = [
             [0.1638285607858090, -3.3171525399720405, 0.4682303341238930],

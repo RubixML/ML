@@ -7,14 +7,11 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Activation::class)]
@@ -34,11 +31,6 @@ class ActivationTest extends TestCase
      * @var Deferred
      */
     protected Deferred $prevGrad;
-
-    /**
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
 
     /**
      * @var Activation
@@ -62,8 +54,6 @@ class ActivationTest extends TestCase
                 [0.25, 0.1, 0.89],
             ]);
         });
-
-        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Activation(new ReLU());
     }
@@ -94,7 +84,9 @@ class ActivationTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        [$gradient, $paramGradients] = $this->layer->back($this->prevGrad);
+
+        $gradient = $gradient->compute();
 
         $expected = [
             [0.25, 0.7, 0.0],
@@ -104,6 +96,8 @@ class ActivationTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
+
+        $this->assertSame([], $paramGradients);
 
         $expected = [
             [1.0, 2.5, 0.0],

@@ -104,15 +104,6 @@ class BatchNorm implements Hidden, Parametric
     protected ?Matrix $xHat = null;
 
     /**
-     * The accumulated gradients of the parameters of the layer.
-     *
-     * @var array<Tensor<int|float|array>>
-     */
-    protected array $gradients = [
-        //
-    ];
-
-    /**
      * @param float $decay
      * @param Initializer|null $betaInitializer
      * @param Initializer|null $gammaInitializer
@@ -236,16 +227,16 @@ class BatchNorm implements Hidden, Parametric
     }
 
     /**
-     * Calculate the errors and gradients of the layer and record the gradients
+     * Calculate the errors and gradients of the layer and return the gradients
      * of the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
      * @throws RuntimeException
-     * @return Deferred
+     * @return array{Deferred, list<array{Parameter, Tensor<int|float|array>}>}
      */
-    public function back(Deferred $prevGradient) : Deferred
+    public function back(Deferred $prevGradient) : array
     {
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -263,18 +254,20 @@ class BatchNorm implements Hidden, Parametric
 
         $gamma = $this->gamma->param();
 
-        $this->accumulate($this->beta, $dBeta);
-        $this->accumulate($this->gamma, $dGamma);
+        $gradients = [
+            [$this->beta, $dBeta],
+            [$this->gamma, $dGamma],
+        ];
 
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;
 
         $this->stdInv = $this->xHat = null;
 
-        return new Deferred(
+        return [new Deferred(
             [$this, 'gradient'],
             [$dOut, $gamma, $stdInv, $xHat]
-        );
+        ), $gradients];
     }
 
     /**
@@ -321,32 +314,6 @@ class BatchNorm implements Hidden, Parametric
     }
 
     /**
-     * Return the accumulated gradients of the parameters of the layer.
-     *
-     * @internal
-     *
-     * @return Generator<array{Parameter, Tensor<int|float|array>}>
-     */
-    public function gradients() : Generator
-    {
-        foreach ($this->parameters() as $param) {
-            if (isset($this->gradients[$param->id()])) {
-                yield [$param, $this->gradients[$param->id()]];
-            }
-        }
-    }
-
-    /**
-     * Reset the accumulated gradients of the layer.
-     *
-     * @internal
-     */
-    public function resetGradients() : void
-    {
-        $this->gradients = [];
-    }
-
-    /**
      * Restore the parameters in the layer from an associative array.
      *
      * @internal
@@ -357,21 +324,6 @@ class BatchNorm implements Hidden, Parametric
     {
         $this->beta = $parameters['beta'];
         $this->gamma = $parameters['gamma'];
-    }
-
-    /**
-     * Accumulate the gradient of a parameter of the layer.
-     *
-     * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     */
-    protected function accumulate(Parameter $param, Tensor $gradient) : void
-    {
-        $id = $param->id();
-
-        $this->gradients[$id] = isset($this->gradients[$id])
-            ? $this->gradients[$id]->add($gradient)
-            : $gradient;
     }
 
     /**
