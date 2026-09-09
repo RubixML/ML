@@ -2,7 +2,7 @@
 
 # Softmax Classifier
 
-A multiclass generalization of [Logistic Regression](logistic-regression.md) using a single layer neural network with a [Softmax](../neural-network/activation-functions/softmax.md) output layer. In addition, the learner features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
+A multiclass generalization of [Logistic Regression](logistic-regression.md) using a single layer neural network with a Softmax output layer. In addition, the learner features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
 !!! note
     If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.

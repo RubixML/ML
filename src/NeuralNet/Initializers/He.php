@@ -36,8 +36,7 @@ class He implements Initializer
     {
         $scale = sqrt(6.0 / $fanIn);
 
-        return Matrix::uniform($fanOut, $fanIn)
-            ->multiply($scale);
+        return Matrix::uniform($fanOut, $fanIn)->multiply($scale);
     }
 
     /**
