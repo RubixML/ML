@@ -476,7 +476,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             }
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, {$this->costFn}: $loss";
+                $message = "Epoch: {$epoch}";
+                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                $message .= ", {$this->costFn}: $loss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
