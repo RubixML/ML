@@ -9,6 +9,7 @@ use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Datasets\Labeled;
 use Generator;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Backends\Serial;
 
@@ -52,7 +53,7 @@ class OneVsRestBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new OneVsRest(new LogisticRegression(64, new Stochastic(0.001)));
+        $this->estimator = new OneVsRest(new LogisticRegression(64, new Stochastic(new Constant(0.001))));
     }
 
     /**

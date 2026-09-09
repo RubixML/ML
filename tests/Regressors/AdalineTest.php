@@ -23,6 +23,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Regressors\Adaline;
 
 use function sys_get_temp_dir;
@@ -107,7 +108,7 @@ class AdalineTest extends TestCase
 
         $this->estimator = new Adaline(
             batchSize: 32,
-            optimizer: new Adam(rate: 0.001),
+            optimizer: new Adam(new Constant(0.001)),
             l2Penalty: 1e-4,
             epochs: 100,
             minChange: 1e-4,
@@ -163,7 +164,7 @@ class AdalineTest extends TestCase
     {
         $expected = [
             'batch size' => 32,
-            'optimizer' => new Adam(0.001),
+            'optimizer' => new Adam(new Constant(0.001)),
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
@@ -280,7 +281,7 @@ class AdalineTest extends TestCase
     {
         $estimator = new Adaline(
             batchSize: 32,
-            optimizer: new Adam(rate: 0.001),
+            optimizer: new Adam(new Constant(0.001)),
             l2Penalty: 1e-4,
             epochs: 100,
             minChange: 1e-4,

@@ -6,8 +6,9 @@ use Tensor\Tensor;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -50,15 +51,20 @@ class RMSPropTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->optimizer = new RMSProp(0.001, 0.1);
+        $this->optimizer = new RMSProp(new Constant(0.001), 0.1);
     }
 
     #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(RMSProp::class, $this->optimizer);
-        $this->assertInstanceOf(Adaptive::class, $this->optimizer);
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
+    }
+
+    #[Test]
+    public function scheduler() : void
+    {
+        $this->assertInstanceOf(Scheduler::class, $this->optimizer->scheduler());
     }
 
     /**

@@ -24,7 +24,7 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -235,7 +235,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         }
 
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?? new Adam();
+        $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -552,9 +552,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      */
     public function cleanup() : void
     {
-        if ($this->optimizer instanceof Adaptive) {
-            $this->optimizer->reset();
-        }
+        $this->optimizer->reset();
     }
 
     /**

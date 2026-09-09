@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant as Schedule;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -63,7 +64,7 @@ class BatchNormTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Schedule(0.001));
 
         $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
     }
@@ -137,7 +138,7 @@ class BatchNormTest extends TestCase
             ]);
         });
 
-        $optimizer = new Stochastic(0.001);
+        $optimizer = new Stochastic(new Schedule(0.001));
 
         $layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
 

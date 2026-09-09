@@ -1,19 +1,17 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers\Schedulers;
 
-use Tensor\Tensor;
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Cyclical
  *
- * The Cyclical optimizer uses a global learning rate that cycles between the
- * lower and upper bound over a designated period while also decaying the
- * upper bound by the decay coefficient at each step. Cyclical learning rates
- * have been shown to help escape bad local minima and saddle points thus
- * achieving lower training loss.
+ * The Cyclical scheduler cycles the learning rate between the lower and upper
+ * bound over a designated period while also decaying the upper bound by the
+ * decay coefficient at each step. Cyclical learning rates have been shown to
+ * help escape bad local minima and saddle points thus achieving lower
+ * training loss.
  *
  * References:
  * [1] L. N. Smith. (2017). Cyclical Learning Rates for Training Neural Networks.
@@ -22,7 +20,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cyclical implements Optimizer, Scheduler
+class Cyclical implements Scheduler
 {
     /**
      * The lower bound on the learning rate.
@@ -107,15 +105,11 @@ class Cyclical implements Optimizer, Scheduler
     }
 
     /**
-     * Take a step of gradient descent for a given parameter.
+     * Return the current learning rate.
      *
-     * @internal
-     *
-     * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @return float
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function rate() : float
     {
         $cycle = floor(1 + $this->t / (2 * $this->length));
 
@@ -123,9 +117,7 @@ class Cyclical implements Optimizer, Scheduler
 
         $scale = $this->decay ** $this->t;
 
-        $rate = $this->lower + $this->range * max(0, 1 - $x) * $scale;
-
-        return $gradient->multiply($rate);
+        return $this->lower + $this->range * max(0, 1 - $x) * $scale;
     }
 
     /**

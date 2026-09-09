@@ -8,6 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -63,7 +64,7 @@ class DropoutTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Dropout(0.5);
 

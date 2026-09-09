@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\NeuralNet;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -31,7 +32,7 @@ class ParameterTest extends TestCase
             [-2, 6],
         ]));
 
-        $this->optimizer = new Stochastic();
+        $this->optimizer = new Stochastic(new Constant());
     }
 
     #[Test]

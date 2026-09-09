@@ -7,6 +7,8 @@ use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -49,7 +51,7 @@ class StochasticTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Constant(0.001));
     }
 
     #[Test]
@@ -57,6 +59,12 @@ class StochasticTest extends TestCase
     {
         $this->assertInstanceOf(Stochastic::class, $this->optimizer);
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
+    }
+
+    #[Test]
+    public function scheduler() : void
+    {
+        $this->assertInstanceOf(Scheduler::class, $this->optimizer->scheduler());
     }
 
     /**

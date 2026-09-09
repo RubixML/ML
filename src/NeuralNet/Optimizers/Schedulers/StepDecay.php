@@ -1,15 +1,13 @@
 <?php
 
-namespace Rubix\ML\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers\Schedulers;
 
-use Tensor\Tensor;
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Step Decay
  *
- * A linear learning rate scheduler that reduces the learning rate by a factor
+ * A step-wise learning rate schedule that reduces the learning rate by a factor
  * of the decay parameter whenever it reaches a new *floor*. The number of
  * steps needed to reach a new floor is defined by the *steps* parameter.
  *
@@ -17,17 +15,17 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class StepDecay implements Optimizer, Scheduler
+class StepDecay implements Scheduler
 {
     /**
-     * The learning rate that controls the global step size.
+     * The initial learning rate.
      *
      * @var float
      */
     protected float $rate;
 
     /**
-     * The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay.
+     * The size of every floor in steps.
      *
      * @var int
      */
@@ -76,21 +74,15 @@ class StepDecay implements Optimizer, Scheduler
     }
 
     /**
-     * Take a step of gradient descent for a given parameter.
+     * Return the current learning rate.
      *
-     * @internal
-     *
-     * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     * @return Tensor<int|float|array>
+     * @return float
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function rate() : float
     {
         $floor = floor($this->t / $this->losses);
 
-        $rate = $this->rate * (1.0 / (1.0 + $floor * $this->decay));
-
-        return $gradient->multiply($rate);
+        return $this->rate * (1.0 / (1.0 + $floor * $this->decay));
     }
 
     /**

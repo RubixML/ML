@@ -24,7 +24,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Online;
@@ -241,7 +241,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?? new Adam();
+        $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
@@ -545,9 +545,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      */
     public function cleanup() : void
     {
-        if ($this->optimizer instanceof Adaptive) {
-            $this->optimizer->reset();
-        }
+        $this->optimizer->reset();
     }
 
     /**

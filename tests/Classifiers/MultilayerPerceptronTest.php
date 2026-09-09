@@ -19,6 +19,7 @@ use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 use Rubix\ML\NeuralNet\Layers\Swish;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -102,7 +103,7 @@ class MultilayerPerceptronTest extends TestCase
                 new Swish(),
             ],
             batchSize: 32,
-            optimizer: new Adam(0.001),
+            optimizer: new Adam(new Constant(0.001)),
             epochs: 100,
             minChange: 1e-3,
             evalInterval: 3,
@@ -162,7 +163,7 @@ class MultilayerPerceptronTest extends TestCase
                 new Swish(),
             ],
             'batch size' => 32,
-            'optimizer' => new Adam(0.001),
+            'optimizer' => new Adam(new Constant(0.001)),
             'epochs' => 100,
             'min change' => 1e-3,
             'eval interval' => 3,

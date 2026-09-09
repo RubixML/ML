@@ -8,6 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -49,7 +50,7 @@ class BinaryTest extends TestCase
 
         $this->labels = ['hot', 'cold', 'hot'];
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Binary(['hot', 'cold'], new BinaryCrossEntropy());
 

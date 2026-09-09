@@ -14,6 +14,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -78,7 +79,7 @@ class SoftmaxClassifierTest extends TestCase
 
         $this->estimator = new SoftmaxClassifier(
             batchSize: 10,
-            optimizer: new Adam(rate: 0.01),
+            optimizer: new Adam(new Constant(0.01)),
             l2Penalty: 1e-4,
             epochs: 300,
             minChange: 1e-4,
@@ -129,7 +130,7 @@ class SoftmaxClassifierTest extends TestCase
     {
         $expected = [
             'batch size' => 10,
-            'optimizer' => new Adam(0.01),
+            'optimizer' => new Adam(new Constant(0.01)),
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,

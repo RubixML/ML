@@ -8,6 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -52,7 +53,7 @@ class MulticlassTest extends TestCase
 
         $this->labels = ['hot', 'cold', 'ice cold'];
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new MulticlassCrossEntropy());
 
