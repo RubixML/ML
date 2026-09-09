@@ -407,7 +407,23 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
+        $outputWidth = $dataset->numFeatures();
+
+        foreach ($hiddenLayers as $layer) {
+            if ($layer instanceof Dense) {
+                $outputWidth = $layer->width();
+            }
+        }
+
+        if ($outputWidth !== count($classes)) {
+            $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
+
+            if ($this->logger) {
+                $this->logger->info('Final hidden layer dimensionality mismatch, '
+                    . 'adding projection layer to match output width of '
+                    . count($classes) . ' classes.');
+            }
+        }
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),

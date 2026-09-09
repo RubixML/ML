@@ -222,6 +222,57 @@ class MultilayerPerceptronTest extends TestCase
     }
 
     #[Test]
+    public function trainSkipsProjectionWhenEffectiveWidthMatches() : void
+    {
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new LeakyReLU()),
+                new Dense(3),
+                new Activation(new LeakyReLU()),
+            ],
+            batchSize: 32,
+            epochs: 1,
+            holdOut: 0
+        );
+
+        $dataset = $this->generator->generate(64);
+
+        $estimator->train($dataset);
+
+        $hidden = $estimator->network()->hidden();
+
+        $this->assertCount(4, $hidden);
+        $this->assertEquals(3, $hidden[3]->width());
+    }
+
+    #[Test]
+    public function trainAppendsProjectionWhenEffectiveWidthMismatches() : void
+    {
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new LeakyReLU()),
+                new Dense(5),
+                new Activation(new LeakyReLU()),
+            ],
+            batchSize: 32,
+            epochs: 1,
+            holdOut: 0
+        );
+
+        $dataset = $this->generator->generate(64);
+
+        $estimator->train($dataset);
+
+        $hidden = $estimator->network()->hidden();
+
+        $this->assertCount(5, $hidden);
+        $this->assertInstanceOf(Dense::class, $hidden[4]);
+        $this->assertEquals(3, $hidden[4]->width());
+    }
+
+    #[Test]
     public function snapshotPathIsTransientAndResolvedLazily() : void
     {
         $this->estimator->setLogger(new BlackHole());
