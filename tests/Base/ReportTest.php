@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Report;
 use Rubix\ML\Encoding;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Results')]
@@ -55,5 +56,30 @@ class ReportTest extends TestCase
         $this->assertEquals(0.9, $this->results['accuracy']);
         $this->assertEquals(0.75, $this->results['f1_score']);
         $this->assertEquals(5, $this->results['cardinality']);
+    }
+
+    #[Test]
+    public function nullAttributesAreFound() : void
+    {
+        $report = new Report([
+            'accuracy' => null,
+            'threshold' => 0,
+        ]);
+
+        $this->assertTrue(isset($report['accuracy']));
+        $this->assertTrue(isset($report['threshold']));
+        $this->assertNull($report['accuracy']);
+        $this->assertEquals(0, $report['threshold']);
+    }
+
+    #[Test]
+    public function missingAttributes() : void
+    {
+        $this->assertFalse(isset($this->results['nonexistent']));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute with key nonexistent not found.');
+
+        $appeaseStan = $this->results['nonexistent'];
     }
 }

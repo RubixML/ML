@@ -216,9 +216,7 @@ class AdaBoostTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

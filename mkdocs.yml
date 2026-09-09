@@ -167,12 +167,9 @@ nav:
       - Activation Functions:
         - ELU: neural-network/activation-functions/elu.md
         - GELU: neural-network/activation-functions/gelu.md
-        - Hard Sigmoid: neural-network/activation-functions/hard-sigmoid.md
-        - Hard SiLU: neural-network/activation-functions/hard-silu.md
         - Hyperbolic Tangent: neural-network/activation-functions/hyperbolic-tangent.md
         - Leaky ReLU: neural-network/activation-functions/leaky-relu.md
         - ReLU: neural-network/activation-functions/relu.md
-        - ReLU6: neural-network/activation-functions/relu6.md
         - SELU: neural-network/activation-functions/selu.md
         - Sigmoid: neural-network/activation-functions/sigmoid.md
         - Soft Plus: neural-network/activation-functions/soft-plus.md
@@ -266,7 +263,6 @@ nav:
       - Sentence: tokenizers/sentence.md
       - Whitespace: tokenizers/whitespace.md
       - Word: tokenizers/word.md
-      - Word Stemmer: tokenizers/word-stemmer.md
     - Persisters:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md
@@ -280,6 +276,7 @@ nav:
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md
+      - Swoole: backends/swoole.md
     - Helpers:
       - Params: helpers/params.md
     - Strategies:

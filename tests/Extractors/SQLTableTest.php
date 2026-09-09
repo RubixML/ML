@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Extractors\SQLTable;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use PDO;
 
@@ -49,5 +50,15 @@ class SQLTableTest extends TestCase
         $header = $this->extractor->header();
 
         $this->assertEquals($expected, $header);
+    }
+
+    #[Test]
+    public function rejectInvalidIdentifier() : void
+    {
+        $connection = new PDO('sqlite::memory:');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        new SQLTable($connection, "pets'; DROP TABLE users; --");
     }
 }

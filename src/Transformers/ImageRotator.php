@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\DataType;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 
 use function rand;
 use function array_walk;
@@ -24,7 +25,7 @@ use function getrandmax;
 class ImageRotator implements Transformer
 {
     /**
-     * The color of the area of the image filled in after rotation and cropping.
+     * The color of the area of the image filled in after rotation.
      *
      * @var int
      */
@@ -90,11 +91,12 @@ class ImageRotator implements Transformer
     }
 
     /**
-     * Randomly rotates and crops the images in a sample to their original size.
+     * Randomly rotates the images in a sample and resizes them back to their original size.
      *
      * @internal
      *
      * @param list<mixed> $sample
+     * @throws RuntimeException
      */
     protected function rotateAndCrop(array &$sample) : void
     {
@@ -112,12 +114,34 @@ class ImageRotator implements Transformer
                     $newWidth = imagesx($rotated);
 
                     if ($originalHeight !== $newHeight or $originalWidth !== $newWidth) {
-                        $rotated = imagecrop($rotated, [
-                            'x' => $newWidth / 2 - $originalWidth / 2,
-                            'y' => $newHeight / 2 - $originalHeight / 2,
-                            'width' => $originalWidth,
-                            'height' => $originalHeight,
-                        ]);
+                        $resized = imagecreatetruecolor($originalWidth, $originalHeight);
+
+                        if (!$resized) {
+                            throw new RuntimeException('Could not create placeholder image.');
+                        }
+
+                        $success = imagecopyresampled(
+                            $resized,
+                            $rotated,
+                            0,
+                            0,
+                            0,
+                            0,
+                            $originalWidth,
+                            $originalHeight,
+                            $newWidth,
+                            $newHeight
+                        );
+
+                        if (!$success) {
+                            imagedestroy($resized);
+
+                            throw new RuntimeException('Failed to resize image back to its original size.');
+                        }
+
+                        imagedestroy($rotated);
+
+                        $rotated = $resized;
                     }
 
                     $value = $rotated;

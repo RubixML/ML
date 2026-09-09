@@ -43,4 +43,24 @@ class ColumnFilterTest extends TestCase
 
         $this->assertEquals($expected, $records);
     }
+
+    #[Test]
+    public function extractNullColumn() : void
+    {
+        $iterable = (function () {
+            yield [
+                'attitude' => 'nice', 'texture' => null, 'class' => 'not monster', 'rating' => '4',
+            ];
+        })();
+
+        $extractor = new ColumnFilter($iterable, ['texture']);
+
+        $expected = [
+            ['attitude' => 'nice', 'class' => 'not monster', 'rating' => '4'],
+        ];
+
+        $records = iterator_to_array($extractor, false);
+
+        $this->assertEquals($expected, $records);
+    }
 }

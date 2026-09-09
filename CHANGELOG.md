@@ -43,12 +43,21 @@
     - Dataset fold() now returns excess samples in last fold
     - Increase default Decision Tree max leaf node size from 3 to 5
     - Canonicalized `He` and `Xavier 2` initializers
-    - `Xavier 2` now extends `He` as a backward-compatible alias
     - Remove Softmax activation function
     - Fix Multiclass layer gradient for non-Cross Entropy losses
+    - `Xavier 2` now extends `He` as a deprecated alias
     
+- 2.5.14
+    - Fix Report and Tuple null values
+    - Fix Random Projector mangitudes
+    - Prevent division by zero in Sparse Random Projector
+
 - 2.5.13
-    - Pipeline add missing traided guard on score method
+    - Fix SQL Table offset syntax to work with Postgres
+    - Prevent SQL Table injection attack
+    - Pipeline add missing trained guard on score method
+    - Fix Column Picker/Filter on null columns
+    - Fix Image Rotator mangling non-90° rotations
 
 - 2.5.12
     - Fix Adaboost proba() probability normalization
