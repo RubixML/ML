@@ -43,6 +43,8 @@
     - Dataset fold() now returns excess samples in last fold
     - Increase default Decision Tree max leaf node size from 3 to 5
     - Canonicalized `He` and `Xavier 2` initializers
+    - Remove Softmax activation function
+    - Fix Multiclass layer gradient for non-Cross Entropy losses
     - `Xavier 2` now extends `He` as a deprecated alias
     
 - 2.5.14
