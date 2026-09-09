@@ -76,16 +76,6 @@ class Momentum implements Optimizer
     }
 
     /**
-     * Advance the paired learning-rate schedule by one batch.
-     *
-     * @internal
-     */
-    public function step() : void
-    {
-        $this->scheduler->tick();
-    }
-
-    /**
      * Warm the cache.
      *
      * @internal
@@ -102,16 +92,6 @@ class Momentum implements Optimizer
         }
 
         $this->cache[$param->id()] = $class::zeros(...$param->param()->shape());
-    }
-
-    /**
-     * Reset the parameter cache.
-     *
-     * @internal
-     */
-    public function reset() : void
-    {
-        $this->cache = [];
     }
 
     /**
@@ -138,6 +118,26 @@ class Momentum implements Optimizer
         }
 
         return $velocity;
+    }
+
+    /**
+     * Advance the paired learning-rate schedule by one batch.
+     *
+     * @internal
+     */
+    public function step() : void
+    {
+        $this->scheduler->tick();
+    }
+
+    /**
+     * Reset the parameter cache.
+     *
+     * @internal
+     */
+    public function reset() : void
+    {
+        $this->cache = [];
     }
 
     /**

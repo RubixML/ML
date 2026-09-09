@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\NeuralNet\Optimizers\Schedulers;
 
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -46,5 +47,23 @@ class ConstantTest extends TestCase
         $scheduler = new Constant(0.001);
 
         $this->assertEquals('Constant (rate: 0.001)', (string) $scheduler);
+    }
+
+    #[Test]
+    public function defaults() : void
+    {
+        $scheduler = new Constant();
+
+        $this->assertEquals(0.01, $scheduler->rate());
+    }
+
+    #[Test]
+    public function badRate() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->expectExceptionMessage('Learning rate must be greater than 0, -1 given.');
+
+        new Constant(-1);
     }
 }

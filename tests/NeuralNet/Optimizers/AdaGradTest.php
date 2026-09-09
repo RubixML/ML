@@ -93,4 +93,30 @@ class AdaGradTest extends TestCase
 
         $this->assertEquals($expected, $step->asArray());
     }
+
+    #[Test]
+    public function reset() : void
+    {
+        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+
+        $gradient = Matrix::quick([[0.01, -0.03]]);
+
+        $this->optimizer->warm($param);
+
+        $this->optimizer->update($param, $gradient);
+
+        $this->optimizer->reset();
+
+        $this->optimizer->warm($param);
+
+        $step = $this->optimizer->update($param, $gradient);
+
+        $this->assertIsArray($step->asArray());
+    }
+
+    #[Test]
+    public function stringRepresentation() : void
+    {
+        $this->assertEquals('AdaGrad (scheduler: Constant (rate: 0.001))', (string) $this->optimizer);
+    }
 }

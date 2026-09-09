@@ -76,16 +76,6 @@ class RMSProp implements Optimizer
     }
 
     /**
-     * Advance the paired learning-rate schedule by one batch.
-     *
-     * @internal
-     */
-    public function step() : void
-    {
-        $this->scheduler->tick();
-    }
-
-    /**
      * Warm the parameter cache.
      *
      * @internal
@@ -102,16 +92,6 @@ class RMSProp implements Optimizer
         }
 
         $this->cache[$param->id()] = $class::zeros(...$param->param()->shape());
-    }
-
-    /**
-     * Reset the parameter cache.
-     *
-     * @internal
-     */
-    public function reset() : void
-    {
-        $this->cache = [];
     }
 
     /**
@@ -134,6 +114,26 @@ class RMSProp implements Optimizer
 
         return $gradient->multiply($this->scheduler->rate())
             ->divide($norm->sqrt()->clipLower(EPSILON));
+    }
+
+    /**
+     * Advance the paired learning-rate schedule by one batch.
+     *
+     * @internal
+     */
+    public function step() : void
+    {
+        $this->scheduler->tick();
+    }
+
+    /**
+     * Reset the parameter cache.
+     *
+     * @internal
+     */
+    public function reset() : void
+    {
+        $this->cache = [];
     }
 
     /**

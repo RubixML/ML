@@ -85,16 +85,6 @@ class Adam implements Optimizer
     }
 
     /**
-     * Advance the paired learning-rate schedule by one batch.
-     *
-     * @internal
-     */
-    public function step() : void
-    {
-        $this->scheduler->tick();
-    }
-
-    /**
      * Warm the parameter cache.
      *
      * @internal
@@ -113,16 +103,6 @@ class Adam implements Optimizer
         $zeros = $class::zeros(...$param->param()->shape());
 
         $this->cache[$param->id()] = [clone $zeros, $zeros];
-    }
-
-    /**
-     * Reset the parameter cache.
-     *
-     * @internal
-     */
-    public function reset() : void
-    {
-        $this->cache = [];
     }
 
     /**
@@ -153,6 +133,26 @@ class Adam implements Optimizer
         $norm = $norm->sqrt()->clipLower(EPSILON);
 
         return $velocity->multiply($this->scheduler->rate())->divide($norm);
+    }
+
+    /**
+     * Advance the paired learning-rate schedule by one batch.
+     *
+     * @internal
+     */
+    public function step() : void
+    {
+        $this->scheduler->tick();
+    }
+
+    /**
+     * Reset the parameter cache.
+     *
+     * @internal
+     */
+    public function reset() : void
+    {
+        $this->cache = [];
     }
 
     /**

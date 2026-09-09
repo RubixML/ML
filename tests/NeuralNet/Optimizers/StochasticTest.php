@@ -9,6 +9,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\StepDecay;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Cyclical;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -78,6 +79,20 @@ class StochasticTest extends TestCase
         $this->assertLessThan($initialRate, $decreasedRate);
     }
 
+    #[Test]
+    public function stepWithCyclical() : void
+    {
+        $scheduler = new Cyclical(0.001, 0.006, 1, 0.5);
+
+        $optimizer = new Stochastic($scheduler);
+
+        $initialRate = $scheduler->rate();
+
+        $optimizer->step();
+
+        $this->assertGreaterThan($initialRate, $scheduler->rate());
+    }
+
     /**
      * @param Parameter $param
      * @param Tensor<int|float> $gradient
@@ -90,5 +105,31 @@ class StochasticTest extends TestCase
         $step = $this->optimizer->update($param, $gradient);
 
         $this->assertEquals($expected, $step->asArray());
+    }
+
+    #[Test]
+    public function reset() : void
+    {
+        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+
+        $gradient = Matrix::quick([[0.01, -0.03]]);
+
+        $this->optimizer->warm($param);
+
+        $this->optimizer->update($param, $gradient);
+
+        $this->optimizer->reset();
+
+        $this->optimizer->warm($param);
+
+        $step = $this->optimizer->update($param, $gradient);
+
+        $this->assertEquals([[0.01 * 0.001, -0.03 * 0.001]], $step->asArray());
+    }
+
+    #[Test]
+    public function stringRepresentation() : void
+    {
+        $this->assertEquals('Stochastic (scheduler: Constant (rate: 0.001))', (string) $this->optimizer);
     }
 }

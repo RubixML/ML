@@ -398,8 +398,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $this->ensemble = $this->influences = $this->scores = $this->losses = [];
 
         if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $bestScore = $minScore;
@@ -535,7 +535,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->influences = array_slice($this->influences, 0, $bestEnsembleSize);
 
             if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+                $this->logger->info("Ensemble state restored to epoch $bestEpoch");
             }
         }
 

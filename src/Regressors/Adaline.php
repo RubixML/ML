@@ -412,7 +412,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("{$numParams} trainable parameters");
+            $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
@@ -432,8 +432,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         }
 
         if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = [];
@@ -522,7 +522,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 $snapshot->restore();
 
                 if ($this->logger) {
-                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                    $this->logger->info("Network state restored to epoch $bestEpoch");
                 }
             }
 

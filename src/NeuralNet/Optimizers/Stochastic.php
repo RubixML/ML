@@ -33,13 +33,15 @@ class Stochastic implements Optimizer
     }
 
     /**
-     * Advance the paired learning-rate schedule by one batch.
+     * Warm the parameter cache.
      *
      * @internal
+     *
+     * @param Parameter $param
      */
-    public function step() : void
+    public function warm(Parameter $param) : void
     {
-        $this->scheduler->tick();
+        //
     }
 
     /**
@@ -57,14 +59,13 @@ class Stochastic implements Optimizer
     }
 
     /**
-     * Warm the parameter cache.
+     * Advance the paired learning-rate schedule by one batch.
      *
      * @internal
-     *
-     * @param Parameter $param
      */
-    public function warm(Parameter $param) : void
+    public function step() : void
     {
+        $this->scheduler->tick();
     }
 
     /**
@@ -74,6 +75,7 @@ class Stochastic implements Optimizer
      */
     public function reset() : void
     {
+        //
     }
 
     /**

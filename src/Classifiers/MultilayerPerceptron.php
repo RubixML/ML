@@ -449,7 +449,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("{$numParams} trainable parameters");
+            $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
@@ -469,8 +469,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = [];
@@ -555,7 +555,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $snapshot->restore();
 
                 if ($this->logger) {
-                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                    $this->logger->info("Network state restored to epoch $bestEpoch");
                 }
             }
 

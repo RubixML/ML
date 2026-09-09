@@ -58,6 +58,13 @@ class Cyclical implements Scheduler
     protected float $decay;
 
     /**
+     * The precomputed learning rate for the current step.
+     *
+     * @var float
+     */
+    protected float $rate;
+
+    /**
      * The number of steps taken so far.
      *
      * @var int
@@ -102,6 +109,7 @@ class Cyclical implements Scheduler
         $this->range = $upper - $lower;
         $this->length = $length;
         $this->decay = $decay;
+        $this->rate = $lower;
     }
 
     /**
@@ -111,13 +119,7 @@ class Cyclical implements Scheduler
      */
     public function rate() : float
     {
-        $cycle = floor(1 + $this->t / (2 * $this->length));
-
-        $x = abs($this->t / $this->length - 2 * $cycle + 1);
-
-        $scale = $this->decay ** $this->t;
-
-        return $this->lower + $this->range * max(0, 1 - $x) * $scale;
+        return $this->rate;
     }
 
     /**
@@ -128,6 +130,16 @@ class Cyclical implements Scheduler
     public function tick() : void
     {
         ++$this->t;
+
+        $cycle = floor(1 + $this->t / (2 * $this->length));
+
+        $x = abs($this->t / $this->length - 2 * $cycle + 1);
+
+        $scale = $this->decay ** $this->t;
+
+        $rate = $this->lower + $this->range * max(0, 1 - $x) * $scale;
+
+        $this->rate = $rate;
     }
 
     /**

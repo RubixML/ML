@@ -427,7 +427,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("{$numParams} trainable parameters");
+            $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
@@ -444,6 +444,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         if (!$snapshotPath) {
             $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
+
+        if ($testing->empty() and $this->logger) {
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = [];
@@ -528,7 +533,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 $snapshot->restore();
 
                 if ($this->logger) {
-                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                    $this->logger->info("Network state restored to epoch $bestEpoch");
                 }
             }
 

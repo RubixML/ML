@@ -20,6 +20,15 @@ use Stringable;
 interface Optimizer extends Stringable
 {
     /**
+     * Warm the parameter cache.
+     *
+     * @internal
+     *
+     * @param Parameter $param
+     */
+    public function warm(Parameter $param) : void;
+
+    /**
      * Take a step of gradient descent for a given parameter.
      *
      * @internal
@@ -31,13 +40,11 @@ interface Optimizer extends Stringable
     public function update(Parameter $param, Tensor $gradient) : Tensor;
 
     /**
-     * Warm the parameter cache.
+     * Advance the paired learning-rate schedule by one batch.
      *
      * @internal
-     *
-     * @param Parameter $param
      */
-    public function warm(Parameter $param) : void;
+    public function step() : void;
 
     /**
      * Reset the parameter cache.
@@ -45,11 +52,4 @@ interface Optimizer extends Stringable
      * @internal
      */
     public function reset() : void;
-
-    /**
-     * Advance the paired learning-rate schedule by one batch.
-     *
-     * @internal
-     */
-    public function step() : void;
 }
