@@ -76,13 +76,13 @@ class RMSProp implements Optimizer
     }
 
     /**
-     * Return the learning-rate scheduler paired with the optimizer.
+     * Advance the paired learning-rate schedule by one batch.
      *
-     * @return Scheduler
+     * @internal
      */
-    public function scheduler() : Scheduler
+    public function step() : void
     {
-        return $this->scheduler;
+        $this->scheduler->tick();
     }
 
     /**
@@ -123,7 +123,7 @@ class RMSProp implements Optimizer
      * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function update(Parameter $param, Tensor $gradient) : Tensor
     {
         $norm = $this->cache[$param->id()];
 

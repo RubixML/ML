@@ -8,7 +8,7 @@ use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\StepDecay;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -28,7 +28,7 @@ class RMSPropTest extends TestCase
     /**
      * @return Generator<mixed[]>
      */
-    public static function stepProvider() : Generator
+    public static function updateProvider() : Generator
     {
         yield [
             new Parameter(Matrix::quick([
@@ -62,9 +62,20 @@ class RMSPropTest extends TestCase
     }
 
     #[Test]
-    public function scheduler() : void
+    public function step() : void
     {
-        $this->assertInstanceOf(Scheduler::class, $this->optimizer->scheduler());
+        $scheduler = new StepDecay(0.1, 2, 0.5);
+
+        $optimizer = new RMSProp($scheduler);
+
+        $initialRate = $scheduler->rate();
+
+        $optimizer->step();
+        $optimizer->step();
+
+        $decreasedRate = $scheduler->rate();
+
+        $this->assertLessThan($initialRate, $decreasedRate);
     }
 
     /**
@@ -72,13 +83,13 @@ class RMSPropTest extends TestCase
      * @param Tensor<int|float> $gradient
      * @param list<list<float>> $expected
      */
-    #[DataProvider('stepProvider')]
+    #[DataProvider('updateProvider')]
     #[Test]
-    public function step(Parameter $param, Tensor $gradient, array $expected) : void
+    public function update(Parameter $param, Tensor $gradient, array $expected) : void
     {
         $this->optimizer->warm($param);
 
-        $step = $this->optimizer->step($param, $gradient);
+        $step = $this->optimizer->update($param, $gradient);
 
         $this->assertEquals($expected, $step->asArray());
     }

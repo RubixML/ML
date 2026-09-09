@@ -79,7 +79,7 @@ class AdaMax extends Adam
      * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function update(Parameter $param, Tensor $gradient) : Tensor
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
