@@ -60,7 +60,9 @@ class ParameterTest extends TestCase
             [-2.01, 6.02],
         ];
 
-        $this->param->update($gradient, $this->optimizer);
+        $step = $this->optimizer->update($this->param, $gradient);
+
+        $this->param->update($step);
 
         $this->assertEquals($expected, $this->param->param()->asArray());
     }

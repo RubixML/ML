@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet;
 
 use Tensor\Tensor;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 /**
  * Parameter
@@ -67,15 +66,12 @@ class Parameter
     }
 
     /**
-     * Update the parameter.
+     * Apply a step of gradient descent to the parameter.
      *
-     * @param Tensor $gradient
-     * @param Optimizer $optimizer
+     * @param Tensor $step
      */
-    public function update(Tensor $gradient, Optimizer $optimizer) : void
+    public function update(Tensor $step) : void
     {
-        $step = $optimizer->update($this, $gradient);
-
         $this->param = $this->param->subtract($step);
     }
 

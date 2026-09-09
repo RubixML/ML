@@ -78,7 +78,7 @@ class Stochastic implements Optimizer
     public function step(array $gradients) : void
     {
         foreach ($gradients as [$param, $gradient]) {
-            $param->update($gradient, $this);
+            $param->update($this->update($param, $gradient));
         }
 
         $this->scheduler->tick();

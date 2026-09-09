@@ -10,9 +10,9 @@ use Stringable;
 /**
  * Optimizer
  *
- * An optimizer takes in a parameter and its gradient and returns a step tensor
- * that is subtracted from the parameter by the parameter object. Every
- * optimizer is paired with a Scheduler that controls the learning rate.
+ * An optimizer takes in a parameter and its gradient and computes a step tensor
+ * that is subtracted from the parameter by the optimizer. Every optimizer is
+ * paired with a Scheduler that controls the learning rate.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -37,7 +37,8 @@ interface Optimizer extends Stringable
     public function warm(Parameter $param) : void;
 
     /**
-     * Take a step of gradient descent for a single parameter.
+     * Compute a step of gradient descent for a single parameter. The step is
+     * not applied here, it is applied by the caller.
      *
      * @internal
      *
