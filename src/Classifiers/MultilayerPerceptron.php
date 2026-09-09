@@ -50,6 +50,7 @@ use function array_map;
 use function is_dir;
 use function uniqid;
 use function sys_get_temp_dir;
+use function array_reverse;
 
 /**
  * Multilayer Perceptron
@@ -409,9 +410,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $outputWidth = $dataset->numFeatures();
 
-        foreach ($hiddenLayers as $layer) {
+        foreach (array_reverse($hiddenLayers) as $layer) {
             if ($layer instanceof Dense) {
                 $outputWidth = $layer->width();
+
+                break;
             }
         }
 

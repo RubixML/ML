@@ -47,6 +47,7 @@ use function is_nan;
 use function number_format;
 use function uniqid;
 use function sys_get_temp_dir;
+use function array_reverse;
 
 /**
  * MLP Regressor
@@ -388,9 +389,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $outputWidth = $dataset->numFeatures();
 
-        foreach ($hiddenLayers as $layer) {
+        foreach (array_reverse($hiddenLayers) as $layer) {
             if ($layer instanceof Dense) {
                 $outputWidth = $layer->width();
+
+                break;
             }
         }
 
