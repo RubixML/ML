@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet;
 
 use Tensor\Matrix;
-use Tensor\Tensor;
 use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -82,16 +81,6 @@ class FeedForward implements Network
      * @var int
      */
     protected int $passes = 0;
-
-    /**
-     * The accumulated gradients of the parameters of the network keyed by
-     * parameter id.
-     *
-     * @var array<int, array{Parameter, Tensor<int|float|array>}>
-     */
-    protected array $gradients = [
-        //
-    ];
 
     /**
      * @param Input $input
@@ -277,17 +266,7 @@ class FeedForward implements Network
         [$gradient, $loss] = $this->output->back($labels);
 
         foreach ($this->backPass as $layer) {
-            [$gradient, $paramGradients] = $layer->back($gradient);
-
-            foreach ($paramGradients as [$param, $g]) {
-                $id = $param->id();
-
-                if (isset($this->gradients[$id])) {
-                    $this->gradients[$id][1] = $this->gradients[$id][1]->add($g);
-                } else {
-                    $this->gradients[$id] = [$param, $g];
-                }
-            }
+            $gradient = $layer->back($gradient);
         }
 
         return $loss;
@@ -329,13 +308,18 @@ class FeedForward implements Network
     {
         $gradients = [];
 
-        foreach ($this->gradients as [$param, $gradient]) {
-            $gradients[] = [$param, $gradient->divide($this->accumulate)];
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->gradients() as [$param, $gradient]) {
+                    $gradients[] = [$param, $gradient->divide($this->accumulate)];
+                }
+
+                $layer->resetGradients();
+            }
         }
 
         $this->optimizer->step($gradients);
 
-        $this->gradients = [];
         $this->passes = 0;
     }
 }

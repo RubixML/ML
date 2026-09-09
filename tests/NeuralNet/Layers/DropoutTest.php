@@ -7,10 +7,13 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Dropout;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Dropout::class)]
@@ -34,6 +37,11 @@ class DropoutTest extends TestCase
     protected Deferred $prevGrad;
 
     /**
+     * @var Optimizer
+     */
+    protected Optimizer $optimizer;
+
+    /**
      * @var Dropout
      */
     protected Dropout $layer;
@@ -55,6 +63,8 @@ class DropoutTest extends TestCase
                 [0.25, 0.1, 0.89],
             ]);
         });
+
+        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Dropout(0.5);
 
@@ -87,9 +97,7 @@ class DropoutTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        [$gradient, $paramGradients] = $this->layer->back($this->prevGrad);
-
-        $gradient = $gradient->compute();
+        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
         $expected = [
             [0.5, 1.4, 0.2],
@@ -99,8 +107,6 @@ class DropoutTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
-
-        $this->assertSame([], $paramGradients);
 
         $expected = [
             [1.0, 2.5, -0.1],

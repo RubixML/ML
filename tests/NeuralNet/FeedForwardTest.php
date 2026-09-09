@@ -18,8 +18,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Initializers\Constant as Initializer;
 
 #[Group('NeuralNet')]
@@ -138,17 +138,33 @@ class FeedForwardTest extends TestCase
 
         $this->assertEquals($initial, $dense->parameters()->current()->param()->asArray());
 
-        $gradients = (new ReflectionProperty(FeedForward::class, 'gradients'))->getValue($accumulator);
+        $accumulated = 0;
 
-        $this->assertGreaterThan(0, count($gradients));
+        foreach ($accumulator->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->gradients() as $pair) {
+                    ++$accumulated;
+                }
+            }
+        }
+
+        $this->assertGreaterThan(0, $accumulated);
 
         $accumulator->roundtrip($this->dataset);
 
         $this->assertNotEquals($initial, $dense->parameters()->current()->param()->asArray());
 
-        $gradients = (new ReflectionProperty(FeedForward::class, 'gradients'))->getValue($accumulator);
+        $accumulated = 0;
 
-        $this->assertSame([], $gradients);
+        foreach ($accumulator->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->gradients() as $pair) {
+                    ++$accumulated;
+                }
+            }
+        }
+
+        $this->assertSame(0, $accumulated);
     }
 
     #[Test]

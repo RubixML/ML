@@ -3,9 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
-use Tensor\Tensor;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -124,15 +122,15 @@ class Activation implements Hidden
     }
 
     /**
-     * Calculate the gradient for the previous layer and return the gradients of the parameters of this layer.
+     * Calculate the gradient for the previous layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
      * @throws RuntimeException
-     * @return array{Deferred, list<array{Parameter, Tensor<int|float|array>}>}
+     * @return Deferred
      */
-    public function back(Deferred $prevGradient) : array
+    public function back(Deferred $prevGradient) : Deferred
     {
         if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass before'
@@ -144,10 +142,10 @@ class Activation implements Hidden
 
         $this->input = $this->output = null;
 
-        return [new Deferred(
+        return new Deferred(
             [$this, 'gradient'],
             [$input, $output, $prevGradient]
-        ), []];
+        );
     }
 
     /**

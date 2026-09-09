@@ -3,8 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Parameter;
-use Tensor\Tensor;
 
 /**
  * Hidden
@@ -16,13 +14,12 @@ use Tensor\Tensor;
 interface Hidden extends Layer
 {
     /**
-     * Calculate the gradient for the previous layer and return the gradients of the parameters
-     * of this layer along with a deferred computation of the gradient of the previous layer.
+     * Calculate the gradient for the previous layer and record the gradients of the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
-     * @return array{Deferred, list<array{Parameter, Tensor<int|float|array>}>}
+     * @return Deferred
      */
-    public function back(Deferred $prevGradient) : array;
+    public function back(Deferred $prevGradient) : Deferred;
 }

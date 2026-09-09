@@ -72,6 +72,15 @@ class Swish implements Hidden, Parametric
     protected ?Matrix $output = null;
 
     /**
+     * The accumulated gradients of the parameters of the layer.
+     *
+     * @var array<Tensor<int|float|array>>
+     */
+    protected array $gradients = [
+        //
+    ];
+
+    /**
      * @param Initializer|null $initializer
      */
     public function __construct(?Initializer $initializer = null)
@@ -150,15 +159,16 @@ class Swish implements Hidden, Parametric
     }
 
     /**
-     * Calculate the gradient for the previous layer and return the gradients of the parameters of this layer.
+     * Calculate the gradient for the previous layer and record the gradient of
+     * the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
      * @throws RuntimeException
-     * @return array{Deferred, list<array{Parameter, Tensor<int|float|array>}>}
+     * @return Deferred
      */
-    public function back(Deferred $prevGradient) : array
+    public function back(Deferred $prevGradient) : Deferred
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -180,11 +190,11 @@ class Swish implements Hidden, Parametric
 
         $beta = $this->beta->param();
 
-        $gradients = [[$this->beta, $dBeta]];
+        $this->accumulate($this->beta, $dBeta);
 
         $this->input = $this->output = null;
 
-        return [new Deferred([$this, 'gradient'], [$input, $output, $dOut, $beta]), $gradients];
+        return new Deferred([$this, 'gradient'], [$input, $output, $dOut, $beta]);
     }
 
     /**
@@ -221,6 +231,32 @@ class Swish implements Hidden, Parametric
     }
 
     /**
+     * Return the accumulated gradients of the parameters of the layer.
+     *
+     * @internal
+     *
+     * @return Generator<array{Parameter, Tensor<int|float|array>}>
+     */
+    public function gradients() : Generator
+    {
+        foreach ($this->parameters() as $param) {
+            if (isset($this->gradients[$param->id()])) {
+                yield [$param, $this->gradients[$param->id()]];
+            }
+        }
+    }
+
+    /**
+     * Reset the accumulated gradients of the layer.
+     *
+     * @internal
+     */
+    public function resetGradients() : void
+    {
+        $this->gradients = [];
+    }
+
+    /**
      * Restore the parameters in the layer from an associative array.
      *
      * @internal
@@ -230,6 +266,21 @@ class Swish implements Hidden, Parametric
     public function restore(array $parameters) : void
     {
         $this->beta = $parameters['beta'];
+    }
+
+    /**
+     * Accumulate the gradient of a parameter of the layer.
+     *
+     * @param Parameter $param
+     * @param Tensor<int|float|array> $gradient
+     */
+    protected function accumulate(Parameter $param, Tensor $gradient) : void
+    {
+        $id = $param->id();
+
+        $this->gradients[$id] = isset($this->gradients[$id])
+            ? $this->gradients[$id]->add($gradient)
+            : $gradient;
     }
 
     /**

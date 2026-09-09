@@ -96,9 +96,7 @@ class BatchNormTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$gradient, $paramGradients] = $this->layer->back($this->prevGrad);
-
-        $gradient = $gradient->compute();
+        $gradient = $this->layer->back($this->prevGrad)->compute();
 
         $expected = [
             [-0.06445877134888621, 0.027271018647605647, 0.03718775270128047],
@@ -109,7 +107,13 @@ class BatchNormTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
-        $this->optimizer->step($paramGradients);
+        $gradients = [];
+
+        foreach ($this->layer->gradients() as [$param, $gradient]) {
+            $gradients[] = [$param, $gradient];
+        }
+
+        $this->optimizer->step($gradients);
 
         $expected = [
             [-0.12607831595417437, 1.2804902385302876, -1.1575619225761131],
@@ -165,14 +169,18 @@ class BatchNormTest extends TestCase
             [-0.094806324008858, -0.017466016738221, 0.13166046771019, -0.019388126963108],
         ];
 
-        [$gradient, $paramGradients] = $layer->back($prevGrad);
-
-        $gradient = $gradient->compute();
+        $gradient = $layer->back($prevGrad)->compute();
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
-        $optimizer->step($paramGradients);
+        $gradients = [];
+
+        foreach ($layer->gradients() as [$param, $gradient]) {
+            $gradients[] = [$param, $gradient];
+        }
+
+        $optimizer->step($gradients);
 
         $expected = [
             [0.024595238724167, 1.5813095621742, -1.1169952651392, -0.49430953575917],
