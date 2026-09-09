@@ -5,51 +5,52 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
-use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function get_class;
-
-use const Rubix\ML\EPSILON;
+use function sqrt;
 
 /**
- * AdaGrad
+ * NormClipped
  *
- * Short for Adaptive Gradient, the AdaGrad Optimizer speeds up the learning of
- * parameters that do not change often and slows down the learning of parameters
- * that do enjoy heavy activity.
- *
- * References:
- * [1] J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning
- * and Stochastic Optimization.
+ * A gradient clipping wrapper that limits the L2 norm of each individual
+ * gradient to a given maximum before delegating the update to the wrapped
+ * optimizer. When the norm of a gradient exceeds the maximum, the gradient is
+ * scaled down proportionally rather than truncated element-wise.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaGrad implements Optimizer
+class NormClipped implements Optimizer
 {
     /**
-     * The learning rate schedule.
+     * The optimizer whose updates this wrapper clips.
      *
-     * @var Scheduler
+     * @var Optimizer
      */
-    protected Scheduler $scheduler;
+    protected Optimizer $optimizer;
 
     /**
-     * The cache of sum of squared gradients.
+     * The maximum L2 norm of a gradient.
      *
-     * @var Tensor[]
+     * @var float
      */
-    protected array $cache = [
-        //
-    ];
+    protected float $max;
 
     /**
-     * @param Scheduler $scheduler
+     * @param Optimizer $optimizer
+     * @param float $max
+     * @throws InvalidArgumentException
      */
-    public function __construct(Scheduler $scheduler)
+    public function __construct(Optimizer $optimizer, float $max = 1.0)
     {
-        $this->scheduler = $scheduler;
+        if ($max <= 0.0) {
+            throw new InvalidArgumentException('Max must be'
+                . " greater than 0, $max given.");
+        }
+
+        $this->optimizer = $optimizer;
+        $this->max = $max;
     }
 
     /**
@@ -59,7 +60,7 @@ class AdaGrad implements Optimizer
      */
     public function scheduler() : Scheduler
     {
-        return $this->scheduler;
+        return $this->optimizer->scheduler();
     }
 
     /**
@@ -68,17 +69,10 @@ class AdaGrad implements Optimizer
      * @internal
      *
      * @param Parameter $param
-     * @throws RuntimeException
      */
     public function warm(Parameter $param) : void
     {
-        $class = get_class($param->param());
-
-        if ($class === false) {
-            throw new RuntimeException('Could not locate parameter class.');
-        }
-
-        $this->cache[$param->id()] = $class::zeros(...$param->param()->shape());
+        $this->optimizer->warm($param);
     }
 
     /**
@@ -92,14 +86,19 @@ class AdaGrad implements Optimizer
      */
     public function update(Parameter $param, Tensor $gradient) : Tensor
     {
-        $norm = $this->cache[$param->id()];
+        $sum = $gradient->square()->sum();
 
-        $norm = $norm->add($gradient->square());
+        if ($sum instanceof Tensor) {
+            $sum = $sum->sum();
+        }
 
-        $this->cache[$param->id()] = $norm;
+        $norm = sqrt($sum);
 
-        return $gradient->multiply($this->scheduler->rate())
-            ->divide($norm->sqrt()->clipLower(EPSILON));
+        if ($norm > $this->max) {
+            $gradient = $gradient->multiply($this->max / $norm);
+        }
+
+        return $this->optimizer->update($param, $gradient);
     }
 
     /**
@@ -115,7 +114,7 @@ class AdaGrad implements Optimizer
             $param->update($gradient, $this);
         }
 
-        $this->scheduler->tick();
+        $this->optimizer->scheduler()->tick();
     }
 
     /**
@@ -125,7 +124,7 @@ class AdaGrad implements Optimizer
      */
     public function flush() : void
     {
-        $this->cache = [];
+        $this->optimizer->flush();
     }
 
     /**
@@ -137,6 +136,6 @@ class AdaGrad implements Optimizer
      */
     public function __toString() : string
     {
-        return "AdaGrad (scheduler: {$this->scheduler})";
+        return "Norm Clipped (optimizer: {$this->optimizer}, max: {$this->max})";
     }
 }

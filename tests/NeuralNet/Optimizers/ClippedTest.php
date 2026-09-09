@@ -5,8 +5,9 @@ namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Clipped;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\StepDecay;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -18,13 +19,13 @@ use PHPUnit\Framework\TestCase;
 use Generator;
 
 #[Group('Optimizers')]
-#[CoversClass(Adam::class)]
-class AdamTest extends TestCase
+#[CoversClass(Clipped::class)]
+class ClippedTest extends TestCase
 {
     /**
-     * @var Adam
+     * @var Clipped
      */
-    protected Adam $optimizer;
+    protected Clipped $optimizer;
 
     /**
      * @return Generator<mixed[]>
@@ -38,68 +39,38 @@ class AdamTest extends TestCase
                 [0.1, 0.1, -0.7],
             ])),
             Matrix::quick([
-                [0.01, 0.05, -0.02],
-                [-0.01, 0.02, 0.03],
-                [0.04, -0.01, -0.5],
+                [0.5, 0.02, -0.4],
+                [-0.8, 0.03, 0.7],
+                [0.004, -0.6, -1.2],
             ]),
             [
-                [0.003162277660168379, 0.00316227766016838, -0.003162277660168379],
-                [-0.003162277660168379, 0.003162277660168379, 0.0031622776601683794],
-                [0.003162277660168379, -0.003162277660168379, -0.00316227766016838],
+                [2e-4, 2e-5, -2e-4],
+                [-2e-4, 3e-5, 2e-4],
+                [4e-6, -2e-4, -2e-4],
             ],
         ];
     }
 
     protected function setUp() : void
     {
-        $this->optimizer = new Adam(new Constant(0.001), 0.1, 0.001);
+        $this->optimizer = new Clipped(new Stochastic(new Constant(0.001)), 0.2);
     }
 
     #[Test]
     public function build() : void
     {
-        $this->assertInstanceOf(Adam::class, $this->optimizer);
+        $this->assertInstanceOf(Clipped::class, $this->optimizer);
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
     }
 
     #[Test]
-    public function step() : void
-    {
-        $scheduler = new StepDecay(0.1, 2, 0.5);
-
-        $optimizer = new Adam($scheduler);
-
-        $initialRate = $scheduler->rate();
-
-        $optimizer->step([]);
-
-        $this->assertEquals($initialRate, $scheduler->rate());
-
-        $optimizer->step([]);
-
-        $decreasedRate = $scheduler->rate();
-
-        $this->assertLessThan($initialRate, $decreasedRate);
-    }
-
-    #[Test]
-    public function badMomentumDecay() : void
+    public function badMax() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->expectExceptionMessage('Momentum decay must be between 0 and 1, 1.5 given.');
+        $this->expectExceptionMessage('Max must be greater than 0, 0 given.');
 
-        new Adam(new Constant(0.001), 1.5);
-    }
-
-    #[Test]
-    public function badNormDecay() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->expectExceptionMessage('Norm decay must be between 0 and 1, 1.5 given.');
-
-        new Adam(new Constant(0.001), 0.1, 1.5);
+        new Clipped(new Stochastic(new Constant(0.001)), 0.0);
     }
 
     /**
@@ -115,7 +86,41 @@ class AdamTest extends TestCase
 
         $step = $this->optimizer->update($param, $gradient);
 
-        $this->assertEqualsWithDelta($expected, $step->asArray(), 1e-8);
+        $this->assertEquals($expected, $step->asArray());
+    }
+
+    #[Test]
+    public function step() : void
+    {
+        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+
+        $gradient = Matrix::quick([[5.0, -5.0]]);
+
+        $this->optimizer->step([[$param, $gradient]]);
+
+        $expected = [
+            [0.0998, 0.2002],
+        ];
+
+        $this->assertEqualsWithDelta($expected, $param->param()->asArray(), 1e-8);
+
+        $scheduler = new StepDecay(0.1, 2, 0.5);
+
+        $optimizer = new Clipped(new Stochastic($scheduler), 1.0);
+
+        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+
+        $initialRate = $scheduler->rate();
+
+        $optimizer->step([[$param, $gradient]]);
+
+        $this->assertEquals($initialRate, $scheduler->rate());
+
+        $optimizer->step([[$param, $gradient]]);
+
+        $decreasedRate = $scheduler->rate();
+
+        $this->assertLessThan($initialRate, $decreasedRate);
     }
 
     #[Test]
@@ -141,6 +146,6 @@ class AdamTest extends TestCase
     #[Test]
     public function stringRepresentation() : void
     {
-        $this->assertEquals('Adam (scheduler: Constant (rate: 0.001), momentum decay: 0.1, norm decay: 0.001)', (string) $this->optimizer);
+        $this->assertEquals('Clipped (optimizer: Stochastic (scheduler: Constant (rate: 0.001)), max: 0.2)', (string) $this->optimizer);
     }
 }

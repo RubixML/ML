@@ -131,6 +131,22 @@ class Momentum implements Optimizer
     }
 
     /**
+     * Take a step of gradient descent for a set of parameters.
+     *
+     * @internal
+     *
+     * @param list<array{Parameter, Tensor<int|float|array>}> $gradients
+     */
+    public function step(array $gradients) : void
+    {
+        foreach ($gradients as [$param, $gradient]) {
+            $param->update($gradient, $this);
+        }
+
+        $this->scheduler->tick();
+    }
+
+    /**
      * Flush the parameter cache.
      *
      * @internal

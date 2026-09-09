@@ -25,6 +25,7 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 | 8 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
 | 9 | costFn | BinaryCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
+| 11 | gradientAccumulate | 1 | int | The number of gradient passes to accumulate before updating the network parameters. Higher values simulate a larger batch size. |
 
 ## Example
 
@@ -35,7 +36,7 @@ use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
-$estimator = new LogisticRegression(64, new Adam(new Constant(0.001)), 1e-4, 100, 1e-4, 3, 5, 0.1, new BinaryCrossEntropy(), new MCC());
+$estimator = new LogisticRegression(64, new Adam(new Constant(0.001)), 1e-4, 100, 1e-4, 3, 5, 0.1, new BinaryCrossEntropy(), new MCC(), 1);
 ```
 
 ## Additional Methods

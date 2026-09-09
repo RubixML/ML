@@ -130,6 +130,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected float $holdOut;
 
     /**
+     * The number of gradient passes to accumulate before updating the network parameters.
+     *
+     * @var int
+     */
+    protected int $gradientAccumulate;
+
+    /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var ClassificationLoss
@@ -189,6 +196,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
+     * @param int $gradientAccumulate
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -201,7 +209,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
+        int $gradientAccumulate = 1
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -245,6 +254,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " between 0 and 0.5, $holdOut given.");
         }
 
+        if ($gradientAccumulate < 1) {
+            throw new InvalidArgumentException('Gradient accumulation factor'
+                . " must be greater than 0, $gradientAccumulate given.");
+        }
+
         if ($costFn and $costFn instanceof BinaryCrossEntropy) {
             throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
@@ -263,6 +277,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
+        $this->gradientAccumulate = $gradientAccumulate;
     }
 
     /**
@@ -311,6 +326,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
+            'gradient accumulate' => $this->gradientAccumulate,
         ];
     }
 
@@ -413,7 +429,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Multiclass($classes, $this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->gradientAccumulate
         );
 
         $this->network->initialize();

@@ -120,6 +120,13 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     protected float $holdOut;
 
     /**
+     * The number of gradient passes to accumulate before updating the network parameters.
+     *
+     * @var int
+     */
+    protected int $gradientAccumulate;
+
+    /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var ClassificationLoss
@@ -179,6 +186,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
+     * @param int $gradientAccumulate
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -191,7 +199,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
+        int $gradientAccumulate = 1
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
@@ -232,6 +241,11 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 . " between 0 and 0.5, $holdOut given.");
         }
 
+        if ($gradientAccumulate < 1) {
+            throw new InvalidArgumentException('Gradient accumulation factor'
+                . " must be greater than 0, $gradientAccumulate given.");
+        }
+
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -246,6 +260,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
+        $this->gradientAccumulate = $gradientAccumulate;
     }
 
     /**
@@ -294,6 +309,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
+            'gradient accumulate' => $this->gradientAccumulate,
         ];
     }
 
@@ -391,7 +407,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(count($classes), $this->l2Penalty, true, new Xavier1())],
             new Multiclass($classes, $this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->gradientAccumulate
         );
 
         $this->network->initialize();

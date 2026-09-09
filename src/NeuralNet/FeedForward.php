@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Traversable;
 
 use function array_reverse;
@@ -68,13 +69,34 @@ class FeedForward implements Network
     protected Optimizer $optimizer;
 
     /**
+     * The number of gradient passes to accumulate before applying a step.
+     *
+     * @var int
+     */
+    protected int $accumulate;
+
+    /**
+     * The number of gradient passes accumulated since the last applied step.
+     *
+     * @var int
+     */
+    protected int $passes = 0;
+
+    /**
      * @param Input $input
      * @param Layers\Hidden[] $hidden
      * @param Output $output
      * @param Optimizer $optimizer
+     * @param int $accumulate
+     * @throws InvalidArgumentException
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer, int $accumulate = 1)
     {
+        if ($accumulate < 1) {
+            throw new InvalidArgumentException('Gradient accumulation factor'
+                . " must be greater than 0, $accumulate given.");
+        }
+
         $hidden = array_values($hidden);
 
         $backPass = array_reverse($hidden);
@@ -84,6 +106,7 @@ class FeedForward implements Network
         $this->output = $output;
         $this->optimizer = $optimizer;
         $this->backPass = $backPass;
+        $this->accumulate = $accumulate;
     }
 
     /**
@@ -210,7 +233,9 @@ class FeedForward implements Network
 
         $loss = $this->backpropagate($dataset->labels());
 
-        $this->optimizer->scheduler()->tick();
+        if (++$this->passes % $this->accumulate === 0) {
+            $this->applyGradients();
+        }
 
         return $loss;
     }
@@ -238,10 +263,10 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        [$gradient, $loss] = $this->output->back($labels, $this->optimizer);
+        [$gradient, $loss] = $this->output->back($labels);
 
         foreach ($this->backPass as $layer) {
-            $gradient = $layer->back($gradient, $this->optimizer);
+            $gradient = $layer->back($gradient);
         }
 
         return $loss;
@@ -274,5 +299,27 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Apply the accumulated gradients to the parameters of the network.
+     */
+    protected function applyGradients() : void
+    {
+        $gradients = [];
+
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->gradients() as [$param, $gradient]) {
+                    $gradients[] = [$param, $gradient->divide($this->accumulate)];
+                }
+
+                $layer->resetGradients();
+            }
+        }
+
+        $this->optimizer->step($gradients);
+
+        $this->passes = 0;
     }
 }

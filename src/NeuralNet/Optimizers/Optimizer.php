@@ -37,7 +37,7 @@ interface Optimizer extends Stringable
     public function warm(Parameter $param) : void;
 
     /**
-     * Take a step of gradient descent for a given parameter.
+     * Take a step of gradient descent for a single parameter.
      *
      * @internal
      *
@@ -46,6 +46,16 @@ interface Optimizer extends Stringable
      * @return Tensor<int|float|array>
      */
     public function update(Parameter $param, Tensor $gradient) : Tensor;
+
+    /**
+     * Take a step of gradient descent for a set of parameters. The scheduler
+     * advances once per step regardless of the number of parameters.
+     *
+     * @internal
+     *
+     * @param list<array{Parameter, Tensor<int|float|array>}> $gradients
+     */
+    public function step(array $gradients) : void;
 
     /**
      * Flush the parameter cache.

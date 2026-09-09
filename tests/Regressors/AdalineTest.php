@@ -173,6 +173,7 @@ class AdalineTest extends TestCase
             'hold out' => 0.1,
             'cost fn' => new HuberLoss(1.0),
             'metric' => new RMSE(),
+            'gradient accumulate' => 1,
         ];
 
         self::assertEquals($expected, $this->estimator->params());

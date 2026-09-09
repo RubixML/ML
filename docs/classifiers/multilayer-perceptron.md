@@ -25,6 +25,7 @@ A multiclass feed-forward neural network classifier with user-defined hidden lay
 | 8 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
 | 9 | costFn | MulticlassCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
+| 11 | gradientAccumulate | 1 | int | The number of gradient passes to accumulate before updating the network parameters. Higher values simulate a larger batch size. |
 
 ## Example
 
@@ -49,7 +50,7 @@ $estimator = new MultilayerPerceptron([
     new Dropout(0.3),
     new Dense(50),
     new PReLU(),
-], 128, new Adam(new Constant(0.001)), 1000, 1e-3, 10, 3, 0.1, new MulticlassCrossEntropy(), new MCC());
+], 128, new Adam(new Constant(0.001)), 1000, 1e-3, 10, 3, 0.1, new MulticlassCrossEntropy(), new MCC(), 1);
 ```
 
 ## Additional Methods

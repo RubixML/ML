@@ -139,6 +139,7 @@ class SoftmaxClassifierTest extends TestCase
             'hold out' => 0.1,
             'cost fn' => new MulticlassCrossEntropy(),
             'metric' => new FBeta(),
+            'gradient accumulate' => 1,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

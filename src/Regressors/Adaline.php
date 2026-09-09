@@ -123,6 +123,13 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     protected float $holdOut;
 
     /**
+     * The number of gradient passes to accumulate before updating the network parameters.
+     *
+     * @var int
+     */
+    protected int $gradientAccumulate;
+
+    /**
      * The function that computes the loss associated with an erroneous
      * activation during training.
      *
@@ -176,6 +183,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
+     * @param int $gradientAccumulate
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -188,7 +196,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         int $window = 5,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
+        int $gradientAccumulate = 1
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
@@ -225,6 +234,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 . " between 0 and 0.5, $holdOut given.");
         }
 
+        if ($gradientAccumulate < 1) {
+            throw new InvalidArgumentException('Gradient accumulation factor'
+                . " must be greater than 0, $gradientAccumulate given.");
+        }
+
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -239,6 +253,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
+        $this->gradientAccumulate = $gradientAccumulate;
     }
 
     /**
@@ -287,6 +302,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
+            'gradient accumulate' => $this->gradientAccumulate,
         ];
     }
 
@@ -378,7 +394,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->l2Penalty, true, new He())],
             new Continuous($this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->gradientAccumulate
         );
 
         $this->network->initialize();

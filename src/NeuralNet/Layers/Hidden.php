@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 /**
  * Hidden
@@ -15,13 +14,12 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 interface Hidden extends Layer
 {
     /**
-     * Calculate the gradient and update the parameters of the layer.
+     * Calculate the gradient for the previous layer and record the gradients of the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
-     * @param Optimizer $optimizer
      * @return Deferred
      */
-    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred;
+    public function back(Deferred $prevGradient) : Deferred;
 }

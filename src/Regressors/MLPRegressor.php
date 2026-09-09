@@ -128,6 +128,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected float $holdOut;
 
     /**
+     * The number of gradient passes to accumulate before updating the network parameters.
+     *
+     * @var int
+     */
+    protected int $gradientAccumulate;
+
+    /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var RegressionLoss
@@ -180,6 +187,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
+     * @param int $gradientAccumulate
      */
     public function __construct(
         array $hiddenLayers,
@@ -191,7 +199,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         int $window = 5,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
+        int $gradientAccumulate = 1
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -235,6 +244,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . " between 0 and 0.5, $holdOut given.");
         }
 
+        if ($gradientAccumulate < 1) {
+            throw new InvalidArgumentException('Gradient accumulation factor'
+                . " must be greater than 0, $gradientAccumulate given.");
+        }
+
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -249,6 +263,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
+        $this->gradientAccumulate = $gradientAccumulate;
     }
 
     /**
@@ -297,6 +312,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
+            'gradient accumulate' => $this->gradientAccumulate,
         ];
     }
 
@@ -392,7 +408,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
             new Continuous($this->costFn),
-            $this->optimizer
+            $this->optimizer,
+            $this->gradientAccumulate
         );
 
         $this->network->initialize();

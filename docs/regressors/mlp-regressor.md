@@ -25,6 +25,7 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 | 8 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
 | 9 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 10 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
+| 11 | gradientAccumulate | 1 | int | The number of gradient passes to accumulate before updating the network parameters. Higher values simulate a larger batch size. |
 
 ## Example
 
@@ -47,7 +48,7 @@ $estimator = new MLPRegressor([
 	new Activation(new ReLU()),
 	new Dense(50),
 	new Activation(new ReLU()),
-], 128, new RMSProp(new Constant(0.001)), 100, 1e-5, 5, 10, 0.1, new LeastSquares(), new RSquared());
+], 128, new RMSProp(new Constant(0.001)), 100, 1e-5, 5, 10, 0.1, new LeastSquares(), new RSquared(), 1);
 ```
 
 ## Additional Methods
