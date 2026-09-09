@@ -31,10 +31,11 @@ A multiclass generalization of [Logistic Regression](logistic-regression.md) usi
 ```php
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 
-$estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, 3, 5, 0.1, new MulticlassCrossEntropy(), new FBeta());
+$estimator = new SoftmaxClassifier(256, new Momentum(new Constant(0.001)), 1e-4, 300, 1e-4, 3, 5, 0.1, new MulticlassCrossEntropy(), new FBeta());
 ```
 
 ## Additional Methods

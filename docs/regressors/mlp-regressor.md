@@ -35,6 +35,7 @@ use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Regressors\MLPRegressor;
 
 $estimator = new MLPRegressor([
@@ -46,7 +47,7 @@ $estimator = new MLPRegressor([
 	new Activation(new ReLU()),
 	new Dense(50),
 	new Activation(new ReLU()),
-], 128, new RMSProp(0.001), 100, 1e-5, 5, 10, 0.1, new LeastSquares(), new RSquared());
+], 128, new RMSProp(new Constant(0.001)), 100, 1e-5, 5, 10, 0.1, new LeastSquares(), new RSquared());
 ```
 
 ## Additional Methods

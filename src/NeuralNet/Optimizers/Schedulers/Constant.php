@@ -54,6 +54,7 @@ class Constant implements Scheduler
      */
     public function tick() : void
     {
+        //
     }
 
     /**

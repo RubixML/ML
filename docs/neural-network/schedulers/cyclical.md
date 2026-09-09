@@ -1,8 +1,8 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/Cyclical.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/Optimizers/Schedulers/Cyclical.php">[source]</a></span>
 
 # Cyclical
 
-The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor at each step. Cyclical learning rates have been shown to help escape bad local minima and saddle points of the gradient.
+A learning-rate schedule that cycles the rate between the lower and upper bound over a designated period, while also decaying the upper bound by a factor at each step. Cyclical learning rates have been shown to help escape bad local minima and saddle points of the gradient.
 
 > **Note:** One *step* is one batch of gradient descent — i.e. one forward and backward pass through the network.
 
@@ -18,9 +18,12 @@ The Cyclical optimizer uses a global learning rate that cycles between the lower
 ## Example
 
 ```php
-use Rubix\ML\NeuralNet\Optimizers\Cyclical;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Cyclical;
 
-$optimizer = new Cyclical(0.001, 0.005, 1000, 0.99994);
+$scheduler = new Cyclical(0.001, 0.005, 1000, 0.99994);
+
+$optimizer = new Stochastic($scheduler);
 ```
 
 ## References

@@ -290,7 +290,7 @@ $mlp->setSnapshotPath('/var/tmp/mlp-snapshot.dat');
 
 ### 21. Clearable adaptive optimizer state
 
-Adaptive optimizers such as [Adam](neural-network/optimizers/adam.md), RMS Prop, AdaGrad, and Momentum maintain per-parameter state (gradient caches, momentum velocities) that is only needed during training. The neural network learners now expose a `cleanup()` method that discards this residual state by calling `reset()` on any optimizer that implements the `Adaptive` interface — useful before reusing an estimator in a long-running process or to free memory after training:
+Optimizers such as [Adam](neural-network/optimizers/adam.md), [RMS Prop](neural-network/optimizers/rms-prop.md), [AdaGrad](neural-network/optimizers/adagrad.md), and [Momentum](neural-network/optimizers/momentum.md) maintain per-parameter state (gradient caches, momentum velocities) that is only needed during training. The neural network learners now expose a `cleanup()` method that discards this residual state by calling `reset()` on the optimizer — useful before reusing an estimator in a long-running process or to free memory after training:
 
 ```php
 $mlp->train($dataset);

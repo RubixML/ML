@@ -194,11 +194,13 @@ nav:
         - AdaGrad: neural-network/optimizers/adagrad.md
         - Adam: neural-network/optimizers/adam.md
         - AdaMax: neural-network/optimizers/adamax.md
-        - Cyclical: neural-network/optimizers/cyclical.md
         - Momentum: neural-network/optimizers/momentum.md
         - RMS Prop: neural-network/optimizers/rms-prop.md
-        - Step Decay: neural-network/optimizers/step-decay.md
         - Stochastic: neural-network/optimizers/stochastic.md
+      - Schedulers:
+        - Constant: neural-network/schedulers/constant.md
+        - Cyclical: neural-network/schedulers/cyclical.md
+        - Step Decay: neural-network/schedulers/step-decay.md
     - Graph:
       - Trees:
         - Ball Tree: graph/trees/ball-tree.md

@@ -46,6 +46,7 @@
     - Remove Softmax activation function
     - Fix Multiclass layer gradient for non-Cross Entropy losses
     - `Xavier 2` now extends `He` as a deprecated alias
+    - Optimizers now take a Scheduler rather than a raw learning rate
     
 - 2.5.14
     - Fix Report and Tuple null values
