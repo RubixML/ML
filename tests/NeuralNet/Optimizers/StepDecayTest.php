@@ -6,6 +6,7 @@ use Tensor\Tensor;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\StepDecay;
+use Rubix\ML\NeuralNet\Optimizers\Scheduler;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -71,5 +72,69 @@ class StepDecayTest extends TestCase
         $step = $this->optimizer->step($param, $gradient);
 
         $this->assertEquals($expected, $step->asArray());
+    }
+
+    /**
+     * The schedule's internal counter must advance by one per batch,
+     * not one per parameter. A network with K trainable parameters
+     * performs K `step()` calls per batch but only one `tick()`.
+     *
+     * This test would fail on the legacy implementation where `step()`
+     * itself incremented `t`: the `step()` calls within a batch would
+     * see different `t` values and return different rates, and after
+     * B batches the internal `t` would be K * B instead of B.
+     */
+    #[Test]
+    public function scheduleTicksPerBatchNotPerParameter() : void
+    {
+        $rate = 0.01;
+        $losses = 1;
+        $decay = 0.5;
+
+        $optimizer = new StepDecay($rate, $losses, $decay);
+
+        $K = 3;
+        $B = 3;
+
+        $parameters = [];
+
+        for ($i = 0; $i < $K; ++$i) {
+            $parameters[] = new Parameter(Matrix::quick([
+                [1.0],
+            ]));
+        }
+
+        $gradient = Matrix::quick([[1.0]]);
+
+        $expectedBatch = [
+            0.01,
+            0.01 / (1 + 1 * $decay),
+            0.01 / (1 + 2 * $decay),
+        ];
+
+        for ($batch = 0; $batch < $B; ++$batch) {
+            $rates = [];
+
+            foreach ($parameters as $parameter) {
+                $step = $optimizer->step($parameter, $gradient);
+
+                $rates[] = $step->asArray()[0][0];
+            }
+
+            $expected = $expectedBatch[$batch];
+
+            foreach ($rates as $actual) {
+                $this->assertEqualsWithDelta($expected, $actual, 1e-12);
+            }
+
+            if ($optimizer instanceof Scheduler) {
+                $optimizer->tick();
+            }
+        }
+
+        $probe = $optimizer->step($parameters[0], $gradient);
+        $expectedProbe = 0.01 / (1 + $B * $decay);
+
+        $this->assertEqualsWithDelta($expectedProbe, $probe->asArray()[0][0], 1e-12);
     }
 }

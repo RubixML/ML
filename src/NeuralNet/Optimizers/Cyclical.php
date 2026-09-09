@@ -22,7 +22,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cyclical implements Optimizer
+class Cyclical implements Optimizer, Scheduler
 {
     /**
      * The lower bound on the learning rate.
@@ -125,9 +125,17 @@ class Cyclical implements Optimizer
 
         $rate = $this->lower + $this->range * max(0, 1 - $x) * $scale;
 
-        ++$this->t;
-
         return $gradient->multiply($rate);
+    }
+
+    /**
+     * Advance the learning-rate schedule by one batch.
+     *
+     * @internal
+     */
+    public function tick() : void
+    {
+        ++$this->t;
     }
 
     /**

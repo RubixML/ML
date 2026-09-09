@@ -11,6 +11,7 @@ use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Optimizers\Scheduler;
 use Traversable;
 
 use function array_reverse;
@@ -212,6 +213,10 @@ class FeedForward implements Network
         $this->feed($input);
 
         $loss = $this->backpropagate($dataset->labels());
+
+        if ($this->optimizer instanceof Scheduler) {
+            $this->optimizer->tick();
+        }
 
         return $loss;
     }
