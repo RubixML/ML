@@ -29,7 +29,7 @@ class StepDecay implements Scheduler
      *
      * @var int
      */
-    protected int $losses;
+    protected int $steps;
 
     /**
      * The factor to decrease the learning rate by over a period of k steps.
@@ -54,20 +54,20 @@ class StepDecay implements Scheduler
 
     /**
      * @param float $initialRate
-     * @param int $losses
+     * @param int $steps
      * @param float $decay
      * @throws InvalidArgumentException
      */
-    public function __construct(float $initialRate = 0.01, int $losses = 100, float $decay = 1e-3)
+    public function __construct(float $initialRate = 0.01, int $steps = 100, float $decay = 1e-3)
     {
         if ($initialRate <= 0.0) {
             throw new InvalidArgumentException('Initial learning rate must be'
                 . " greater than 0, $initialRate given.");
         }
 
-        if ($losses < 1) {
+        if ($steps < 1) {
             throw new InvalidArgumentException('The number of steps per'
-                . " floor must be greater than 0, $losses given.");
+                . " floor must be greater than 0, $steps given.");
         }
 
         if ($decay < 0.0) {
@@ -76,7 +76,7 @@ class StepDecay implements Scheduler
         }
 
         $this->initialRate = $initialRate;
-        $this->losses = $losses;
+        $this->steps = $steps;
         $this->decay = $decay;
         $this->rate = $initialRate;
     }
@@ -100,7 +100,7 @@ class StepDecay implements Scheduler
     {
         ++$this->t;
 
-        $floor = floor($this->t / $this->losses);
+        $floor = floor($this->t / $this->steps);
 
         $this->rate = $this->initialRate * (1.0 / (1.0 + $floor * $this->decay));
     }
@@ -114,6 +114,6 @@ class StepDecay implements Scheduler
      */
     public function __toString() : string
     {
-        return "Step Decay (rate: {$this->initialRate}, steps: {$this->losses}, decay: {$this->decay})";
+        return "Step Decay (rate: {$this->initialRate}, steps: {$this->steps}, decay: {$this->decay})";
     }
 }
