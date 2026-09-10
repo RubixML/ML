@@ -525,8 +525,10 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 if ($updateThisStep) {
                     $sumSquares = 0.0;
 
+                    $numSteps = $step % $this->gradientAccumulationSteps ?: $this->gradientAccumulationSteps;
+
                     foreach ($this->network->parameters() as $param) {
-                        $param->scaleGradient(1.0 / $this->gradientAccumulationSteps);
+                        $param->scaleGradient(1.0 / $numSteps);
 
                         $paramNorm = $param->gradientNorm();
 
