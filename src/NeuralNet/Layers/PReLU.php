@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
@@ -129,16 +130,16 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Calculate the gradient for the previous layer and record the gradient of
-     * the parameters of this layer.
+     * Calculate the gradient and update the parameters of the layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
+     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return Deferred
      */
-    public function back(Deferred $prevGradient) : Deferred
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -155,7 +156,7 @@ class PReLU implements Hidden, Parametric
 
         $dAlpha = $dOut->multiply($dIn)->sum();
 
-        $this->alpha->accumulate($dAlpha);
+        $this->alpha->update($dAlpha, $optimizer);
 
         $input = $this->input;
 

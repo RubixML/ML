@@ -81,14 +81,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     protected Optimizer $optimizer;
 
     /**
-     * The maximum L2 norm of the gradient set. When exceeded all gradients are rescaled
-     * proportionally so that the global norm equals the maximum.
-     *
-     * @var float|null
-     */
-    protected ?float $maxGradientNorm = null;
-
-    /**
      * The amount of L2 regularization applied to the weights of the output layer.
      *
      * @var float
@@ -176,7 +168,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * @param int $batchSize
      * @param Optimizer|null $optimizer
-     * @param float|null $maxGradientNorm
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
@@ -190,7 +181,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     public function __construct(
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
-        ?float $maxGradientNorm = null,
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
@@ -203,11 +193,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
-        }
-
-        if (isset($maxGradientNorm) and $maxGradientNorm <= 0.0) {
-            throw new InvalidArgumentException('Max gradient norm must be'
-                . " greater than 0, $maxGradientNorm given.");
         }
 
         if ($l2Penalty < 0.0) {
@@ -246,7 +231,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
-        $this->maxGradientNorm = $maxGradientNorm;
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -295,7 +279,6 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         return [
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
-            'max gradient norm' => $this->maxGradientNorm,
             'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
@@ -391,19 +374,14 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     {
         DatasetIsNotEmpty::with($dataset)->check();
 
-        $network = new FeedForward(
+        $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->l2Penalty, true, new He())],
-            new Continuous($this->costFn)
+            new Continuous($this->costFn),
+            $this->optimizer
         );
 
-        $network->initialize();
-
-        foreach ($network->parameters() as $parameter) {
-            $this->optimizer->warm($parameter);
-        }
-
-        $this->network = $network;
+        $this->network->initialize();
 
         $this->partial($dataset);
     }
@@ -443,8 +421,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
+        $loss = 0.0;
         $score = $snapshot = null;
-        $prevLoss = $averageLoss = INF;
+        $prevLoss = INF;
 
         $snapshotPath = $this->snapshotPath;
 
@@ -462,49 +441,19 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $totalLoss = $norm = $totalNorm = 0.0;
+            $loss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss = $this->network->roundtrip($batch);
-
-                $sumSquares = 0.0;
-
-                foreach ($this->network->parameters() as $param) {
-                    $paramNorm = $param->gradientNorm();
-
-                    $sumSquares += $paramNorm * $paramNorm;
-                }
-
-                $norm = sqrt($sumSquares);
-
-                if ($this->maxGradientNorm and $norm > $this->maxGradientNorm) {
-                    $scale = $this->maxGradientNorm / $norm;
-
-                    foreach ($this->network->parameters() as $param) {
-                        $param->scaleGradient($scale);
-                    }
-                }
-
-                foreach ($this->network->parameters() as $param) {
-                    $param->update($this->optimizer);
-
-                    $param->resetGradient();
-                }
-
-                $this->optimizer->scheduler()->tick();
-
-                $totalLoss += $loss;
-                $totalNorm += $norm;
+                $loss += $this->network->roundtrip($batch);
             }
 
-            $averageLoss = $totalLoss / count($batches);
-            $averageNorm = $totalNorm / count($batches);
+            $loss /= count($batches);
 
-            $lossChange = abs($prevLoss - $averageLoss);
+            $lossChange = abs($prevLoss - $loss);
 
-            $this->losses[$epoch] = $averageLoss;
+            $this->losses[$epoch] = $loss;
 
-            if (is_nan($averageLoss)) {
+            if (is_nan($loss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical under/overflow detected');
                 }
@@ -512,7 +461,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 break;
             }
 
-            if ($averageLoss <= 0.0) {
+            if ($loss <= 0.0) {
                 break;
             }
 
@@ -528,13 +477,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
             if ($this->logger) {
                 $message = "Epoch: {$epoch}";
-
-                if (!$this->optimizer->scheduler() instanceof Constant) {
-                    $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
-                }
-
-                $message .= ", {$this->costFn}: $averageLoss";
-                $message .= ", Gradient Norm: $averageNorm";
+                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                $message .= ", {$this->costFn}: $loss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -572,11 +516,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 break;
             }
 
-            $prevLoss = $averageLoss;
+            $prevLoss = $loss;
         }
 
         if ($snapshot) {
-            if (end($this->scores) < $bestScore or is_nan($averageLoss)) {
+            if (end($this->scores) < $bestScore or is_nan($loss)) {
                 $snapshot->restore();
 
                 if ($this->logger) {

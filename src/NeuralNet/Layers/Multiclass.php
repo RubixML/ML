@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
@@ -160,10 +161,11 @@ class Multiclass implements Output
      * Compute the gradient and loss at the output.
      *
      * @param string[] $labels
+     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
-    public function back(array $labels) : array
+    public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass'

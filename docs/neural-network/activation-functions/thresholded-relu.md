@@ -19,7 +19,7 @@ $$
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 
-$activationFunction = new ThresholdedReLU(threshold: 0.5);
+$activationFunction = new ThresholdedReLU(0.5);
 ```
 
 ## References

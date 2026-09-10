@@ -64,10 +64,10 @@ The single `Rubix\ML\NeuralNet\CostFunctions\CrossEntropy` class was removed and
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 
 // before
-$mlp = new MultilayerPerceptron(hiddenLayers: [], costFn: new CrossEntropy());
+$mlp = new MultilayerPerceptron([], costFn: new CrossEntropy());
 
 // after
-$mlp = new MultilayerPerceptron(hiddenLayers: [], costFn: new MulticlassCrossEntropy());
+$mlp = new MultilayerPerceptron([], costFn: new MulticlassCrossEntropy());
 ```
 
 If you did not pass a `CrossEntropy` cost function explicitly, no change is needed — [Logistic Regression](classifiers/logistic-regression.md) defaults to `BinaryCrossEntropy`, while the [MLP](classifiers/multilayer-perceptron.md) and [Softmax Classifier](classifiers/softmax-classifier.md) default to `MulticlassCrossEntropy`.
@@ -78,10 +78,10 @@ The `$l2Penalty` constructor parameter was removed from the [Multilayer Perceptr
 
 ```php
 // before
-$mlp = new MultilayerPerceptron(hiddenLayers: [], l2Penalty: 1e-4);
+$mlp = new MultilayerPerceptron([], l2Penalty: 1e-4);
 
 // after - regularize via the Dense hidden layers instead
-$mlp = new MultilayerPerceptron(hiddenLayers: [new Dense(neurons: 100, l2Penalty: 1e-4)]);
+$mlp = new MultilayerPerceptron([new Dense(100, 1e-4)]);
 ```
 
 !!! note
@@ -280,9 +280,9 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 
-$mlp = new MultilayerPerceptron(hiddenLayers: [
-    new Dense(neurons: 100),
-    new Activation(activationFn: new SiLU()),
+$mlp = new MultilayerPerceptron([
+    new Dense(100),
+    new Activation(new SiLU()),
 ]);
 
 $mlp->setSnapshotPath('/var/tmp/mlp-snapshot.dat');
@@ -304,7 +304,7 @@ $mlp->cleanup();
 The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Gradient Boost](regressors/gradient-boost.md), and [AdaBoost](classifiers/adaboost.md) — now accept a `$evalInterval` constructor parameter (default `3`). It controls how often the hold-out set is scored during training, working in tandem with the `window` parameter for early stopping:
 
 ```php
-$mlp = new MultilayerPerceptron(hiddenLayers: [new Dense(neurons: 100)], epochs: 1000, evalInterval: 5, window: 10);
+$mlp = new MultilayerPerceptron([new Dense(100)], epochs: 1000, evalInterval: 5, window: 10);
 ```
 
 !!! note

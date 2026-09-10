@@ -19,7 +19,7 @@ $$
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-$activationFunction = new LeakyReLU(leakage: 0.3);
+$activationFunction = new LeakyReLU(0.3);
 ```
 
 ## References

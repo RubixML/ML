@@ -110,23 +110,20 @@ class Momentum implements Optimizer
      * @internal
      *
      * @param Parameter $param
+     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param, Tensor $gradient) : Tensor
     {
-        if (!$param->hasGradient()) {
-            throw new RuntimeException('Cannot update parameter with no gradient.');
-        }
-
         $velocity = $this->cache[$param->id()];
 
-        $velocity = $param->gradient()->multiply($this->scheduler->rate())
+        $velocity = $gradient->multiply($this->scheduler->rate())
             ->add($velocity->multiply(1.0 - $this->decay));
 
         $this->cache[$param->id()] = $velocity;
 
         if ($this->lookahead) {
-            $velocity = $param->gradient()->multiply($this->scheduler->rate())
+            $velocity = $gradient->multiply($this->scheduler->rate())
                 ->add($velocity->multiply(1.0 - $this->decay));
         }
 

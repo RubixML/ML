@@ -10,7 +10,6 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\Exceptions\InvalidArgumentException;
 use Traversable;
 
 use function array_reverse;
@@ -55,19 +54,26 @@ class FeedForward implements Network
     ];
 
     /**
-     * The output layer.
+     * The output layer of the network.
      *
      * @var Output
      */
     protected Output $output;
 
     /**
+     * The gradient descent optimizer used to train the network.
+     *
+     * @var Optimizer
+     */
+    protected Optimizer $optimizer;
+
+    /**
      * @param Input $input
      * @param Layers\Hidden[] $hidden
      * @param Output $output
-     * @throws InvalidArgumentException
+     * @param Optimizer $optimizer
      */
-    public function __construct(Input $input, array $hidden, Output $output)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
         $hidden = array_values($hidden);
 
@@ -76,6 +82,7 @@ class FeedForward implements Network
         $this->input = $input;
         $this->hidden = $hidden;
         $this->output = $output;
+        $this->optimizer = $optimizer;
         $this->backPass = $backPass;
     }
 
@@ -124,6 +131,14 @@ class FeedForward implements Network
     }
 
     /**
+     * Return the optimizer used to train the network.
+     */
+    public function optimizer() : Optimizer
+    {
+        return $this->optimizer;
+    }
+
+    /**
      * Return the number of trainable parameters in the network.
      *
      * @return int
@@ -132,27 +147,15 @@ class FeedForward implements Network
     {
         $numParams = 0;
 
-        foreach ($this->parameters() as $parameter) {
-            $numParams += $parameter->param()->size();
-        }
-
-        return $numParams;
-    }
-
-    /**
-     * Return an iterable of all the trainable parameters in the network.
-     *
-     * @return Traversable<Parameter>
-     */
-    public function parameters() : Traversable
-    {
         foreach ($this->layers() as $layer) {
             if ($layer instanceof Parametric) {
                 foreach ($layer->parameters() as $parameter) {
-                    yield $parameter;
+                    $numParams += $parameter->param()->size();
                 }
             }
         }
+
+        return $numParams;
     }
 
     /**
@@ -164,6 +167,14 @@ class FeedForward implements Network
 
         foreach ($this->layers() as $layer) {
             $fanIn = $layer->initialize($fanIn);
+        }
+
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $param) {
+                    $this->optimizer->warm($param);
+                }
+            }
         }
     }
 
@@ -199,6 +210,8 @@ class FeedForward implements Network
 
         $loss = $this->backpropagate($dataset->labels());
 
+        $this->optimizer->scheduler()->tick();
+
         return $loss;
     }
 
@@ -225,10 +238,10 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        [$gradient, $loss] = $this->output->back($labels);
+        [$gradient, $loss] = $this->output->back($labels, $this->optimizer);
 
         foreach ($this->backPass as $layer) {
-            $gradient = $layer->back($gradient);
+            $gradient = $layer->back($gradient, $this->optimizer);
         }
 
         return $loss;

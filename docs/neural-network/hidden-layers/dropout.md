@@ -15,7 +15,7 @@ Dropout is a regularization technique to reduce overfitting in neural networks b
 ```php
 use Rubix\ML\NeuralNet\Layers\Dropout;
 
-$layer = new Dropout(ratio: 0.2);
+$layer = new Dropout(0.2);
 ```
 
 ## References

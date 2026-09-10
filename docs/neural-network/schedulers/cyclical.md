@@ -21,9 +21,9 @@ A learning-rate schedule that cycles the rate between the lower and upper bound 
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Cyclical;
 
-$scheduler = new Cyclical(lower: 0.001, upper: 0.005, length: 1000, decay: 0.99994);
+$scheduler = new Cyclical(0.001, 0.005, 1000, 0.99994);
 
-$optimizer = new Stochastic(scheduler: $scheduler);
+$optimizer = new Stochastic($scheduler);
 ```
 
 ## References

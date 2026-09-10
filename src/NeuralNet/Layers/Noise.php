@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -119,14 +120,15 @@ class Noise implements Hidden
     }
 
     /**
-     * Calculate the gradient for the previous layer.
+     * Calculate the gradients of the layer and update the parameters.
      *
      * @internal
      *
      * @param Deferred $prevGradient
+     * @param Optimizer $optimizer
      * @return Deferred
      */
-    public function back(Deferred $prevGradient) : Deferred
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         return $prevGradient;
     }

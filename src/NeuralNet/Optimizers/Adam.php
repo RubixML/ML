@@ -121,22 +121,19 @@ class Adam implements Optimizer
      * @internal
      *
      * @param Parameter $param
+     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param, Tensor $gradient) : Tensor
     {
-        if (!$param->hasGradient()) {
-            throw new RuntimeException('Cannot update parameter with no gradient.');
-        }
-
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $vHat = $param->gradient()->subtract($velocity)
+        $vHat = $gradient->subtract($velocity)
             ->multiply($this->momentumDecay);
 
         $velocity = $velocity->add($vHat);
 
-        $nHat = $param->gradient()->square()->subtract($norm)
+        $nHat = $gradient->square()->subtract($norm)
             ->multiply($this->normDecay);
 
         $norm = $norm->add($nHat);
@@ -145,9 +142,7 @@ class Adam implements Optimizer
 
         $norm = $norm->sqrt()->clipLower(EPSILON);
 
-        $step = $velocity->multiply($this->scheduler->rate())->divide($norm);
-
-        return $step;
+        return $velocity->multiply($this->scheduler->rate())->divide($norm);
     }
 
     /**

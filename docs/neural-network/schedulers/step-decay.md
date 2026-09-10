@@ -20,7 +20,7 @@ A learning-rate schedule that reduces the rate by a factor whenever it reaches a
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\StepDecay;
 
-$scheduler = new StepDecay(initialRate: 0.1, steps: 50, decay: 1e-3);
+$scheduler = new StepDecay(0.1, 50, 1e-3);
 
-$optimizer = new Stochastic(scheduler: $scheduler);
+$optimizer = new Stochastic($scheduler);
 ```
