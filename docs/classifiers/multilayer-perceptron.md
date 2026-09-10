@@ -106,23 +106,6 @@ Clean up any leftover state after training. Only do this if you plan to use the 
 public cleanup() : void
 ```
 
-Export a Graphviz "dot" encoding of the neural network architecture.
-
-```php
-public exportGraphviz() : Encoding
-```
-
-```php
-use Rubix\ML\Helpers\Graphviz;
-use Rubix\ML\Persisters\Filesystem;
-
-$dot = $estimator->exportGraphviz();
-
-Graphviz::dotToImage($dot)->saveTo(new Filesystem('network.png'));
-```
-
-![Neural Network Graph](https://github.com/RubixML/ML/blob/master/docs/images/neural-network-graph.png?raw=true)
-
 Set the path of the temporary snapshot file used to store network parameters during training.
 
 ```php

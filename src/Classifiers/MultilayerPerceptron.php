@@ -6,7 +6,6 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -715,21 +714,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         return $probabilities;
-    }
-
-    /**
-     * Export the network architecture as a graph in dot format.
-     *
-     * @throws RuntimeException
-     * @return Encoding
-     */
-    public function exportGraphviz() : Encoding
-    {
-        if (!$this->network) {
-            throw new RuntimeException('Must train network first.');
-        }
-
-        return $this->network->exportGraphviz();
     }
 
     /**

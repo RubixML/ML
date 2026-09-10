@@ -5,7 +5,7 @@
 The Feed Forward network is the core neural network implementation of the library consisting of an input layer, any number of intermediate hidden layers, and an output layer. The parameters of the network are learned using mini batch gradient descent with backpropagation. It is the network used under the hood by the neural network learners such as [Multilayer Perceptron](../classifiers/multilayer-perceptron.md), [MLP Regressor](../regressors/mlp-regressor.md), [Adaline](../regressors/adaline.md), [Softmax Classifier](../classifiers/softmax-classifier.md), and [Logistic Regression](../classifiers/logistic-regression.md).
 
 !!! note
-    The Feed Forward network is part of the internal implementation of the neural network learners and is not a standalone estimator.
+    The Feed Forward network is part of the neural network subsystem and is not a standalone estimator.
 
 ## Example
 
@@ -33,7 +33,7 @@ $network = new FeedForward(
 );
 ```
 
-## Additional Methods
+## API Reference
 
 Return the input layer of the network:
 

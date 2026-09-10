@@ -8,7 +8,6 @@ use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -677,21 +676,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $activations = $this->network->infer($dataset);
 
         return array_column($activations->asArray(), 0);
-    }
-
-    /**
-     * Export the network architecture as a graph in dot format.
-     *
-     * @throws RuntimeException
-     * @return Encoding
-     */
-    public function exportGraphviz() : Encoding
-    {
-        if (!$this->network) {
-            throw new RuntimeException('Must train network first.');
-        }
-
-        return $this->network->exportGraphviz();
     }
 
     /**
