@@ -17,7 +17,7 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new RMSProp(new Constant(0.01), 0.1);
+$optimizer = new RMSProp(scheduler: new Constant(0.01), decay: 0.1);
 ```
 
 ## References

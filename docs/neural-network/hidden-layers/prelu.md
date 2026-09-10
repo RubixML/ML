@@ -20,7 +20,7 @@ $$
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\NeuralNet\Initializers\Normal;
 
-$layer = new PReLU(new Normal(0.5));
+$layer = new PReLU(initializer: new Normal(0.5));
 ```
 
 ## References

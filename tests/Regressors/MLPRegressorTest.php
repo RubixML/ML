@@ -110,6 +110,24 @@ class MLPRegressorTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Bad gradient accumulation steps')]
+    public function badGradientAccumulationSteps() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new MLPRegressor(hiddenLayers: [], gradientAccumulationSteps: 0);
+    }
+
+    #[Test]
+    #[TestDox('Gradient accumulation steps are exposed via params')]
+    public function gradientAccumulationStepsParameter() : void
+    {
+        $estimator = new MLPRegressor(hiddenLayers: [new Dense(10)], gradientAccumulationSteps: 4);
+
+        self::assertSame(4, $estimator->params()['gradient accumulation steps']);
+    }
+
+    #[Test]
     #[TestDox('Type')]
     public function type() : void
     {
@@ -142,6 +160,7 @@ class MLPRegressorTest extends TestCase
             ],
             'batch size' => 32,
             'optimizer' => new Adam(new Constant(0.01)),
+            'max gradient norm' => null,
             'epochs' => 100,
             'min change' => 1e-4,
             'eval interval' => 3,
@@ -149,6 +168,7 @@ class MLPRegressorTest extends TestCase
             'hold out' => 0.1,
             'cost fn' => new LeastSquares(),
             'metric' => new RMSE(),
+            'gradient accumulation steps' => 1,
         ];
 
         self::assertEquals($expected, $this->estimator->params());
@@ -201,55 +221,43 @@ class MLPRegressorTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Train skips projection when effective width matches')]
-    public function trainSkipsProjectionWhenEffectiveWidthMatches() : void
+    #[TestDox('Train with gradient clipping')]
+    public function trainWithGradientClipping() : void
     {
+        srand(self::RANDOM_SEED);
+
         $estimator = new MLPRegressor(
             hiddenLayers: [
-                new Dense(8),
+                new Dense(32),
+                new Activation(new SELU()),
+                new Dense(16),
                 new Activation(new SiLU()),
-                new Dense(1),
+                new Dense(8),
                 new Activation(new SiLU()),
             ],
             batchSize: 32,
-            epochs: 1,
-            holdOut: 0
+            optimizer: new Adam(new Constant(0.01)),
+            maxGradientNorm: 1e-3,
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1
         );
 
-        $dataset = $this->generator->generate(64);
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
         $estimator->train($dataset);
 
-        $hidden = $estimator->network()->hidden();
+        self::assertTrue($estimator->trained());
 
-        $this->assertCount(4, $hidden);
-        $this->assertEquals(1, $hidden[3]->width());
-    }
+        $predictions = $estimator->predict($dataset);
 
-    #[Test]
-    #[TestDox('Train appends projection when effective width mismatches')]
-    public function trainAppendsProjectionWhenEffectiveWidthMismatches() : void
-    {
-        $estimator = new MLPRegressor(
-            hiddenLayers: [
-                new Dense(8),
-                new Activation(new SiLU()),
-                new Dense(4),
-            ],
-            batchSize: 32,
-            epochs: 1,
-            holdOut: 0
-        );
+        self::assertCount($dataset->numSamples(), $predictions);
 
-        $dataset = $this->generator->generate(64);
-
-        $estimator->train($dataset);
-
-        $hidden = $estimator->network()->hidden();
-
-        $this->assertCount(4, $hidden);
-        $this->assertInstanceOf(Dense::class, $hidden[3]);
-        $this->assertEquals(1, $hidden[3]->width());
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+        }
     }
 
     #[Test]

@@ -15,5 +15,5 @@ Initialize the parameter to a user-specified constant value.
 ```php
 use Rubix\ML\NeuralNet\Initializers\Constant;
 
-$initializer = new Constant(1.0);
+$initializer = new Constant(value: 1.0);
 ```

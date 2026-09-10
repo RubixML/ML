@@ -102,7 +102,11 @@ class StochasticTest extends TestCase
     #[Test]
     public function update(Parameter $param, Tensor $gradient, array $expected) : void
     {
-        $step = $this->optimizer->update($param, $gradient);
+        $this->optimizer->warm($param);
+
+        $param->accumulate($gradient);
+
+        $step = $this->optimizer->update($param);
 
         $this->assertEquals($expected, $step->asArray());
     }
@@ -116,13 +120,19 @@ class StochasticTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $this->optimizer->update($param, $gradient);
+        $param->accumulate($gradient);
+
+        $this->optimizer->update($param);
+
+        $param->resetGradient();
 
         $this->optimizer->flush();
 
         $this->optimizer->warm($param);
 
-        $step = $this->optimizer->update($param, $gradient);
+        $param->accumulate($gradient);
+
+        $step = $this->optimizer->update($param);
 
         $this->assertEquals([[0.01 * 0.001, -0.03 * 0.001]], $step->asArray());
     }

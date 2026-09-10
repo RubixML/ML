@@ -6,7 +6,6 @@ use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Tensor\ColumnVector;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -227,16 +226,16 @@ class BatchNorm implements Hidden, Parametric
     }
 
     /**
-     * Calculate the errors and gradients of the layer and update the parameters.
+     * Calculate the errors and gradients of the layer and record the gradients
+     * of the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
-     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return Deferred
      */
-    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
+    public function back(Deferred $prevGradient) : Deferred
     {
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -254,8 +253,8 @@ class BatchNorm implements Hidden, Parametric
 
         $gamma = $this->gamma->param();
 
-        $this->beta->update($dBeta, $optimizer);
-        $this->gamma->update($dGamma, $optimizer);
+        $this->beta->accumulate($dBeta);
+        $this->gamma->accumulate($dGamma);
 
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;

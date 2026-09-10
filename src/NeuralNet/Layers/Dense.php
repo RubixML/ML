@@ -7,7 +7,6 @@ use Rubix\ML\Deferred;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\He;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -222,16 +221,15 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Calculate the gradient and update the parameters of the layer.
+     * Calculate the gradient for the previous layer and record the gradients of the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
-     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return Deferred
      */
-    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
+    public function back(Deferred $prevGradient) : Deferred
     {
         if (!$this->weights) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -252,12 +250,10 @@ class Dense implements Hidden, Parametric
             $dW = $dW->add($weights->multiply($this->l2Penalty));
         }
 
-        $this->weights->update($dW, $optimizer);
+        $this->weights->accumulate($dW);
 
         if ($this->biases) {
-            $dB = $dOut->sum();
-
-            $this->biases->update($dB, $optimizer);
+            $this->biases->accumulate($dOut->sum());
         }
 
         $this->input = null;

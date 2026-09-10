@@ -3,7 +3,10 @@
 namespace Rubix\ML\NeuralNet;
 
 use Tensor\Tensor;
+use Tensor\Vector;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Parameter
@@ -38,6 +41,32 @@ class Parameter
     protected Tensor $param;
 
     /**
+     * The accumulated gradient of the parameter.
+     *
+     * @var Tensor<int|float|array>|null
+     */
+    protected ?Tensor $gradient = null;
+
+    /**
+     * Flatten a matrix into a vector or return a vector as-is.
+     *
+     * @param Tensor $tensor
+     * @return Vector
+     */
+    protected static function vectorize(Tensor $tensor) : Vector
+    {
+        if ($tensor instanceof Matrix) {
+            return $tensor->flatten();
+        }
+
+        if ($tensor instanceof Vector) {
+            return $tensor;
+        }
+
+        throw new RuntimeException('Unable to compute the norm of the accumulated gradient.');
+    }
+
+    /**
      * @param Tensor $param
      */
     public function __construct(Tensor $param)
@@ -67,16 +96,85 @@ class Parameter
     }
 
     /**
-     * Update the parameter.
+     * Return the accumulated gradient of the parameter.
      *
-     * @param Tensor $gradient
+     * @return Tensor<int|float|array>|null
+     */
+    public function gradient()
+    {
+        return $this->gradient;
+    }
+
+    /**
+     * Does the parameter have an accumulated gradient?
+     *
+     * @return bool
+     */
+    public function hasGradient() : bool
+    {
+        return isset($this->gradient);
+    }
+
+    /**
+     * Return the L2 norm of the accumulated gradient.
+     *
+     * @return float
+     */
+    public function gradientNorm() : float
+    {
+        if (!$this->hasGradient()) {
+            throw new RuntimeException('No gradient to compute norm.');
+        }
+
+        $tensor = self::vectorize($this->gradient);
+
+        return $tensor->l2Norm();
+    }
+
+    /**
+     * Accumulate the gradient of the parameter.
+     *
+     * @param Tensor<int|float|array> $gradient
+     */
+    public function accumulate(Tensor $gradient) : void
+    {
+        $this->gradient = $this->gradient
+            ? $this->gradient->add($gradient)
+            : $gradient;
+    }
+
+    /**
+     * Scale the accumulated gradient by a scalar.
+     *
+     * @param float $scale
+     */
+    public function scaleGradient(float $scale) : void
+    {
+        if (!$this->hasGradient()) {
+            throw new RuntimeException('No gradient to scale.');
+        }
+
+        $this->gradient = $this->gradient->multiply($scale);
+    }
+
+    /**
+     * Apply a step of gradient descent to the parameter.
+     *
      * @param Optimizer $optimizer
      */
-    public function update(Tensor $gradient, Optimizer $optimizer) : void
+    public function update(Optimizer $optimizer) : void
     {
-        $step = $optimizer->update($this, $gradient);
+        $step = $optimizer->update($this);
 
         $this->param = $this->param->subtract($step);
+    }
+
+    /**
+     * Reset the accumulated gradient of the parameter.
+     */
+    public function resetGradient() : void
+    {
+        $this->gradient = null;
     }
 
     /**
@@ -85,5 +183,9 @@ class Parameter
     public function __clone()
     {
         $this->param = clone $this->param;
+
+        if ($this->gradient) {
+            $this->gradient = clone $this->gradient;
+        }
     }
 }
