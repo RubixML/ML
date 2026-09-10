@@ -495,7 +495,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $loss = 0.0;
         $snapshot = null;
         $prevLoss = $averageLoss = INF;
 

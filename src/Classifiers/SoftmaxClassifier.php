@@ -461,7 +461,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $loss = 0.0;
         $score = $snapshot = null;
         $prevLoss = $averageLoss = INF;
 

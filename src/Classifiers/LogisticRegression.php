@@ -459,7 +459,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $loss = 0.0;
         $score = $snapshot = null;
         $prevLoss = $averageLoss = INF;
 
@@ -490,13 +489,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                     $norm += $param->gradientNorm();
                 }
 
-                if ($this->maxGradientNorm) {
-                    if ($norm > $this->maxGradientNorm) {
-                        $scale = $this->maxGradientNorm / $norm;
+                if ($this->maxGradientNorm and $norm > $this->maxGradientNorm) {
+                    $scale = $this->maxGradientNorm / $norm;
 
-                        foreach ($this->network->parameters() as $param) {
-                            $param->scaleGradient($scale);
-                        }
+                    foreach ($this->network->parameters() as $param) {
+                        $param->scaleGradient($scale);
                     }
                 }
 
