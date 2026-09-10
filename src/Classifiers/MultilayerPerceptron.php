@@ -545,6 +545,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                         $param->resetGradient();
                     }
 
+                    $this->optimizer->scheduler()->tick();
+
                     $totalNorm += $norm;
                 }
 

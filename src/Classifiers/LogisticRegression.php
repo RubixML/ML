@@ -503,6 +503,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                     $param->resetGradient();
                 }
 
+                $this->optimizer->scheduler()->tick();
+
                 $totalLoss += $loss;
                 $totalNorm += $norm;
             }

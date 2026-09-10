@@ -487,6 +487,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                     $param->resetGradient();
                 }
 
+                $this->optimizer->scheduler()->tick();
+
                 $totalLoss += $loss;
                 $totalNorm += $norm;
             }

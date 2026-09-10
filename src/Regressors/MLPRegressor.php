@@ -522,6 +522,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                         $param->resetGradient();
                     }
 
+                    $this->optimizer->scheduler()->tick();
+
                     $totalNorm += $norm;
                 }
 

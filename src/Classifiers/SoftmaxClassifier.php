@@ -505,6 +505,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                     $param->resetGradient();
                 }
 
+                $this->optimizer->scheduler()->tick();
+
                 $totalLoss += $loss;
                 $totalNorm += $norm;
             }

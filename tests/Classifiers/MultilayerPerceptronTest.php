@@ -20,6 +20,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 use Rubix\ML\NeuralNet\Layers\Swish;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\StepDecay;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -273,6 +274,39 @@ class MultilayerPerceptronTest extends TestCase
         $predictions = $estimator->predict($dataset);
 
         $this->assertCount($dataset->numSamples(), $predictions);
+    }
+
+    #[Test]
+    public function schedulerIsAdvancedDuringTraining() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $initialRate = 0.01;
+
+        $scheduler = new StepDecay($initialRate, 1, 1.0);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new LeakyReLU(0.1)),
+                new Dense(4),
+                new Swish(),
+            ],
+            batchSize: 32,
+            optimizer: new Adam($scheduler),
+            epochs: 5,
+            holdOut: 0.0
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($dataset);
+
+        $this->assertTrue($estimator->trained());
+
+        $this->assertLessThan($initialRate, $estimator->params()['optimizer']->scheduler()->rate());
     }
 
     #[Test]
