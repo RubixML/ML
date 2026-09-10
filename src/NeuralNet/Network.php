@@ -16,11 +16,25 @@ use Traversable;
 interface Network
 {
     /**
+     * Return the total number of parameters in the network.
+     *
+     * @return int
+     */
+    public function numParams() : int;
+
+    /**
      * The parameters of the network.
      *
      * @return Traversable<Parameter>
      */
     public function parameters() : Traversable;
+
+    /**
+     * The number of trainable parameters in the network.
+     *
+     * @return int
+     */
+    public function numTrainableParams() : int;
 
     /**
      * Return an iterable of all the trainable (unfrozen) parameters in the network.
@@ -35,4 +49,9 @@ interface Network
      * @return Traversable<Layers\Layer>
      */
     public function layers() : Traversable;
+
+    /**
+     * Initialize the parameters of the layers and warm the optimizer cache.
+     */
+    public function initialize() : void;
 }
