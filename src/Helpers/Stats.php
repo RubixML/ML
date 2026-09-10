@@ -147,7 +147,7 @@ class Stats
             $remainder = $x - $xHat;
 
             $a = $values[$xHat - 1];
-            $b = $values[$xHat] ?? end($values);
+            $b = $values[$xHat] ?? $values[array_key_last($values)];
 
             $quantiles[] = $a + $remainder * ($b - $a);
         }

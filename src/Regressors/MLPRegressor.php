@@ -633,7 +633,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         }
 
         if ($snapshot) {
-            if (end($this->scores) < $bestScore or is_nan($averageLoss)) {
+            $lastScore = $this->scores[array_key_last($this->scores)];
+
+            if ($lastScore < $bestScore or is_nan($averageLoss)) {
                 $snapshot->restore();
 
                 if ($this->logger) {

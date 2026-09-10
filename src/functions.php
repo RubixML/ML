@@ -186,7 +186,7 @@ namespace Rubix\ML
         $values = [$min];
 
         while (count($values) < $k) {
-            $values[] = end($values) + $interval;
+            $values[] = $values[array_key_last($values)] + $interval;
         }
 
         $values[] = $max;

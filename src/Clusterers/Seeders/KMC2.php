@@ -85,7 +85,7 @@ class KMC2 implements Seeder
 
             $x = array_pop($candidates) ?? [];
 
-            $target = end($centroids) ?: [];
+            $target = $centroids[array_key_last($centroids)] ?: [];
 
             $xDistance = $this->kernel->compute($x, $target) ?: EPSILON;
 

@@ -538,7 +538,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         }
 
         if ($snapshot) {
-            if (end($this->scores) < $bestScore or is_nan($averageLoss)) {
+            $lastScore = $this->scores[array_key_last($this->scores)];
+
+            if ($lastScore < $bestScore or is_nan($averageLoss)) {
                 $snapshot->restore();
 
                 if ($this->logger) {

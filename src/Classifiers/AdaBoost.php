@@ -530,12 +530,16 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $prevLoss = $loss;
         }
 
-        if ($this->scores and end($this->scores) < $bestScore) {
-            $this->ensemble = array_slice($this->ensemble, 0, $bestEnsembleSize);
-            $this->influences = array_slice($this->influences, 0, $bestEnsembleSize);
+        if ($this->scores) {
+            $lastScore = $this->scores[array_key_last($this->scores)];
 
-            if ($this->logger) {
-                $this->logger->info("Ensemble state restored to epoch $bestEpoch");
+            if ($lastScore < $bestScore) {
+                $this->ensemble = array_slice($this->ensemble, 0, $bestEnsembleSize);
+                $this->influences = array_slice($this->influences, 0, $bestEnsembleSize);
+
+                if ($this->logger) {
+                    $this->logger->info("Ensemble state restored to epoch $bestEpoch");
+                }
             }
         }
 

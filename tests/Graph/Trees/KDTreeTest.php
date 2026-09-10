@@ -169,7 +169,7 @@ class KDTreeTest extends TestCase
 
         $path = (new ReflectionMethod(KDTree::class, 'path'))->invoke($tree, [4.0]);
 
-        $leaf = end($path);
+        $leaf = $path[array_key_last($path)];
 
         $this->assertInstanceOf(Neighborhood::class, $leaf);
         $this->assertContains([4.0], $leaf->dataset()->samples());

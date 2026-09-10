@@ -26,6 +26,9 @@ use function preg_match;
  */
 class SQLTable implements Extractor
 {
+    /**
+     * A regex pattern used to validate table names.
+     */
     protected const TABLE_NAME_PATTERN = '/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/';
 
     /**
