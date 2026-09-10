@@ -47,6 +47,7 @@ use function is_nan;
 use function number_format;
 use function uniqid;
 use function sys_get_temp_dir;
+use function array_reverse;
 
 /**
  * MLP Regressor
@@ -386,7 +387,24 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1());
+        $outputWidth = $dataset->numFeatures();
+
+        foreach (array_reverse($hiddenLayers) as $layer) {
+            if ($layer instanceof Dense) {
+                $outputWidth = $layer->width();
+
+                break;
+            }
+        }
+
+        if ($outputWidth !== 1) {
+            $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1());
+
+            if ($this->logger) {
+                $this->logger->info('Final hidden layer dimensionality mismatch, '
+                    . 'adding projection layer to match output width of 1.');
+            }
+        }
 
         $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),

@@ -201,6 +201,58 @@ class MLPRegressorTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Train skips projection when effective width matches')]
+    public function trainSkipsProjectionWhenEffectiveWidthMatches() : void
+    {
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new SiLU()),
+                new Dense(1),
+                new Activation(new SiLU()),
+            ],
+            batchSize: 32,
+            epochs: 1,
+            holdOut: 0
+        );
+
+        $dataset = $this->generator->generate(64);
+
+        $estimator->train($dataset);
+
+        $hidden = $estimator->network()->hidden();
+
+        $this->assertCount(4, $hidden);
+        $this->assertEquals(1, $hidden[3]->width());
+    }
+
+    #[Test]
+    #[TestDox('Train appends projection when effective width mismatches')]
+    public function trainAppendsProjectionWhenEffectiveWidthMismatches() : void
+    {
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new SiLU()),
+                new Dense(4),
+            ],
+            batchSize: 32,
+            epochs: 1,
+            holdOut: 0
+        );
+
+        $dataset = $this->generator->generate(64);
+
+        $estimator->train($dataset);
+
+        $hidden = $estimator->network()->hidden();
+
+        $this->assertCount(4, $hidden);
+        $this->assertInstanceOf(Dense::class, $hidden[3]);
+        $this->assertEquals(1, $hidden[3]->width());
+    }
+
+    #[Test]
     #[TestDox('Snapshot path is transient and resolved lazily')]
     public function snapshotPathIsTransientAndResolvedLazily() : void
     {
