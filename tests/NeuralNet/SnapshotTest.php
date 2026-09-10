@@ -20,6 +20,8 @@ use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Snapshot;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function sys_get_temp_dir;
@@ -119,10 +121,14 @@ class SnapshotTest extends TestCase
 
         $network->roundtrip($dataset);
 
+        $optimizer = new Stochastic(new Constant());
+
         foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
                 foreach ($layer->parameters() as $param) {
-                    $param->update($param->param()->multiply(0.1));
+                    $optimizer->warm($param);
+
+                    $param->update($optimizer);
                 }
             }
         }

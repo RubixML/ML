@@ -114,11 +114,7 @@ class DenseTest extends TestCase
             if ($param->hasGradient()) {
                 $this->optimizer->warm($param);
 
-                $update = $this->optimizer->update($param);
-
-                $param->update($update);
-
-                $param->resetGradient();
+                $param->update($this->optimizer);
             }
         }
 

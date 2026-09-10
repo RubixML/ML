@@ -106,14 +106,6 @@ class Parameter
     }
 
     /**
-     * Reset the accumulated gradient of the parameter.
-     */
-    public function resetGradient() : void
-    {
-        $this->gradient = null;
-    }
-
-    /**
      * Apply a step of gradient descent to the parameter.
      *
      * @param Optimizer $optimizer
@@ -125,6 +117,14 @@ class Parameter
         $this->param = $this->param->subtract($step);
 
         $this->resetGradient();
+    }
+
+    /**
+     * Reset the accumulated gradient of the parameter.
+     */
+    public function resetGradient() : void
+    {
+        $this->gradient = null;
     }
 
     /**

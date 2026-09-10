@@ -100,9 +100,7 @@ class ParameterTest extends TestCase
 
         $this->param->accumulate($gradient);
 
-        $step = $this->optimizer->update($this->param);
-
-        $this->param->update($step);
+        $this->param->update($this->optimizer);
 
         $this->assertEquals($expected, $this->param->param()->asArray());
     }
