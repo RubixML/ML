@@ -133,19 +133,19 @@ class MultilayerPerceptronTest extends TestCase
     }
 
     #[Test]
-    public function badAccumulate() : void
+    public function badGradientAccumulationSteps() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MultilayerPerceptron(hiddenLayers: [], accumulate: 0);
+        new MultilayerPerceptron(hiddenLayers: [], gradientAccumulationSteps: 0);
     }
 
     #[Test]
-    public function accumulateParameter() : void
+    public function gradientAccumulationStepsParameter() : void
     {
-        $estimator = new MultilayerPerceptron(hiddenLayers: [new Dense(10)], accumulate: 4);
+        $estimator = new MultilayerPerceptron(hiddenLayers: [new Dense(10)], gradientAccumulationSteps: 4);
 
-        $this->assertSame(4, $estimator->params()['accumulate']);
+        $this->assertSame(4, $estimator->params()['gradient accumulation steps']);
     }
 
     #[Test]
@@ -188,7 +188,7 @@ class MultilayerPerceptronTest extends TestCase
             'hold out' => 0.1,
             'cost fn' => new MulticlassCrossEntropy(),
             'metric' => new FBeta(),
-            'accumulate' => 1,
+            'gradient accumulation steps' => 1,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

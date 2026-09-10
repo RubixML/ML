@@ -17,15 +17,16 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 | --- | --- | --- | --- | --- |
 | 1 | hidden | | array | An array composing the user-specified hidden layers of the network in order. |
 | 2 | batchSize | 128 | int | The number of training samples to process at a time. |
-| 3 | accumulate | 1 | int | The number of gradient passes to accumulate before updating the network parameters. Higher values simulate a larger batch size. |
+| 3 | gradientAccumulationSteps | 1 | int | The number of gradient accumulation steps before updating the network parameters. Higher values simulate a larger batch size. |
 | 4 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
-| 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
-| 6 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 7 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
-| 8 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
-| 9 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
-| 10 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
-| 11 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
+| 5 | maxGradientNorm | null | float | The maximum L2 norm of the gradient set. When exceeded all gradients are rescaled proportionally so that the global norm equals the maximum. |
+| 6 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
+| 7 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
+| 8 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
+| 9 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 10 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
+| 11 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 12 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
 
@@ -39,7 +40,7 @@ use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Regressors\MLPRegressor;
 
-$estimator = new MLPRegressor([
+$hiddenLayers = [
 	new Dense(100),
 	new Activation(new ReLU()),
 	new Dense(100),
@@ -48,7 +49,21 @@ $estimator = new MLPRegressor([
 	new Activation(new ReLU()),
 	new Dense(50),
 	new Activation(new ReLU()),
-], 128, 1, new RMSProp(new Constant(0.001)), 100, 1e-5, 5, 10, 0.1, new LeastSquares(), new RSquared());
+];
+
+$estimator = new MLPRegressor(
+	$hiddenLayers,
+	128,
+	1,
+	new RMSProp(new Constant(0.001)),
+	100,
+	1e-5,
+	5,
+	10,
+	0.1,
+	new LeastSquares(),
+	new RSquared()
+);
 ```
 
 ## Additional Methods

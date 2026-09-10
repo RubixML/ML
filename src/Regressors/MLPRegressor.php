@@ -90,7 +90,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      *
      * @var positive-int
      */
-    protected int $accumulate;
+    protected int $gradientAccumulationSteps;
 
     /**
      * The gradient descent optimizer used to update the network parameters.
@@ -187,7 +187,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * @param list<mixed> $hiddenLayers
      * @param int $batchSize
-     * @param int $accumulate
+     * @param int $gradientAccumulationSteps
      * @param Optimizer|null $optimizer
      * @param float|null $maxGradientNorm
      * @param int $epochs
@@ -201,7 +201,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     public function __construct(
         array $hiddenLayers,
         int $batchSize = 128,
-        int $accumulate = 1,
+        int $gradientAccumulationSteps = 1,
         ?Optimizer $optimizer = null,
         ?float $maxGradientNorm = null,
         int $epochs = 1000,
@@ -229,9 +229,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($accumulate < 1) {
+        if ($gradientAccumulationSteps < 1) {
             throw new InvalidArgumentException('Gradient accumulation steps'
-                . " must be greater than 0, $accumulate given.");
+                . " must be greater than 0, $gradientAccumulationSteps given.");
         }
 
         if (isset($maxGradientNorm) and $maxGradientNorm <= 0.0) {
@@ -270,7 +270,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
-        $this->accumulate = $accumulate;
+        $this->gradientAccumulationSteps = $gradientAccumulationSteps;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->maxGradientNorm = $maxGradientNorm;
         $this->epochs = $epochs;
@@ -320,7 +320,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         return [
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
-            'accumulate' => $this->accumulate,
+            'gradient accumulation steps' => $this->gradientAccumulationSteps,
             'optimizer' => $this->optimizer,
             'max gradient norm' => $this->maxGradientNorm,
             'epochs' => $this->epochs,
@@ -500,11 +500,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             foreach ($batches as $batch) {
                 $loss = $this->network->roundtrip($batch);
 
-                $updateThisStep = $step % $this->accumulate === 0;
+                $updateThisStep = $step % $this->gradientAccumulationSteps === 0;
 
                 if ($updateThisStep) {
                     foreach ($this->network->parameters() as $param) {
-                        $param->scaleGradient(1.0 / $this->accumulate);
+                        $param->scaleGradient(1.0 / $this->gradientAccumulationSteps);
 
                         $norm += $param->gradientNorm();
                     }
