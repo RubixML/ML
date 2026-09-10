@@ -132,3 +132,4 @@ public setSnapshotPath(?string $path) : void
 
 [^1]: G. E. Hinton. (1989). Connectionist learning procedures.
 [^2]: L. Prechelt. (1997). Early Stopping - but when?
+[^3]: R. Pascanu, et al. (2013). On the difficulty of training recurrent neural networks.
