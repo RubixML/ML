@@ -86,6 +86,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected int $batchSize;
 
     /**
+     * The number of gradient accumulation steps before updating the network parameters.
+     *
+     * @var positive-int
+     */
+    protected int $accumulate;
+
+    /**
      * The gradient descent optimizer used to update the network parameters.
      *
      * @var Optimizer
@@ -126,13 +133,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @var float
      */
     protected float $holdOut;
-
-    /**
-     * The number of gradient passes to accumulate before updating the network parameters.
-     *
-     * @var int
-     */
-    protected int $gradientAccumulate;
 
     /**
      * The function that computes the loss associated with an erroneous activation during training.
@@ -179,6 +179,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * @param list<mixed> $hiddenLayers
      * @param int $batchSize
+     * @param int $accumulate
      * @param Optimizer|null $optimizer
      * @param int $epochs
      * @param float $minChange
@@ -187,11 +188,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
-     * @param int $gradientAccumulate
      */
     public function __construct(
         array $hiddenLayers,
         int $batchSize = 128,
+        int $accumulate = 1,
         ?Optimizer $optimizer = null,
         int $epochs = 1000,
         float $minChange = 1e-4,
@@ -199,8 +200,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         int $window = 5,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
-        ?Metric $metric = null,
-        int $gradientAccumulate = 1
+        ?Metric $metric = null
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -217,6 +217,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
+        }
+
+        if ($accumulate < 1) {
+            throw new InvalidArgumentException('Gradient accumulation steps'
+                . " must be greater than 0, $accumulate given.");
         }
 
         if ($epochs < 0) {
@@ -244,17 +249,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . " between 0 and 0.5, $holdOut given.");
         }
 
-        if ($gradientAccumulate < 1) {
-            throw new InvalidArgumentException('Gradient accumulation factor'
-                . " must be greater than 0, $gradientAccumulate given.");
-        }
-
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
+        $this->accumulate = $accumulate;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -263,7 +264,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
-        $this->gradientAccumulate = $gradientAccumulate;
     }
 
     /**
@@ -304,6 +304,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         return [
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
+            'accumulate' => $this->accumulate,
             'optimizer' => $this->optimizer,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
@@ -312,7 +313,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
-            'gradient accumulate' => $this->gradientAccumulate,
         ];
     }
 
@@ -404,15 +404,19 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $hiddenLayers[] = new Dense(1, 0.0, true, new Xavier1());
 
-        $this->network = new FeedForward(
+        $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Continuous($this->costFn),
-            $this->optimizer,
-            $this->gradientAccumulate
+            new Continuous($this->costFn)
         );
 
-        $this->network->initialize();
+        $network->initialize();
+
+        foreach ($network->parameters() as $parameter) {
+            $this->optimizer->warm($parameter);
+        }
+
+        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -473,10 +477,27 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
+            $step = 1;
             $loss = 0.0;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
+
+                $updateThisStep = $step % $this->accumulate === 0;
+
+                if ($updateThisStep) {
+                    $params = $this->network->parameters();
+
+                    foreach ($params as $param) {
+                        $step = $this->optimizer->update($param);
+
+                        $param->update($step);
+
+                        $param->resetGradient();
+                    }
+                }
+
+                ++$step;
             }
 
             $loss /= count($batches);

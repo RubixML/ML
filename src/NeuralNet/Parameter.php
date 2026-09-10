@@ -37,6 +37,13 @@ class Parameter
     protected Tensor $param;
 
     /**
+     * The accumulated gradient of the parameter.
+     *
+     * @var Tensor<int|float|array>|null
+     */
+    protected ?Tensor $gradient = null;
+
+    /**
      * @param Tensor $param
      */
     public function __construct(Tensor $param)
@@ -66,6 +73,46 @@ class Parameter
     }
 
     /**
+     * Return the accumulated gradient of the parameter.
+     *
+     * @return Tensor<int|float|array>|null
+     */
+    public function gradient()
+    {
+        return $this->gradient;
+    }
+
+    /**
+     * Does the parameter have an accumulated gradient?
+     *
+     * @return bool
+     */
+    public function hasGradient() : bool
+    {
+        return isset($this->gradient);
+    }
+
+    /**
+     * Accumulate the gradient of the parameter.
+     *
+     * @param Tensor<int|float|array> $gradient
+     */
+    public function accumulate(Tensor $gradient) : void
+    {
+        $this->gradient = $this->gradient
+            ? $this->gradient->add($gradient)
+            : $gradient;
+    }
+
+    /**
+     * Reset the accumulated gradient of the parameter.
+     */
+    public function resetGradient() : void
+    {
+        $this->gradient = null;
+    }
+
+    /**
      * Apply a step of gradient descent to the parameter.
      *
      * @param Tensor $step
@@ -81,5 +128,9 @@ class Parameter
     public function __clone()
     {
         $this->param = clone $this->param;
+
+        if ($this->gradient) {
+            $this->gradient = clone $this->gradient;
+        }
     }
 }

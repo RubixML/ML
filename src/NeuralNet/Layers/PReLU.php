@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
-use Tensor\Tensor;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameter;
@@ -54,15 +53,6 @@ class PReLU implements Hidden, Parametric
      * @var Matrix|null
      */
     protected ?Matrix $input = null;
-
-    /**
-     * The accumulated gradients of the parameters of the layer.
-     *
-     * @var array<Tensor<int|float|array>>
-     */
-    protected array $gradients = [
-        //
-    ];
 
     /**
      * @param Initializer|null $initializer
@@ -165,7 +155,7 @@ class PReLU implements Hidden, Parametric
 
         $dAlpha = $dOut->multiply($dIn)->sum();
 
-        $this->accumulate($this->alpha, $dAlpha);
+        $this->alpha->accumulate($dAlpha);
 
         $input = $this->input;
 
@@ -206,32 +196,6 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Return the accumulated gradients of the parameters of the layer.
-     *
-     * @internal
-     *
-     * @return Generator<array{Parameter, Tensor<int|float|array>}>
-     */
-    public function gradients() : Generator
-    {
-        foreach ($this->parameters() as $param) {
-            if (isset($this->gradients[$param->id()])) {
-                yield [$param, $this->gradients[$param->id()]];
-            }
-        }
-    }
-
-    /**
-     * Reset the accumulated gradients of the layer.
-     *
-     * @internal
-     */
-    public function resetGradients() : void
-    {
-        $this->gradients = [];
-    }
-
-    /**
      * Restore the parameters in the layer from an associative array.
      *
      * @internal
@@ -241,21 +205,6 @@ class PReLU implements Hidden, Parametric
     public function restore(array $parameters) : void
     {
         $this->alpha = $parameters['alpha'];
-    }
-
-    /**
-     * Accumulate the gradient of a parameter of the layer.
-     *
-     * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     */
-    protected function accumulate(Parameter $param, Tensor $gradient) : void
-    {
-        $id = $param->id();
-
-        $this->gradients[$id] = isset($this->gradients[$id])
-            ? $this->gradients[$id]->add($gradient)
-            : $gradient;
     }
 
     /**

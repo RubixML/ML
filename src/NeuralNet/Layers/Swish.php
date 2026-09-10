@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
-use Tensor\Tensor;
 use Tensor\Vector;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Parameter;
@@ -70,15 +69,6 @@ class Swish implements Hidden, Parametric
      * @var Matrix|null
      */
     protected ?Matrix $output = null;
-
-    /**
-     * The accumulated gradients of the parameters of the layer.
-     *
-     * @var array<Tensor<int|float|array>>
-     */
-    protected array $gradients = [
-        //
-    ];
 
     /**
      * @param Initializer|null $initializer
@@ -190,7 +180,7 @@ class Swish implements Hidden, Parametric
 
         $beta = $this->beta->param();
 
-        $this->accumulate($this->beta, $dBeta);
+        $this->beta->accumulate($dBeta);
 
         $this->input = $this->output = null;
 
@@ -231,32 +221,6 @@ class Swish implements Hidden, Parametric
     }
 
     /**
-     * Return the accumulated gradients of the parameters of the layer.
-     *
-     * @internal
-     *
-     * @return Generator<array{Parameter, Tensor<int|float|array>}>
-     */
-    public function gradients() : Generator
-    {
-        foreach ($this->parameters() as $param) {
-            if (isset($this->gradients[$param->id()])) {
-                yield [$param, $this->gradients[$param->id()]];
-            }
-        }
-    }
-
-    /**
-     * Reset the accumulated gradients of the layer.
-     *
-     * @internal
-     */
-    public function resetGradients() : void
-    {
-        $this->gradients = [];
-    }
-
-    /**
      * Restore the parameters in the layer from an associative array.
      *
      * @internal
@@ -266,21 +230,6 @@ class Swish implements Hidden, Parametric
     public function restore(array $parameters) : void
     {
         $this->beta = $parameters['beta'];
-    }
-
-    /**
-     * Accumulate the gradient of a parameter of the layer.
-     *
-     * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
-     */
-    protected function accumulate(Parameter $param, Tensor $gradient) : void
-    {
-        $id = $param->id();
-
-        $this->gradients[$id] = isset($this->gradients[$id])
-            ? $this->gradients[$id]->add($gradient)
-            : $gradient;
     }
 
     /**

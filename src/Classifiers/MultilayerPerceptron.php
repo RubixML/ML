@@ -88,6 +88,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected int $batchSize;
 
     /**
+     * The number of gradient passes to accumulate before updating the network parameters.
+     *
+     * @var positive-int
+     */
+    protected int $accumulate;
+
+    /**
      * The gradient descent optimizer used to update the network parameters.
      *
      * @var Optimizer
@@ -128,13 +135,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var float
      */
     protected float $holdOut;
-
-    /**
-     * The number of gradient passes to accumulate before updating the network parameters.
-     *
-     * @var int
-     */
-    protected int $gradientAccumulate;
 
     /**
      * The function that computes the loss associated with an erroneous activation during training.
@@ -188,6 +188,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * @param mixed[] $hiddenLayers
      * @param int $batchSize
+     * @param int $accumulate
      * @param Optimizer|null $optimizer
      * @param int $epochs
      * @param float $minChange
@@ -196,12 +197,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
-     * @param int $gradientAccumulate
      * @throws InvalidArgumentException
      */
     public function __construct(
         array $hiddenLayers,
         int $batchSize = 128,
+        int $accumulate = 1,
         ?Optimizer $optimizer = null,
         int $epochs = 1000,
         float $minChange = 1e-4,
@@ -210,7 +211,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null,
-        int $gradientAccumulate = 1
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -227,6 +227,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
+        }
+
+        if ($accumulate < 1) {
+            throw new InvalidArgumentException('Gradient accumulation steps'
+                . " must be greater than 0, $accumulate given.");
         }
 
         if ($epochs < 0) {
@@ -254,11 +259,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " between 0 and 0.5, $holdOut given.");
         }
 
-        if ($gradientAccumulate < 1) {
-            throw new InvalidArgumentException('Gradient accumulation factor'
-                . " must be greater than 0, $gradientAccumulate given.");
-        }
-
         if ($costFn and $costFn instanceof BinaryCrossEntropy) {
             throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
@@ -269,6 +269,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
+        $this->accumulate = $accumulate;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -277,7 +278,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
-        $this->gradientAccumulate = $gradientAccumulate;
     }
 
     /**
@@ -318,6 +318,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         return [
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
+            'accumulate' => $this->accumulate,
             'optimizer' => $this->optimizer,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
@@ -326,7 +327,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
-            'gradient accumulate' => $this->gradientAccumulate,
         ];
     }
 
@@ -425,17 +425,20 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
 
-        $this->network = new FeedForward(
+        $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Multiclass($classes, $this->costFn),
-            $this->optimizer,
-            $this->gradientAccumulate
+            new Multiclass($classes, $this->costFn)
         );
 
-        $this->network->initialize();
+        $network->initialize();
+
+        foreach ($network->parameters() as $parameter) {
+            $this->optimizer->warm($parameter);
+        }
 
         $this->classes = $classes;
+        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -495,10 +498,27 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
+            $step = 1;
             $loss = 0.0;
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
+
+                $updateThisStep = $step % $this->accumulate === 0;
+
+                if ($updateThisStep) {
+                    $params = $this->network->parameters();
+
+                    foreach ($params as $param) {
+                        $step = $this->optimizer->update($param);
+
+                        $param->update($step);
+
+                        $param->resetGradient();
+                    }
+                }
+
+                ++$step;
             }
 
             $loss /= count($batches);

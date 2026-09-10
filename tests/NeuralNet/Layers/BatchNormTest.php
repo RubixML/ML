@@ -109,8 +109,10 @@ class BatchNormTest extends TestCase
 
         $gradients = [];
 
-        foreach ($this->layer->gradients() as [$param, $gradient]) {
-            $gradients[] = [$param, $gradient];
+        foreach ($this->layer->parameters() as $param) {
+            if ($gradient = $param->gradient()) {
+                $gradients[] = [$param, $gradient];
+            }
         }
 
         $this->optimizer->step($gradients);
@@ -176,8 +178,10 @@ class BatchNormTest extends TestCase
 
         $gradients = [];
 
-        foreach ($layer->gradients() as [$param, $gradient]) {
-            $gradients[] = [$param, $gradient];
+        foreach ($layer->parameters() as $param) {
+            if ($gradient = $param->gradient()) {
+                $gradients[] = [$param, $gradient];
+            }
         }
 
         $optimizer->step($gradients);

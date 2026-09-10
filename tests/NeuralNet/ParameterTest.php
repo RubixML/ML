@@ -48,6 +48,44 @@ class ParameterTest extends TestCase
     }
 
     #[Test]
+    public function accumulateGradient() : void
+    {
+        $gradient = Matrix::quick([
+            [2, 1],
+            [1, -2],
+        ]);
+
+        $this->assertNull($this->param->gradient());
+
+        $this->param->accumulate($gradient);
+
+        $this->assertInstanceOf(Matrix::class, $this->param->gradient());
+        $this->assertEquals($gradient->asArray(), $this->param->gradient()->asArray());
+
+        $this->param->accumulate($gradient);
+
+        $expected = [
+            [4, 2],
+            [2, -4],
+        ];
+
+        $this->assertEquals($expected, $this->param->gradient()->asArray());
+    }
+
+    #[Test]
+    public function resetGradient() : void
+    {
+        $this->param->accumulate(Matrix::quick([
+            [2, 1],
+            [1, -2],
+        ]));
+
+        $this->param->resetGradient();
+
+        $this->assertNull($this->param->gradient());
+    }
+
+    #[Test]
     public function update() : void
     {
         $gradient = Matrix::quick([

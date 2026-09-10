@@ -122,13 +122,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected float $holdOut;
 
     /**
-     * The number of gradient passes to accumulate before updating the network parameters.
-     *
-     * @var int
-     */
-    protected int $gradientAccumulate;
-
-    /**
      * The function that computes the loss associated with an erroneous activation during training.
      *
      * @var ClassificationLoss
@@ -188,7 +181,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
-     * @param int $gradientAccumulate
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -202,7 +194,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null,
-        int $gradientAccumulate = 1
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
@@ -239,11 +230,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 . " between 0 and 0.5, $holdOut given.");
         }
 
-        if ($gradientAccumulate < 1) {
-            throw new InvalidArgumentException('Gradient accumulation factor'
-                . " must be greater than 0, $gradientAccumulate given.");
-        }
-
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -258,7 +244,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new BinaryCrossEntropy();
         $this->metric = $metric ?? new FBeta();
-        $this->gradientAccumulate = $gradientAccumulate;
     }
 
     /**
@@ -307,7 +292,6 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
-            'gradient accumulate' => $this->gradientAccumulate,
         ];
     }
 
@@ -401,17 +385,24 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->network = new FeedForward(
+        $hiddenLayers = [
+            new Dense(1, $this->l2Penalty, true, new Xavier1()),
+        ];
+
+        $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new Xavier1())],
-            new Binary($classes, $this->costFn),
-            $this->optimizer,
-            $this->gradientAccumulate
+            $hiddenLayers,
+            new Binary($classes, $this->costFn)
         );
 
-        $this->network->initialize();
+        $network->initialize();
+
+        foreach ($network->parameters() as $parameter) {
+            $this->optimizer->warm($parameter);
+        }
 
         $this->classes = $classes;
+        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -475,6 +466,16 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
+
+                $params = $this->network->parameters();
+
+                foreach ($params as $param) {
+                    $step = $this->optimizer->update($param);
+
+                    $param->update($step);
+
+                    $param->resetGradient();
+                }
             }
 
             $loss /= count($batches);

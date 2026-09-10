@@ -43,20 +43,9 @@ interface Optimizer extends Stringable
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param, Tensor $gradient) : Tensor;
-
-    /**
-     * Take a step of gradient descent for a set of parameters. The scheduler
-     * advances once per step regardless of the number of parameters.
-     *
-     * @internal
-     *
-     * @param list<array{Parameter, Tensor<int|float|array>}> $gradients
-     */
-    public function step(array $gradients) : void;
+    public function update(Parameter $param) : Tensor;
 
     /**
      * Flush the parameter cache.

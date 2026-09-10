@@ -142,8 +142,10 @@ class FeedForwardTest extends TestCase
 
         foreach ($accumulator->layers() as $layer) {
             if ($layer instanceof Parametric) {
-                foreach ($layer->gradients() as $pair) {
-                    ++$accumulated;
+                foreach ($layer->parameters() as $param) {
+                    if ($param->gradient()) {
+                        ++$accumulated;
+                    }
                 }
             }
         }
@@ -158,8 +160,10 @@ class FeedForwardTest extends TestCase
 
         foreach ($accumulator->layers() as $layer) {
             if ($layer instanceof Parametric) {
-                foreach ($layer->gradients() as $pair) {
-                    ++$accumulated;
+                foreach ($layer->parameters() as $param) {
+                    if ($param->gradient()) {
+                        ++$accumulated;
+                    }
                 }
             }
         }

@@ -87,35 +87,24 @@ class AdaGrad implements Optimizer
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param, Tensor $gradient) : Tensor
+    public function update(Parameter $param) : Tensor
     {
+        if (!$param->hasGradient()) {
+            throw new RuntimeException('Cannot update parameter with no gradient.');
+        }
+
         $norm = $this->cache[$param->id()];
 
-        $norm = $norm->add($gradient->square());
+        $norm = $norm->add($param->gradient()->square());
 
         $this->cache[$param->id()] = $norm;
 
-        return $gradient->multiply($this->scheduler->rate())
+        $step = $param->gradient()->multiply($this->scheduler->rate())
             ->divide($norm->sqrt()->clipLower(EPSILON));
-    }
 
-    /**
-     * Take a step of gradient descent for a set of parameters.
-     *
-     * @internal
-     *
-     * @param list<array{Parameter, Tensor<int|float|array>}> $gradients
-     */
-    public function step(array $gradients) : void
-    {
-        foreach ($gradients as [$param, $gradient]) {
-            $param->update($this->update($param, $gradient));
-        }
-
-        $this->scheduler->tick();
+        return $step;
     }
 
     /**

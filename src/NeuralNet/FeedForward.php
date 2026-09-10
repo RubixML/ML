@@ -62,20 +62,6 @@ class FeedForward implements Network
     protected Output $output;
 
     /**
-     * The gradient descent optimizer used to train the network.
-     *
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
-
-    /**
-     * The number of gradient passes to accumulate before applying a step.
-     *
-     * @var int
-     */
-    protected int $accumulate;
-
-    /**
      * The number of gradient passes accumulated since the last applied step.
      *
      * @var int
@@ -86,17 +72,10 @@ class FeedForward implements Network
      * @param Input $input
      * @param Layers\Hidden[] $hidden
      * @param Output $output
-     * @param Optimizer $optimizer
-     * @param int $accumulate
      * @throws InvalidArgumentException
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer, int $accumulate = 1)
+    public function __construct(Input $input, array $hidden, Output $output)
     {
-        if ($accumulate < 1) {
-            throw new InvalidArgumentException('Gradient accumulation factor'
-                . " must be greater than 0, $accumulate given.");
-        }
-
         $hidden = array_values($hidden);
 
         $backPass = array_reverse($hidden);
@@ -104,9 +83,7 @@ class FeedForward implements Network
         $this->input = $input;
         $this->hidden = $hidden;
         $this->output = $output;
-        $this->optimizer = $optimizer;
         $this->backPass = $backPass;
-        $this->accumulate = $accumulate;
     }
 
     /**
@@ -154,11 +131,19 @@ class FeedForward implements Network
     }
 
     /**
-     * Return the optimizer used to train the network.
+     * Return an iterable of all the trainable parameters in the network.
+     *
+     * @return Traversable<Parameter>
      */
-    public function optimizer() : Optimizer
+    public function parameters() : Traversable
     {
-        return $this->optimizer;
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    yield $parameter;
+                }
+            }
+        }
     }
 
     /**
@@ -190,14 +175,6 @@ class FeedForward implements Network
 
         foreach ($this->layers() as $layer) {
             $fanIn = $layer->initialize($fanIn);
-        }
-
-        foreach ($this->layers() as $layer) {
-            if ($layer instanceof Parametric) {
-                foreach ($layer->parameters() as $param) {
-                    $this->optimizer->warm($param);
-                }
-            }
         }
     }
 
@@ -232,10 +209,6 @@ class FeedForward implements Network
         $this->feed($input);
 
         $loss = $this->backpropagate($dataset->labels());
-
-        if (++$this->passes % $this->accumulate === 0) {
-            $this->applyGradients();
-        }
 
         return $loss;
     }
@@ -299,27 +272,5 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
-    }
-
-    /**
-     * Apply the accumulated gradients to the parameters of the network.
-     */
-    protected function applyGradients() : void
-    {
-        $gradients = [];
-
-        foreach ($this->layers() as $layer) {
-            if ($layer instanceof Parametric) {
-                foreach ($layer->gradients() as [$param, $gradient]) {
-                    $gradients[] = [$param, $gradient->divide($this->accumulate)];
-                }
-
-                $layer->resetGradients();
-            }
-        }
-
-        $this->optimizer->step($gradients);
-
-        $this->passes = 0;
     }
 }
