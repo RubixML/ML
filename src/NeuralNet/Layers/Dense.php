@@ -250,10 +250,10 @@ class Dense implements Hidden, Parametric
             $dW = $dW->add($weights->multiply($this->l2Penalty));
         }
 
-        $this->weights->accumulate($dW);
+        $this->weights->accumulateGradient($dW);
 
         if ($this->biases) {
-            $this->biases->accumulate($dOut->sum());
+            $this->biases->accumulateGradient($dOut->sum());
         }
 
         $this->input = null;

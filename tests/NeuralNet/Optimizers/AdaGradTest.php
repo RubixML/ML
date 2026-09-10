@@ -89,7 +89,7 @@ class AdaGradTest extends TestCase
     {
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 
@@ -105,7 +105,7 @@ class AdaGradTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $this->optimizer->update($param);
 
@@ -115,7 +115,7 @@ class AdaGradTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 

@@ -23,6 +23,13 @@ interface Network
     public function parameters() : Traversable;
 
     /**
+     * Return an iterable of all the trainable (unfrozen) parameters in the network.
+     *
+     * @return Traversable<Parameter>
+     */
+    public function trainableParameters() : Traversable;
+
+    /**
      * Return the layers of the network.
      *
      * @return Traversable<Layers\Layer>

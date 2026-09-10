@@ -45,7 +45,14 @@ class Parameter
      *
      * @var Tensor<int|float|array>|null
      */
-    protected ?Tensor $gradient = null;
+    protected ?Tensor $gradient;
+
+    /**
+     * Is the parameter frozen?
+     *
+     * @var bool
+     */
+    protected bool $frozen;
 
     /**
      * Flatten a matrix into a vector or return a vector as-is.
@@ -73,6 +80,8 @@ class Parameter
     {
         $this->id = self::$counter++;
         $this->param = $param;
+        $this->gradient = null;
+        $this->frozen = false;
     }
 
     /**
@@ -106,6 +115,16 @@ class Parameter
     }
 
     /**
+     * Is the parameter frozen?
+     *
+     * @return bool
+     */
+    public function frozen() : bool
+    {
+        return $this->frozen;
+    }
+
+    /**
      * Does the parameter have an accumulated gradient?
      *
      * @return bool
@@ -136,8 +155,12 @@ class Parameter
      *
      * @param Tensor<int|float|array> $gradient
      */
-    public function accumulate(Tensor $gradient) : void
+    public function accumulateGradient(Tensor $gradient) : void
     {
+        if ($this->frozen) {
+            return;
+        }
+
         $this->gradient = $this->gradient
             ? $this->gradient->add($gradient)
             : $gradient;
@@ -164,6 +187,10 @@ class Parameter
      */
     public function update(Optimizer $optimizer) : void
     {
+        if ($this->frozen) {
+            return;
+        }
+
         $step = $optimizer->update($this);
 
         $this->param = $this->param->subtract($step);
@@ -175,6 +202,22 @@ class Parameter
     public function resetGradient() : void
     {
         $this->gradient = null;
+    }
+
+    /**
+     * Freeze the parameter, preventing it from being updated during training.
+     */
+    public function freeze() : void
+    {
+        $this->frozen = true;
+    }
+
+    /**
+     * Unfreeze the parameter, allowing it to be updated during training.
+     */
+    public function unfreeze() : void
+    {
+        $this->frozen = false;
     }
 
     /**

@@ -149,9 +149,23 @@ class FeedForward implements Network
     {
         foreach ($this->layers() as $layer) {
             if ($layer instanceof Parametric) {
-                foreach ($layer->parameters() as $parameter) {
-                    yield $parameter;
+                foreach ($layer->parameters() as $param) {
+                    yield $param;
                 }
+            }
+        }
+    }
+
+    /**
+     * Return an iterable of all the trainable (unfrozen) parameters in the network.
+     *
+     * @return Traversable<Parameter>
+     */
+    public function trainableParameters() : Traversable
+    {
+        foreach ($this->parameters() as $param) {
+            if (!$param->frozen()) {
+                yield $param;
             }
         }
     }

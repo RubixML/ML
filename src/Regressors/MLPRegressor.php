@@ -22,6 +22,7 @@ use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
@@ -49,6 +50,7 @@ use function number_format;
 use function uniqid;
 use function sys_get_temp_dir;
 use function array_reverse;
+use function array_slice;
 use function sqrt;
 
 /**
@@ -398,6 +400,55 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
+     * Freeze the first k hidden layers of the network preventing their
+     * parameters from being updated during training.
+     *
+     * @param int $k
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
+    public function freezeFirstKLayers(int $k) : void
+    {
+        if (!$this->network) {
+            throw new RuntimeException('The network must be trained before freezing layers.');
+        }
+
+        $numHiddenLayers = count($this->network->hidden());
+
+        if ($k < 1 or $k > $numHiddenLayers) {
+            throw new InvalidArgumentException('Number of layers to freeze'
+                . " must be between 1 and $numHiddenLayers, $k given.");
+        }
+
+        $firstKLayers = array_slice($this->network->hidden(), 0, $k);
+
+        foreach ($firstKLayers as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    $parameter->freeze();
+                }
+            }
+        }
+    }
+
+    /**
+     * Unfreeze the hidden layers of the network allowing their parameters to
+     * be updated during training.
+     *
+     * @throws RuntimeException
+     */
+    public function unfreeze() : void
+    {
+        if (!$this->network) {
+            throw new RuntimeException('The network must be trained before unfreezing layers.');
+        }
+
+        foreach ($this->network->parameters() as $param) {
+            $param->unfreeze();
+        }
+    }
+
+    /**
      * Set the file path to store the snapshot on disk during training.
      *
      * @param string|null $path
@@ -527,7 +578,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
                     $numSteps = $step % $this->gradientAccumulationSteps ?: $this->gradientAccumulationSteps;
 
-                    foreach ($this->network->parameters() as $param) {
+                    foreach ($this->network->trainableParameters() as $param) {
                         $param->scaleGradient(1.0 / $numSteps);
 
                         $paramNorm = $param->gradientNorm();
@@ -540,12 +591,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                     if ($this->maxGradientNorm and $norm > $this->maxGradientNorm) {
                         $scale = $this->maxGradientNorm / $norm;
 
-                        foreach ($this->network->parameters() as $param) {
+                        foreach ($this->network->trainableParameters() as $param) {
                             $param->scaleGradient($scale);
                         }
                     }
 
-                    foreach ($this->network->parameters() as $param) {
+                    foreach ($this->network->trainableParameters() as $param) {
                         $param->update($this->optimizer);
 
                         $param->resetGradient();

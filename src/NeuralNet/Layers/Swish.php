@@ -180,7 +180,7 @@ class Swish implements Hidden, Parametric
 
         $beta = $this->beta->param();
 
-        $this->beta->accumulate($dBeta);
+        $this->beta->accumulateGradient($dBeta);
 
         $this->input = $this->output = null;
 

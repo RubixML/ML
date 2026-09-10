@@ -104,7 +104,7 @@ class StochasticTest extends TestCase
     {
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 
@@ -120,7 +120,7 @@ class StochasticTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $this->optimizer->update($param);
 
@@ -130,7 +130,7 @@ class StochasticTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 

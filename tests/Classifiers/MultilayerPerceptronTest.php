@@ -362,4 +362,160 @@ class MultilayerPerceptronTest extends TestCase
 
         $this->estimator->predict(Unlabeled::quick());
     }
+
+    #[Test]
+    public function freezeFirstKLayersThrowsWhenUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->freezeFirstKLayers(1);
+    }
+
+    #[Test]
+    public function unfreezeThrowsWhenUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->unfreeze();
+    }
+
+    #[Test]
+    public function freezeFirstKLayersWithZeroK() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(8),
+                new Dense(4),
+            ],
+            epochs: 1,
+            holdOut: 0.0
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $estimator->freezeFirstKLayers(0);
+    }
+
+    #[Test]
+    public function freezeFirstKLayersWithTooManyLayers() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(8),
+                new Dense(4),
+            ],
+            epochs: 1,
+            holdOut: 0.0
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $estimator->freezeFirstKLayers(5);
+    }
+
+    #[Test]
+    public function freezeFirstKLayersAndUnfreeze() : void
+    {
+        $first = new Dense(8);
+        $second = new Dense(4);
+        $third = new Dense(2);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                $first,
+                new Activation(new LeakyReLU(0.1)),
+                $second,
+                new Swish(),
+                $third,
+            ],
+            epochs: 1,
+            holdOut: 0.0,
+            batchSize: 32
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $estimator->freezeFirstKLayers(2);
+
+        foreach ($first->parameters() as $param) {
+            $this->assertTrue($param->frozen());
+        }
+
+        foreach ($second->parameters() as $param) {
+            $this->assertFalse($param->frozen());
+        }
+
+        $estimator->unfreeze();
+
+        foreach ($first->parameters() as $param) {
+            $this->assertFalse($param->frozen());
+        }
+    }
+
+    #[Test]
+    public function frozenFirstKLayersAreNotUpdatedDuringTraining() : void
+    {
+        $first = new Dense(8);
+        $second = new Dense(4);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                $first,
+                new Activation(new LeakyReLU(0.1)),
+                $second,
+                new Swish(),
+            ],
+            epochs: 1,
+            holdOut: 0.0,
+            batchSize: 32
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($dataset);
+
+        $frozenParams = [];
+
+        foreach ($first->parameters() as $param) {
+            $frozenParams[] = $param->param()->asArray();
+        }
+
+        $activeParams = [];
+
+        foreach ($second->parameters() as $param) {
+            $activeParams[] = $param->param()->asArray();
+        }
+
+        $estimator->freezeFirstKLayers(1);
+
+        $estimator->partial($dataset->randomize());
+
+        $i = 0;
+
+        foreach ($first->parameters() as $param) {
+            $this->assertEquals($frozenParams[$i++], $param->param()->asArray());
+        }
+
+        $i = 0;
+
+        foreach ($second->parameters() as $param) {
+            $this->assertNotEquals($activeParams[$i++], $param->param()->asArray());
+        }
+    }
 }

@@ -253,8 +253,8 @@ class BatchNorm implements Hidden, Parametric
 
         $gamma = $this->gamma->param();
 
-        $this->beta->accumulate($dBeta);
-        $this->gamma->accumulate($dGamma);
+        $this->beta->accumulateGradient($dBeta);
+        $this->gamma->accumulateGradient($dGamma);
 
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;

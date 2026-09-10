@@ -113,7 +113,7 @@ class AdamTest extends TestCase
     {
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 
@@ -129,7 +129,7 @@ class AdamTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $this->optimizer->update($param);
 
@@ -139,7 +139,7 @@ class AdamTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 

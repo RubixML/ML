@@ -431,6 +431,156 @@ class MLPRegressorTest extends TestCase
         }
     }
 
+    #[Test]
+    #[TestDox('Freeze first k layers throws when untrained')]
+    public function freezeFirstKLayersThrowsWhenUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->freezeFirstKLayers(1);
+    }
+
+    #[Test]
+    #[TestDox('Unfreeze throws when untrained')]
+    public function unfreezeThrowsWhenUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->unfreeze();
+    }
+
+    #[Test]
+    #[TestDox('Freeze first k layers with zero k')]
+    public function freezeFirstKLayersWithZeroK() : void
+    {
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(8),
+                new Dense(4),
+            ],
+            epochs: 1,
+            holdOut: 0.0
+        );
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $estimator->freezeFirstKLayers(0);
+    }
+
+    #[Test]
+    #[TestDox('Freeze first k layers with too many layers')]
+    public function freezeFirstKLayersWithTooManyLayers() : void
+    {
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(8),
+                new Dense(4),
+            ],
+            epochs: 1,
+            holdOut: 0.0
+        );
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $estimator->freezeFirstKLayers(5);
+    }
+
+    #[Test]
+    #[TestDox('Freeze first k layers and unfreeze')]
+    public function freezeFirstKLayersAndUnfreeze() : void
+    {
+        $first = new Dense(8);
+        $second = new Dense(4);
+        $third = new Dense(2);
+
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                $first,
+                new Activation(new SiLU()),
+                $second,
+                new Activation(new SELU()),
+                $third,
+            ],
+            epochs: 1,
+            holdOut: 0.0,
+            batchSize: 32
+        );
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $estimator->freezeFirstKLayers(2);
+
+        foreach ($first->parameters() as $param) {
+            $this->assertTrue($param->frozen());
+        }
+
+        foreach ($second->parameters() as $param) {
+            $this->assertFalse($param->frozen());
+        }
+
+        $estimator->unfreeze();
+
+        foreach ($first->parameters() as $param) {
+            $this->assertFalse($param->frozen());
+        }
+    }
+
+    #[Test]
+    #[TestDox('Frozen first k layers are not updated during training')]
+    public function frozenFirstKLayersAreNotUpdatedDuringTraining() : void
+    {
+        $first = new Dense(8);
+        $second = new Dense(4);
+
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                $first,
+                new Activation(new SiLU()),
+                $second,
+                new Activation(new SELU()),
+            ],
+            epochs: 1,
+            holdOut: 0.0,
+            batchSize: 32
+        );
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($dataset);
+
+        $frozenParams = [];
+
+        foreach ($first->parameters() as $param) {
+            $frozenParams[] = $param->param()->asArray();
+        }
+
+        $activeParams = [];
+
+        foreach ($second->parameters() as $param) {
+            $activeParams[] = $param->param()->asArray();
+        }
+
+        $estimator->freezeFirstKLayers(1);
+
+        $estimator->partial($dataset->randomize());
+
+        $i = 0;
+
+        foreach ($first->parameters() as $param) {
+            $this->assertEquals($frozenParams[$i++], $param->param()->asArray());
+        }
+
+        $i = 0;
+
+        foreach ($second->parameters() as $param) {
+            $this->assertNotEquals($activeParams[$i++], $param->param()->asArray());
+        }
+    }
+
     /**
      * @return array{0: Unlabeled}
      */

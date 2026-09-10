@@ -115,13 +115,13 @@ class AdaMaxTest extends TestCase
 
         $adamax->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $adamStep = $adam->update($param)->asArray()[0];
 
         $param->resetGradient();
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $adamaxStep = $adamax->update($param)->asArray()[0];
 
@@ -141,7 +141,7 @@ class AdaMaxTest extends TestCase
     {
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 
@@ -157,7 +157,7 @@ class AdaMaxTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $this->optimizer->update($param);
 
@@ -167,7 +167,7 @@ class AdaMaxTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $param->accumulate($gradient);
+        $param->accumulateGradient($gradient);
 
         $step = $this->optimizer->update($param);
 

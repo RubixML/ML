@@ -155,7 +155,7 @@ class PReLU implements Hidden, Parametric
 
         $dAlpha = $dOut->multiply($dIn)->sum();
 
-        $this->alpha->accumulate($dAlpha);
+        $this->alpha->accumulateGradient($dAlpha);
 
         $input = $this->input;
 
