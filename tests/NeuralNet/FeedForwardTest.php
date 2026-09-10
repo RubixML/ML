@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Tests\NeuralNet;
 
+use Tensor\Matrix;
+use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\FeedForward;
@@ -336,6 +338,123 @@ class FeedForwardTest extends TestCase
 
             $this->assertEquals($gradients[$i], $param->gradient()->asArray());
         }
+    }
+
+    #[Test]
+    public function numTrainableParams() : void
+    {
+        $this->network->initialize();
+
+        $this->assertEquals(103, $this->network->numTrainableParams());
+
+        $this->network->freezeFirstKLayers(2);
+
+        $this->assertEquals(73, $this->network->numTrainableParams());
+
+        $this->network->unfreeze();
+
+        $this->assertEquals(103, $this->network->numTrainableParams());
+    }
+
+    #[Test]
+    public function parameters() : void
+    {
+        $this->network->initialize();
+
+        $this->assertEquals(6, count(iterator_to_array($this->network->parameters())));
+        $this->assertEquals(6, count(iterator_to_array($this->network->trainableParameters())));
+
+        $this->network->freezeFirstKLayers(2);
+
+        $this->assertEquals(6, count(iterator_to_array($this->network->parameters())));
+        $this->assertEquals(4, count(iterator_to_array($this->network->trainableParameters())));
+    }
+
+    #[Test]
+    public function inferReturnsSoftmaxProbabilities() : void
+    {
+        $this->network->initialize();
+
+        $output = $this->network->infer($this->dataset);
+
+        $this->assertInstanceOf(Matrix::class, $output);
+        $this->assertEquals([3, 3], $output->shape());
+
+        $rows = $output->asArray();
+
+        $this->assertCount(3, $rows);
+
+        foreach ($rows as $row) {
+            foreach ($row as $prob) {
+                $this->assertGreaterThanOrEqual(0.0, $prob);
+                $this->assertLessThanOrEqual(1.0, $prob);
+            }
+
+            $this->assertEqualsWithDelta(1.0, array_sum($row), 1e-6);
+        }
+    }
+
+    #[Test]
+    public function feedMatchesInfer() : void
+    {
+        $network = new FeedForward($this->input, $this->hidden, $this->output);
+
+        $network->initialize();
+
+        $input = Matrix::quick($this->dataset->samples())->transpose();
+
+        $forward = $network->feed($input);
+
+        $this->assertInstanceOf(Matrix::class, $forward);
+        $this->assertEquals([3, 3], $forward->shape());
+
+        $inferred = $network->infer($this->dataset);
+
+        $this->assertEquals($forward->transpose()->asArray(), $inferred->asArray());
+    }
+
+    #[Test]
+    public function backpropagateAfterFeedProducesLossAndGradients() : void
+    {
+        $network = new FeedForward($this->input, $this->hidden, $this->output);
+
+        $network->initialize();
+
+        $input = Matrix::quick($this->dataset->samples())->transpose();
+
+        $network->feed($input);
+
+        $loss = $network->backpropagate($this->dataset->labels());
+
+        $this->assertIsFloat($loss);
+        $this->assertTrue(is_finite($loss));
+
+        $accumulated = 0;
+
+        foreach ($network->parameters() as $param) {
+            if ($param->gradient()) {
+                ++$accumulated;
+            }
+        }
+
+        $this->assertGreaterThan(0, $accumulated);
+    }
+
+    #[Test]
+    public function exportGraphviz() : void
+    {
+        $dot = $this->network->exportGraphviz();
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+
+        $text = (string) $dot;
+
+        $this->assertStringStartsWith('digraph Tree {', $text);
+        $this->assertStringContainsString('N1 [label=', $text);
+        $this->assertStringContainsString('N6 [label=', $text);
+        $this->assertStringContainsString('N1 -> N2;', $text);
+        $this->assertStringContainsString('N5 -> N6;', $text);
+        $this->assertStringEndsWith('}', $text);
     }
 
     /**
