@@ -171,7 +171,7 @@ class FeedForward implements Network
     }
 
     /**
-     * Initialize the parameters of the layers and warm the optimizer cache.
+     * Initialize the parameters of the layers.
      */
     public function initialize() : void
     {
