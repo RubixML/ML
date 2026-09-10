@@ -16,7 +16,7 @@ A learning-rate schedule that returns a fixed rate for the entire duration of tr
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$scheduler = new Constant(rate: 0.01);
+$scheduler = new Constant(0.01);
 
-$optimizer = new Stochastic(scheduler: $scheduler);
+$optimizer = new Stochastic($scheduler);
 ```

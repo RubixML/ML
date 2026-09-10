@@ -43,7 +43,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Loggers\Screen;
 
-$estimator = new LogisticRegression(batchSize: 128, optimizer: new Adam(scheduler: new Constant(0.01)));
+$estimator = new LogisticRegression(128, new Adam(new Constant(0.01)));
 
 $estimator->setLogger(new Screen());
 

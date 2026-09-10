@@ -16,7 +16,7 @@ Short for *Adaptive Gradient*, the AdaGrad optimizer pairs a [learning-rate sche
 use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new AdaGrad(scheduler: new Constant(0.125));
+$optimizer = new AdaGrad(new Constant(0.125));
 ```
 
 ## References

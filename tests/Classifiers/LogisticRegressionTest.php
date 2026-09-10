@@ -127,7 +127,6 @@ class LogisticRegressionTest extends TestCase
         $expected = [
             'batch size' => 100,
             'optimizer' => new Adam(new Constant(0.01)),
-            'max gradient norm' => null,
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
@@ -184,33 +183,6 @@ class LogisticRegressionTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    #[Test]
-    public function trainWithGradientClipping() : void
-    {
-        srand(self::RANDOM_SEED);
-
-        $estimator = new LogisticRegression(
-            batchSize: 100,
-            optimizer: new Adam(new Constant(0.01)),
-            maxGradientNorm: 1e-3,
-            epochs: 5,
-            minChange: 1e-6,
-            evalInterval: 1
-        );
-
-        $estimator->setLogger(new BlackHole());
-
-        $dataset = $this->generator->generate(self::TRAIN_SIZE);
-
-        $estimator->train($dataset);
-
-        $this->assertTrue($estimator->trained());
-
-        $predictions = $estimator->predict($dataset);
-
-        $this->assertCount($dataset->numSamples(), $predictions);
     }
 
     #[Test]

@@ -18,7 +18,7 @@ Momentum accelerates each update step by accumulating velocity from past updates
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new Momentum(scheduler: new Constant(0.01), decay: 0.1, lookahead: true);
+$optimizer = new Momentum(new Constant(0.01), 0.1, true);
 ```
 
 ## References

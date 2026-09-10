@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+
 /**
  * Output
  *
@@ -17,8 +19,9 @@ interface Output extends Layer
      * Compute the gradient and loss at the output.
      *
      * @param (string|int|float)[] $labels
+     * @param Optimizer $optimizer
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */
-    public function back(array $labels) : array;
+    public function back(array $labels, Optimizer $optimizer) : array;
 }

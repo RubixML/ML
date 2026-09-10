@@ -16,13 +16,6 @@ use Traversable;
 interface Network
 {
     /**
-     * The parameters of the network.
-     *
-     * @return Traversable<Parameter>
-     */
-    public function parameters() : Traversable;
-
-    /**
      * Return the layers of the network.
      *
      * @return Traversable<Layers\Layer>

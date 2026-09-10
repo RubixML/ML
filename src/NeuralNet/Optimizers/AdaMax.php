@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
-use Rubix\ML\Exceptions\RuntimeException;
 use Tensor\Vector;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
@@ -77,32 +76,27 @@ class AdaMax extends Adam
      * @internal
      *
      * @param Parameter $param
+     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param, Tensor $gradient) : Tensor
     {
-        if (!$param->hasGradient()) {
-            throw new RuntimeException('Cannot update parameter with no gradient.');
-        }
-
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $vHat = $param->gradient()->subtract($velocity)
+        $vHat = $gradient->subtract($velocity)
             ->multiply($this->momentumDecay);
 
         $velocity = $velocity->add($vHat);
 
         $norm = $norm->multiply(1.0 - $this->normDecay);
 
-        $norm = static::maximum($norm, $param->gradient()->abs());
+        $norm = static::maximum($norm, $gradient->abs());
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
         $norm = $norm->clipLower(EPSILON);
 
-        $step = $velocity->divide($norm)->multiply($this->scheduler->rate());
-
-        return $step;
+        return $velocity->divide($norm)->multiply($this->scheduler->rate());
     }
 
     /**

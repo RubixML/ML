@@ -18,7 +18,7 @@ Short for *Adaptive Moment Estimation*, the Adam optimizer pairs a [learning-rat
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new Adam(scheduler: new Constant(0.0001), momentumDecay: 0.1, normDecay: 0.001);
+$optimizer = new Adam(new Constant(0.0001), 0.1, 0.001);
 ```
 
 ## References

@@ -32,7 +32,7 @@ $estimator = new CommitteeMachine([
     new GaussianNB(),
     new RandomForest(new ClassificationTree(4), 100, 0.3),
     new KDNeighbors(3),
-    new SoftmaxClassifier(batchSize: 100),
+    new SoftmaxClassifier(100),
 ], [
     0.2, 0.4, 0.3, 0.1,
 ]);

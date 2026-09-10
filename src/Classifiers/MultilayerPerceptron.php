@@ -89,26 +89,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected int $batchSize;
 
     /**
-     * The number of gradient accumulation steps before updating the network parameters.
-     *
-     * @var positive-int
-     */
-    protected int $gradientAccumulationSteps;
-
-    /**
      * The gradient descent optimizer used to update the network parameters.
      *
      * @var Optimizer
      */
     protected Optimizer $optimizer;
-
-    /**
-     * The maximum L2 norm of the gradient set. When exceeded all gradients are rescaled
-     * proportionally so that the global norm equals the maximum.
-     *
-     * @var float|null
-     */
-    protected ?float $maxGradientNorm = null;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
@@ -197,9 +182,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * @param mixed[] $hiddenLayers
      * @param int $batchSize
-     * @param int $gradientAccumulationSteps
      * @param Optimizer|null $optimizer
-     * @param float|null $maxGradientNorm
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
@@ -212,16 +195,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     public function __construct(
         array $hiddenLayers,
         int $batchSize = 128,
-        int $gradientAccumulationSteps = 1,
         ?Optimizer $optimizer = null,
-        ?float $maxGradientNorm = null,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
-        ?Metric $metric = null,
+        ?Metric $metric = null
     ) {
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
@@ -238,16 +219,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
-        }
-
-        if ($gradientAccumulationSteps < 1) {
-            throw new InvalidArgumentException('Gradient accumulation steps'
-                . " must be greater than 0, $gradientAccumulationSteps given.");
-        }
-
-        if (isset($maxGradientNorm) and $maxGradientNorm <= 0.0) {
-            throw new InvalidArgumentException('Max gradient norm must be'
-                . " greater than 0, $maxGradientNorm given.");
         }
 
         if ($epochs < 0) {
@@ -285,9 +256,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
-        $this->gradientAccumulationSteps = $gradientAccumulationSteps;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
-        $this->maxGradientNorm = $maxGradientNorm;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
@@ -335,9 +304,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         return [
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
-            'gradient accumulation steps' => $this->gradientAccumulationSteps,
             'optimizer' => $this->optimizer,
-            'max gradient norm' => $this->maxGradientNorm,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
@@ -461,20 +428,16 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             }
         }
 
-        $network = new FeedForward(
+        $this->network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Multiclass($classes, $this->costFn)
+            new Multiclass($classes, $this->costFn),
+            $this->optimizer
         );
 
-        $network->initialize();
-
-        foreach ($network->parameters() as $parameter) {
-            $this->optimizer->warm($parameter);
-        }
+        $this->network->initialize();
 
         $this->classes = $classes;
-        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -514,8 +477,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
+        $loss = 0.0;
         $snapshot = null;
-        $prevLoss = $averageLoss = INF;
+        $prevLoss = INF;
 
         $snapshotPath = $this->snapshotPath;
 
@@ -533,59 +497,19 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $totalLoss = $norm = $totalNorm = 0.0;
-            $step = 1;
+            $loss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss = $this->network->roundtrip($batch);
-
-                $updateThisStep = $step % $this->gradientAccumulationSteps === 0;
-
-                if ($updateThisStep) {
-                    $sumSquares = 0.0;
-
-                    foreach ($this->network->parameters() as $param) {
-                        $param->scaleGradient(1.0 / $this->gradientAccumulationSteps);
-
-                        $paramNorm = $param->gradientNorm();
-
-                        $sumSquares += $paramNorm * $paramNorm;
-                    }
-
-                    $norm = sqrt($sumSquares);
-
-                    if ($this->maxGradientNorm and $norm > $this->maxGradientNorm) {
-                        $scale = $this->maxGradientNorm / $norm;
-
-                        foreach ($this->network->parameters() as $param) {
-                            $param->scaleGradient($scale);
-                        }
-                    }
-
-                    foreach ($this->network->parameters() as $param) {
-                        $param->update($this->optimizer);
-
-                        $param->resetGradient();
-                    }
-
-                    $this->optimizer->scheduler()->tick();
-
-                    $totalNorm += $norm;
-                }
-
-                $totalLoss += $loss;
-
-                ++$step;
+                $loss += $this->network->roundtrip($batch);
             }
 
-            $averageLoss = $totalLoss / count($batches);
-            $averageNorm = $totalNorm / count($batches);
+            $loss /= count($batches);
 
-            $lossChange = abs($prevLoss - $averageLoss);
+            $lossChange = abs($prevLoss - $loss);
 
-            $this->losses[$epoch] = $averageLoss;
+            $this->losses[$epoch] = $loss;
 
-            if (is_nan($averageLoss)) {
+            if (is_nan($loss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
@@ -605,13 +529,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             if ($this->logger) {
                 $message = "Epoch: {$epoch}";
-
-                if (!$this->optimizer->scheduler() instanceof Constant) {
-                    $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
-                }
-
-                $message .= ", {$this->costFn}: $averageLoss";
-                $message .= ", Gradient Norm: $averageNorm";
+                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                $message .= ", {$this->costFn}: $loss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -649,11 +568,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break;
             }
 
-            $prevLoss = $averageLoss;
+            $prevLoss = $loss;
         }
 
         if ($snapshot) {
-            if (end($this->scores) < $bestScore or is_nan($averageLoss)) {
+            if (end($this->scores) < $bestScore or is_nan($loss)) {
                 $snapshot->restore();
 
                 if ($this->logger) {
