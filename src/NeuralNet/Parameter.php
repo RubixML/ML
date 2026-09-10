@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Exceptions\RuntimeException;
+use Swoole\Runtime;
 
 /**
  * Parameter
@@ -103,6 +105,20 @@ class Parameter
         $this->gradient = $this->gradient
             ? $this->gradient->add($gradient)
             : $gradient;
+    }
+
+    /**
+     * Scale the accumulated gradient by a scalar.
+     *
+     * @param float $scale
+     */
+    public function scaleGradient(float $scale) : void
+    {
+        if (!$this->gradient) {
+            throw new RuntimeException('No gradient to scale.');
+        }
+
+        $this->gradient = $this->gradient->multiply($scale);
     }
 
     /**

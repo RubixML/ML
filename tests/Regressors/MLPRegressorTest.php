@@ -110,6 +110,24 @@ class MLPRegressorTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Bad gradient accumulation steps')]
+    public function badAccumulate() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new MLPRegressor(hiddenLayers: [], accumulate: 0);
+    }
+
+    #[Test]
+    #[TestDox('Gradient accumulation steps are exposed via params')]
+    public function accumulateParameter() : void
+    {
+        $estimator = new MLPRegressor(hiddenLayers: [new Dense(10)], accumulate: 4);
+
+        self::assertSame(4, $estimator->params()['accumulate']);
+    }
+
+    #[Test]
     #[TestDox('Type')]
     public function type() : void
     {

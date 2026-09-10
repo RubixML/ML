@@ -55,18 +55,11 @@ class FeedForward implements Network
     ];
 
     /**
-     * The output layer of the network.
+     * The output layer.
      *
      * @var Output
      */
     protected Output $output;
-
-    /**
-     * The number of gradient passes accumulated since the last applied step.
-     *
-     * @var int
-     */
-    protected int $passes = 0;
 
     /**
      * @param Input $input

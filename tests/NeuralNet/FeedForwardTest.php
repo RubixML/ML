@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Parameter;
 
 #[Group('NeuralNet')]
 #[CoversClass(FeedForward::class)]
@@ -148,5 +149,79 @@ class FeedForwardTest extends TestCase
         }
 
         $this->assertGreaterThan(0, $accumulated);
+    }
+
+    #[Test]
+    public function accumulatedGradientNormalizesToBatchAverage() : void
+    {
+        $dataset = Labeled::quick([
+            [1.0, 2.5],
+            [0.1, 0.0],
+            [0.002, -6.0],
+            [0.5, 1.0],
+        ], ['yes', 'no', 'maybe', 'yes']);
+
+        $batches = $dataset->batch(2);
+
+        $combined = Labeled::quick($dataset->samples(), $dataset->labels());
+
+        $network = new FeedForward($this->input, $this->hidden, $this->output);
+
+        $network->initialize();
+
+        /** @var list<Parameter> $params */
+        $params = iterator_to_array($network->parameters());
+
+        $initial = array_map(static fn (Parameter $param) => $param->param()->asArray(), $params);
+
+        $network->roundtrip($batches[0]);
+        $network->roundtrip($batches[1]);
+
+        $summed = array_map(static fn (Parameter $param) => $param->gradient()->asArray(), $params);
+
+        foreach ($params as $i => $param) {
+            $this->assertEqualsWithDelta($initial[$i], $param->param()->asArray(), 1e-12);
+
+            $param->resetGradient();
+        }
+
+        $network->roundtrip($combined);
+
+        $single = array_map(static fn (Parameter $param) => $param->gradient()->asArray(), $params);
+
+        foreach ($params as $i => $param) {
+            $this->assertEqualsWithDelta($this->scaled($summed[$i], 0.5), $single[$i], 1e-9);
+
+            $param->resetGradient();
+        }
+
+        $network->roundtrip($batches[0]);
+        $network->roundtrip($batches[1]);
+
+        foreach ($params as $param) {
+            $param->scaleGradient(0.5);
+        }
+
+        foreach ($params as $i => $param) {
+            $this->assertEqualsWithDelta($single[$i], $param->gradient()->asArray(), 1e-9);
+        }
+    }
+
+    /**
+     * Return a copy of a numeric nested array with every element multiplied by a scalar.
+     *
+     * @param list<mixed> $array
+     * @param float $scale
+     * @return list<mixed>
+     */
+    private function scaled(array $array, float $scale) : array
+    {
+        $scaled = [];
+
+        foreach ($array as $element) {
+            $scaled[] = is_array($element) ? $this->scaled($element, $scale) : $element * $scale;
+        }
+
+        return $scaled;
     }
 }

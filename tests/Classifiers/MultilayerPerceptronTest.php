@@ -133,6 +133,22 @@ class MultilayerPerceptronTest extends TestCase
     }
 
     #[Test]
+    public function badAccumulate() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new MultilayerPerceptron(hiddenLayers: [], accumulate: 0);
+    }
+
+    #[Test]
+    public function accumulateParameter() : void
+    {
+        $estimator = new MultilayerPerceptron(hiddenLayers: [new Dense(10)], accumulate: 4);
+
+        $this->assertSame(4, $estimator->params()['accumulate']);
+    }
+
+    #[Test]
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());

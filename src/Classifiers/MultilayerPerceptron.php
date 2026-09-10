@@ -507,8 +507,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $updateThisStep = $step % $this->accumulate === 0;
 
                 if ($updateThisStep) {
-                    foreach ($this->network->parameters() as $param) {
-                        $param->update($this->optimizer);
+                    $parameters = $this->network->parameters();
+
+                    foreach ($parameters as $param) {
+                        if ($param->hasGradient()) {
+                            $param->scaleGradient(1.0 / $this->accumulate);
+
+                            $param->update($this->optimizer);
+                        }
                     }
                 }
 
