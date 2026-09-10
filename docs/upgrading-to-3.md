@@ -16,9 +16,9 @@ Previously, both integers and floats were considered [continuous](representing-y
 ```php
 use Rubix\ML\DataType;
 
-DataType::detect(1);    // categorical
-DataType::detect(1.0);  // continuous
-DataType::detect('a');  // categorical
+DataType::detect(1);    // Categorical
+DataType::detect(1.0);  // Continuous
+DataType::detect('a');  // Categorical
 ```
 
 This affects you in two important ways:
@@ -124,7 +124,7 @@ $layers = [new Activation(new Sigmoid())];
 
 ### 5. The L2 Penalty parameter was removed from MLP learners
 
-The `$l2Penalty` constructor parameter was removed from the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) and [MLP Regressor](regressors/mlp-regressor.md). The output layer is no longer regularized directly.
+The `$l2Penalty` constructor parameter was removed from the [Multilayer Perceptron](classifiers/multilayer-perceptron.md) and [MLP Regressor](regressors/mlp-regressor.md). The output projection is no longer regularized directly.
 
 ```php
 // before
@@ -135,7 +135,7 @@ $mlp = new MultilayerPerceptron(hiddenLayers: [new Dense(neurons: 100, l2Penalty
 ```
 
 !!! note
-    `$l2Penalty` is still accepted by [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), and the [Softmax Classifier](classifiers/softmax-classifier.md). Only the MLP learners and the neural net output layers changed.
+    `$l2Penalty` is still accepted by linear models such as [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), and the [Softmax Classifier](classifiers/softmax-classifier.md).
 
 ### 6. TF-IDF dampening was renamed to sublinear
 
@@ -175,6 +175,8 @@ The [Ball Tree](graph/trees/ball-tree.md) and [Vantage Tree](graph/trees/vantage
 - K-d Tree kernels must implement `Rubix\ML\Kernels\Distance\Monotonic`
 
 The default [Euclidean](kernels/distance/euclidean.md) kernel satisfies both, so unless you were passing a custom or an incompatible kernel, no action is required.
+
+In addition, the [K-d Tree](graph/trees/k-d-tree.md) had an edge-pruning correction and an optimized traversal, which may slightly change the results of nearest-neighbor searches that use it.
 
 ### 9. The Backend interface gained a workers() method
 
@@ -243,8 +245,6 @@ $lr = new LogisticRegression(holdOut: 0.1, window: 5, evalInterval: 3);
 // to train on all the data without early stopping
 $lr = new LogisticRegression(holdOut: 0.0);
 ```
-
-For [AdaBoost](classifiers/adaboost.md) the change is slightly different — in addition to holding out data, the ensemble is now truncated to the best-performing epoch when early stopping triggers, so later (worse) models are discarded rather than kept.
 
 These parameters are inserted into the constructors after `$minChange`, so calls that pass arguments positionally past that point must be updated (or converted to named arguments). The `$evalInterval` parameter itself is covered in more detail in [item 28](#28-validation-interval-for-hold-out-evaluation).
 
@@ -352,9 +352,7 @@ $initializer = new He();
 
 ### 24. Multiclass output gradients were corrected
 
-The `Multiclass` output layer now backpropagates through the softmax Jacobian when the cost function is *not* [Multiclass Cross Entropy](neural-network/cost-functions/multiclass-cross-entropy.md) — for example with [Least Squares](neural-network/cost-functions/least-squares.md) or [Huber Loss](neural-network/cost-functions/huber-loss.md). Previously the gradient was treated as a simple `output - expected` difference, which is incorrect for these losses, so MLPs trained with a non-cross-entropy cost function will now train differently (and more correctly).
-
-In addition, the [K-d Tree](graph/trees/k-d-tree.md) had an edge-pruning correction and an optimized traversal, which may slightly change the results of nearest-neighbor searches that use it.
+The `Multiclass` output layer now backpropagates through the softmax Jacobian when the cost function is *not* [Multiclass Cross Entropy](neural-network/cost-functions/multiclass-cross-entropy.md) — for example with [Relative Entropy](neural-network/cost-functions/relative-entropy.md). Previously the gradient was treated as a simple `output - expected` difference, which is incorrect, so MLPs trained with a non-cross-entropy cost function will now train differently (and more correctly).
 
 ## New Features
 
@@ -410,7 +408,7 @@ Optimizers such as [Adam](neural-network/optimizers/adam.md), [RMS Prop](neural-
 ```php
 $mlp->train($dataset);
 
-// free residual optimizer state
+// Free residual optimizer state
 $mlp->cleanup();
 ```
 
@@ -421,11 +419,6 @@ The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-reg
 ```php
 $mlp = new MultilayerPerceptron(hiddenLayers: [new Dense(neurons: 100)], epochs: 1000, evalInterval: 5, window: 10);
 ```
-
-!!! note
-    For [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), and [AdaBoost](classifiers/adaboost.md) the `$evalInterval`, `$window`, and `$holdOut` parameters are new additions that also change how these learners train — see [item 12](#12-gradient-learners-now-hold-out-validation-data-for-early-stopping).
-
-    In the MLP and MLP Regressor the new parameter is inserted into the constructor after `minChange` and before `window`, and the `l2Penalty` parameter was removed (see [item 5](#5-the-l2-penalty-parameter-was-removed-from-mlp-learners)). Likewise, the `gradientAccumulationSteps` and `maxGradientNorm` parameters (see [item 33](#33-gradient-accumulation-and-clipping-for-mlp-learners)) are inserted after `batchSize` and `optimizer` respectively. Re-check any constructor calls that pass arguments positionally past the optimizer.
 
 ### 29. Per-class and per-cluster variance smoothing
 
@@ -468,6 +461,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 
 $mlp = new MultilayerPerceptron(
     hiddenLayers: [new Dense(neurons: 100)],
+    batchSize: 32,
     gradientAccumulationSteps: 4,
     maxGradientNorm: 1.0,
 );
