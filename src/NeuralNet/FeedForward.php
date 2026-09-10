@@ -13,6 +13,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Traversable;
 
+use function Rubix\ML\enumerate;
 use function array_reverse;
 
 /**
@@ -244,11 +245,7 @@ class FeedForward implements Network
         $dot = 'digraph Tree {' . PHP_EOL;
         $dot .= '  node [shape=box, fontname=helvetica];' . PHP_EOL;
 
-        $layerNum = 0;
-
-        foreach ($this->layers() as $layer) {
-            ++$layerNum;
-
+        foreach (enumerate($this->layers(), 1) as $layerNum => $layer) {
             $dot .= "  N$layerNum [label=\"$layer\",style=\"rounded\"]" . PHP_EOL;
 
             if ($layerNum > 1) {
