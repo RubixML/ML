@@ -9,8 +9,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function Rubix\ML\enumerate;
@@ -125,7 +125,7 @@ class FeedForward implements Network
     }
 
     /**
-     * Return the number of trainable parameters in the network.
+     * Return the total number of parameters in the network.
      *
      * @return int
      */
@@ -157,6 +157,20 @@ class FeedForward implements Network
     }
 
     /**
+     * The number of trainable parameters in the network.
+     */
+    public function numTrainableParams() : int
+    {
+        $numParams = 0;
+
+        foreach ($this->trainableParameters() as $parameter) {
+            $numParams += $parameter->param()->size();
+        }
+
+        return $numParams;
+    }
+
+    /**
      * Return an iterable of all the trainable (unfrozen) parameters in the network.
      *
      * @return Traversable<Parameter>
@@ -179,6 +193,47 @@ class FeedForward implements Network
 
         foreach ($this->layers() as $layer) {
             $fanIn = $layer->initialize($fanIn);
+        }
+    }
+
+    /**
+     * Freeze the first k hidden layers of the network preventing their
+     * parameters from being updated during training.
+     *
+     * @param int $k
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
+    public function freezeFirstKLayers(int $k) : void
+    {
+        $numHiddenLayers = count($this->hidden());
+
+        if ($k < 1 or $k > $numHiddenLayers) {
+            throw new InvalidArgumentException('Number of layers to freeze'
+                . " must be between 1 and $numHiddenLayers, $k given.");
+        }
+
+        $firstKLayers = array_slice($this->hidden(), 0, $k);
+
+        foreach ($firstKLayers as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    $parameter->freeze();
+                }
+            }
+        }
+    }
+
+    /**
+     * Unfreeze the hidden layers of the network allowing their parameters to
+     * be updated during training.
+     *
+     * @throws RuntimeException
+     */
+    public function unfreeze() : void
+    {
+        foreach ($this->parameters() as $param) {
+            $param->unfreeze();
         }
     }
 

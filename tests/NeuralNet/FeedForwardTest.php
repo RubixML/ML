@@ -12,7 +12,9 @@ use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -48,6 +50,28 @@ class FeedForwardTest extends TestCase
      * @var Output
      */
     protected Output $output;
+
+    /**
+     * @return array{int, int}[]
+     */
+    public static function freezeProvider() : array
+    {
+        return [
+            [1, 73],
+            [2, 73],
+            [3, 18],
+            [4, 18],
+            [5, 0],
+        ];
+    }
+
+    /**
+     * @return array{int}[]
+     */
+    public static function invalidKProvider() : array
+    {
+        return [[0], [-1], [6], [10]];
+    }
 
     protected function setUp() : void
     {
@@ -205,6 +229,92 @@ class FeedForwardTest extends TestCase
         foreach ($params as $i => $param) {
             $this->assertEqualsWithDelta($single[$i], $param->gradient()->asArray(), 1e-9);
         }
+    }
+
+    #[Test]
+    public function trainableParametersBaseline() : void
+    {
+        $this->network->initialize();
+
+        $this->assertEquals(103, $this->network->numParams());
+        $this->assertEquals(103, $this->trainableCount());
+
+        foreach ($this->network->parameters() as $param) {
+            $this->assertFalse($param->frozen());
+        }
+    }
+
+    #[Test]
+    #[DataProvider('freezeProvider')]
+    public function freezeFirstKLayers(int $k, int $expectedTrainable) : void
+    {
+        $this->network->initialize();
+
+        $this->network->freezeFirstKLayers($k);
+
+        $this->assertEquals($expectedTrainable, $this->trainableCount());
+    }
+
+    #[Test]
+    public function freezeFirstKLayersFreezesLeadingLayers() : void
+    {
+        $this->network->initialize();
+
+        $this->network->freezeFirstKLayers(3);
+
+        $hidden = $this->network->hidden();
+
+        foreach ([$hidden[0], $hidden[1], $hidden[2]] as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $param) {
+                    $this->assertTrue($param->frozen());
+                }
+            }
+        }
+
+        foreach ($hidden[4]->parameters() as $param) {
+            $this->assertFalse($param->frozen());
+        }
+    }
+
+    #[Test]
+    #[DataProvider('invalidKProvider')]
+    public function freezeFirstKLayersThrowsForInvalidK(int $k) : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->network->freezeFirstKLayers($k);
+    }
+
+    #[Test]
+    public function unfreezeMakesAllTrainable() : void
+    {
+        $this->network->initialize();
+
+        $this->network->freezeFirstKLayers(2);
+        $this->network->unfreeze();
+
+        $this->assertEquals(103, $this->trainableCount());
+
+        foreach ($this->network->parameters() as $param) {
+            $this->assertFalse($param->frozen());
+        }
+    }
+
+    /**
+     * Return the number of trainable (unfrozen) parameter elements.
+     *
+     * @return int
+     */
+    private function trainableCount() : int
+    {
+        $count = 0;
+
+        foreach ($this->network->trainableParameters() as $param) {
+            $count += $param->param()->size();
+        }
+
+        return $count;
     }
 
     /**
