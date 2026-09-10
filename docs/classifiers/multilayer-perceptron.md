@@ -42,19 +42,17 @@ use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
-$hiddenLayers = [
-    new Dense(200),
-    new Activation(new LeakyReLU()),
-    new Dropout(0.3),
-    new Dense(100),
-    new Activation(new LeakyReLU()),
-    new Dropout(0.3),
-    new Dense(50),
-    new PReLU(),
-];
-
 $estimator = new MultilayerPerceptron(
-    $hiddenLayers,
+    [
+        new Dense(200),
+        new Activation(new LeakyReLU()),
+        new Dropout(0.3),
+        new Dense(100),
+        new Activation(new LeakyReLU()),
+        new Dropout(0.3),
+        new Dense(50),
+        new PReLU(),
+    ],
     128,
     1,
     new Adam(new Constant(0.001)),

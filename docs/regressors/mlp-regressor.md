@@ -40,19 +40,17 @@ use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Regressors\MLPRegressor;
 
-$hiddenLayers = [
-	new Dense(100),
-	new Activation(new ReLU()),
-	new Dense(100),
-	new Activation(new ReLU()),
-	new Dense(50),
-	new Activation(new ReLU()),
-	new Dense(50),
-	new Activation(new ReLU()),
-];
-
 $estimator = new MLPRegressor(
-	hiddenLayers: $hiddenLayers,
+	hiddenLayers: [
+		new Dense(100),
+		new Activation(new ReLU()),
+		new Dense(100),
+		new Activation(new ReLU()),
+		new Dense(50),
+		new Activation(new ReLU()),
+		new Dense(50),
+		new Activation(new ReLU()),
+	],
 	batchSize: 128,
 	gradientAccumulationSteps: 1,
 	optimizer: new RMSProp(new Constant(0.001)),
