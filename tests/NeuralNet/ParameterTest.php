@@ -98,7 +98,9 @@ class ParameterTest extends TestCase
             [-2.01, 6.02],
         ];
 
-        $step = $this->optimizer->update($this->param, $gradient);
+        $this->param->accumulate($gradient);
+
+        $step = $this->optimizer->update($this->param);
 
         $this->param->update($step);
 

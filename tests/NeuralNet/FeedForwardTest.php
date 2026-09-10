@@ -7,8 +7,6 @@ use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
@@ -20,7 +18,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\NeuralNet\Initializers\Constant as Initializer;
 
 #[Group('NeuralNet')]
 #[CoversClass(FeedForward::class)]
@@ -71,7 +68,7 @@ class FeedForwardTest extends TestCase
 
         $this->output = new Multiclass(['yes', 'no', 'maybe'], new MulticlassCrossEntropy());
 
-        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(new Constant(0.001)));
+        $this->network = new FeedForward($this->input, $this->hidden, $this->output);
     }
 
     #[Test]
@@ -126,21 +123,21 @@ class FeedForwardTest extends TestCase
     #[Test]
     public function accumulatesGradients() : void
     {
-        $accumulator = new FeedForward($this->input, $this->hidden, $this->output, new Adam(new Constant(0.001)), 2);
+        $network = new FeedForward($this->input, $this->hidden, $this->output);
 
-        $accumulator->initialize();
+        $network->initialize();
 
         $dense = $this->hidden[0];
 
         $initial = $dense->parameters()->current()->param()->asArray();
 
-        $accumulator->roundtrip($this->dataset);
+        $network->roundtrip($this->dataset);
 
         $this->assertEquals($initial, $dense->parameters()->current()->param()->asArray());
 
         $accumulated = 0;
 
-        foreach ($accumulator->layers() as $layer) {
+        foreach ($network->layers() as $layer) {
             if ($layer instanceof Parametric) {
                 foreach ($layer->parameters() as $param) {
                     if ($param->gradient()) {
@@ -151,66 +148,5 @@ class FeedForwardTest extends TestCase
         }
 
         $this->assertGreaterThan(0, $accumulated);
-
-        $accumulator->roundtrip($this->dataset);
-
-        $this->assertNotEquals($initial, $dense->parameters()->current()->param()->asArray());
-
-        $accumulated = 0;
-
-        foreach ($accumulator->layers() as $layer) {
-            if ($layer instanceof Parametric) {
-                foreach ($layer->parameters() as $param) {
-                    if ($param->gradient()) {
-                        ++$accumulated;
-                    }
-                }
-            }
-        }
-
-        $this->assertSame(0, $accumulated);
-    }
-
-    #[Test]
-    public function effectiveBatchIsEquivalent() : void
-    {
-        $seed = 42;
-
-        srand($seed);
-
-        $dense = new Dense(2, 0.0, true, new Initializer(0.01));
-
-        $full = new FeedForward(
-            new Placeholder1D(2),
-            [$dense],
-            new Multiclass(['yes', 'no'], new MulticlassCrossEntropy()),
-            new Adam(new Constant(0.001))
-        );
-
-        $full->initialize();
-
-        $full->roundtrip(Labeled::quick([[1.0, 2.5], [0.1, 0.0]], ['yes', 'no']));
-
-        $param = $dense->parameters()->current()->param()->asArray();
-
-        srand($seed);
-
-        $dense = new Dense(2, 0.0, true, new Initializer(0.01));
-
-        $accumulated = new FeedForward(
-            new Placeholder1D(2),
-            [$dense],
-            new Multiclass(['yes', 'no'], new MulticlassCrossEntropy()),
-            new Adam(new Constant(0.001)),
-            2
-        );
-
-        $accumulated->initialize();
-
-        $accumulated->roundtrip(Labeled::quick([[1.0, 2.5]], ['yes']));
-
-        $accumulated->roundtrip(Labeled::quick([[0.1, 0.0]], ['no']));
-
-        $this->assertEquals($param, $dense->parameters()->current()->param()->asArray());
     }
 }

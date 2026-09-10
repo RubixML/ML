@@ -112,15 +112,17 @@ class SwishTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
 
-        $gradients = [];
-
         foreach ($this->layer->parameters() as $param) {
-            if ($gradient = $param->gradient()) {
-                $gradients[] = [$param, $gradient];
+            if ($param->hasGradient()) {
+                $this->optimizer->warm($param);
+
+                $update = $this->optimizer->update($param);
+
+                $param->update($update);
+
+                $param->resetGradient();
             }
         }
-
-        $this->optimizer->step($gradients);
 
         $expected = [
             [0.7309885581568221, 2.3101984637539816, -0.04750296929623488],
@@ -177,15 +179,17 @@ class SwishTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
 
-        $gradients = [];
-
         foreach ($layer->parameters() as $param) {
-            if ($gradient = $param->gradient()) {
-                $gradients[] = [$param, $gradient];
+            if ($param->hasGradient()) {
+                $this->optimizer->warm($param);
+
+                $update = $this->optimizer->update($param);
+
+                $param->update($update);
+
+                $param->resetGradient();
             }
         }
-
-        $this->optimizer->step($gradients);
 
         $expected = [
             [1.1322040679936571, 0.0, -0.36509242346948234],

@@ -111,15 +111,17 @@ class PReLUTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
 
-        $gradients = [];
-
         foreach ($this->layer->parameters() as $param) {
-            if ($gradient = $param->gradient()) {
-                $gradients[] = [$param, $gradient];
+            if ($param->hasGradient()) {
+                $this->optimizer->warm($param);
+
+                $update = $this->optimizer->update($param);
+
+                $param->update($update);
+
+                $param->resetGradient();
             }
         }
-
-        $this->optimizer->step($gradients);
 
         $expected = [
             [1.0, 2.5, -0.025001000000000002],

@@ -71,11 +71,11 @@ class AdamTest extends TestCase
 
         $initialRate = $scheduler->rate();
 
-        $optimizer->step([]);
+        $optimizer->scheduler()->tick();
 
         $this->assertEquals($initialRate, $scheduler->rate());
 
-        $optimizer->step([]);
+        $optimizer->scheduler()->tick();
 
         $decreasedRate = $scheduler->rate();
 
@@ -113,7 +113,9 @@ class AdamTest extends TestCase
     {
         $this->optimizer->warm($param);
 
-        $step = $this->optimizer->update($param, $gradient);
+        $param->accumulate($gradient);
+
+        $step = $this->optimizer->update($param);
 
         $this->assertEqualsWithDelta($expected, $step->asArray(), 1e-8);
     }
@@ -127,13 +129,19 @@ class AdamTest extends TestCase
 
         $this->optimizer->warm($param);
 
-        $this->optimizer->update($param, $gradient);
+        $param->accumulate($gradient);
+
+        $this->optimizer->update($param);
+
+        $param->resetGradient();
 
         $this->optimizer->flush();
 
         $this->optimizer->warm($param);
 
-        $step = $this->optimizer->update($param, $gradient);
+        $param->accumulate($gradient);
+
+        $step = $this->optimizer->update($param);
 
         $this->assertIsArray($step->asArray());
     }

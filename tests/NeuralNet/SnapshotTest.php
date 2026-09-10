@@ -19,8 +19,6 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -120,6 +118,14 @@ class SnapshotTest extends TestCase
         );
 
         $network->roundtrip($dataset);
+
+        foreach ($network->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $param) {
+                    $param->update($param->param()->multiply(0.1));
+                }
+            }
+        }
 
         $mutatedData = $this->captureNetworkData($network);
 
@@ -275,8 +281,7 @@ class SnapshotTest extends TestCase
             output: new Binary(
                 classes: ['yes', 'no'],
                 costFn:  new BinaryCrossEntropy()
-            ),
-            optimizer: new Stochastic(new Constant())
+            )
         );
 
         $network->initialize();

@@ -149,7 +149,7 @@ class MLPRegressorTest extends TestCase
             'hold out' => 0.1,
             'cost fn' => new LeastSquares(),
             'metric' => new RMSE(),
-            'gradient accumulate' => 1,
+            'accumulate' => 1,
         ];
 
         self::assertEquals($expected, $this->estimator->params());
