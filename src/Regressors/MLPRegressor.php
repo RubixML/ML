@@ -519,7 +519,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             foreach (enumerate($batches, 1) as $step => $batch) {
                 $loss = $this->network->roundtrip($batch);
 
-                $updateThisStep = $step % $this->gradientAccumulationSteps === 0;
+                $updateThisStep = $step % $this->gradientAccumulationSteps === 0
+                    || $step === count($batches);
 
                 if ($updateThisStep) {
                     $sumSquares = 0.0;
