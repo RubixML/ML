@@ -467,14 +467,15 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             foreach ($batches as $batch) {
                 $loss = $this->network->roundtrip($batch);
 
-$sumSquares = 0.0;
+                $sumSquares = 0.0;
 
-foreach ($this->network->parameters() as $param) {
-    $paramNorm = $param->gradientNorm();
-    $sumSquares += $paramNorm * $paramNorm;
-}
+                foreach ($this->network->parameters() as $param) {
+                    $paramNorm = $param->gradientNorm();
 
-$norm = sqrt($sumSquares);
+                    $sumSquares += $paramNorm * $paramNorm;
+                }
+
+                $norm = sqrt($sumSquares);
 
                 if ($this->maxGradientNorm and $norm > $this->maxGradientNorm) {
                     $scale = $this->maxGradientNorm / $norm;
