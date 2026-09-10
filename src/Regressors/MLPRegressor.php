@@ -40,6 +40,7 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
 
+use function Rubix\ML\enumerate;
 use function count;
 use function get_object_vars;
 use function is_dir;
@@ -513,10 +514,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $step = 1;
             $totalLoss = $norm = $totalNorm = 0.0;
 
-            foreach ($batches as $batch) {
+            foreach (enumerate($batches, 1) as $step => $batch) {
                 $loss = $this->network->roundtrip($batch);
 
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0;
@@ -554,8 +554,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 }
 
                 $totalLoss += $loss;
-
-                ++$step;
             }
 
             $averageLoss = $totalLoss / count($batches);

@@ -269,6 +269,22 @@ namespace Rubix\ML
     }
 
     /**
+     * Return a generator that yields elements of an iterator with sequential keys.
+     *
+     * @internal
+     *
+     * @param iterable<mixed> $iterator
+     * @param int $start
+     * @return Generator<mixed>
+     */
+    function enumerate(iterable $iterator, int $start = 0) : Generator
+    {
+        foreach ($iterator as $value) {
+            yield $start++ => $value;
+        }
+    }
+
+    /**
      * Check if an iterator contains NAN values recursively.
      *
      * @internal

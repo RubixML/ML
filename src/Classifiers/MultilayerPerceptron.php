@@ -42,6 +42,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function Rubix\ML\enumerate;
 use function is_nan;
 use function count;
 use function get_object_vars;
@@ -536,9 +537,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $batches = $training->randomize()->batch($this->batchSize);
 
             $totalLoss = $norm = $totalNorm = 0.0;
-            $step = 1;
 
-            foreach ($batches as $batch) {
+            foreach (enumerate($batches, 1) as $step => $batch) {
                 $loss = $this->network->roundtrip($batch);
 
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0;
@@ -576,8 +576,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 }
 
                 $totalLoss += $loss;
-
-                ++$step;
             }
 
             $averageLoss = $totalLoss / count($batches);
