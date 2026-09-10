@@ -165,7 +165,6 @@ class AdalineTest extends TestCase
         $expected = [
             'batch size' => 32,
             'optimizer' => new Adam(new Constant(0.001)),
-            'max gradient norm' => null,
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
@@ -217,38 +216,6 @@ class AdalineTest extends TestCase
         );
 
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    #[Test]
-    #[TestDox('Train with gradient clipping')]
-    public function trainWithGradientClipping() : void
-    {
-        srand(self::RANDOM_SEED);
-
-        $estimator = new Adaline(
-            batchSize: 32,
-            optimizer: new Adam(new Constant(0.001)),
-            maxGradientNorm: 1e-3,
-            epochs: 5,
-            minChange: 1e-6,
-            evalInterval: 1
-        );
-
-        $estimator->setLogger(new BlackHole());
-
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $estimator->train($training);
-
-        self::assertTrue($estimator->trained());
-
-        $predictions = $estimator->predict($training);
-
-        self::assertCount($training->numSamples(), $predictions);
-
-        foreach ($predictions as $prediction) {
-            self::assertIsNumeric($prediction);
-        }
     }
 
     #[Test]

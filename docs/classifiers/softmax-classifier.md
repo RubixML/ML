@@ -17,15 +17,14 @@ A multiclass generalization of [Logistic Regression](logistic-regression.md) usi
 | --- | --- | --- | --- | --- |
 | 1 | batchSize | 128 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
-| 3 | maxGradientNorm | null | float | The maximum L2 norm of the gradient set. When exceeded all gradients are rescaled proportionally so that the global norm equals the maximum. |
-| 4 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
-| 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
-| 6 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 7 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
-| 8 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
-| 9 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
-| 10 | costFn | MulticlassCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
-| 11 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
+| 3 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
+| 4 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
+| 5 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
+| 6 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
+| 7 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 8 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
+| 9 | costFn | MulticlassCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 10 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
 
 ## Example
 
@@ -39,7 +38,6 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 $estimator = new SoftmaxClassifier(
     batchSize: 256,
     optimizer: new Momentum(scheduler: new Constant(0.001)),
-    maxGradientNorm: null,
     l2Penalty: 1e-4,
     epochs: 300,
     minChange: 1e-4,

@@ -48,6 +48,7 @@ use function number_format;
 use function uniqid;
 use function sys_get_temp_dir;
 use function array_reverse;
+use function sqrt;
 
 /**
  * MLP Regressor

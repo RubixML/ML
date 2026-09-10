@@ -51,6 +51,7 @@ use function is_dir;
 use function uniqid;
 use function sys_get_temp_dir;
 use function array_reverse;
+use function sqrt;
 
 /**
  * Multilayer Perceptron
