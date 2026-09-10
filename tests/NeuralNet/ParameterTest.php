@@ -6,6 +6,7 @@ use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -107,9 +108,9 @@ class ParameterTest extends TestCase
 
         $this->param->resetGradient();
 
-        $this->param->scaleGradient(0.5);
+        $this->expectException(RuntimeException::class);
 
-        $this->assertNull($this->param->gradient());
+        $this->param->scaleGradient(0.5);
     }
 
     #[Test]

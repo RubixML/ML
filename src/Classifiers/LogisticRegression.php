@@ -469,6 +469,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
                 foreach ($this->network->parameters() as $param) {
                     $param->update($this->optimizer);
+
+                    $param->resetGradient();
                 }
             }
 

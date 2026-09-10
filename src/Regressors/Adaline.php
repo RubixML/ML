@@ -453,6 +453,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
                 foreach ($this->network->parameters() as $param) {
                     $param->update($this->optimizer);
+
+                    $param->resetGradient();
                 }
             }
 

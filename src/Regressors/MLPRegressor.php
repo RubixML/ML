@@ -493,6 +493,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                             $param->scaleGradient(1.0 / $this->accumulate);
 
                             $param->update($this->optimizer);
+
+                            $param->resetGradient();
                         }
                     }
                 }

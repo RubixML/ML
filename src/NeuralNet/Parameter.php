@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet;
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\RuntimeException;
-use Swoole\Runtime;
 
 /**
  * Parameter
@@ -131,8 +130,6 @@ class Parameter
         $step = $optimizer->update($this);
 
         $this->param = $this->param->subtract($step);
-
-        $this->resetGradient();
     }
 
     /**

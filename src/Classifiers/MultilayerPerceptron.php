@@ -514,6 +514,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                             $param->scaleGradient(1.0 / $this->accumulate);
 
                             $param->update($this->optimizer);
+
+                            $param->resetGradient();
                         }
                     }
                 }
