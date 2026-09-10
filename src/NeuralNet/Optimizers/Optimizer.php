@@ -11,7 +11,7 @@ use Stringable;
  * Optimizer
  *
  * An optimizer takes in a parameter and its gradient and computes a step tensor
- * that is subtracted from the parameter by the optimizer. Every optimizer is
+ * that is subtracted from the parameter by the caller. Every optimizer is
  * paired with a Scheduler that controls the learning rate.
  *
  * @category    Machine Learning
