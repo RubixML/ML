@@ -10,11 +10,11 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function Rubix\ML\enumerate;
-use function array_reverse;
+use function array_slice;
+use function count;
 
 /**
  * Feed Forward
@@ -47,15 +47,6 @@ class FeedForward implements Network
     ];
 
     /**
-     * The pathing of the backward pass through the hidden layers.
-     *
-     * @var list<Layers\Hidden>
-     */
-    protected array $backPass = [
-        //
-    ];
-
-    /**
      * The output layer.
      *
      * @var Output
@@ -70,14 +61,9 @@ class FeedForward implements Network
      */
     public function __construct(Input $input, array $hidden, Output $output)
     {
-        $hidden = array_values($hidden);
-
-        $backPass = array_reverse($hidden);
-
         $this->input = $input;
-        $this->hidden = $hidden;
+        $this->hidden = array_values($hidden);
         $this->output = $output;
-        $this->backPass = $backPass;
     }
 
     /**
@@ -201,7 +187,6 @@ class FeedForward implements Network
      * parameters from being updated during training.
      *
      * @param int $k
-     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function freezeFirstKLayers(int $k) : void
@@ -227,8 +212,6 @@ class FeedForward implements Network
     /**
      * Unfreeze the hidden layers of the network allowing their parameters to
      * be updated during training.
-     *
-     * @throws RuntimeException
      */
     public function unfreeze() : void
     {
@@ -297,7 +280,11 @@ class FeedForward implements Network
     {
         [$gradient, $loss] = $this->output->back($labels);
 
-        foreach ($this->backPass as $layer) {
+        $cutoff = $this->backpropagationCutoff();
+
+        for ($i = count($this->hidden) - 1; $i >= $cutoff; --$i) {
+            $layer = $this->hidden[$i];
+
             $gradient = $layer->back($gradient);
         }
 
@@ -327,5 +314,26 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Return the index of the first hidden layer containing an unfrozen
+     * parameter or the number of hidden layers if they are all frozen.
+     *
+     * @return int
+     */
+    private function backpropagationCutoff() : int
+    {
+        foreach ($this->hidden as $i => $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    if (!$parameter->frozen()) {
+                        return $i;
+                    }
+                }
+            }
+        }
+
+        return count($this->hidden);
     }
 }

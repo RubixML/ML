@@ -301,6 +301,43 @@ class FeedForwardTest extends TestCase
         }
     }
 
+    #[Test]
+    public function backpropagationGradientsAreIndependentOfFrozenLayersBelow() : void
+    {
+        $this->network->initialize();
+
+        $this->network->roundtrip($this->dataset);
+
+        /** @var list<Parameter> $params */
+        $params = iterator_to_array($this->network->parameters());
+
+        $gradients = [];
+
+        foreach ($params as $param) {
+            $gradients[] = $param->gradient()->asArray();
+        }
+
+        foreach ($params as $param) {
+            $param->resetGradient();
+        }
+
+        foreach ($this->network->hidden()[0]->parameters() as $param) {
+            $param->freeze();
+        }
+
+        $this->network->roundtrip($this->dataset);
+
+        foreach ($params as $i => $param) {
+            if ($i < 2) {
+                $this->assertNull($param->gradient());
+
+                continue;
+            }
+
+            $this->assertEquals($gradients[$i], $param->gradient()->asArray());
+        }
+    }
+
     /**
      * Return the number of trainable (unfrozen) parameter elements.
      *
