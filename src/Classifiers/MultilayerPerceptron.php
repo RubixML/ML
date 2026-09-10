@@ -50,6 +50,7 @@ use function array_map;
 use function is_dir;
 use function uniqid;
 use function sys_get_temp_dir;
+use function array_reverse;
 
 /**
  * Multilayer Perceptron
@@ -440,7 +441,25 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
+        $outputWidth = $dataset->numFeatures();
+
+        foreach (array_reverse($hiddenLayers) as $layer) {
+            if ($layer instanceof Dense) {
+                $outputWidth = $layer->width();
+
+                break;
+            }
+        }
+
+        if ($outputWidth !== count($classes)) {
+            $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
+
+            if ($this->logger) {
+                $this->logger->info('Final hidden layer dimensionality mismatch, '
+                    . 'adding projection layer to match output width of '
+                    . count($classes) . ' classes.');
+            }
+        }
 
         $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
