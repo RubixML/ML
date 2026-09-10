@@ -31,10 +31,11 @@
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Regressors\Adaline;
 
-$estimator = new Adaline(256, new Adam(0.001), 1e-4, 500, 1e-6, 3, 5, 0.1, new HuberLoss(2.5), new RMSE());
+$estimator = new Adaline(256, new Adam(new Constant(0.001)), 1e-4, 500, 1e-6, 3, 5, 0.1, new HuberLoss(2.5), new RMSE());
 ```
 
 ## Additional Methods

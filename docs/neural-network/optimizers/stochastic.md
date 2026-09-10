@@ -2,18 +2,19 @@
 
 # Stochastic
 
-A constant learning rate optimizer based on vanilla Stochastic Gradient Descent.
+An optimizer based on vanilla Stochastic Gradient Descent that takes a step proportional to the rate supplied by its [learning-rate schedule](../schedulers/constant.md).
 
 ## Parameters
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | rate | 0.01 | float | The learning rate that controls the global step size. |
+| 1 | scheduler | | [Scheduler](../schedulers/constant.md) | The learning-rate schedule that supplies the step size each batch. |
 
 ## Example
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new Stochastic(0.01);
+$optimizer = new Stochastic(new Constant(0.01));
 ```

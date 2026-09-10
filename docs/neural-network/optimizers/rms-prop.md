@@ -8,15 +8,16 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
+| 1 | scheduler | | [Scheduler](../schedulers/constant.md) | The learning-rate schedule that supplies the step size each batch. |
 | 2 | decay | 0.1 | float | The decay rate of the rms property. |
 
 ## Example
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new RMSProp(0.01, 0.1);
+$optimizer = new RMSProp(new Constant(0.01), 0.1);
 ```
 
 ## References

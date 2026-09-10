@@ -31,10 +31,11 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 ```php
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
-$estimator = new LogisticRegression(64, new Adam(0.001), 1e-4, 100, 1e-4, 3, 5, 0.1, new BinaryCrossEntropy(), new MCC());
+$estimator = new LogisticRegression(64, new Adam(new Constant(0.001)), 1e-4, 100, 1e-4, 3, 5, 0.1, new BinaryCrossEntropy(), new MCC());
 ```
 
 ## Additional Methods

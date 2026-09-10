@@ -5,9 +5,10 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Tensor\Vector;
 use Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
-use Rubix\ML\NeuralNet\Parameter;
 
 use const Rubix\ML\EPSILON;
 
@@ -56,17 +57,17 @@ class AdaMax extends Adam
     }
 
     /**
-     * @param float $rate
+     * @param Scheduler $scheduler
      * @param float $momentumDecay
      * @param float $normDecay
      */
-    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
+    public function __construct(Scheduler $scheduler, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
             ExtensionMinimumVersion::with('tensor', '3.0.0-beta')->check();
         }
 
-        parent::__construct($rate, $momentumDecay, $normDecay);
+        parent::__construct($scheduler, $momentumDecay, $normDecay);
     }
 
     /**
@@ -78,7 +79,7 @@ class AdaMax extends Adam
      * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function update(Parameter $param, Tensor $gradient) : Tensor
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
@@ -95,7 +96,7 @@ class AdaMax extends Adam
 
         $norm = $norm->clipLower(EPSILON);
 
-        return $velocity->divide($norm)->multiply($this->rate);
+        return $velocity->divide($norm)->multiply($this->scheduler->rate());
     }
 
     /**
@@ -107,7 +108,7 @@ class AdaMax extends Adam
      */
     public function __toString() : string
     {
-        return "AdaMax (rate: {$this->rate}, momentum_decay: {$this->momentumDecay},"
+        return "AdaMax (scheduler: {$this->scheduler}, momentum_decay: {$this->momentumDecay},"
             . " norm_decay: {$this->normDecay})";
     }
 }

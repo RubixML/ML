@@ -20,7 +20,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\FeedForward;
@@ -255,7 +255,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?? new Adam();
+        $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
@@ -449,7 +449,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("{$numParams} trainable parameters");
+            $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
@@ -469,8 +469,8 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = [];
@@ -509,7 +509,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             }
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, {$this->costFn}: $loss";
+                $message = "Epoch: {$epoch}";
+                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                $message .= ", {$this->costFn}: $loss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -555,7 +557,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $snapshot->restore();
 
                 if ($this->logger) {
-                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                    $this->logger->info("Network state restored to epoch $bestEpoch");
                 }
             }
 
@@ -572,9 +574,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      */
     public function cleanup() : void
     {
-        if ($this->optimizer instanceof Adaptive) {
-            $this->optimizer->reset();
-        }
+        $this->optimizer->flush();
     }
 
     /**

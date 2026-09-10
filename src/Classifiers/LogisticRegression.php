@@ -24,7 +24,7 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -235,7 +235,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         }
 
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?? new Adam();
+        $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -425,7 +425,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("{$numParams} trainable parameters");
+            $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
@@ -445,8 +445,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         }
 
         if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = [];
@@ -489,7 +489,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             }
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, {$this->costFn}: $loss";
+                $message = "Epoch: {$epoch}";
+                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                $message .= ", {$this->costFn}: $loss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -535,7 +537,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
                 $snapshot->restore();
 
                 if ($this->logger) {
-                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                    $this->logger->info("Network state restored to epoch $bestEpoch");
                 }
             }
 
@@ -552,9 +554,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
      */
     public function cleanup() : void
     {
-        if ($this->optimizer instanceof Adaptive) {
-            $this->optimizer->reset();
-        }
+        $this->optimizer->flush();
     }
 
     /**

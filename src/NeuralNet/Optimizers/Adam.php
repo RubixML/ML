@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -28,14 +29,14 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adam implements Optimizer, Adaptive
+class Adam implements Optimizer
 {
     /**
-     * The learning rate that controls the global step size.
+     * The learning rate schedule.
      *
-     * @var float
+     * @var Scheduler
      */
-    protected float $rate;
+    protected Scheduler $scheduler;
 
     /**
      * The momentum decay rate.
@@ -61,18 +62,13 @@ class Adam implements Optimizer, Adaptive
     ];
 
     /**
-     * @param float $rate
+     * @param Scheduler $scheduler
      * @param float $momentumDecay
      * @param float $normDecay
      * @throws InvalidArgumentException
      */
-    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
+    public function __construct(Scheduler $scheduler, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
-        if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must be'
-                . " greater than 0, $rate given.");
-        }
-
         if ($momentumDecay <= 0.0 or $momentumDecay >= 1.0) {
             throw new InvalidArgumentException('Momentum decay must be'
                 . " between 0 and 1, $momentumDecay given.");
@@ -83,9 +79,19 @@ class Adam implements Optimizer, Adaptive
                 . " between 0 and 1, $normDecay given.");
         }
 
-        $this->rate = $rate;
+        $this->scheduler = $scheduler;
         $this->momentumDecay = $momentumDecay;
         $this->normDecay = $normDecay;
+    }
+
+    /**
+     * The underlying learning rate scheduler instance.
+     *
+     * @internal
+     */
+    public function scheduler() : Scheduler
+    {
+        return $this->scheduler;
     }
 
     /**
@@ -110,16 +116,6 @@ class Adam implements Optimizer, Adaptive
     }
 
     /**
-     * Reset the parameter cache.
-     *
-     * @internal
-     */
-    public function reset() : void
-    {
-        $this->cache = [];
-    }
-
-    /**
      * Calculate a gradient descent step for a given parameter.
      *
      * @internal
@@ -128,7 +124,7 @@ class Adam implements Optimizer, Adaptive
      * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function update(Parameter $param, Tensor $gradient) : Tensor
     {
         [$velocity, $norm] = $this->cache[$param->id()];
 
@@ -146,7 +142,17 @@ class Adam implements Optimizer, Adaptive
 
         $norm = $norm->sqrt()->clipLower(EPSILON);
 
-        return $velocity->multiply($this->rate)->divide($norm);
+        return $velocity->multiply($this->scheduler->rate())->divide($norm);
+    }
+
+    /**
+     * Flush the parameter cache.
+     *
+     * @internal
+     */
+    public function flush() : void
+    {
+        $this->cache = [];
     }
 
     /**
@@ -158,7 +164,7 @@ class Adam implements Optimizer, Adaptive
      */
     public function __toString() : string
     {
-        return "Adam (rate: {$this->rate}, momentum decay: {$this->momentumDecay},"
+        return "Adam (scheduler: {$this->scheduler}, momentum decay: {$this->momentumDecay},"
             . " norm decay: {$this->normDecay})";
     }
 }

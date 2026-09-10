@@ -389,8 +389,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         if (!$testing->empty()) {
             $outTest = array_fill(0, $testing->numSamples(), $mu);
         } elseif ($this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -494,7 +494,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
 
             if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+                $this->logger->info("Ensemble state restored to epoch $bestEpoch");
             }
         }
 

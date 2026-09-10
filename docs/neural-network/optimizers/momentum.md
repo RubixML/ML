@@ -8,7 +8,7 @@ Momentum accelerates each update step by accumulating velocity from past updates
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
+| 1 | scheduler | | [Scheduler](../schedulers/constant.md) | The learning-rate schedule that supplies the step size each batch. |
 | 2 | decay | 0.1 | float | The decay rate of the accumulated velocity. |
 | 3 | lookahead | false | bool | Should we employ Nesterov's lookahead (NAG) when updating the parameters? |
 
@@ -16,8 +16,9 @@ Momentum accelerates each update step by accumulating velocity from past updates
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new Momentum(0.01, 0.1, true);
+$optimizer = new Momentum(new Constant(0.01), 0.1, true);
 ```
 
 ## References

@@ -9,9 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Optimizers\Scheduler;
 use Traversable;
 
 use function array_reverse;
@@ -171,12 +169,10 @@ class FeedForward implements Network
             $fanIn = $layer->initialize($fanIn);
         }
 
-        if ($this->optimizer instanceof Adaptive) {
-            foreach ($this->layers() as $layer) {
-                if ($layer instanceof Parametric) {
-                    foreach ($layer->parameters() as $param) {
-                        $this->optimizer->warm($param);
-                    }
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $param) {
+                    $this->optimizer->warm($param);
                 }
             }
         }
@@ -214,9 +210,7 @@ class FeedForward implements Network
 
         $loss = $this->backpropagate($dataset->labels());
 
-        if ($this->optimizer instanceof Scheduler) {
-            $this->optimizer->tick();
-        }
+        $this->optimizer->scheduler()->tick();
 
         return $loss;
     }

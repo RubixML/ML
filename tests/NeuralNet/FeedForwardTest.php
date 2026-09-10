@@ -8,6 +8,7 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
@@ -68,7 +69,7 @@ class FeedForwardTest extends TestCase
 
         $this->output = new Multiclass(['yes', 'no', 'maybe'], new MulticlassCrossEntropy());
 
-        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
+        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(new Constant(0.001)));
     }
 
     #[Test]

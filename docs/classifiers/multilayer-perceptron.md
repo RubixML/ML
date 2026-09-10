@@ -36,6 +36,7 @@ use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
@@ -48,7 +49,7 @@ $estimator = new MultilayerPerceptron([
     new Dropout(0.3),
     new Dense(50),
     new PReLU(),
-], 128, new Adam(0.001), 1000, 1e-3, 10, 3, 0.1, new MulticlassCrossEntropy(), new MCC());
+], 128, new Adam(new Constant(0.001)), 1000, 1e-3, 10, 3, 0.1, new MulticlassCrossEntropy(), new MCC());
 ```
 
 ## Additional Methods

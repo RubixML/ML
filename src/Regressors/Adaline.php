@@ -20,8 +20,8 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
@@ -230,7 +230,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         }
 
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?? new Adam();
+        $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -412,7 +412,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("{$numParams} trainable parameters");
+            $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->randomize()->split($this->holdOut);
@@ -432,8 +432,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         }
 
         if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = [];
@@ -476,7 +476,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             }
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, {$this->costFn}: $loss";
+                $message = "Epoch: {$epoch}";
+                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                $message .= ", {$this->costFn}: $loss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -522,7 +524,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 $snapshot->restore();
 
                 if ($this->logger) {
-                    $this->logger->info("Model state restored to epoch $bestEpoch");
+                    $this->logger->info("Network state restored to epoch $bestEpoch");
                 }
             }
 
@@ -539,9 +541,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      */
     public function cleanup() : void
     {
-        if ($this->optimizer instanceof Adaptive) {
-            $this->optimizer->reset();
-        }
+        $this->optimizer->flush();
     }
 
     /**

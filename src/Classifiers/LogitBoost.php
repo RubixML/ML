@@ -404,8 +404,8 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         if (!$testing->empty()) {
             $zTest = array_fill(0, $testing->numSamples(), 0.0);
         } elseif ($this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -516,7 +516,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $this->boosters = array_slice($this->boosters, 0, $bestEpoch);
 
             if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+                $this->logger->info("Ensemble state restored to epoch $bestEpoch");
             }
         }
 

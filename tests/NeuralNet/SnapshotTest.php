@@ -20,6 +20,7 @@ use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -275,7 +276,7 @@ class SnapshotTest extends TestCase
                 classes: ['yes', 'no'],
                 costFn:  new BinaryCrossEntropy()
             ),
-            optimizer: new Stochastic()
+            optimizer: new Stochastic(new Constant())
         );
 
         $network->initialize();

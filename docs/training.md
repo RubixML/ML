@@ -40,9 +40,10 @@ Since training is often an iterative process, it is useful to obtain feedback as
 ```php
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Loggers\Screen;
 
-$estimator = new LogisticRegression(128, new Adam(0.01));
+$estimator = new LogisticRegression(128, new Adam(new Constant(0.01)));
 
 $estimator->setLogger(new Screen());
 
@@ -50,7 +51,7 @@ $estimator->train($dataset);
 ```
 
 ```text
-[2020-09-04 08:39:04] INFO: Logistic Regression (batch_size: 128, optimizer: Adam (rate: 0.01, momentum_decay: 0.1, norm_decay: 0.001), alpha: 0.0001, epochs: 1000, min_change: 0.0001, window: 5, cost_fn: Cross Entropy) initialized
+[2020-09-04 08:39:04] INFO: Logistic Regression (batch_size: 128, optimizer: Adam (scheduler: Constant (rate: 0.01), momentum decay: 0.1, norm decay: 0.001), alpha: 0.0001, epochs: 1000, min_change: 0.0001, window: 5, cost_fn: Cross Entropy) initialized
 [2020-09-04 08:39:04] INFO: Epoch 1 - Cross Entropy: 0.16895133388673
 [2020-09-04 08:39:04] INFO: Epoch 2 - Cross Entropy: 0.16559247705179
 [2020-09-04 08:39:04] INFO: Epoch 3 - Cross Entropy: 0.16294448401323

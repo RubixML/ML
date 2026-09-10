@@ -14,6 +14,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\ZScaleStandardizer;
@@ -74,7 +75,7 @@ class LogisticRegressionTest extends TestCase
 
         $this->estimator = new LogisticRegression(
             batchSize: 100,
-            optimizer: new Adam(rate: 0.01),
+            optimizer: new Adam(new Constant(0.01)),
             l2Penalty: 1e-4,
             epochs: 300,
             minChange: 1e-4,
@@ -125,7 +126,7 @@ class LogisticRegressionTest extends TestCase
     {
         $expected = [
             'batch size' => 100,
-            'optimizer' => new Adam(0.01),
+            'optimizer' => new Adam(new Constant(0.01)),
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,

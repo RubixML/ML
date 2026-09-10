@@ -74,7 +74,7 @@ class Parameter
      */
     public function update(Tensor $gradient, Optimizer $optimizer) : void
     {
-        $step = $optimizer->step($this, $gradient);
+        $step = $optimizer->update($this, $gradient);
 
         $this->param = $this->param->subtract($step);
     }

@@ -25,6 +25,7 @@ use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
@@ -75,7 +76,7 @@ class MLPRegressorTest extends TestCase
                 new Activation(new SiLU()),
             ],
             batchSize: 32,
-            optimizer: new Adam(0.01),
+            optimizer: new Adam(new Constant(0.01)),
             epochs: 100,
             minChange: 1e-4,
             evalInterval: 3,
@@ -140,7 +141,7 @@ class MLPRegressorTest extends TestCase
                 new Activation(new SiLU()),
             ],
             'batch size' => 32,
-            'optimizer' => new Adam(0.01),
+            'optimizer' => new Adam(new Constant(0.01)),
             'epochs' => 100,
             'min change' => 1e-4,
             'eval interval' => 3,
