@@ -469,14 +469,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             foreach ($batches as $batch) {
                 $loss += $this->network->roundtrip($batch);
 
-                $params = $this->network->parameters();
-
-                foreach ($params as $param) {
-                    $step = $this->optimizer->update($param);
-
-                    $param->update($step);
-
-                    $param->resetGradient();
+                foreach ($this->network->parameters() as $param) {
+                    $param->update($this->optimizer);
                 }
             }
 
