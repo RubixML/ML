@@ -542,14 +542,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0;
 
                 if ($updateThisStep) {
-                    $accSteps = $step % $this->gradientAccumulationSteps ?: $this->gradientAccumulationSteps;
-
                     $sumSquares = 0.0;
 
                     foreach ($this->network->parameters() as $param) {
-                        $param->scaleGradient(1.0 / $accSteps);
+                        $param->scaleGradient(1.0 / $this->gradientAccumulationSteps);
 
                         $paramNorm = $param->gradientNorm();
+                        
                         $sumSquares += $paramNorm * $paramNorm;
                     }
 
