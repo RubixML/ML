@@ -35,19 +35,19 @@ $dataset = new Labeled($samples, $labels);
 
 ### Selectors
 
-Return the labels of the dataset in an array:
+Return the labels of the dataset in an array.
 
 ```php
 public labels() : array
 ```
 
-Return a single label at the given row offset:
+Return a single label at the given row offset.
 
 ```php
 public label(int $offset) : mixed
 ```
 
-Return all of the possible outcomes i.e. the unique labels in an array:
+Return all of the possible outcomes i.e. the unique labels in an array.
 
 ```php
 public possibleOutcomes() : array
@@ -67,7 +67,7 @@ Array
 
 ### Data Types
 
-Return the data type of the label:
+Return the data type of the label.
 
 ```php
 public labelType() : Rubix\ML\DataType
@@ -83,7 +83,7 @@ continuous
 
 ### Stratification
 
-Group samples by their class label and return them in their own dataset:
+Group samples by their class label and return them in their own dataset.
 
 ```php
 public stratifyByLabel() : array
@@ -93,7 +93,7 @@ public stratifyByLabel() : array
 $strata = $dataset->stratifyByLabel();
 ```
 
-Split the dataset into left and right subsets such that the proportions of class labels remain intact:
+Split the dataset into left and right subsets such that the proportions of class labels remain intact.
 
 ```php
 public stratifiedSplit($ratio = 0.5) : array
@@ -103,7 +103,7 @@ public stratifiedSplit($ratio = 0.5) : array
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
 
-Return *k* equal size subsets of the dataset such that class proportions remain intact:
+Return *k* equal size subsets of the dataset such that class proportions remain intact.
 
 ```php
 public stratifiedFold($k = 10) : array
@@ -118,7 +118,7 @@ $folds = $dataset->stratifiedFold(3);
 
 ### Transform Labels
 
-Transform the labels in the dataset using a callback function and return self for method chaining:
+Transform the labels in the dataset using a callback function and return self for method chaining.
 
 ```php
 public transformLabels(callable $fn) : self
@@ -139,7 +139,7 @@ $dataset->transformLabels(function ($label) {
 
 ### Describe by Label
 
-Describe the features of the dataset broken down by categorical label:
+Describe the features of the dataset broken down by categorical label.
 
 ```php
 public describeByLabel() : Report

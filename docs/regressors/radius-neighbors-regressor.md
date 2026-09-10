@@ -30,7 +30,7 @@ $estimator = new RadiusNeighborsRegressor(0.5, false, new BallTree(30, new Diago
 
 ## Additional Methods
 
-Return the base spatial tree instance:
+Return the base spatial tree instance.
 
 ```php
 public tree() : Spatial

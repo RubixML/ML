@@ -25,7 +25,7 @@ $transformer = new IntervalDiscretizer(8, false);
 
 ## Additional Methods
 
-Return the bin intervals of the fitted data:
+Return the bin intervals of the fitted data.
 
 ```php
 public intervals() : array

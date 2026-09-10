@@ -37,7 +37,7 @@ $estimator = new LogitBoost(new RegressionTree(4), 0.1, 0.5, 1000, 1e-4, 3, 5, 0
 
 ## Additional Methods
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -51,13 +51,13 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the validation score for each epoch from the last training session:
+Return the validation score for each epoch from the last training session.
 
 ```php
 public scores() : float[]|null
 ```
 
-Return the loss for each epoch from the last training session:
+Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null

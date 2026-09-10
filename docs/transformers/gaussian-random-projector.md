@@ -24,7 +24,7 @@ $transformer = new GaussianRandomProjector(100);
 
 ## Additional Methods
 
-Estimate the minimum dimensionality needed to satisfy a *max distortion* constraint with *n* samples using the Johnson-Lindenstrauss lemma:
+Estimate the minimum dimensionality needed to satisfy a *max distortion* constraint with *n* samples using the Johnson-Lindenstrauss lemma.
 
 ```php
 public static minDimensions(int $n, float $maxDistortion = 0.5) : int

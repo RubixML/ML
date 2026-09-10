@@ -28,7 +28,7 @@ $estimator = new LocalOutlierFactor(20, 0.1, new BallTree(30, new Euclidean));
 
 ## Additional Methods
 
-Return the base spatial tree instance:
+Return the base spatial tree instance.
 
 ```php
 public tree() : Spatial

@@ -24,7 +24,7 @@ $transformer = new OneHotEncoder(['ugly', 'mean']);
 
 ## Additional Methods
 
-Return the categories computed during fitting indexed by feature column:
+Return the categories computed during fitting indexed by feature column.
 
 ```php
 public categories() : ?array

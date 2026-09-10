@@ -31,13 +31,13 @@ $estimator = new FuzzyCMeans(5, 1.2, 400, 1., new Euclidean(), new Random());
 
 ## Additional Methods
 
-Return the *c* computed centroids of the training set:
+Return the *c* computed centroids of the training set.
 
 ```php
 public centroids() : array[]
 ```
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -51,7 +51,7 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Returns the inertia at each epoch from the last round of training:
+Returns the inertia at each epoch from the last round of training.
 
 ```php
 public losses() : float[]|null

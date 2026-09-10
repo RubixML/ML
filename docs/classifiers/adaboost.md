@@ -40,7 +40,7 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 3, 5,
 
 ## Additional Methods
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -54,13 +54,13 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the loss for each epoch from the last training session:
+Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null
 ```
 
-Return the validation score for each epoch from the last training session:
+Return the validation score for each epoch from the last training session.
 ```php
 public scores() : float[]|null
 ```

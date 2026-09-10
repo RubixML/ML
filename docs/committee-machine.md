@@ -50,13 +50,13 @@ $estimator->setBackend(new Swoole(8));
 
 ## Additional Methods
 
-Return the learner instances of the committee:
+Return the learner instances of the committee.
 
 ```php
 public experts() : array
 ```
 
-Return the normalized influence scores of each expert in the committee:
+Return the normalized influence scores of each expert in the committee.
 
 ```php
 public influences() : array

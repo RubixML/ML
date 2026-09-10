@@ -29,25 +29,25 @@ $estimator = new GaussianMixture(5, 1e-6, 100, 1e-4, new KMC2(50));
 
 ## Additional Methods
 
-Return the cluster prior probabilities based on their representation over all training samples:
+Return the cluster prior probabilities based on their representation over all training samples.
 
 ```php
 public priors() : float[]
 ```
 
-Return the running means of each feature column for each cluster:
+Return the running means of each feature column for each cluster.
 
 ```php
 public means() : array[]
 ```
 
-Return the variance of each feature column for each cluster:
+Return the variance of each feature column for each cluster.
 
 ```php
 public variances() : array[]
 ```
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -61,7 +61,7 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the loss for each epoch from the last training session:
+Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null

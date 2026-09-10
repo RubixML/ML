@@ -28,7 +28,7 @@ $transformer = new TfIdfTransformer(2.0, true);
 
 ## Additional Methods
 
-Return the document frequencies calculated during fitting:
+Return the document frequencies calculated during fitting.
 
 ```php
 public dfs() : ?array

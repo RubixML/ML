@@ -31,19 +31,19 @@ $estimator = new KMeans(3, 128, 300, 10.0, new Euclidean(), new PlusPlus());
 
 ## Additional Methods
 
-Return the *k* computed centroids of the training set:
+Return the *k* computed centroids of the training set.
 
 ```php
 public centroids() : array[]
 ```
 
-Return the number of training samples that each centroid is responsible for:
+Return the number of training samples that each centroid is responsible for.
 
 ```php
 public sizes() : int[]
 ```
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -57,7 +57,7 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the loss for each epoch from the last training session:
+Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null

@@ -29,7 +29,7 @@ $estimator = new RadiusNeighbors(50.0, true, '?', new KDTree(100, new Manhattan(
 
 ## Additional Methods
 
-Return the base spatial tree instance:
+Return the base spatial tree instance.
 
 ```php
 public tree() : Spatial

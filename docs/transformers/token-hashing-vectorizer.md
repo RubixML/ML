@@ -50,13 +50,13 @@ public const FNV1 callable(string) : int
 
 ## Additional Methods
 
-The MurmurHash3 hashing function:
+The MurmurHash3 hashing function.
 
 ```php
 public static murmur3(string $input) : int
 ```
 
-The FNV1a 32-bit hashing function:
+The FNV1a 32-bit hashing function.
 
 ```php
 public static fnv1a32(string $input) : int

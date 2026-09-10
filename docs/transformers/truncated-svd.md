@@ -27,7 +27,7 @@ $transformer = new TruncatedSVD(100);
 
 ## Additional Methods
 
-Return the proportion of information lost due to the transformation:
+Return the proportion of information lost due to the transformation.
 
 ```php
 public lossiness() : ?float

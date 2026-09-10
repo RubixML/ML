@@ -57,7 +57,7 @@ Clean up any leftover state after training. Only do this if you plan to use the 
 public cleanup() : void
 ```
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -71,13 +71,13 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the loss for each epoch from the last training session:
+Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null
 ```
 
-Return the validation score for each epoch from the last training session:
+Return the validation score for each epoch from the last training session.
 
 ```php
 public scores() : float[]|null
@@ -89,7 +89,7 @@ Returns the underlying neural network instance or `null` if untrained. See [Feed
 public network() : FeedForward|null
 ```
 
-Set the path of the temporary snapshot file used to store network parameters during training:
+Set the path of the temporary snapshot file used to store network parameters during training.
 
 ```php
 public setSnapshotPath(?string $path) : void

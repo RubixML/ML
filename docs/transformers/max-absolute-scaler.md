@@ -22,7 +22,7 @@ $transformer = new MaxAbsoluteScaler();
 
 ## Additional Methods
 
-Return the maximum absolute values for each feature column:
+Return the maximum absolute values for each feature column.
 
 ```php
 public maxabs() : array

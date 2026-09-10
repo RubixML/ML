@@ -27,13 +27,13 @@ $transformer = new BM25Transformer(1.2, 0.75);
 
 ## Additional Methods
 
-Return the document frequencies calculated during fitting:
+Return the document frequencies calculated during fitting.
 
 ```php
 public dfs() : ?array
 ```
 
-Return the average number of tokens per document:
+Return the average number of tokens per document.
 
 ```php
 public averageDocumentLength() : ?float

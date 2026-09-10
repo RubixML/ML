@@ -25,13 +25,13 @@ $transformer = new MinMaxNormalizer(-5.0, 5.0);
 
 ## Additional Methods
 
-Return the minimum values for each fitted feature column:
+Return the minimum values for each fitted feature column.
 
 ```php
 public minimums() : ?array
 ```
 
-Return the maximum values for each fitted feature column:
+Return the maximum values for each fitted feature column.
 
 ```php
 public maximums() : ?array

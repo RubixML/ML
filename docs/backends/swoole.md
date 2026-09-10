@@ -30,7 +30,7 @@ $estimator->setBackend(new Swoole());
 
 ## Additional Methods
 
-Return the number of concurrent worker processes:
+Return the number of concurrent worker processes.
 
 ```php
 public workers() : int

@@ -31,13 +31,13 @@ $estimator = new NaiveBayes([
 
 ## Additional Methods
 
-Return the class prior probabilities:
+Return the class prior probabilities.
 
 ```php
 public priors() : float[]|null
 ```
 
-Return the counts for each category per class:
+Return the counts for each category per class.
 
 ```php
 public counts() : array[]|null
