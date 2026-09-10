@@ -160,6 +160,7 @@ class MLPRegressorTest extends TestCase
             ],
             'batch size' => 32,
             'optimizer' => new Adam(new Constant(0.01)),
+            'max gradient norm' => null,
             'epochs' => 100,
             'min change' => 1e-4,
             'eval interval' => 3,
@@ -217,6 +218,46 @@ class MLPRegressorTest extends TestCase
         );
 
         self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    #[TestDox('Train with gradient clipping')]
+    public function trainWithGradientClipping() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(32),
+                new Activation(new SELU()),
+                new Dense(16),
+                new Activation(new SiLU()),
+                new Dense(8),
+                new Activation(new SiLU()),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(new Constant(0.01)),
+            maxGradientNorm: 1e-3,
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($dataset);
+
+        self::assertTrue($estimator->trained());
+
+        $predictions = $estimator->predict($dataset);
+
+        self::assertCount($dataset->numSamples(), $predictions);
+
+        foreach ($predictions as $prediction) {
+            self::assertIsNumeric($prediction);
+        }
     }
 
     #[Test]

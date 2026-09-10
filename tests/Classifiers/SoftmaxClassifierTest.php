@@ -131,6 +131,7 @@ class SoftmaxClassifierTest extends TestCase
         $expected = [
             'batch size' => 10,
             'optimizer' => new Adam(new Constant(0.01)),
+            'max gradient norm' => null,
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
@@ -181,6 +182,33 @@ class SoftmaxClassifierTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    public function trainWithGradientClipping() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new SoftmaxClassifier(
+            batchSize: 10,
+            optimizer: new Adam(new Constant(0.01)),
+            maxGradientNorm: 1e-3,
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($dataset);
+
+        $this->assertTrue($estimator->trained());
+
+        $predictions = $estimator->predict($dataset);
+
+        $this->assertCount($dataset->numSamples(), $predictions);
     }
 
     #[Test]

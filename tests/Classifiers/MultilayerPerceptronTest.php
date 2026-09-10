@@ -180,6 +180,7 @@ class MultilayerPerceptronTest extends TestCase
             ],
             'batch size' => 32,
             'optimizer' => new Adam(new Constant(0.001)),
+            'max gradient norm' => null,
             'epochs' => 100,
             'min change' => 1e-3,
             'eval interval' => 3,
@@ -237,6 +238,41 @@ class MultilayerPerceptronTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    #[Test]
+    public function trainWithGradientClipping() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(32),
+                new Activation(new LeakyReLU(0.1)),
+                new Dense(16),
+                new Activation(new SoftPlus()),
+                new Dense(8),
+                new Swish(),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(new Constant(0.001)),
+            maxGradientNorm: 1e-3,
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($dataset);
+
+        $this->assertTrue($estimator->trained());
+
+        $predictions = $estimator->predict($dataset);
+
+        $this->assertCount($dataset->numSamples(), $predictions);
     }
 
     #[Test]

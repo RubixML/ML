@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet;
 
 use Tensor\Matrix;
+use Tensor\ColumnVector;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
@@ -11,6 +12,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+
+use function sqrt;
 
 #[Group('NeuralNet')]
 #[CoversClass(Parameter::class)]
@@ -111,6 +114,37 @@ class ParameterTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->param->scaleGradient(0.5);
+    }
+
+    #[Test]
+    public function gradientNorm() : void
+    {
+        $gradient = Matrix::quick([
+            [2, 1],
+            [1, -2],
+        ]);
+
+        $this->param->accumulate($gradient);
+
+        $this->assertEqualsWithDelta(sqrt(10.0), $this->param->gradientNorm(), 1e-8);
+    }
+
+    #[Test]
+    public function gradientNormOfColumnVector() : void
+    {
+        $param = new Parameter(ColumnVector::quick([1.0, -2.0, 3.0, 4.0]));
+
+        $param->accumulate(ColumnVector::quick([2.0, 0.0, -4.0, 0.0]));
+
+        $this->assertEqualsWithDelta(sqrt(20.0), $param->gradientNorm(), 1e-8);
+    }
+
+    #[Test]
+    public function gradientNormWithoutGradient() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->param->gradientNorm();
     }
 
     #[Test]

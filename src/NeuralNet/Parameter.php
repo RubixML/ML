@@ -3,6 +3,8 @@
 namespace Rubix\ML\NeuralNet;
 
 use Tensor\Tensor;
+use Tensor\Vector;
+use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -44,6 +46,25 @@ class Parameter
      * @var Tensor<int|float|array>|null
      */
     protected ?Tensor $gradient = null;
+
+    /**
+     * Flatten a matrix into a vector or return a vector as-is.
+     *
+     * @param Tensor $tensor
+     * @return Vector
+     */
+    protected static function vectorize(Tensor $tensor) : Vector
+    {
+        if ($tensor instanceof Matrix) {
+            return $tensor->flatten();
+        }
+
+        if ($tensor instanceof Vector) {
+            return $tensor;
+        }
+
+        throw new RuntimeException('Unable to compute the norm of the accumulated gradient.');
+    }
 
     /**
      * @param Tensor $param
@@ -95,6 +116,22 @@ class Parameter
     }
 
     /**
+     * Return the L2 norm of the accumulated gradient.
+     *
+     * @return float
+     */
+    public function gradientNorm() : float
+    {
+        if (!$this->hasGradient()) {
+            throw new RuntimeException('No gradient to compute norm.');
+        }
+
+        $tensor = self::vectorize($this->gradient);
+
+        return $tensor->l2Norm();
+    }
+
+    /**
      * Accumulate the gradient of the parameter.
      *
      * @param Tensor<int|float|array> $gradient
@@ -113,7 +150,7 @@ class Parameter
      */
     public function scaleGradient(float $scale) : void
     {
-        if (!$this->gradient) {
+        if (!$this->hasGradient()) {
             throw new RuntimeException('No gradient to scale.');
         }
 
