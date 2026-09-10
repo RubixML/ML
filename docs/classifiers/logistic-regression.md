@@ -35,7 +35,18 @@ use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
-$estimator = new LogisticRegression(64, new Adam(new Constant(0.001)), 1e-4, 100, 1e-4, 3, 5, 0.1, new BinaryCrossEntropy(), new MCC());
+$estimator = new LogisticRegression(
+    batchSize: 64,
+    optimizer: new Adam(scheduler: new Constant(0.001)),
+    l2Penalty: 1e-4,
+    epochs: 100,
+    minChange: 1e-4,
+    evalInterval: 3,
+    window: 5,
+    holdOut: 0.1,
+    costFn: new BinaryCrossEntropy(),
+    metric: new MCC()
+);
 ```
 
 ## Additional Methods

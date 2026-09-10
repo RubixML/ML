@@ -9,10 +9,12 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Traversable;
 
-use function array_reverse;
+use function Rubix\ML\enumerate;
+use function array_slice;
+use function count;
 
 /**
  * Feed Forward
@@ -45,45 +47,23 @@ class FeedForward implements Network
     ];
 
     /**
-     * The pathing of the backward pass through the hidden layers.
-     *
-     * @var list<Layers\Hidden>
-     */
-    protected array $backPass = [
-        //
-    ];
-
-    /**
-     * The output layer of the network.
+     * The output layer.
      *
      * @var Output
      */
     protected Output $output;
 
     /**
-     * The gradient descent optimizer used to train the network.
-     *
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
-
-    /**
      * @param Input $input
      * @param Layers\Hidden[] $hidden
      * @param Output $output
-     * @param Optimizer $optimizer
+     * @throws InvalidArgumentException
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output)
     {
-        $hidden = array_values($hidden);
-
-        $backPass = array_reverse($hidden);
-
         $this->input = $input;
-        $this->hidden = $hidden;
+        $this->hidden = array_values($hidden);
         $this->output = $output;
-        $this->optimizer = $optimizer;
-        $this->backPass = $backPass;
     }
 
     /**
@@ -131,15 +111,7 @@ class FeedForward implements Network
     }
 
     /**
-     * Return the optimizer used to train the network.
-     */
-    public function optimizer() : Optimizer
-    {
-        return $this->optimizer;
-    }
-
-    /**
-     * Return the number of trainable parameters in the network.
+     * Return the total number of parameters in the network.
      *
      * @return int
      */
@@ -147,19 +119,59 @@ class FeedForward implements Network
     {
         $numParams = 0;
 
-        foreach ($this->layers() as $layer) {
-            if ($layer instanceof Parametric) {
-                foreach ($layer->parameters() as $parameter) {
-                    $numParams += $parameter->param()->size();
-                }
-            }
+        foreach ($this->parameters() as $parameter) {
+            $numParams += $parameter->param()->size();
         }
 
         return $numParams;
     }
 
     /**
-     * Initialize the parameters of the layers and warm the optimizer cache.
+     * Return an iterable of all the trainable parameters in the network.
+     *
+     * @return Traversable<Parameter>
+     */
+    public function parameters() : Traversable
+    {
+        foreach ($this->layers() as $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $param) {
+                    yield $param;
+                }
+            }
+        }
+    }
+
+    /**
+     * The number of trainable parameters in the network.
+     */
+    public function numTrainableParams() : int
+    {
+        $numParams = 0;
+
+        foreach ($this->trainableParameters() as $parameter) {
+            $numParams += $parameter->param()->size();
+        }
+
+        return $numParams;
+    }
+
+    /**
+     * Return an iterable of all the trainable (unfrozen) parameters in the network.
+     *
+     * @return Traversable<Parameter>
+     */
+    public function trainableParameters() : Traversable
+    {
+        foreach ($this->parameters() as $param) {
+            if (!$param->frozen()) {
+                yield $param;
+            }
+        }
+    }
+
+    /**
+     * Initialize the parameters of the layers.
      */
     public function initialize() : void
     {
@@ -168,13 +180,43 @@ class FeedForward implements Network
         foreach ($this->layers() as $layer) {
             $fanIn = $layer->initialize($fanIn);
         }
+    }
 
-        foreach ($this->layers() as $layer) {
+    /**
+     * Freeze the first k hidden layers of the network preventing their
+     * parameters from being updated during training.
+     *
+     * @param int $k
+     * @throws InvalidArgumentException
+     */
+    public function freezeFirstKLayers(int $k) : void
+    {
+        $numHiddenLayers = count($this->hidden());
+
+        if ($k < 1 or $k > $numHiddenLayers) {
+            throw new InvalidArgumentException('Number of layers to freeze'
+                . " must be between 1 and $numHiddenLayers, $k given.");
+        }
+
+        $firstKLayers = array_slice($this->hidden(), 0, $k);
+
+        foreach ($firstKLayers as $layer) {
             if ($layer instanceof Parametric) {
-                foreach ($layer->parameters() as $param) {
-                    $this->optimizer->warm($param);
+                foreach ($layer->parameters() as $parameter) {
+                    $parameter->freeze();
                 }
             }
+        }
+    }
+
+    /**
+     * Unfreeze the hidden layers of the network allowing their parameters to
+     * be updated during training.
+     */
+    public function unfreeze() : void
+    {
+        foreach ($this->parameters() as $param) {
+            $param->unfreeze();
         }
     }
 
@@ -210,8 +252,6 @@ class FeedForward implements Network
 
         $loss = $this->backpropagate($dataset->labels());
 
-        $this->optimizer->scheduler()->tick();
-
         return $loss;
     }
 
@@ -238,10 +278,14 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        [$gradient, $loss] = $this->output->back($labels, $this->optimizer);
+        [$gradient, $loss] = $this->output->back($labels);
 
-        foreach ($this->backPass as $layer) {
-            $gradient = $layer->back($gradient, $this->optimizer);
+        $cutoff = $this->backpropagationCutoff();
+
+        for ($i = count($this->hidden) - 1; $i >= $cutoff; --$i) {
+            $layer = $this->hidden[$i];
+
+            $gradient = $layer->back($gradient);
         }
 
         return $loss;
@@ -257,11 +301,7 @@ class FeedForward implements Network
         $dot = 'digraph Tree {' . PHP_EOL;
         $dot .= '  node [shape=box, fontname=helvetica];' . PHP_EOL;
 
-        $layerNum = 0;
-
-        foreach ($this->layers() as $layer) {
-            ++$layerNum;
-
+        foreach (enumerate($this->layers(), 1) as $layerNum => $layer) {
             $dot .= "  N$layerNum [label=\"$layer\",style=\"rounded\"]" . PHP_EOL;
 
             if ($layerNum > 1) {
@@ -274,5 +314,26 @@ class FeedForward implements Network
         $dot .= '}';
 
         return new Encoding($dot);
+    }
+
+    /**
+     * Return the index of the first hidden layer containing an unfrozen
+     * parameter or the number of hidden layers if they are all frozen.
+     *
+     * @return int
+     */
+    private function backpropagationCutoff() : int
+    {
+        foreach ($this->hidden as $i => $layer) {
+            if ($layer instanceof Parametric) {
+                foreach ($layer->parameters() as $parameter) {
+                    if (!$parameter->frozen()) {
+                        return $i;
+                    }
+                }
+            }
+        }
+
+        return count($this->hidden);
     }
 }

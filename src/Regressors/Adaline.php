@@ -374,14 +374,19 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     {
         DatasetIsNotEmpty::with($dataset)->check();
 
-        $this->network = new FeedForward(
+        $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             [new Dense(1, $this->l2Penalty, true, new He())],
-            new Continuous($this->costFn),
-            $this->optimizer
+            new Continuous($this->costFn)
         );
 
-        $this->network->initialize();
+        $network->initialize();
+
+        foreach ($network->parameters() as $parameter) {
+            $this->optimizer->warm($parameter);
+        }
+
+        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -421,9 +426,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $loss = 0.0;
         $score = $snapshot = null;
-        $prevLoss = INF;
+        $prevLoss = $averageLoss = INF;
 
         $snapshotPath = $this->snapshotPath;
 
@@ -441,19 +445,29 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $loss = 0.0;
+            $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss += $this->network->roundtrip($batch);
+                $loss = $this->network->roundtrip($batch);
+
+                foreach ($this->network->parameters() as $param) {
+                    $param->update($this->optimizer);
+
+                    $param->resetGradient();
+                }
+
+                $this->optimizer->scheduler()->tick();
+
+                $totalLoss += $loss;
             }
 
-            $loss /= count($batches);
+            $averageLoss = $totalLoss / count($batches);
 
-            $lossChange = abs($prevLoss - $loss);
+            $lossChange = abs($prevLoss - $averageLoss);
 
-            $this->losses[$epoch] = $loss;
+            $this->losses[$epoch] = $averageLoss;
 
-            if (is_nan($loss)) {
+            if (is_nan($averageLoss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical under/overflow detected');
                 }
@@ -461,7 +475,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 break;
             }
 
-            if ($loss <= 0.0) {
+            if ($averageLoss <= 0.0) {
                 break;
             }
 
@@ -477,8 +491,12 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
             if ($this->logger) {
                 $message = "Epoch: {$epoch}";
-                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
-                $message .= ", {$this->costFn}: $loss";
+
+                if (!$this->optimizer->scheduler() instanceof Constant) {
+                    $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                }
+
+                $message .= ", {$this->costFn}: $averageLoss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -516,11 +534,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
                 break;
             }
 
-            $prevLoss = $loss;
+            $prevLoss = $averageLoss;
         }
 
         if ($snapshot) {
-            if (end($this->scores) < $bestScore or is_nan($loss)) {
+            if (end($this->scores) < $bestScore or is_nan($averageLoss)) {
                 $snapshot->restore();
 
                 if ($this->logger) {

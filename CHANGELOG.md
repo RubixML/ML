@@ -42,11 +42,13 @@
     - Murmur3 new default Token Hashing Vectorizer hash function
     - Dataset fold() now returns excess samples in last fold
     - Increase default Decision Tree max leaf node size from 3 to 5
-    - Canonicalized `He` and `Xavier 2` initializers
+    - Canonicalized `He` initializer
+    - `Xavier 2` now extends `He` as a deprecated alias
     - Remove Softmax activation function
     - Fix Multiclass layer gradient for non-Cross Entropy losses
-    - `Xavier 2` now extends `He` as a deprecated alias
     - Optimizers now take a Scheduler rather than a raw learning rate
+    - MLP Learners now have gradient accumulation and clipping
+    - MLP Learners can now freeze first k layers for fine-tuning
     
 - 2.5.14
     - Fix Report and Tuple null values

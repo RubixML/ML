@@ -8,7 +8,6 @@ use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -40,6 +39,7 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
 
+use function Rubix\ML\enumerate;
 use function count;
 use function get_object_vars;
 use function is_dir;
@@ -48,6 +48,7 @@ use function number_format;
 use function uniqid;
 use function sys_get_temp_dir;
 use function array_reverse;
+use function sqrt;
 
 /**
  * MLP Regressor
@@ -60,6 +61,7 @@ use function array_reverse;
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.
  * [2] L. Prechelt. (1997). Early Stopping - but when?
+ * [3] R. Pascanu, et al. (2013). On the difficulty of training recurrent neural networks.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -87,11 +89,26 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected int $batchSize;
 
     /**
+     * The number of gradient accumulation steps before updating the network parameters.
+     *
+     * @var positive-int
+     */
+    protected int $gradientAccumulationSteps;
+
+    /**
      * The gradient descent optimizer used to update the network parameters.
      *
      * @var Optimizer
      */
     protected Optimizer $optimizer;
+
+    /**
+     * The maximum L2 norm of the gradient set. When exceeded all gradients are rescaled
+     * proportionally so that the global norm equals the maximum.
+     *
+     * @var float|null
+     */
+    protected ?float $maxGradientNorm = null;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
@@ -173,7 +190,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     /**
      * @param list<mixed> $hiddenLayers
      * @param int $batchSize
+     * @param int $gradientAccumulationSteps
      * @param Optimizer|null $optimizer
+     * @param float|null $maxGradientNorm
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
@@ -185,7 +204,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     public function __construct(
         array $hiddenLayers,
         int $batchSize = 128,
+        int $gradientAccumulationSteps = 1,
         ?Optimizer $optimizer = null,
+        ?float $maxGradientNorm = null,
         int $epochs = 1000,
         float $minChange = 1e-4,
         int $evalInterval = 3,
@@ -209,6 +230,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
+        }
+
+        if ($gradientAccumulationSteps < 1) {
+            throw new InvalidArgumentException('Gradient accumulation steps'
+                . " must be greater than 0, $gradientAccumulationSteps given.");
+        }
+
+        if (isset($maxGradientNorm) and $maxGradientNorm <= 0.0) {
+            throw new InvalidArgumentException('Max gradient norm must be'
+                . " greater than 0, $maxGradientNorm given.");
         }
 
         if ($epochs < 0) {
@@ -242,7 +273,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
+        $this->gradientAccumulationSteps = $gradientAccumulationSteps;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
+        $this->maxGradientNorm = $maxGradientNorm;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
@@ -290,7 +323,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         return [
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
+            'gradient accumulation steps' => $this->gradientAccumulationSteps,
             'optimizer' => $this->optimizer,
+            'max gradient norm' => $this->maxGradientNorm,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
@@ -406,14 +441,19 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             }
         }
 
-        $this->network = new FeedForward(
+        $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Continuous($this->costFn),
-            $this->optimizer
+            new Continuous($this->costFn)
         );
 
-        $this->network->initialize();
+        $network->initialize();
+
+        foreach ($network->parameters() as $parameter) {
+            $this->optimizer->warm($parameter);
+        }
+
+        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -454,9 +494,8 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $loss = 0.0;
         $score = $snapshot = null;
-        $prevLoss = INF;
+        $prevLoss = $averageLoss = INF;
 
         $snapshotPath = $this->snapshotPath;
 
@@ -474,19 +513,59 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $loss = 0.0;
+            $totalLoss = $norm = $totalNorm = 0.0;
 
-            foreach ($batches as $batch) {
-                $loss += $this->network->roundtrip($batch);
+            foreach (enumerate($batches, 1) as $step => $batch) {
+                $loss = $this->network->roundtrip($batch);
+
+                $updateThisStep = $step % $this->gradientAccumulationSteps === 0
+                    || $step === count($batches);
+
+                if ($updateThisStep) {
+                    $sumSquares = 0.0;
+
+                    $numSteps = $step % $this->gradientAccumulationSteps ?: $this->gradientAccumulationSteps;
+
+                    foreach ($this->network->trainableParameters() as $param) {
+                        $param->scaleGradient(1.0 / $numSteps);
+
+                        $paramNorm = $param->gradientNorm();
+
+                        $sumSquares += $paramNorm * $paramNorm;
+                    }
+
+                    $norm = sqrt($sumSquares);
+
+                    if ($this->maxGradientNorm and $norm > $this->maxGradientNorm) {
+                        $scale = $this->maxGradientNorm / $norm;
+
+                        foreach ($this->network->trainableParameters() as $param) {
+                            $param->scaleGradient($scale);
+                        }
+                    }
+
+                    foreach ($this->network->trainableParameters() as $param) {
+                        $param->update($this->optimizer);
+
+                        $param->resetGradient();
+                    }
+
+                    $this->optimizer->scheduler()->tick();
+
+                    $totalNorm += $norm;
+                }
+
+                $totalLoss += $loss;
             }
 
-            $loss /= count($batches);
+            $averageLoss = $totalLoss / count($batches);
+            $averageNorm = $totalNorm / count($batches);
 
-            $lossChange = abs($prevLoss - $loss);
+            $lossChange = abs($prevLoss - $averageLoss);
 
-            $this->losses[$epoch] = $loss;
+            $this->losses[$epoch] = $averageLoss;
 
-            if (is_nan($loss)) {
+            if (is_nan($averageLoss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
@@ -506,8 +585,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             if ($this->logger) {
                 $message = "Epoch: {$epoch}";
-                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
-                $message .= ", {$this->costFn}: $loss";
+
+                if (!$this->optimizer->scheduler() instanceof Constant) {
+                    $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                }
+
+                $message .= ", {$this->costFn}: $averageLoss";
+                $message .= ", Gradient Norm: $averageNorm";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -545,11 +629,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 break;
             }
 
-            $prevLoss = $loss;
+            $prevLoss = $averageLoss;
         }
 
         if ($snapshot) {
-            if (end($this->scores) < $bestScore or is_nan($loss)) {
+            if (end($this->scores) < $bestScore or is_nan($averageLoss)) {
                 $snapshot->restore();
 
                 if ($this->logger) {
@@ -592,21 +676,6 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         $activations = $this->network->infer($dataset);
 
         return array_column($activations->asArray(), 0);
-    }
-
-    /**
-     * Export the network architecture as a graph in dot format.
-     *
-     * @throws RuntimeException
-     * @return Encoding
-     */
-    public function exportGraphviz() : Encoding
-    {
-        if (!$this->network) {
-            throw new RuntimeException('Must train network first.');
-        }
-
-        return $this->network->exportGraphviz();
     }
 
     /**

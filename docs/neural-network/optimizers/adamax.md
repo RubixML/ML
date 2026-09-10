@@ -18,7 +18,7 @@ A version of the [Adam](adam.md) optimizer that replaces the RMS property with t
 use Rubix\ML\NeuralNet\Optimizers\AdaMax;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new AdaMax(new Constant(0.0001), 0.1, 0.001);
+$optimizer = new AdaMax(scheduler: new Constant(0.0001), momentumDecay: 0.1, normDecay: 0.001);
 ```
 
 ## References

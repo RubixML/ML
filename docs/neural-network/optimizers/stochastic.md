@@ -16,5 +16,5 @@ An optimizer based on vanilla Stochastic Gradient Descent that takes a step prop
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new Stochastic(new Constant(0.01));
+$optimizer = new Stochastic(scheduler: new Constant(0.01));
 ```

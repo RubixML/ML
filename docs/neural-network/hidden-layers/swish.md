@@ -16,7 +16,7 @@ Swish is a parametric activation layer that utilizes smooth rectified activation
 use Rubix\ML\NeuralNet\Layers\Swish;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 
-$layer = new Swish(new Constant(1.0));
+$layer = new Swish(initializer: new Constant(1.0));
 ```
 
 ## References

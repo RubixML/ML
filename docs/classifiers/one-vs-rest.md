@@ -22,7 +22,7 @@ use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$estimator = new OneVsRest(new LogisticRegression(64, new Stochastic(new Constant(0.001))));
+$estimator = new OneVsRest(new LogisticRegression(batchSize: 64, optimizer: new Stochastic(scheduler: new Constant(0.001))));
 ```
 
 ## Parallel

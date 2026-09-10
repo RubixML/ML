@@ -27,7 +27,7 @@ use Rubix\ML\AdaBoost;
 
 $estimator = new CommitteeMachine([
     new RandomForest(),
-    new SoftmaxClassifier(128),
+    new SoftmaxClassifier(batchSize: 128),
     new AdaBoost(),
 ], [
     3.0, 1.7, 2.5,
@@ -99,9 +99,9 @@ foreach ($orchestra as $estimator) {
 
 $dataset = new Labeled($samples, $dataset2->labels());
 
-$conductor = new MultilayerPerceptron([
-    new Dense(100),
-    new Activation(new ReLU()),
+$conductor = new MultilayerPerceptron(hiddenLayers: [
+    new Dense(neurons: 100),
+    new Activation(activationFn: new ReLU()),
 ]);
 
 $conductor->train($dataset);

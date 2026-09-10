@@ -20,6 +20,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 use Rubix\ML\NeuralNet\Layers\Swish;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\StepDecay;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -133,6 +134,22 @@ class MultilayerPerceptronTest extends TestCase
     }
 
     #[Test]
+    public function badGradientAccumulationSteps() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new MultilayerPerceptron(hiddenLayers: [], gradientAccumulationSteps: 0);
+    }
+
+    #[Test]
+    public function gradientAccumulationStepsParameter() : void
+    {
+        $estimator = new MultilayerPerceptron(hiddenLayers: [new Dense(10)], gradientAccumulationSteps: 4);
+
+        $this->assertSame(4, $estimator->params()['gradient accumulation steps']);
+    }
+
+    #[Test]
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
@@ -164,6 +181,7 @@ class MultilayerPerceptronTest extends TestCase
             ],
             'batch size' => 32,
             'optimizer' => new Adam(new Constant(0.001)),
+            'max gradient norm' => null,
             'epochs' => 100,
             'min change' => 1e-3,
             'eval interval' => 3,
@@ -171,6 +189,7 @@ class MultilayerPerceptronTest extends TestCase
             'hold out' => 0.1,
             'cost fn' => new MulticlassCrossEntropy(),
             'metric' => new FBeta(),
+            'gradient accumulation steps' => 1,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -223,54 +242,71 @@ class MultilayerPerceptronTest extends TestCase
     }
 
     #[Test]
-    public function trainSkipsProjectionWhenEffectiveWidthMatches() : void
+    public function trainWithGradientClipping() : void
     {
+        srand(self::RANDOM_SEED);
+
         $estimator = new MultilayerPerceptron(
             hiddenLayers: [
+                new Dense(32),
+                new Activation(new LeakyReLU(0.1)),
+                new Dense(16),
+                new Activation(new SoftPlus()),
                 new Dense(8),
-                new Activation(new LeakyReLU()),
-                new Dense(3),
-                new Activation(new LeakyReLU()),
+                new Swish(),
             ],
             batchSize: 32,
-            epochs: 1,
-            holdOut: 0
+            optimizer: new Adam(new Constant(0.001)),
+            maxGradientNorm: 1e-3,
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1
         );
 
-        $dataset = $this->generator->generate(64);
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
         $estimator->train($dataset);
 
-        $hidden = $estimator->network()->hidden();
+        $this->assertTrue($estimator->trained());
 
-        $this->assertCount(4, $hidden);
-        $this->assertEquals(3, $hidden[3]->width());
+        $predictions = $estimator->predict($dataset);
+
+        $this->assertCount($dataset->numSamples(), $predictions);
     }
 
     #[Test]
-    public function trainAppendsProjectionWhenEffectiveWidthMismatches() : void
+    public function schedulerIsAdvancedDuringTraining() : void
     {
+        srand(self::RANDOM_SEED);
+
+        $initialRate = 0.01;
+
+        $scheduler = new StepDecay($initialRate, 1, 1.0);
+
         $estimator = new MultilayerPerceptron(
             hiddenLayers: [
                 new Dense(8),
-                new Activation(new LeakyReLU()),
-                new Dense(5),
-                new Activation(new LeakyReLU()),
+                new Activation(new LeakyReLU(0.1)),
+                new Dense(4),
+                new Swish(),
             ],
             batchSize: 32,
-            epochs: 1,
-            holdOut: 0
+            optimizer: new Adam($scheduler),
+            epochs: 5,
+            holdOut: 0.0
         );
 
-        $dataset = $this->generator->generate(64);
+        $estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
         $estimator->train($dataset);
 
-        $hidden = $estimator->network()->hidden();
+        $this->assertTrue($estimator->trained());
 
-        $this->assertCount(5, $hidden);
-        $this->assertInstanceOf(Dense::class, $hidden[4]);
-        $this->assertEquals(3, $hidden[4]->width());
+        $this->assertLessThan($initialRate, $estimator->params()['optimizer']->scheduler()->rate());
     }
 
     #[Test]

@@ -156,6 +156,7 @@ nav:
       - Other:
         - Lambda Function: transformers/lambda-function.md
     - Neural Network:
+      - Feed Forward: neural-network/feed-forward.md
       - Hidden Layers:
         - Activation: neural-network/hidden-layers/activation.md
         - Batch Norm: neural-network/hidden-layers/batch-norm.md

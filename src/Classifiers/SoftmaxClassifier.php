@@ -387,16 +387,24 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $classes = $dataset->possibleOutcomes();
 
-        $this->network = new FeedForward(
+        $hiddenLayers = [
+            new Dense(count($classes), $this->l2Penalty, true, new Xavier1()),
+        ];
+
+        $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(count($classes), $this->l2Penalty, true, new Xavier1())],
-            new Multiclass($classes, $this->costFn),
-            $this->optimizer
+            $hiddenLayers,
+            new Multiclass($classes, $this->costFn)
         );
 
-        $this->network->initialize();
+        $network->initialize();
+
+        foreach ($network->parameters() as $parameter) {
+            $this->optimizer->warm($parameter);
+        }
 
         $this->classes = $classes;
+        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -436,9 +444,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $loss = 0.0;
         $score = $snapshot = null;
-        $prevLoss = INF;
+        $prevLoss = $averageLoss = INF;
 
         $snapshotPath = $this->snapshotPath;
 
@@ -456,19 +463,29 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $loss = 0.0;
+            $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss += $this->network->roundtrip($batch);
+                $loss = $this->network->roundtrip($batch);
+
+                foreach ($this->network->parameters() as $param) {
+                    $param->update($this->optimizer);
+
+                    $param->resetGradient();
+                }
+
+                $this->optimizer->scheduler()->tick();
+
+                $totalLoss += $loss;
             }
 
-            $loss /= count($batches);
+            $averageLoss = $totalLoss / count($batches);
 
-            $lossChange = abs($prevLoss - $loss);
+            $lossChange = abs($prevLoss - $averageLoss);
 
-            $this->losses[$epoch] = $loss;
+            $this->losses[$epoch] = $averageLoss;
 
-            if (is_nan($loss)) {
+            if (is_nan($averageLoss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
@@ -476,7 +493,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 break;
             }
 
-            if ($loss <= 0.0) {
+            if ($averageLoss <= 0.0) {
                 break;
             }
 
@@ -492,8 +509,12 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
             if ($this->logger) {
                 $message = "Epoch: {$epoch}";
-                $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
-                $message .= ", {$this->costFn}: $loss";
+
+                if (!$this->optimizer->scheduler() instanceof Constant) {
+                    $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                }
+
+                $message .= ", {$this->costFn}: $averageLoss";
 
                 if ($evalThisStep) {
                     $message .= ", {$this->metric}: $score";
@@ -531,11 +552,11 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
                 break;
             }
 
-            $prevLoss = $loss;
+            $prevLoss = $averageLoss;
         }
 
         if ($snapshot) {
-            if (end($this->scores) < $bestScore or is_nan($loss)) {
+            if (end($this->scores) < $bestScore or is_nan($averageLoss)) {
                 $snapshot->restore();
 
                 if ($this->logger) {

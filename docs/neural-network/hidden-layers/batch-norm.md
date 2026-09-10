@@ -8,7 +8,7 @@ Batch Norm layers normalize the activations of the previous layer such that the 
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | decay | 0.9 | float | The decay rate of the previous running averages of the global mean and variance. |
+| 1 | decay | 0.1 | float | The decay rate of the previous running averages of the global mean and variance. |
 | 2 | betaInitializer | Constant | Initializer | The initializer of the beta parameter. |
 | 3 | gammaInitializer | Constant | Initializer | The initializer of the gamma parameter. |
 
@@ -19,7 +19,7 @@ use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Normal;
 
-$layer = new BatchNorm(0.7, new Constant(0.), new Normal(1.));
+$layer = new BatchNorm(decay: 0.7, betaInitializer: new Constant(0.), gammaInitializer: new Normal(1.));
 ```
 
 ## References

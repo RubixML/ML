@@ -25,6 +25,7 @@ use function Rubix\ML\array_transpose;
 use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_map;
 use function Rubix\ML\iterator_filter;
+use function Rubix\ML\enumerate;
 use function Rubix\ML\iterator_contains_nan;
 use function Rubix\ML\warn;
 use function Rubix\ML\warn_deprecated;
@@ -37,6 +38,7 @@ use function is_infinite;
 #[CoversFunction('\Rubix\ML\array_transpose')]
 #[CoversFunction('\Rubix\ML\comb')]
 #[CoversFunction('\Rubix\ML\iterator_contains_nan')]
+#[CoversFunction('\Rubix\ML\enumerate')]
 #[CoversFunction('\Rubix\ML\iterator_filter')]
 #[CoversFunction('\Rubix\ML\iterator_first')]
 #[CoversFunction('\Rubix\ML\iterator_map')]
@@ -360,6 +362,88 @@ class FunctionsTest extends TestCase
         $expected = [3, 9];
 
         $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    #[Test]
+    public function iteratorEnumerate() : void
+    {
+        $values = enumerate(['first', 'second', 'third']);
+
+        $expected = [
+            0 => 'first',
+            1 => 'second',
+            2 => 'third',
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    #[Test]
+    public function iteratorEnumerateWithStart() : void
+    {
+        $values = enumerate(['first', 'second', 'third'], 5);
+
+        $expected = [
+            5 => 'first',
+            6 => 'second',
+            7 => 'third',
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    #[Test]
+    public function iteratorEnumerateWithGeneratorInput() : void
+    {
+        $values = enumerate((function () {
+            yield 1;
+            yield 2;
+            yield 3;
+        })());
+
+        $expected = [
+            0 => 1,
+            1 => 2,
+            2 => 3,
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    #[Test]
+    public function iteratorEnumerateWithTraversableInput() : void
+    {
+        $values = enumerate(new \ArrayIterator(['first', 'second', 'third']));
+
+        $expected = [
+            0 => 'first',
+            1 => 'second',
+            2 => 'third',
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    #[Test]
+    public function iteratorEnumerateReplacesExistingKeys() : void
+    {
+        $values = enumerate(['a' => 'first', 'b' => 'second', 'c' => 'third']);
+
+        $expected = [
+            0 => 'first',
+            1 => 'second',
+            2 => 'third',
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($values));
+    }
+
+    #[Test]
+    public function iteratorEnumerateOnEmptyIterator() : void
+    {
+        $values = enumerate([]);
+
+        $this->assertEmpty(iterator_to_array($values));
     }
 
     /**

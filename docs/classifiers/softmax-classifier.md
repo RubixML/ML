@@ -35,7 +35,18 @@ use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 
-$estimator = new SoftmaxClassifier(256, new Momentum(new Constant(0.001)), 1e-4, 300, 1e-4, 3, 5, 0.1, new MulticlassCrossEntropy(), new FBeta());
+$estimator = new SoftmaxClassifier(
+    batchSize: 256,
+    optimizer: new Momentum(scheduler: new Constant(0.001)),
+    l2Penalty: 1e-4,
+    epochs: 300,
+    minChange: 1e-4,
+    evalInterval: 3,
+    window: 5,
+    holdOut: 0.1,
+    costFn: new MulticlassCrossEntropy(),
+    metric: new FBeta()
+);
 ```
 
 ## Additional Methods

@@ -35,7 +35,18 @@ use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\Regressors\Adaline;
 
-$estimator = new Adaline(256, new Adam(new Constant(0.001)), 1e-4, 500, 1e-6, 3, 5, 0.1, new HuberLoss(2.5), new RMSE());
+$estimator = new Adaline(
+    batchSize: 256,
+    optimizer: new Adam(scheduler: new Constant(0.001)),
+    l2Penalty: 1e-4,
+    epochs: 500,
+    minChange: 1e-6,
+    evalInterval: 3,
+    window: 5,
+    holdOut: 0.1,
+    costFn: new HuberLoss(alpha: 2.5),
+    metric: new RMSE()
+);
 ```
 
 ## Additional Methods

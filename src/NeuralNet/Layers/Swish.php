@@ -6,7 +6,6 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
@@ -150,16 +149,16 @@ class Swish implements Hidden, Parametric
     }
 
     /**
-     * Calculate the gradient and update the parameters of the layer.
+     * Calculate the gradient for the previous layer and record the gradient of
+     * the parameters of this layer.
      *
      * @internal
      *
      * @param Deferred $prevGradient
-     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return Deferred
      */
-    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
+    public function back(Deferred $prevGradient) : Deferred
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -181,7 +180,7 @@ class Swish implements Hidden, Parametric
 
         $beta = $this->beta->param();
 
-        $this->beta->update($dBeta, $optimizer);
+        $this->beta->accumulateGradient($dBeta);
 
         $this->input = $this->output = null;
 
