@@ -15,7 +15,7 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | hidden | | array | An array composing the user-specified hidden layers of the network in order. |
+| 1 | hiddenLayers | | array | An array composing the user-specified hidden layers of the network in order. |
 | 2 | batchSize | 128 | int | The number of training samples to process at a time. |
 | 3 | gradientAccumulationSteps | 1 | int | The number of gradient accumulation steps before updating the network parameters. Higher values simulate a larger batch size. |
 | 4 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
@@ -42,18 +42,18 @@ use Rubix\ML\Regressors\MLPRegressor;
 
 $estimator = new MLPRegressor(
 	hiddenLayers: [
-		new Dense(100),
-		new Activation(new ReLU()),
-		new Dense(100),
-		new Activation(new ReLU()),
-		new Dense(50),
-		new Activation(new ReLU()),
-		new Dense(50),
-		new Activation(new ReLU()),
+		new Dense(neurons: 100),
+		new Activation(activationFn: new ReLU()),
+		new Dense(neurons: 100),
+		new Activation(activationFn: new ReLU()),
+		new Dense(neurons: 50),
+		new Activation(activationFn: new ReLU()),
+		new Dense(neurons: 50),
+		new Activation(activationFn: new ReLU()),
 	],
 	batchSize: 128,
 	gradientAccumulationSteps: 1,
-	optimizer: new RMSProp(new Constant(0.001)),
+	optimizer: new RMSProp(scheduler: new Constant(0.001)),
 	maxGradientNorm: null,
 	epochs: 100,
 	minChange: 1e-5,

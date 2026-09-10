@@ -16,12 +16,12 @@ $$
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | delta | 1.0 | float | The pivot point i.e the point where numbers larger will be evaluated with an L1 loss while number smaller will be evaluated with an L2 loss. |
+| 1 | alpha | 0.9 | float | The pivot point i.e the point where numbers larger will be evaluated with an L1 loss while number smaller will be evaluated with an L2 loss. |
 
 ## Example
 
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 
-$costFunction = new HuberLoss(0.5);
+$costFunction = new HuberLoss(alpha: 0.5);
 ```

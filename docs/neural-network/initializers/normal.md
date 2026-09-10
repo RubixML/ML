@@ -15,5 +15,5 @@ Generates a random weight matrix from a Gaussian distribution with user-specifie
 ```php
 use Rubix\ML\NeuralNet\Initializers\Normal;
 
-$initializer = new Normal(0.1);
+$initializer = new Normal(stdDev: 0.1);
 ```

@@ -21,5 +21,5 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 
-$layer = new Dense(100, 1e-4, true, new He(), new Constant(0.0));
+$layer = new Dense(neurons: 100, l2Penalty: 1e-4, bias: true, weightInitializer: new He(), biasInitializer: new Constant(0.0));
 ```

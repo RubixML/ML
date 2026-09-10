@@ -16,5 +16,5 @@ Activation layers apply a user-defined non-linear activation function to their i
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
-$layer = new Activation(new ReLU());
+$layer = new Activation(activationFn: new ReLU());
 ```

@@ -15,7 +15,7 @@ A multiclass feed-forward neural network classifier with user-defined hidden lay
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | hidden | | array | An array composing the user-specified hidden layers of the network in order. |
+| 1 | hiddenLayers | | array | An array composing the user-specified hidden layers of the network in order. |
 | 2 | batchSize | 128 | int | The number of training samples to process at a time. |
 | 3 | gradientAccumulationSteps | 1 | int | The number of gradient accumulation steps before updating the network parameters. Higher values simulate a larger batch size. |
 | 4 | optimizer | Adam | Optimizer | The gradient descent optimizer used to update the network parameters. |
@@ -43,26 +43,26 @@ use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $estimator = new MultilayerPerceptron(
-    [
-        new Dense(200),
-        new Activation(new LeakyReLU()),
-        new Dropout(0.3),
-        new Dense(100),
-        new Activation(new LeakyReLU()),
-        new Dropout(0.3),
-        new Dense(50),
+    hiddenLayers: [
+        new Dense(neurons: 200),
+        new Activation(activationFn: new LeakyReLU()),
+        new Dropout(ratio: 0.3),
+        new Dense(neurons: 100),
+        new Activation(activationFn: new LeakyReLU()),
+        new Dropout(ratio: 0.3),
+        new Dense(neurons: 50),
         new PReLU(),
     ],
-    128,
-    1,
-    new Adam(new Constant(0.001)),
-    1000,
-    1e-3,
-    10,
-    3,
-    0.1,
-    new MulticlassCrossEntropy(),
-    new MCC()
+    batchSize: 128,
+    optimizer: new Adam(scheduler: new Constant(0.001)),
+    maxGradientNorm: null,
+    epochs: 1000,
+    minChange: 1e-3,
+    evalInterval: 10,
+    window: 3,
+    holdOut: 0.1,
+    costFn: new MulticlassCrossEntropy(),
+    metric: new MCC()
 );
 ```
 
