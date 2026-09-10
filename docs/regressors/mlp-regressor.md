@@ -52,17 +52,18 @@ $hiddenLayers = [
 ];
 
 $estimator = new MLPRegressor(
-	$hiddenLayers,
-	128,
-	1,
-	new RMSProp(new Constant(0.001)),
-	100,
-	1e-5,
-	5,
-	10,
-	0.1,
-	new LeastSquares(),
-	new RSquared()
+	hiddenLayers: $hiddenLayers,
+	batchSize: 128,
+	gradientAccumulationSteps: 1,
+	optimizer: new RMSProp(new Constant(0.001)),
+	maxGradientNorm: null,
+	epochs: 100,
+	minChange: 1e-5,
+	evalInterval: 5,
+	window: 10,
+	holdOut: 0.1,
+	costFn: new LeastSquares(),
+	metric: new RSquared()
 );
 ```
 
