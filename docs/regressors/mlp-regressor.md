@@ -93,10 +93,10 @@ Return the loss for each epoch from the last training session:
 public losses() : float[]|null
 ```
 
-Returns the underlying neural network instance or `null` if untrained:
+Returns the underlying neural network instance or `null` if untrained. See [FeedForward](../neural-network/feed-forward.md) for more details.
 
 ```php
-public network() : Network|null
+public network() : FeedForward|null
 ```
 
 Clean up any leftover state after training. Only do this if you plan to use the model for inference.

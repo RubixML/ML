@@ -83,10 +83,10 @@ Return the validation score for each epoch from the last training session:
 public scores() : float[]|null
 ```
 
-Return the underlying neural network instance or `null` if untrained:
+Returns the underlying neural network instance or `null` if untrained. See [FeedForward](../neural-network/feed-forward.md) for more details.
 
 ```php
-public network() : Network|null
+public network() : FeedForward|null
 ```
 
 Set the path of the temporary snapshot file used to store network parameters during training:

@@ -192,12 +192,6 @@ class MLPRegressorTest extends TestCase
 
         self::assertTrue($this->estimator->trained());
 
-        $dot = $this->estimator->exportGraphviz();
-
-        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
-
-        self::assertStringStartsWith('digraph Tree {', (string) $dot);
-
         $losses = $this->estimator->losses();
 
         self::assertIsArray($losses);

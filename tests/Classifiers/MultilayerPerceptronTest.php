@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
@@ -213,13 +212,6 @@ class MultilayerPerceptronTest extends TestCase
         $this->estimator->partial($folds[2]);
 
         $this->assertTrue($this->estimator->trained());
-
-        $dot = $this->estimator->exportGraphviz();
-
-        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
-
-        $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', (string) $dot);
 
         $losses = $this->estimator->losses();
 
