@@ -35,6 +35,13 @@ class Ramp implements Scheduler
     protected float $end;
 
     /**
+     * The range between the starting and ending learning rates.
+     *
+     * @var float
+     */
+    protected float $range;
+
+    /**
      * The number of steps taken to reach the ending learning rate.
      *
      * @var int
@@ -80,6 +87,7 @@ class Ramp implements Scheduler
 
         $this->start = $start;
         $this->end = $end;
+        $this->range = $end - $start;
         $this->steps = $steps;
         $this->rate = $start;
     }
@@ -105,7 +113,7 @@ class Ramp implements Scheduler
 
         $fraction = min(1.0, $this->t / $this->steps);
 
-        $this->rate = $this->start + ($this->end - $this->start) * $fraction;
+        $this->rate = $this->start + $this->range * $fraction;
     }
 
     /**
