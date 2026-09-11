@@ -339,7 +339,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $k = count($medoids);
 
-            $loss = $this->totalInertia($medoids, $samples, $distances);
+            $loss = $this->totalInertia($medoids, $distances);
 
             do {
                 $improved = false;
@@ -358,7 +358,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
                         $candidate[$i] = $j;
 
-                        $delta = $this->totalInertia($candidate, $samples, $distances) - $loss;
+                        $delta = $this->totalInertia($candidate, $distances) - $loss;
 
                         if ($delta < $bestDelta) {
                             $bestDelta = $delta;
@@ -538,20 +538,19 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Compute the total inertia of the sample assignments given a set of medoids.
      *
      * @param list<int> $medoids
-     * @param list<list<string|int|float>> $samples
      * @param list<list<float>> $distances
      * @return float
      */
-    protected function totalInertia(array $medoids, array $samples, array $distances) : float
+    protected function totalInertia(array $medoids, array $distances) : float
     {
         $sum = 0.0;
 
-        foreach ($samples as $i => $sample) {
+        foreach ($distances as $row) {
             $min = INF;
 
             foreach ($medoids as $offset) {
-                if ($distances[$i][$offset] < $min) {
-                    $min = $distances[$i][$offset];
+                if ($row[$offset] < $min) {
+                    $min = $row[$offset];
                 }
             }
 

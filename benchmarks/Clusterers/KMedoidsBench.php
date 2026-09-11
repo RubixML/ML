@@ -7,6 +7,8 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Datasets\Labeled;
 
+use Generator;
+
 /**
  * @Groups({"Clusterers"})
  * @BeforeMethods({"setUp"})
@@ -32,7 +34,10 @@ class KMedoidsBench
      */
     protected KMedoids $estimator;
 
-    public function setUp() : void
+    /**
+     * @param array{sampleSize?: int} $params
+     */
+    public function setUp(array $params = []) : void
     {
         $generator = new Agglomerate([
             'Iris-setosa' => new Blob([5.0, 3.42, 1.46, 0.24], [0.35, 0.38, 0.17, 0.1]),
@@ -44,15 +49,32 @@ class KMedoidsBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new KMedoids(k: 3, sampleSize: 100, epochs: 50);
+        $sampleSize = $params['sampleSize'] ?? 100;
+
+        $this->estimator = new KMedoids(k: 3, sampleSize: $sampleSize, epochs: 50);
+    }
+
+    /**
+     * Return the sample sizes to benchmark against.
+     *
+     * @return Generator<string, array{sampleSize: int}>
+     */
+    public function provideSampleSizes() : Generator
+    {
+        yield 'sample_size_50' => ['sampleSize' => 50];
+        yield 'sample_size_100' => ['sampleSize' => 100];
+        yield 'sample_size_250' => ['sampleSize' => 250];
     }
 
     /**
      * @Subject
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideSampleSizes")
+     *
+     * @param array{sampleSize: int} $params
      */
-    public function trainPredict() : void
+    public function trainPredict(array $params) : void
     {
         $this->estimator->train($this->training);
 
