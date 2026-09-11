@@ -20,6 +20,7 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 /**
  * @group Regressors
@@ -207,5 +208,37 @@ class GradientBoostTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * Early stopping must restore the ensemble to the best-scoring epoch so that
+     * the score recorded at epoch e reflects the ensemble of e boosters.
+     *
+     * @test
+     */
+    public function earlyStoppingRestoresBestEpoch() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.3, 300, 1e-4, 3, 0.1, new RMSE());
+
+        $estimator->setLogger(new BlackHole());
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $scores = $estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertNotEmpty($scores);
+
+        $bestEpoch = array_search(max($scores), $scores);
+
+        $accessor = new ReflectionProperty(GradientBoost::class, 'ensemble');
+
+        $ensemble = $accessor->getValue($estimator);
+
+        $this->assertSame(66, $bestEpoch);
+        $this->assertCount(66, $ensemble);
+        $this->assertGreaterThan($bestEpoch, max(array_keys($scores)));
     }
 }

@@ -423,6 +423,33 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 break;
             }
 
+            if ($lossChange < $this->minChange) {
+                break;
+            }
+
+            $training = Labeled::quick($training->samples(), $gradient);
+
+            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+
+            $booster = clone $this->booster;
+
+            $booster->train($subset);
+
+            $this->boosters[] = $booster;
+
+            $predictions = $booster->predict($training);
+
+            $z = array_map([$this, 'updateZ'], $predictions, $z);
+            $out = array_map('Rubix\ML\sigmoid', $z);
+
+            if (isset($zTest)) {
+                $predictions = $booster->predict($testing);
+
+                $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
+            }
+
+            $weights = array_map('abs', $gradient);
+
             if (isset($zTest)) {
                 $predictions = [];
 
@@ -464,33 +491,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                     break;
                 }
             }
-
-            if ($lossChange < $this->minChange) {
-                break;
-            }
-
-            $training = Labeled::quick($training->samples(), $gradient);
-
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
-
-            $booster = clone $this->booster;
-
-            $booster->train($subset);
-
-            $this->boosters[] = $booster;
-
-            $predictions = $booster->predict($training);
-
-            $z = array_map([$this, 'updateZ'], $predictions, $z);
-            $out = array_map('Rubix\ML\sigmoid', $z);
-
-            if (isset($zTest)) {
-                $predictions = $booster->predict($testing);
-
-                $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
-            }
-
-            $weights = array_map('abs', $gradient);
 
             $prevLoss = $loss;
         }

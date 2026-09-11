@@ -19,6 +19,7 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 /**
  * @group Classifiers
@@ -190,5 +191,37 @@ class LogitBoostTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    /**
+     * Early stopping must restore the ensemble to the best-scoring epoch so that
+     * the score recorded at epoch e reflects the ensemble of e boosters.
+     *
+     * @test
+     */
+    public function earlyStoppingRestoresBestEpoch() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new LogitBoost(new RegressionTree(3), 0.1, 0.5, 1000, 1e-4, 3, 0.1, new FBeta());
+
+        $estimator->setLogger(new BlackHole());
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $scores = $estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertNotEmpty($scores);
+
+        $bestEpoch = array_search(max($scores), $scores);
+
+        $accessor = new ReflectionProperty(LogitBoost::class, 'boosters');
+
+        $boosters = $accessor->getValue($estimator);
+
+        $this->assertSame(3, $bestEpoch);
+        $this->assertCount(3, $boosters);
+        $this->assertGreaterThan($bestEpoch, max(array_keys($scores)));
     }
 }

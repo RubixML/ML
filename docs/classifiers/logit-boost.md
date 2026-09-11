@@ -52,6 +52,9 @@ $extractor->export($estimator->steps());
 
 Return the validation score for each epoch from the last training session:
 
+!!! note
+    The score recorded at epoch *e* reflects the ensemble of *e* boosters; early stopping restores the ensemble to its best-scoring epoch.
+
 ```php
 public scores() : float[]|null
 ```

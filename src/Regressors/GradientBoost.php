@@ -399,48 +399,12 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $this->losses[$epoch] = $loss;
 
-            if (isset($outTest)) {
-                $score = $this->metric->score($outTest, $testing->labels());
-
-                $this->scores[$epoch] = $score;
-            }
-
-            if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "L2 Loss: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}, "
-                    . "{$this->metric}: " . ($score ?? 'N/A');
-
-                $this->logger->info($message);
-            }
-
             if (is_nan($loss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
 
                 break;
-            }
-
-            if (isset($score)) {
-                if ($score >= $maxScore) {
-                    break;
-                }
-
-                if ($score > $bestScore) {
-                    $bestScore = $score;
-                    $bestEpoch = $epoch;
-
-                    $numWorseEpochs = 0;
-                } else {
-                    ++$numWorseEpochs;
-                }
-
-                if ($numWorseEpochs >= $this->window) {
-                    break;
-                }
             }
 
             if ($lossChange < $this->minChange) {
@@ -468,6 +432,42 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             }
 
             $weights = array_map('abs', $gradient);
+
+            if (isset($outTest)) {
+                $score = $this->metric->score($outTest, $testing->labels());
+
+                $this->scores[$epoch] = $score;
+            }
+
+            if ($this->logger) {
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+
+                $message = "Epoch: $epoch, "
+                    . "L2 Loss: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}, "
+                    . "{$this->metric}: " . ($score ?? 'N/A');
+
+                $this->logger->info($message);
+            }
+
+            if (isset($score)) {
+                if ($score >= $maxScore) {
+                    break;
+                }
+
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestEpoch = $epoch;
+
+                    $numWorseEpochs = 0;
+                } else {
+                    ++$numWorseEpochs;
+                }
+
+                if ($numWorseEpochs >= $this->window) {
+                    break;
+                }
+            }
 
             $prevLoss = $loss;
         }
