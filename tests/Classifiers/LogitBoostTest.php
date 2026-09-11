@@ -217,6 +217,7 @@ class LogitBoostTest extends TestCase
         $bestEpoch = array_search(max($scores), $scores);
 
         $accessor = new ReflectionProperty(LogitBoost::class, 'boosters');
+        $accessor->setAccessible(true);
 
         $boosters = $accessor->getValue($estimator);
 

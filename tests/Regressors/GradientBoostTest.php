@@ -234,6 +234,7 @@ class GradientBoostTest extends TestCase
         $bestEpoch = array_search(max($scores), $scores);
 
         $accessor = new ReflectionProperty(GradientBoost::class, 'ensemble');
+        $accessor->setAccessible(true);
 
         $ensemble = $accessor->getValue($estimator);
 
