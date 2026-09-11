@@ -10,16 +10,15 @@ interface Metric extends Stringable
     /**
      * Return a tuple of the min and max score for this metric.
      *
-     * @return \Rubix\ML\Tuple{float,float}
+     * @return Tuple<float,float>
      */
     public function range() : Tuple;
 
     /**
      * The estimator types that this metric is compatible with.
      *
-     * @internal
-     *
      * @return list<\Rubix\ML\EstimatorType>
+     * @internal
      */
     public function compatibility() : array;
 

@@ -32,21 +32,31 @@ $estimator = new CommitteeMachine([
     new GaussianNB(),
     new RandomForest(new ClassificationTree(4), 100, 0.3),
     new KDNeighbors(3),
-    new SoftmaxClassifier(100),
+    new SoftmaxClassifier(batchSize: 100),
 ], [
     0.2, 0.4, 0.3, 0.1,
 ]);
 ```
 
+## Parallel
+
+This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Swoole](backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole(8));
+```
+
 ## Additional Methods
 
-Return the learner instances of the committee:
+Return the learner instances of the committee.
 
 ```php
 public experts() : array
 ```
 
-Return the normalized influence scores of each expert in the committee:
+Return the normalized influence scores of each expert in the committee.
 
 ```php
 public influences() : array

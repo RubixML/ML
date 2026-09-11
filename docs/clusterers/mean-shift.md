@@ -31,7 +31,7 @@ $estimator = new MeanShift(2.5, 0.05, 2000, 1e-6, new BallTree(100), new KMC2())
 
 ## Additional Methods
 
-Estimate the radius of a cluster that encompasses a certain percentage of the total training samples:
+Estimate the radius of a cluster that encompasses a certain percentage of the total training samples.
 
 ```php
 public static estimateRadius(Dataset $dataset, float $percentile = 30.0, ?Distance $kernel = null) : float
@@ -40,13 +40,13 @@ public static estimateRadius(Dataset $dataset, float $percentile = 30.0, ?Distan
 !!! note
     Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a smaller subset of the training data.
 
-Return the centroids computed from the training set:
+Return the centroids computed from the training set.
 
 ```php
 public centroids() : array[]
 ```
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -60,7 +60,7 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Returns the amount of centroid shift during each epoch of training:
+Returns the amount of centroid shift during each epoch of training.
 
 ```php
 public losses() : float[]|null

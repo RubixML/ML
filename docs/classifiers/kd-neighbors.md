@@ -28,7 +28,7 @@ $estimator = new KDNeighbors(10, false, new BallTree(40, new Minkowski()));
 
 ## Additional Methods
 
-Return the base spatial tree instance:
+Return the base spatial tree instance.
 
 ```php
 public tree() : Spatial

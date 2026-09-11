@@ -13,7 +13,7 @@ A Gaussian Mixture model (GMM) is a probabilistic model for representing the pre
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | k | | int | The number of target clusters. |
-| 2 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the variance of each feature. |
+| 2 | smoothing | 1e-9 | float | The amount of epsilon smoothing added to the variance of each feature within each cluster. |
 | 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 4 | minChange | 1e-3 | float | The minimum change in the components necessary for the algorithm to continue training. |
 | 5 | seeder | PlusPlus | Seeder | The seeder used to initialize the Gaussian components. |
@@ -29,25 +29,25 @@ $estimator = new GaussianMixture(5, 1e-6, 100, 1e-4, new KMC2(50));
 
 ## Additional Methods
 
-Return the cluster prior probabilities based on their representation over all training samples:
+Return the cluster prior probabilities based on their representation over all training samples.
 
 ```php
 public priors() : float[]
 ```
 
-Return the running means of each feature column for each cluster:
+Return the running means of each feature column for each cluster.
 
 ```php
 public means() : array[]
 ```
 
-Return the variance of each feature column for each cluster:
+Return the variance of each feature column for each cluster.
 
 ```php
 public variances() : array[]
 ```
 
-Return an iterable progress table with the steps from the last training session:
+Return an iterable progress table with the steps from the last training session.
 
 ```php
 public steps() : iterable
@@ -61,7 +61,7 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the loss for each epoch from the last training session:
+Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null

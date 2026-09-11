@@ -1,74 +1,28 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Tokenizers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\NGram;
 use Rubix\ML\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Tokenizers
- * @covers \Rubix\ML\Tokenizers\NGram
- */
+#[Group('Tokenizers')]
+#[CoversClass(NGram::class)]
 class NGramTest extends TestCase
 {
-    /**
-     * @var NGram
-     */
-    protected $tokenizer;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->tokenizer = new NGram(1, 2);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(NGram::class, $this->tokenizer);
-        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
-    }
-
-    /**
-     * @test
-     * @dataProvider tokenizeProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
-
-    /**
-     * @test
-     * @dataProvider trigramProvider
-     *
-     * @param string $text
-     * @param list<string> $expected
-     */
-    public function tokenizeTrigrams(string $text, array $expected) : void
-    {
-        $tokenizer = new NGram(2, 3);
-
-        $tokens = $tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
-    }
+    protected NGram $tokenizer;
 
     /**
      * @return Generator<mixed[]>
      */
-    public function tokenizeProvider() : Generator
+    public static function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -86,7 +40,7 @@ class NGramTest extends TestCase
     /**
      * @return Generator<mixed[]>
      */
-    public function trigramProvider() : Generator
+    public static function trigramProvider() : Generator
     {
         yield [
             'the quick brown fox jumps',
@@ -95,5 +49,45 @@ class NGramTest extends TestCase
                 'brown fox', 'brown fox jumps', 'fox jumps',
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->tokenizer = new NGram(min: 1, max: 2);
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(NGram::class, $this->tokenizer);
+        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('tokenizeProvider')]
+    #[Test]
+    public function tokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('trigramProvider')]
+    #[Test]
+    public function tokenizeTrigrams(string $text, array $expected) : void
+    {
+        $tokenizer = new NGram(min: 2, max: 3);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
     }
 }

@@ -7,6 +7,7 @@ use Rubix\ML\Exceptions\JSONException;
 use function json_encode;
 use function json_decode;
 use function json_last_error;
+use function is_array;
 
 use const JSON_ERROR_NONE;
 
@@ -70,6 +71,10 @@ class JSON
 
         if ($code !== JSON_ERROR_NONE) {
             throw new JSONException($code);
+        }
+
+        if (!is_array($value)) {
+            throw new JSONException(JSON_ERROR_STATE_MISMATCH);
         }
 
         return $value;

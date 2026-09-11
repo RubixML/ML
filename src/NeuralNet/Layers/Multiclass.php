@@ -4,14 +4,14 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
-
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use function count;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Multiclass
@@ -44,13 +44,6 @@ class Multiclass implements Output
     protected ClassificationLoss $costFn;
 
     /**
-     * The softmax activation function.
-     *
-     * @var Softmax
-     */
-    protected Softmax $softmax;
-
-    /**
      * The memorized input matrix.
      *
      * @var Matrix|null
@@ -65,11 +58,28 @@ class Multiclass implements Output
     protected ?Matrix $output = null;
 
     /**
+     * Compute the Softmax activation.
+     *
+     * @param Matrix $input
+     * @return Matrix
+     */
+    protected static function softmax(Matrix $input) : Matrix
+    {
+        $z = $input->transpose();
+
+        $z = $z->subtractColumnVector($z->max())->exp();
+
+        $total = $z->sum()->clipLower(EPSILON);
+
+        return $z->divide($total)->transpose();
+    }
+
+    /**
      * @param string[] $classes
-     * @param ClassificationLoss|null $costFn
+     * @param ClassificationLoss $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ?ClassificationLoss $costFn = null)
+    public function __construct(array $classes, ClassificationLoss $costFn)
     {
         $classes = array_values(array_unique($classes));
 
@@ -79,9 +89,13 @@ class Multiclass implements Output
                 . ' given.');
         }
 
+        if ($costFn instanceof BinaryCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
+        }
+
         $this->classes = $classes;
-        $this->costFn = $costFn ?? new CrossEntropy();
-        $this->softmax = new Softmax();
+
+        $this->costFn = $costFn;
     }
 
     /**
@@ -123,7 +137,7 @@ class Multiclass implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        $output = $this->softmax->activate($input);
+        $output = self::softmax($input);
 
         $this->input = $input;
         $this->output = $output;
@@ -135,23 +149,21 @@ class Multiclass implements Output
      * Compute an inferential pass through the layer.
      *
      * @param Matrix $input
-     * @throws RuntimeException
      * @return Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->softmax->activate($input);
+        return self::softmax($input);
     }
 
     /**
      * Compute the gradient and loss at the output.
      *
      * @param string[] $labels
-     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
-    public function back(array $labels, Optimizer $optimizer) : array
+    public function back(array $labels) : array
     {
         if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass'
@@ -194,7 +206,7 @@ class Multiclass implements Output
      */
     public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
     {
-        if ($this->costFn instanceof CrossEntropy) {
+        if ($this->costFn instanceof MulticlassCrossEntropy) {
             return $output->subtract($expected)
                 ->divide($output->n());
         }
@@ -202,8 +214,10 @@ class Multiclass implements Output
         $dLoss = $this->costFn->differentiate($output, $expected)
             ->divide($output->n());
 
-        return $this->softmax->differentiate($input, $output)
-            ->multiply($dLoss);
+        $outputT = $output->transpose();
+        $prod = $outputT->multiply($dLoss->transpose());
+
+        return $prod->subtract($outputT->multiply($prod->sum()))->transpose();
     }
 
     /**

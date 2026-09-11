@@ -4,13 +4,14 @@ namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
 
+use function sqrt;
+
 /**
  * He
  *
  * The He initializer was designed for hidden layers that feed into rectified
  * linear layers such ReLU, Leaky ReLU, ELU, and SELU. It draws from a uniform
- * distribution with limits defined as +/- (6 / (fanIn + fanOut)) **
- * (1. / sqrt(2)).
+ * distribution with limits defined as +/- sqrt(6 / fanIn).
  *
  * References:
  * [1] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
@@ -23,13 +24,6 @@ use Tensor\Matrix;
 class He implements Initializer
 {
     /**
-     * Half of the square root of 2.
-     *
-     * @var float
-     */
-    protected const ETA = 0.70710678118;
-
-    /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.
      *
      * @internal
@@ -40,10 +34,9 @@ class He implements Initializer
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix
     {
-        $scale = (6.0 / ($fanOut + $fanIn)) ** self::ETA;
+        $scale = sqrt(6.0 / $fanIn);
 
-        return Matrix::uniform($fanOut, $fanIn)
-            ->multiply($scale);
+        return Matrix::uniform($fanOut, $fanIn)->multiply($scale);
     }
 
     /**

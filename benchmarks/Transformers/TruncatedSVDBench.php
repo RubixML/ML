@@ -5,6 +5,7 @@ namespace Rubix\ML\Benchmarks\Transformers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\TruncatedSVD;
+use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Transformers"})
@@ -15,14 +16,14 @@ class TruncatedSVDBench
     protected const DATASET_SIZE = 1000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
-    public $dataset;
+    public Labeled $dataset;
 
     /**
      * @var TruncatedSVD
      */
-    protected $transformer;
+    protected TruncatedSVD $transformer;
 
     public function setUp() : void
     {

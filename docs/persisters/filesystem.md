@@ -23,7 +23,7 @@ $persistable = new KNearestNeighbors(3, false, new Manhattan());
 
 $persister = new Filesystem('/path/to/example.rbx', true);
 
-$serializer = new RBX(6);
+$serializer = new RBX();
 
 $encoding = $serializer->serialize($persistable);
 
@@ -40,7 +40,7 @@ $persister = new Filesystem('/path/to/example.rbx', true);
 
 $encoding = $persister->load();
 
-$serializer = new RBX(6);
+$serializer = new RBX();
 
 $persistable = $serializer->deserialize($encoding);
 ```

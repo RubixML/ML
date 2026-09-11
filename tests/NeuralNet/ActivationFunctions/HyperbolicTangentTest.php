@@ -5,55 +5,26 @@ namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group ActivationFunctions
- * @covers \Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent
- */
+#[Group('ActivationFunctions')]
+#[CoversClass(HyperbolicTangent::class)]
 class HyperbolicTangentTest extends TestCase
 {
     /**
      * @var HyperbolicTangent
      */
-    protected $activationFn;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->activationFn = new HyperbolicTangent();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(HyperbolicTangent::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    public function activate(Matrix $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
-    }
+    protected HyperbolicTangent $activationFn;
 
     /**
      * @return Generator<mixed[]>
      */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -79,24 +50,9 @@ class HyperbolicTangentTest extends TestCase
     }
 
     /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
-    }
-
-    /**
      * @return Generator<mixed[]>
      */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -127,5 +83,44 @@ class HyperbolicTangentTest extends TestCase
                 [0.9975041607715679, 0.7718026983742169, 0.7569628647133293],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->activationFn = new HyperbolicTangent();
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(HyperbolicTangent::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
+    }
+
+    /**
+     * @param Matrix $input
+     * @param list<list<float>> $expected $expected
+     */
+    #[DataProvider('computeProvider')]
+    #[Test]
+    public function activate(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
+    }
+
+    /**
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    #[Test]
+    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 }

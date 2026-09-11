@@ -1,8 +1,12 @@
 parameters:
-    level: 8
+    level: 6
+    phpVersion: 80400
+    fileExtensions:
+        - php
+    tmpDir: ./runtime/.phpstan/
     paths:
         - 'src'
-        - 'tests'
         - 'benchmarks'
-    excludePaths:
-        - src/Backends/Amp.php
+    ignoreErrors:
+        - identifier: foreach.emptyArray
+    

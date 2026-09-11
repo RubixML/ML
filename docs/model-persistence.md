@@ -4,7 +4,7 @@ Model persistence is the ability to save and subsequently load a learner's state
 
 ## Serialization
 
-Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in a lightweight format such as with PHP's [Native](serializers/native.md) serializer or in a robust format such as [RBX](serializers/rbx.md). In the this example, we'll demonstrate how to encode a Persistable learner using the compressed RBX format, save the encoding with a [Persister](persisters/api.md), and then how to deserialize the encoding.
+Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in a lightweight format such as with PHP's [Native](serializers/native.md) serializer or in a robust format such as [RBX](serializers/rbx-v1.md). In the this example, we'll demonstrate how to encode a Persistable learner using the RBX format, save the encoding with a [Persister](persisters/api.md), and then how to deserialize the encoding.
 
 ```php
 use Rubix\ML\Classifiers\RandomForest;

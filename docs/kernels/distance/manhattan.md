@@ -8,6 +8,8 @@ $$
 Manhattan(\mathbf {a} ,\mathbf {b})=\|\mathbf {a} -\mathbf {b} \|_{1}=\sum _{i=1}^{n}|a_{i}-b_{i}|
 $$
 
+**Interfaces:** Monotonic, Subadditive
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

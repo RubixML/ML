@@ -1,82 +1,29 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\CrossValidation\Metrics\TopKAccuracy;
-use Rubix\ML\CrossValidation\Metrics\ProbabilisticMetric;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Metrics
- * @covers \Rubix\ML\CrossValidation\Metrics\TopKAccuracy
- */
+#[Group('Metrics')]
+#[CoversClass(TopKAccuracy::class)]
 class TopKAccuracyTest extends TestCase
 {
-    /**
-     * @var TopKAccuracy
-     */
-    protected $metric;
+    protected TopKAccuracy $metric;
 
     /**
-     * @before
+     * @return Generator<array>
      */
-    protected function setUp() : void
-    {
-        $this->metric = new TopKAccuracy(2);
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ProbabilisticMetric::class, $this->metric);
-        $this->assertInstanceOf(TopKAccuracy::class, $this->metric);
-    }
-
-    /**
-     * @test
-     */
-    public function range() : void
-    {
-        $tuple = $this->metric->range();
-
-        $this->assertInstanceOf(Tuple::class, $tuple);
-        $this->assertCount(2, $tuple);
-        $this->assertGreaterThan($tuple[0], $tuple[1]);
-    }
-
-    /**
-     * @test
-     * @dataProvider scoreProvider
-     *
-     * @param list<array<string,int|float>> $probabilities
-     * @param list<string|int> $labels
-     * @param float $expected
-     */
-    public function score(array $probabilities, array $labels, float $expected) : void
-    {
-        [$min, $max] = $this->metric->range()->list();
-
-        $score = $this->metric->score($probabilities, $labels);
-
-        $this->assertThat(
-            $score,
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-            )
-        );
-
-        $this->assertEqualsWithDelta($expected, $score, 1e-8);
-    }
-
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function scoreProvider() : Generator
+    public static function scoreProvider() : Generator
     {
         yield [
             [
@@ -109,5 +56,66 @@ class TopKAccuracyTest extends TestCase
             [3, 2, 1],
             0.3333333333333,
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->metric = new TopKAccuracy(2);
+    }
+
+    #[Test]
+    public function range() : void
+    {
+        $tuple = $this->metric->range();
+
+        $this->assertInstanceOf(Tuple::class, $tuple);
+        $this->assertCount(2, $tuple);
+        $this->assertGreaterThan($tuple[0], $tuple[1]);
+    }
+
+    /**
+     * @param list<array<string,int|float>> $probabilities
+     * @param list<string|int> $labels
+     * @param float $expected
+     */
+    #[Test]
+    #[DataProvider('scoreProvider')]
+    public function score(array $probabilities, array $labels, float $expected) : void
+    {
+        [$min, $max] = $this->metric->range()->list();
+
+        $score = $this->metric->score(
+            probabilities: $probabilities,
+            labels: $labels
+        );
+
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+                $this->greaterThanOrEqual($min),
+                $this->lessThanOrEqual($max)
+            )
+        );
+
+        $this->assertEqualsWithDelta($expected, $score, 1e-8);
+    }
+
+    #[Test]
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TopKAccuracy(0);
+    }
+
+    #[Test]
+    public function scoreOnEmptySet() : void
+    {
+        $score = $this->metric->score(
+            probabilities: [],
+            labels: []
+        );
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
     }
 }

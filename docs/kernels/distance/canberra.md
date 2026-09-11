@@ -8,6 +8,8 @@ $$
 Canberra(\mathbf {a} ,\mathbf {b} )=\sum _{i=1}^{n}{\frac {|a_{i}-b_{i}|}{|a_{i}|+|b_{i}|}}
 $$
 
+**Interfaces:** Monotonic, Subadditive
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

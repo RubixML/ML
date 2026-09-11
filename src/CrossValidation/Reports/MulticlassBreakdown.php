@@ -6,11 +6,10 @@ use Rubix\ML\Report;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
+use Rubix\ML\Set;
 
 use function count;
 use function array_fill_keys;
-use function array_merge;
-use function array_unique;
 use function array_keys;
 
 use const Rubix\ML\EPSILON;
@@ -53,7 +52,9 @@ class MulticlassBreakdown implements ReportGenerator
     {
         PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
-        $classes = array_unique(array_merge($predictions, $labels));
+        $classes = new Set(...$predictions, ...$labels);
+
+        $classes = $classes->toArray();
 
         $n = count($predictions);
         $k = count($classes);

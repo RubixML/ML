@@ -1,7 +1,14 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Specifications;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Hamming;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -9,28 +16,11 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithDistance;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Specifications
- * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithDistance
- */
+#[Group('Specifications')]
+#[CoversClass(SamplesAreCompatibleWithDistance::class)]
 class SamplesAreCompatibleWithDistanceTest extends TestCase
 {
-    /**
-     * @test
-     * @dataProvider passesProvider
-     *
-     * @param SamplesAreCompatibleWithDistance $specification
-     * @param bool $expected
-     */
-    public function passes(SamplesAreCompatibleWithDistance $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
-    }
-
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function passesProvider() : Generator
+    public static function passesProvider() : Generator
     {
         yield [
             SamplesAreCompatibleWithDistance::with(
@@ -65,11 +55,19 @@ class SamplesAreCompatibleWithDistanceTest extends TestCase
         yield [
             SamplesAreCompatibleWithDistance::with(
                 Unlabeled::quick([
-                    [1, 2, 3, 4, 5],
+                    [1.0, 2.0, 3.0, 4.0, 5.0],
                 ]),
                 new Euclidean()
             ),
             true,
         ];
+    }
+
+    #[DataProvider('passesProvider')]
+    #[Test]
+    #[TestDox('Checks whether samples are compatible with the given distance metric')]
+    public function passes(SamplesAreCompatibleWithDistance $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
     }
 }

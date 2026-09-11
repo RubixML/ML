@@ -23,7 +23,7 @@ $backend = new Amp(16);
 
 ## Additional Methods
 
-Return the maximum number of workers in the worker pool:
+Return the maximum number of workers in the worker pool.
 
 ```php
 public workers() : int

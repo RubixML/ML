@@ -11,12 +11,15 @@ use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant as Schedule;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Dense
- */
+#[Group('Layers')]
+#[CoversClass(Dense::class)]
 class DenseTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -24,31 +27,28 @@ class DenseTest extends TestCase
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Deferred
      */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Dense
      */
-    protected $layer;
+    protected Dense $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -66,16 +66,14 @@ class DenseTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Schedule(0.001));
 
         $this->layer = new Dense(2, 0.0, true, new He(), new Constant(0.0));
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Dense::class, $this->layer);
@@ -84,9 +82,7 @@ class DenseTest extends TestCase
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
@@ -94,8 +90,8 @@ class DenseTest extends TestCase
         $this->assertEquals(2, $this->layer->width());
 
         $expected = [
-            [0.1331636897703166, -2.659941938483866, 0.37781475642889195],
-            [0.8082829632098398, -2.9282037817258764, 0.21589538926944302],
+            [0.1655431527858090, -3.3067210399720404, 0.4696824341238931],
+            [1.0048212865204000, -3.6402121844350117, 0.2683915072737035],
         ];
 
         $forward = $this->layer->forward($this->input);
@@ -103,20 +99,28 @@ class DenseTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        $gradient = $this->layer->back($this->prevGrad)->compute();
 
         $expected = [
-            [0.2513486032877107, 0.10053944131508427, 0.698223970571707],
-            [0.16407184592276702, 0.0656287383691068, 0.2102008334557029],
-            [0.44839890381544645, 0.1793595615261786, 0.7297101185916894],
+            [0.3124653598013489, 0.1249861439205396, 0.8680008614843256],
+            [0.2039667923312287, 0.0815867169324915, 0.2613122897726918],
+            [0.5574294942663576, 0.2229717977065430, 0.9071430347096159],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
+        foreach ($this->layer->parameters() as $param) {
+            if ($param->hasGradient()) {
+                $this->optimizer->warm($param);
+
+                $param->update($this->optimizer);
+            }
+        }
+
         $expected = [
-            [0.1314490977703166, -2.670373438483866, 0.376362656428892],
-            [0.8063645522098398, -2.9367382817258765, 0.20608923926944314],
+            [0.1638285607858090, -3.3171525399720405, 0.4682303341238930],
+            [1.0029028755203999, -3.6487466844350114, 0.2585853572737035],
         ];
 
         $infer = $this->layer->infer($this->input);

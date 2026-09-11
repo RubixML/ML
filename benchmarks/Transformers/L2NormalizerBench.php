@@ -5,6 +5,7 @@ namespace Rubix\ML\Benchmarks\Transformers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\L2Normalizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Transformers"})
@@ -15,14 +16,14 @@ class L2NormalizerBench
     protected const DATASET_SIZE = 10000;
 
     /**
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var Labeled
      */
-    public $dataset;
+    public Labeled $dataset;
 
     /**
      * @var L2Normalizer
      */
-    protected $transformer;
+    protected L2Normalizer $transformer;
 
     public function setUp() : void
     {

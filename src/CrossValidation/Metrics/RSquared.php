@@ -25,7 +25,7 @@ class RSquared implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return \Rubix\ML\Tuple{float,float}
+     * @return Tuple<float,float>
      */
     public function range() : Tuple
     {

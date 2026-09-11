@@ -6,6 +6,8 @@ A robust distance kernel that measures samples consisting of a mix of categorica
 
 > **Note:** The Gower metric expects all continuous variables to have a standardized range. The default range works for values that have been normalized between 0 and 1.
 
+**Interfaces:** Monotonic, Subadditive, NaNSafe
+
 **Data Type Compatibility:** Continuous, Categorical
 
 ## Parameters

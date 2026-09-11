@@ -19,7 +19,7 @@ $$
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 
-$activationFunction = new ELU(2.5);
+$activationFunction = new ELU(alpha: 2.5);
 ```
 
 ## References

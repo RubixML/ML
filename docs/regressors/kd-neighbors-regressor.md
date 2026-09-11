@@ -27,7 +27,7 @@ $estimator = new KDNeighborsRegressor(20, true, new BallTree(50));
 
 ## Additional Methods
 
-Return the base spatial tree instance:
+Return the base spatial tree instance.
 
 ```php
 public tree() : Spatial

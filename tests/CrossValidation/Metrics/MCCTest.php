@@ -1,96 +1,29 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Metrics\MCC;
-use Rubix\ML\CrossValidation\Metrics\Metric;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Metrics
- * @covers \Rubix\ML\CrossValidation\Metrics\MCC
- */
+#[Group('Metrics')]
+#[CoversClass(MCC::class)]
 class MCCTest extends TestCase
 {
-    /**
-     * @var MCC
-     */
-    protected $metric;
+    protected MCC $metric;
 
     /**
-     * @before
+     * @return Generator<array>
      */
-    protected function setUp() : void
-    {
-        $this->metric = new MCC();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(MCC::class, $this->metric);
-        $this->assertInstanceOf(Metric::class, $this->metric);
-    }
-
-    /**
-     * @test
-     */
-    public function range() : void
-    {
-        $tuple = $this->metric->range();
-
-        $this->assertInstanceOf(Tuple::class, $tuple);
-        $this->assertCount(2, $tuple);
-        $this->assertGreaterThan($tuple[0], $tuple[1]);
-    }
-
-    /**
-     * @test
-     */
-    public function compatibility() : void
-    {
-        $expected = [
-            EstimatorType::classifier(),
-            EstimatorType::anomalyDetector(),
-        ];
-
-        $this->assertEquals($expected, $this->metric->compatibility());
-    }
-
-    /**
-     * @test
-     * @dataProvider scoreProvider
-     *
-     * @param (string|int)[] $predictions
-     * @param (string|int)[] $labels
-     * @param float $expected
-     */
-    public function score(array $predictions, array $labels, float $expected) : void
-    {
-        [$min, $max] = $this->metric->range()->list();
-
-        $score = $this->metric->score($predictions, $labels);
-
-        $this->assertThat(
-            $score,
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-            )
-        );
-
-        $this->assertEquals($expected, $score);
-    }
-
-    /**
-     * @return Generator<mixed[]>
-     */
-    public function scoreProvider() : Generator
+    public static function scoreProvider() : Generator
     {
         yield [
             ['A', 'B'],
@@ -133,5 +66,82 @@ class MCCTest extends TestCase
             [0, 0, 0, 1, 0],
             -1.0,
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->metric = new MCC();
+    }
+
+    #[Test]
+    public function range() : void
+    {
+        $tuple = $this->metric->range();
+
+        $this->assertInstanceOf(Tuple::class, $tuple);
+        $this->assertCount(2, $tuple);
+        $this->assertGreaterThan($tuple[0], $tuple[1]);
+    }
+
+    #[Test]
+    public function compatibility() : void
+    {
+        $expected = [
+            EstimatorType::classifier(),
+            EstimatorType::anomalyDetector(),
+        ];
+
+        $this->assertEquals($expected, $this->metric->compatibility());
+    }
+
+    #[Test]
+    public function scoreOnEmptySet() : void
+    {
+        $score = $this->metric->score(predictions: [], labels: []);
+
+        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+    }
+
+    #[Test]
+    public function scoreOnSingleClass() : void
+    {
+        $score = $this->metric->score(
+            predictions: ['A', 'A'],
+            labels: ['A', 'A'],
+        );
+
+        $this->assertIsFloat($score);
+
+        [$min, $max] = $this->metric->range()->list();
+
+        $this->assertGreaterThanOrEqual($min, $score);
+        $this->assertLessThanOrEqual($max, $score);
+    }
+
+    /**
+     * @param (string|int)[] $predictions
+     * @param (string|int)[] $labels
+     * @param float $expected
+     */
+    #[DataProvider('scoreProvider')]
+    #[Test]
+    public function score(array $predictions, array $labels, float $expected) : void
+    {
+        [$min, $max] = $this->metric->range()->list();
+
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $labels
+        );
+
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+                $this->greaterThanOrEqual($min),
+                $this->lessThanOrEqual($max)
+            )
+        );
+
+        $this->assertEquals($expected, $score);
     }
 }

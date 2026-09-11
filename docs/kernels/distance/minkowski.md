@@ -8,6 +8,8 @@ $$
 {\displaystyle Minkowski\left(a,b\right)=\left(\sum _{i=1}^{n}|a_{i}-b_{i}|^{p}\right)^{\frac {1}{p}}}
 $$
 
+**Interfaces:** Monotonic, Subadditive
+
 **Data Type Compatibility:** Continuous
 
 ## Parameters

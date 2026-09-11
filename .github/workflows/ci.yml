@@ -2,25 +2,28 @@ name: "Code Checks"
 
 on: [push, pull_request]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   Build:
     name: PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}
     runs-on: ${{ matrix.operating-system }}
     strategy:
+      fail-fast: false
       matrix:
-        operating-system: [ubuntu-latest, macos-latest]
-        php-versions: ['8.0', '8.1', '8.2']
-
+        operating-system: [ubuntu-latest]
+        php-versions: ['8.4']
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
           tools: composer, pecl
-          extensions: svm, mbstring, gd, fileinfo
+          extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
 
       - name: Validate composer.json

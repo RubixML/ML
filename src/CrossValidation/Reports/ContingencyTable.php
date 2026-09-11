@@ -6,9 +6,9 @@ use Rubix\ML\Report;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
+use Rubix\ML\Set;
 
 use function array_fill_keys;
-use function array_unique;
 
 /**
  * Contingency Table
@@ -48,10 +48,10 @@ class ContingencyTable implements ReportGenerator
     {
         PredictionAndLabelCountsAreEqual::with($predictions, $labels)->check();
 
-        $clusters = array_unique($predictions);
-        $classes = array_unique($labels);
+        $clusters = new Set(...$predictions);
+        $classes = new Set(...$labels);
 
-        $table = array_fill_keys($clusters, array_fill_keys($classes, 0));
+        $table = array_fill_keys($clusters->toArray(), array_fill_keys($classes->toArray(), 0));
 
         foreach ($predictions as $i => $prediction) {
             ++$table[$prediction][$labels[$i]];

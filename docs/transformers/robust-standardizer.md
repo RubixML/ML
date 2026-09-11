@@ -28,13 +28,13 @@ $transformer = new RobustStandardizer(true);
 
 ## Additional Methods
 
-Return the medians calculated by fitting the training set:
+Return the medians calculated by fitting the training set.
 
 ```php
 public medians() : array
 ```
 
-Return the median absolute deviations calculated during fitting:
+Return the median absolute deviations calculated during fitting.
 
 ```php
 public mads() : array

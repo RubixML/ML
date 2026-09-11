@@ -24,13 +24,13 @@ The Support Vector Machine Regressor (SVR) is a maximum margin algorithm for the
 
 ## Additional Methods
 
-Save the model data to the filesystem:
+Save the model data to the filesystem.
 
 ```php
 public save(string $path) : void
 ```
 
-Load the model data from the filesystem:
+Load the model data from the filesystem.
 
 ```php
 public load(string $path) : void
@@ -39,8 +39,8 @@ public load(string $path) : void
 ## Example
 
 ```php
-use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Kernels\SVM\RBF;
+use Rubix\ML\Regressors\SVR;
 
 $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.0);
 ```

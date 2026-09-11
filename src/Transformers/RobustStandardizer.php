@@ -148,6 +148,8 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
                 $value /= $mad;
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -173,6 +175,8 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
                 }
             }
         }
+
+        unset($sample);
     }
 
     /**

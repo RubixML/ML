@@ -2,13 +2,13 @@
 
 # AdaMax
 
-A version of the [Adam](adam.md) optimizer that replaces the RMS property with the infinity norm of the past gradients. As such, AdaMax is generally more suitable for sparse parameter updates and noisy gradients.
+A version of the [Adam](adam.md) optimizer that replaces the RMS property with the infinity norm of the past gradients, using a [learning-rate schedule](../schedulers/constant.md) to set the step size each batch. As such, AdaMax is generally more suitable for sparse parameter updates and noisy gradients.
 
 ## Parameters
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | rate | 0.001 | float | The learning rate that controls the global step size. |
+| 1 | scheduler | | [Scheduler](../schedulers/constant.md) | The learning-rate schedule that supplies the step size each batch. |
 | 2 | momentumDecay | 0.1 | float | The decay rate of the accumulated velocity. |
 | 3 | normDecay | 0.001 | float | The decay rate of the infinity norm. |
 
@@ -16,8 +16,9 @@ A version of the [Adam](adam.md) optimizer that replaces the RMS property with t
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\AdaMax;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$optimizer = new AdaMax(0.0001, 0.1, 0.001);
+$optimizer = new AdaMax(scheduler: new Constant(0.0001), momentumDecay: 0.1, normDecay: 0.001);
 ```
 
 ## References

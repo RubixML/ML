@@ -8,8 +8,8 @@ There are 4 base estimator types to consider in Rubix ML and each type outputs a
 
 | Estimator Type | Prediction | Data Type | Example |
 | --- | --- | --- | --- |
-| Classifier | Class label | String | 'cat' |
-| Regressor | Number | Integer or Float | 1.348957 |
+| Classifier | Class label | String or Integer | 'cat' or 3 |
+| Regressor | Number | Float | 1.348957 |
 | Clusterer | Cluster number | Integer | 6 |
 | Anomaly Detector | 1 for an anomaly or 0 otherwise | Integer | 0 |
 

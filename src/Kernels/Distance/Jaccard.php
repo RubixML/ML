@@ -15,7 +15,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Jaccard implements Distance
+class Jaccard implements Distance, Subadditive
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -36,8 +36,8 @@ class Jaccard implements Distance
      *
      * @internal
      *
-     * @param list<int|float> $a
-     * @param list<int|float> $b
+     * @param list<float> $a
+     * @param list<float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

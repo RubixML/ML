@@ -20,8 +20,19 @@ One Vs Rest is an ensemble learner that trains a binary classifier to predict a 
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 
-$estimator = new OneVsRest(new LogisticRegression(64, new Stochastic(0.001)));
+$estimator = new OneVsRest(new LogisticRegression(batchSize: 64, optimizer: new Stochastic(scheduler: new Constant(0.001))));
+```
+
+## Parallel
+
+This estimator implements the [Parallel](../parallel.md) interface and can utilize a parallel processing backend such as [Swoole](../backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole(8));
 ```
 
 ## Additional Methods

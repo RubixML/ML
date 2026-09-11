@@ -26,21 +26,21 @@ class SELU implements ActivationFunction
      *
      * @var float
      */
-    public const ALPHA = 1.6732632423543772848170429916717;
+    public const float ALPHA = 1.6732632423543772848170429916717;
 
     /**
      * The scaling coefficient.
      *
      * @var float
      */
-    public const SCALE = 1.0507009873554804934193349852946;
+    public const float SCALE = 1.0507009873554804934193349852946;
 
     /**
      * The scaling coefficient multiplied by alpha.
      *
      * @var float
      */
-    protected const BETA = self::SCALE * self::ALPHA;
+    protected const float BETA = self::SCALE * self::ALPHA;
 
     /**
      * Compute the activation.

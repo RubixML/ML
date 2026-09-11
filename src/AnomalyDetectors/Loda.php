@@ -20,11 +20,9 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function Rubix\ML\linspace;
 use function Rubix\ML\minmax;
 use function count;
 use function is_null;
-use function array_slice;
 use function array_fill;
 use function round;
 use function max;
@@ -103,9 +101,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     protected ?Matrix $r = null;
 
     /**
-     * The edges and bin counts of each histogram.
+     * The minimums, widths, and bin counts of each histogram.
      *
-     * @var array{list<float>,list<int<0,max>>}|mixed[]
+     * @var array{float,float,list<int<0,max>>}|mixed[]
      */
     protected array $histograms = [
         //
@@ -124,6 +122,26 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      * @var int
      */
     protected int $n = 0;
+
+    /**
+     * Return the index of the equi-width bin that a value falls into.
+     *
+     * @param float $min
+     * @param float $width
+     * @param int $bins
+     * @param float $value
+     * @return int
+     */
+    protected static function binIndex(float $min, float $width, int $bins, float $value) : int
+    {
+        if ($width <= 0.0) {
+            return 0;
+        }
+
+        $index = (int) (($value - $min) / $width);
+
+        return $index < 0 ? 0 : ($index >= $bins ? $bins - 1 : $index);
+    }
 
     /**
      * @param float $contamination
@@ -239,27 +257,20 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->asArray();
 
         foreach ($projections as $values) {
+            /** @var non-empty-array<float|int> $values */
             [$min, $max] = minmax($values);
 
-            $edges = linspace((float) $min, (float) $max, $this->bins + 1);
+            $width = $max > $min ? ($max - $min) / $this->bins : 0.0;
 
-            $edges = array_slice($edges, 1, -1);
-
-            $edges[] = INF;
-
-            $counts = array_fill(0, count($edges), 0);
+            $counts = array_fill(0, $this->bins, 0);
 
             foreach ($values as $value) {
-                foreach ($edges as $k => $edge) {
-                    if ($value <= $edge) {
-                        ++$counts[$k];
+                $index = self::binIndex($min, $width, $this->bins, $value);
 
-                        continue 2;
-                    }
-                }
+                ++$counts[$index];
             }
 
-            $this->histograms[] = [$edges, $counts];
+            $this->histograms[] = [$min, $width, $counts];
         }
 
         $this->n = $m;
@@ -294,19 +305,15 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->asArray();
 
         foreach ($projections as $i => $values) {
-            [$edges, $counts] = $this->histograms[$i];
+            [$min, $width, $counts] = $this->histograms[$i];
 
             foreach ($values as $value) {
-                foreach ($edges as $k => $edge) {
-                    if ($value <= $edge) {
-                        ++$counts[$k];
+                $index = self::binIndex($min, $width, count($counts), $value);
 
-                        continue 2;
-                    }
-                }
+                ++$counts[$index];
             }
 
-            $this->histograms[$i] = [$edges, $counts];
+            $this->histograms[$i] = [$min, $width, $counts];
         }
 
         $n = $dataset->numSamples();
@@ -326,7 +333,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<int>
+     * @return array<float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -338,7 +345,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<float>
+     * @return array<float>
      */
     public function score(Dataset $dataset) : array
     {
@@ -353,7 +360,9 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->transpose()
             ->asArray();
 
-        return $this->densities($projections);
+        $scores = $this->densities($projections);
+
+        return $scores;
     }
 
     /**
@@ -370,20 +379,16 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
         $densities = array_fill(0, $n, 0.0);
 
         foreach ($projections as $i => $values) {
-            [$edges, $counts] = $this->histograms[$i];
+            [$min, $width, $counts] = $this->histograms[$i];
 
             foreach ($values as $j => $value) {
-                foreach ($edges as $k => $edge) {
-                    if ($value <= $edge) {
-                        $count = $counts[$k];
+                $index = self::binIndex($min, $width, count($counts), $value);
 
-                        $densities[$j] += $count > 0
-                            ? -log($count / $this->n)
-                            : -LOG_EPSILON;
+                $count = $counts[$index];
 
-                        break;
-                    }
-                }
+                $densities[$j] += $count > 0
+                    ? -log($count / $this->n)
+                    : -LOG_EPSILON;
             }
         }
 

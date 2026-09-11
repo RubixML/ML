@@ -7,28 +7,27 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\TruncatedSVD;
 use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @requires extension tensor
- * @covers \Rubix\ML\Transformers\TruncatedSVD
- */
+#[Group('Transformers')]
+#[RequiresPhpExtension('tensor')]
+#[CoversClass(TruncatedSVD::class)]
 class TruncatedSVDTest extends TestCase
 {
     /**
      * @var Blob
      */
-    protected $generator;
+    protected Blob $generator;
 
     /**
      * @var TruncatedSVD
      */
-    protected $transformer;
+    protected TruncatedSVD $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->generator = new Blob([0.0, 3000.0, -6.0, 25], [1.0, 30.0, 0.001, 10.0]);
@@ -36,9 +35,7 @@ class TruncatedSVDTest extends TestCase
         $this->transformer = new TruncatedSVD(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(TruncatedSVD::class, $this->transformer);
@@ -46,9 +43,7 @@ class TruncatedSVDTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fitTransform() : void
     {
         $this->assertEquals(4, $this->generator->dimensions());
@@ -64,9 +59,7 @@ class TruncatedSVDTest extends TestCase
         $this->assertCount(2, $sample);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);

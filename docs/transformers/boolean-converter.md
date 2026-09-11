@@ -2,9 +2,7 @@
 
 # Boolean Converter
 
-This transformer is used to convert boolean values to a compatible continuous or categorical datatype. Strings should be
-used when the boolean should be treated as a categorical value. Ints or floats when the boolean should be treated as a
-continuous value.
+This transformer is used to convert truthy or falsy values to a another continuous or categorical datatype.
 
 **Interfaces:** [Transformer](api.md#transformer)
 
@@ -14,19 +12,21 @@ continuous value.
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | trueValue | 'true' | string, int, float | The value to convert `true` to. |
-| 2 | falseValue | 'false' | string, int, float | The value to convert `false` to. |
+| 1 | trueValue | 1 | string, int, or float | The value to convert truthy to. |
+| 2 | falseValue | 0 | string, int, or float | The value to convert falsy to. |
 
 ## Example
 
 ```php
 use Rubix\ML\Transformers\BooleanConverter;
 
-$transformer = new BooleanConverter('true', 'false);
+$transformer = new BooleanConverter(1, 0);
+
+$transformer = new BooleanConverter('true', 'false');
 
 $transformer = new BooleanConverter('tall', 'not tall');
 
-$transformer = new BooleanConverter(1, 0);
+$transformer = new BooleanConverter(5.0, -5.0);
 ```
 
 ## Additional Methods

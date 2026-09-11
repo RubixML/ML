@@ -14,17 +14,17 @@ class GELUBench
     /**
      * @var Matrix
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var Matrix
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var GELU
      */
-    protected $activationFn;
+    protected GELU $activationFn;
 
     public function setUp() : void
     {

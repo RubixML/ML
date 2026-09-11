@@ -6,6 +6,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
+use function Rubix\ML\enumerate;
 use function Rubix\ML\iterator_first;
 use function is_dir;
 use function is_file;
@@ -132,25 +133,24 @@ class CSV implements Extractor, Exporter
      * Export an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $overwrite
      * @throws RuntimeException
      */
-    public function export(iterable $iterator) : void
+    public function export(iterable $iterator, bool $overwrite = false) : void
     {
         if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("Path {$this->path} is not writable.");
+            throw new RuntimeException("File {$this->path} is not writable.");
         }
 
         if (!is_file($this->path) and !is_writable(dirname($this->path))) {
-            throw new RuntimeException("Path {$this->path} is not writable.");
+            throw new RuntimeException('Folder ' . dirname($this->path) . ' is not writable.');
         }
 
-        $handle = fopen($this->path, 'w');
+        $handle = fopen($this->path, $overwrite ? 'w' : 'a');
 
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
         }
-
-        $line = 1;
 
         if ($this->header) {
             $header = array_keys(iterator_first($iterator));
@@ -158,20 +158,16 @@ class CSV implements Extractor, Exporter
             $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure, $this->escape);
 
             if ($length === false) {
-                throw new RuntimeException("Could not write header on line $line.");
+                throw new RuntimeException('Could not write header on line 1.');
             }
-
-            ++$line;
         }
 
-        foreach ($iterator as $row) {
+        foreach (enumerate($iterator, $this->header ? 2 : 1) as $line => $row) {
             $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure, $this->escape);
 
             if ($length === false) {
                 throw new RuntimeException("Could not write row on line $line.");
             }
-
-            ++$line;
         }
 
         fclose($handle);

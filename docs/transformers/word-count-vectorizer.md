@@ -28,7 +28,7 @@ $transformer = new WordCountVectorizer(10000, 5, 0.5, new NGram(1, 2));
 
 ## Additional Methods
 
-Return an array of words that comprise each of the vocabularies:
+Return an array of words that comprise each of the vocabularies.
 
 ```php
 public vocabularies() : array

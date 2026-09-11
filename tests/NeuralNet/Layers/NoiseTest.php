@@ -8,12 +8,15 @@ use Rubix\ML\NeuralNet\Layers\Noise;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Noise
- */
+#[Group('Layers')]
+#[CoversClass(Noise::class)]
 class NoiseTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -21,31 +24,28 @@ class NoiseTest extends TestCase
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Deferred
      */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Noise
      */
-    protected $layer;
+    protected Noise $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -64,16 +64,14 @@ class NoiseTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Noise(0.1);
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Noise::class, $this->layer);
@@ -81,9 +79,7 @@ class NoiseTest extends TestCase
         $this->assertInstanceOf(Hidden::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);

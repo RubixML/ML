@@ -48,7 +48,6 @@ class Best implements Outcome
      * @param (int|float)[] $probabilities
      * @param float $impurity
      * @param int $n
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(string $outcome, array $probabilities, float $impurity, int $n)
     {

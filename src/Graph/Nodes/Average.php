@@ -20,7 +20,7 @@ class Average implements Outcome
      *
      * @var int|float
      */
-    protected $outcome;
+    protected int|float $outcome;
 
     /**
      * The amount of impurity within the labels of the node.
@@ -41,7 +41,7 @@ class Average implements Outcome
      * @param float $impurity
      * @param int $n
      */
-    public function __construct($outcome, float $impurity, int $n)
+    public function __construct(int|float $outcome, float $impurity, int $n)
     {
         $this->outcome = $outcome;
         $this->impurity = $impurity;
@@ -53,7 +53,7 @@ class Average implements Outcome
      *
      * @return int|float
      */
-    public function outcome()
+    public function outcome() : int|float
     {
         return $this->outcome;
     }

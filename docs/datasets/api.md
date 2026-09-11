@@ -20,7 +20,7 @@ $dataset = new Labeled($samples, $labels);
 Build a dataset with the records of a 2-dimensional iterable data table:
 
 ```php
-public static fromIterator(Traversable $iterator) : self
+public static fromIterator(Traversable $iterator, bool $verify = true) : self
 ```
 
 !!! note
@@ -178,7 +178,7 @@ public fold(int $k = 10) : self[]
 ```
 
 !!! note
-    If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds.
+    If there are not enough samples to completely fill the last fold of the dataset then it will contain slightly fewer samples than the rest of the folds. If *k* is greater than the number of samples then an `InvalidArgumentException` is thrown.
 
 ```php
 $folds = $dataset->fold(8);
@@ -409,14 +409,14 @@ public deduplicate() : self
 
 ## Exporting
 
-Export the dataset to the location and format given by a [Writable](../extractors/api.md) extractor:
+Export the dataset to the location and format given by a [Writable](../extractors/api.md) extractor. If `overwrite` is true then the current samples will be overwritten, otherwise they will be appended if the file or database already exists.
 
 ```php
-public exportTo(Writable $extractor) : void
+public exportTo(Writable $extractor, bool $overwrite = false) : void
 ```
 
 ```php
 use Rubix\ML\Extractors\NDJSON;
 
-$dataset->exportTo(new NDJSON('example.ndjson'));
+$dataset->exportTo(new NDJSON('example.ndjson'), false);
 ```

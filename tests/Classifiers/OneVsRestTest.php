@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Classifiers;
 
-use Rubix\ML\Learner;
-use Rubix\ML\Parallel;
+use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\OneVsRest;
@@ -17,66 +21,89 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
-/**
- * @group Classifiers
- * @covers \Rubix\ML\Classifiers\OneVsRest
- */
+#[Group('Classifiers')]
+#[CoversClass(OneVsRest::class)]
 class OneVsRestTest extends TestCase
 {
     /**
      * The number of samples in the training set.
-     *
-     * @var int
      */
-    protected const TRAIN_SIZE = 512;
+    protected const int TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
-     *
-     * @var int
      */
-    protected const TEST_SIZE = 256;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
-     *
-     * @var float
      */
-    protected const MIN_SCORE = 0.9;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
-     *
-     * @var int
      */
-    protected const RANDOM_SEED = 0;
+    protected const int RANDOM_SEED = 0;
+
+    protected Agglomerate $generator;
+
+    protected OneVsRest $estimator;
+
+    protected FBeta $metric;
+
+    protected ?Backend $backend = null;
 
     /**
-     * @var Agglomerate
+     * @return Generator<string, array{backend: Backend}>
      */
-    protected $generator;
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
 
-    /**
-     * @var OneVsRest
-     */
-    protected $estimator;
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
 
-    /**
-     * @var FBeta
-     */
-    protected $metric;
+        $ampBackend = new Amp();
 
-    /**
-     * @before
-     */
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
+    }
+
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 0], 50.0),
-            'green' => new Blob([0, 128, 0], 10.0),
-            'blue' => new Blob([0, 32, 255], 30.0),
-        ], [0.5, 0.2, 0.3]);
+        $this->generator = new Agglomerate(
+            generators: [
+                'red' => new Blob(
+                    center: [255, 32, 0],
+                    stdDev: 50.0
+                ),
+                'green' => new Blob(
+                    center: [0, 128, 0],
+                    stdDev: 10.0
+                ),
+                'blue' => new Blob(
+                    center: [0, 32, 255],
+                    stdDev: 30.0
+                ),
+            ],
+            weights: [0.5, 0.2, 0.3]
+        );
 
         $this->estimator = new OneVsRest(new GaussianNB());
 
@@ -85,35 +112,24 @@ class OneVsRestTest extends TestCase
         srand(self::RANDOM_SEED);
     }
 
-    protected function assertPreConditions() : void
+    protected function tearDown() : void
+    {
+        $this->backend?->shutdown();
+    }
+
+    #[Test]
+    public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(OneVsRest::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Parallel::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function compatibility() : void
     {
         $expected = [
@@ -123,9 +139,7 @@ class OneVsRestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function params() : void
     {
         $expected = [
@@ -135,11 +149,15 @@ class OneVsRestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    /**
-     * @test
-     */
-    public function trainPredictProba() : void
+    #[DataProvider('provideBackends')]
+    #[Test]
+    #[RunInSeparateProcess]
+    public function trainPredictProba(Backend $backend) : void
     {
+        $this->backend = $backend;
+
+        $this->estimator->setBackend($backend);
+
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -149,18 +167,66 @@ class OneVsRestTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score(
+            predictions: $predictions,
+            labels: $testing->labels()
+        );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[TestDox('Probabilities are identical regardless of the backend')]
+    public function probaIsBackendAgnostic() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        $expected = $this->estimator->proba($testing);
+
+        $amp = new Amp();
+        $this->backend = $amp;
+
+        $this->estimator->setBackend($amp);
+
+        $this->assertSame($expected, $this->estimator->proba($testing));
+    }
+
+    #[Test]
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Backend is transient and resolved lazily')]
+    public function backendIsTransient() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->setBackend(new Serial());
+
+        $this->estimator->train($training);
+
+        self::assertTrue($this->estimator->trained());
+
+        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        self::assertInstanceOf(OneVsRest::class, $copy);
+        self::assertTrue($copy->trained());
+
+        $predictions = $copy->predict($training);
+
+        self::assertCount(self::TRAIN_SIZE, $predictions);
+
+        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

@@ -5,6 +5,7 @@ namespace Rubix\ML\Benchmarks\AnomalyDetectors;
 use Rubix\ML\AnomalyDetectors\Loda;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"AnomalyDetectors"})
@@ -12,24 +13,15 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  */
 class LodaBench
 {
-    protected const TRAINING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected Labeled $training;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $testing;
 
-    /**
-     * @var Loda
-     */
-    protected $estimator;
+    protected Loda $estimator;
 
     public function setUp() : void
     {

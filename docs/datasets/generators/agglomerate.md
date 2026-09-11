@@ -34,7 +34,7 @@ $generator = new Agglomerate([
 
 ## Additional Methods
 
-Return the normalized weight values of each generator in the agglomerate:
+Return the normalized weight values of each generator in the agglomerate.
 
 ```php
 public weights() : array

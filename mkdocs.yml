@@ -16,6 +16,7 @@ nav:
     - What is Machine Learning?: what-is-machine-learning.md
     - Installation: installation.md
     - Basic Introduction: basic-introduction.md
+    - Version 3 Upgrade Guide: upgrading-to-3.md
   - User Guide:
     - Representing Your Data: representing-your-data.md
     - Extracting Data: extracting-data.md
@@ -131,6 +132,7 @@ nav:
         - Interval Discretizer: transformers/interval-discretizer.md
         - One Hot Encoder: transformers/one-hot-encoder.md
         - Numeric String Converter: transformers/numeric-string-converter.md
+        - Float Type Converter: transformers/float-type-converter.md
         - Boolean Converter: transformers/boolean-converter.md
       - Feature Expansion:
         - Polynomial Expander: transformers/polynomial-expander.md
@@ -154,6 +156,7 @@ nav:
       - Other:
         - Lambda Function: transformers/lambda-function.md
     - Neural Network:
+      - Feed Forward: neural-network/feed-forward.md
       - Hidden Layers:
         - Activation: neural-network/hidden-layers/activation.md
         - Batch Norm: neural-network/hidden-layers/batch-norm.md
@@ -170,13 +173,13 @@ nav:
         - ReLU: neural-network/activation-functions/relu.md
         - SELU: neural-network/activation-functions/selu.md
         - Sigmoid: neural-network/activation-functions/sigmoid.md
-        - Softmax: neural-network/activation-functions/softmax.md
         - Soft Plus: neural-network/activation-functions/soft-plus.md
-        - Soft Sign: neural-network/activation-functions/softsign.md
+        - Softsign: neural-network/activation-functions/softsign.md
         - SiLU: neural-network/activation-functions/silu.md
         - Thresholded ReLU: neural-network/activation-functions/thresholded-relu.md
       - Cost Functions:
-        - Cross Entropy: neural-network/cost-functions/cross-entropy.md
+        - Binary Cross Entropy: neural-network/cost-functions/binary-cross-entropy.md
+        - Multiclass Cross Entropy: neural-network/cost-functions/multiclass-cross-entropy.md
         - Huber Loss: neural-network/cost-functions/huber-loss.md
         - Least Squares: neural-network/cost-functions/least-squares.md
         - Relative Entropy: neural-network/cost-functions/relative-entropy.md
@@ -192,11 +195,13 @@ nav:
         - AdaGrad: neural-network/optimizers/adagrad.md
         - Adam: neural-network/optimizers/adam.md
         - AdaMax: neural-network/optimizers/adamax.md
-        - Cyclical: neural-network/optimizers/cyclical.md
         - Momentum: neural-network/optimizers/momentum.md
         - RMS Prop: neural-network/optimizers/rms-prop.md
-        - Step Decay: neural-network/optimizers/step-decay.md
         - Stochastic: neural-network/optimizers/stochastic.md
+      - Schedulers:
+        - Constant: neural-network/schedulers/constant.md
+        - Cyclical: neural-network/schedulers/cyclical.md
+        - Step Decay: neural-network/schedulers/step-decay.md
     - Graph:
       - Trees:
         - Ball Tree: graph/trees/ball-tree.md
@@ -235,7 +240,9 @@ nav:
         - RMSE: cross-validation/metrics/rmse.md
         - R Squared: cross-validation/metrics/r-squared.md
         - SMAPE: cross-validation/metrics/smape.md
+        - Class Purity: cross-validation/metrics/class-purity.md
         - Completeness: cross-validation/metrics/completeness.md
+        - Cluster Purity: cross-validation/metrics/cluster-purity.md
         - Homogeneity: cross-validation/metrics/homogeneity.md
         - Rand Index: cross-validation/metrics/rand-index.md
         - Top K Accuracy: cross-validation/metrics/top-k-accuracy.md
@@ -259,7 +266,6 @@ nav:
       - Sentence: tokenizers/sentence.md
       - Whitespace: tokenizers/whitespace.md
       - Word: tokenizers/word.md
-      - Word Stemmer: tokenizers/word-stemmer.md
     - Persisters:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md
@@ -273,6 +279,7 @@ nav:
     - Backends:
       - Amp: backends/amp.md
       - Serial: backends/serial.md
+      - Swoole: backends/swoole.md
     - Helpers:
       - Params: helpers/params.md
     - Strategies:

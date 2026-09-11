@@ -2,35 +2,59 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
+use Generator;
 use Rubix\ML\Transformers\IntervalDiscretizer;
+use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
+use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * @Groups({"Classifiers"})
  */
 class RandomForestBench
 {
-    protected const TRAINING_SIZE = 10000;
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 10000;
+    protected const int TESTING_SIZE = 10000;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $training;
+    protected Labeled $training;
 
-    /**
-     * @var \Rubix\ML\Datasets\Labeled;
-     */
-    protected $testing;
+    protected Labeled $testing;
+
+    protected RandomForest $estimator;
 
     /**
-     * @var RandomForest
+     * @return Generator<string, array{backend: Backend}>
      */
-    protected $estimator;
+    public static function provideBackends() : Generator
+    {
+        $serialBackend = new Serial();
+
+        yield (string) $serialBackend => [
+            'backend' => $serialBackend,
+        ];
+
+        $ampBackend = new Amp();
+
+        yield (string) $ampBackend => [
+            'backend' => $ampBackend,
+        ];
+
+        if (ExtensionIsLoaded::with('swoole')->passes()) {
+            $swooleBackend = new Swoole();
+
+            yield (string) $swooleBackend => [
+                'backend' => $swooleBackend,
+            ];
+        }
+    }
 
     public function setUpContinuous() : void
     {
@@ -70,9 +94,13 @@ class RandomForestBench
      * @Iterations(5)
      * @BeforeMethods({"setUpContinuous"})
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function continuous() : void
+    public function continuous(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);
@@ -83,9 +111,13 @@ class RandomForestBench
      * @Iterations(5)
      * @BeforeMethods({"setUpCategorical"})
      * @OutputTimeUnit("seconds", precision=3)
+     * @ParamProviders("provideBackends")
+     * @param array{ backend: Backend } $params
      */
-    public function categorical() : void
+    public function categorical(array $params) : void
     {
+        $this->estimator->setBackend($params['backend']);
+
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

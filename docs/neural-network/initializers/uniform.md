@@ -15,5 +15,5 @@ Generates a random uniform distribution centered at 0 and bounded at both ends b
 ```php
 use Rubix\ML\NeuralNet\Initializers\Uniform;
 
-$initializer = new Uniform(1e-3);
+$initializer = new Uniform(beta: 1e-3);
 ```

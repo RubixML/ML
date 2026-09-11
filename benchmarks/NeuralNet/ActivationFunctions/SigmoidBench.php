@@ -14,17 +14,17 @@ class SigmoidBench
     /**
      * @var Matrix
      */
-    protected $z;
+    protected Matrix $z;
 
     /**
      * @var Matrix
      */
-    protected $computed;
+    protected Matrix $computed;
 
     /**
      * @var Sigmoid
      */
-    protected $activationFn;
+    protected Sigmoid $activationFn;
 
     public function setUp() : void
     {

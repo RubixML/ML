@@ -28,13 +28,13 @@ $transformer = new ZScaleStandardizer(true);
 
 ## Additional Methods
 
-Return the means calculated by fitting the training set:
+Return the means calculated by fitting the training set.
 
 ```php
 public means() : array
 ```
 
-Return the variances calculated during fitting:
+Return the variances calculated during fitting.
 
 ```php
 public variances() : array

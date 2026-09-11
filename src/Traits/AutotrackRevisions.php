@@ -4,9 +4,11 @@ namespace Rubix\ML\Traits;
 
 use ReflectionClass;
 use ReflectionNamedType;
+use SplObjectStorage;
 
 use function is_object;
 use function array_pop;
+use function count;
 use function hash;
 use function implode;
 use function sort;
@@ -15,7 +17,9 @@ use function sort;
  * Autotrack Revisions
  *
  * Automatically update class revision hashes by tracking changes to the object-property definition
- * tree stemming from this instance.
+ * tree stemming from this instance. Circular references are tolerated: a property whose value
+ * points at an object already on the active traversal path is treated as a back-edge and
+ * skipped, so the traversal always terminates.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -24,46 +28,64 @@ use function sort;
 trait AutotrackRevisions
 {
     /**
-     * Return the class revision hash by traversing the object-property definition tree in depth-first
-     * order.
+     * Return the class revision hash by traversing the object-property definition tree in
+     * depth-first order.
      *
      * @return string
      */
     public function revision() : string
     {
-        $stack = [$this];
+        $seen = new SplObjectStorage();
+
+        $reflector = new ReflectionClass($this);
+
+        $frames = [[$this, $reflector->getProperties(), 0]];
+
+        $seen[$this] = true;
 
         $tokens = [];
 
-        while ($stack) {
-            $current = array_pop($stack);
+        while ($frames) {
+            [$node, $properties, $index] = array_pop($frames);
 
-            $reflector = new ReflectionClass($current);
+            if ($index === count($properties)) {
+                unset($seen[$node]);
 
-            $properties = $reflector->getProperties();
+                continue;
+            }
 
-            foreach ($properties as $property) {
-                $property->setAccessible(true);
+            $property = $properties[$index];
 
-                if ($property->isInitialized($current)) {
-                    $value = $property->getValue($current);
+            $descend = null;
 
-                    if (is_object($value)) {
-                        $stack[] = $value;
-                    }
+            if ($property->isInitialized($node)) {
+                $value = $property->getValue($node);
 
-                    $type = $property->getType();
+                $type = $property->getType();
 
-                    if ($type instanceof ReflectionNamedType) {
-                        $type = $type->getName();
-                    } else {
-                        $type = 'mixed';
-                    }
-
-                    $name = $property->getName();
-
-                    $tokens[] = "$type:$name";
+                if ($type instanceof ReflectionNamedType) {
+                    $type = $type->getName();
+                } else {
+                    $type = 'mixed';
                 }
+
+                $name = $property->getName();
+
+                $tokens[] = "{$type}:{$name}";
+
+                if (is_object($value) and !isset($seen[$value])) {
+                    $descend = $value;
+                }
+            }
+
+            $frames[] = [$node, $properties, $index + 1];
+
+            if ($descend) {
+                $reflector = new ReflectionClass($descend);
+
+                $frames[] = [$descend, $reflector->getProperties(), 0];
+
+                $seen[$descend] = true;
             }
         }
 

@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -101,11 +100,10 @@ class Continuous implements Output
      * Compute the gradient and loss at the output.
      *
      * @param (int|float)[] $labels
-     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
-    public function back(array $labels, Optimizer $optimizer) : array
+    public function back(array $labels) : array
     {
         if (!$this->input) {
             throw new RuntimeException('Must perform forward pass'

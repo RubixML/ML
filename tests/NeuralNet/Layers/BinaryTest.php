@@ -8,13 +8,16 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Binary
- */
+#[Group('Layers')]
+#[CoversClass(Binary::class)]
 class BinaryTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -22,26 +25,23 @@ class BinaryTest extends TestCase
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var string[]
      */
-    protected $labels;
+    protected array $labels;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Binary
      */
-    protected $layer;
+    protected Binary $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
@@ -50,16 +50,14 @@ class BinaryTest extends TestCase
 
         $this->labels = ['hot', 'cold', 'hot'];
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Constant(0.001));
 
-        $this->layer = new Binary(['hot', 'cold'], new CrossEntropy());
+        $this->layer = new Binary(['hot', 'cold'], new BinaryCrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Binary::class, $this->layer);
@@ -67,9 +65,7 @@ class BinaryTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize(1);

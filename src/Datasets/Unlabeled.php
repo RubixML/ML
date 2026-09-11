@@ -56,13 +56,14 @@ class Unlabeled extends Dataset
      * Build a dataset with the rows from an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $verify
      * @return self
      */
-    public static function fromIterator(iterable $iterator) : self
+    public static function fromIterator(iterable $iterator, bool $verify = true) : self
     {
         $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator, false);
 
-        return self::build($samples);
+        return new self($samples, $verify);
     }
 
     /**
@@ -77,11 +78,6 @@ class Unlabeled extends Dataset
         $samples = [];
 
         foreach ($datasets as $i => $dataset) {
-            if (!$dataset instanceof Dataset) {
-                throw new InvalidArgumentException('Dataset must implement'
-                    . ' the Dataset interface.');
-            }
-
             if ($dataset->empty()) {
                 continue;
             }
@@ -272,7 +268,8 @@ class Unlabeled extends Dataset
     }
 
     /**
-     * Fold the dataset k - 1 times to form k equal size datasets.
+     * Fold the dataset k - 1 times to form k datasets of as equal size as
+     * possible. Any remaining samples are added to the last fold.
      *
      * @param int $k
      * @throws InvalidArgumentException
@@ -287,13 +284,20 @@ class Unlabeled extends Dataset
 
         $samples = $this->samples;
 
-        $n = (int) floor(count($samples) / $k);
+        if ($k > $this->numSamples()) {
+            throw new InvalidArgumentException('K must be less than or equal '
+                . 'to the number of samples.');
+        }
+
+        $n = (int) floor($this->numSamples() / $k);
 
         $folds = [];
 
-        while (count($folds) < $k) {
+        while (count($folds) < $k - 1) {
             $folds[] = self::quick(array_splice($samples, 0, $n));
         }
+
+        $folds[] = self::quick($samples);
 
         return $folds;
     }
@@ -321,7 +325,7 @@ class Unlabeled extends Dataset
      * @throws InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByFeature(int $column, $value) : array
+    public function splitByFeature(int $column, string|int|float $value) : array
     {
         $left = $right = [];
 
@@ -415,6 +419,11 @@ class Unlabeled extends Dataset
      */
     public function randomSubsetWithReplacement(int $n) : self
     {
+        if ($this->empty()) {
+            throw new InvalidArgumentException('Cannot generate'
+                . ' a random subset from an empty dataset.');
+        }
+
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a subset of'
                 . " less than 1 sample, $n given.");
@@ -441,6 +450,11 @@ class Unlabeled extends Dataset
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
     {
+        if ($this->empty()) {
+            throw new InvalidArgumentException('Cannot generate'
+                . ' a random subset from an empty dataset.');
+        }
+
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a'
                 . " subset of less than 1 sample, $n given.");

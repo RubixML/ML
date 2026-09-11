@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function get_class;
@@ -26,14 +26,14 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaGrad implements Optimizer, Adaptive
+class AdaGrad implements Optimizer
 {
     /**
-     * The learning rate that controls the global step size.
+     * The learning rate schedule.
      *
-     * @var float
+     * @var Scheduler
      */
-    protected float $rate;
+    protected Scheduler $scheduler;
 
     /**
      * The cache of sum of squared gradients.
@@ -45,17 +45,21 @@ class AdaGrad implements Optimizer, Adaptive
     ];
 
     /**
-     * @param float $rate
-     * @throws InvalidArgumentException
+     * @param Scheduler $scheduler
      */
-    public function __construct(float $rate = 0.01)
+    public function __construct(Scheduler $scheduler)
     {
-        if ($rate <= 0.0) {
-            throw new InvalidArgumentException('Learning rate must be'
-                . " greater than 0, $rate given.");
-        }
+        $this->scheduler = $scheduler;
+    }
 
-        $this->rate = $rate;
+    /**
+     * The underlying learning rate scheduler instance.
+     *
+     * @internal
+     */
+    public function scheduler() : Scheduler
+    {
+        return $this->scheduler;
     }
 
     /**
@@ -83,19 +87,34 @@ class AdaGrad implements Optimizer, Adaptive
      * @internal
      *
      * @param Parameter $param
-     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function step(Parameter $param, Tensor $gradient) : Tensor
+    public function update(Parameter $param) : Tensor
     {
+        if (!$param->hasGradient()) {
+            throw new RuntimeException('Cannot update parameter with no gradient.');
+        }
+
         $norm = $this->cache[$param->id()];
 
-        $norm = $norm->add($gradient->square());
+        $norm = $norm->add($param->gradient()->square());
 
         $this->cache[$param->id()] = $norm;
 
-        return $gradient->multiply($this->rate)
+        $step = $param->gradient()->multiply($this->scheduler->rate())
             ->divide($norm->sqrt()->clipLower(EPSILON));
+
+        return $step;
+    }
+
+    /**
+     * Flush the parameter cache.
+     *
+     * @internal
+     */
+    public function flush() : void
+    {
+        $this->cache = [];
     }
 
     /**
@@ -107,6 +126,6 @@ class AdaGrad implements Optimizer, Adaptive
      */
     public function __toString() : string
     {
-        return "AdaGrad (rate: {$this->rate})";
+        return "AdaGrad (scheduler: {$this->scheduler})";
     }
 }

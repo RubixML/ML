@@ -27,7 +27,6 @@ class SpecificationChain extends Specification
 
     /**
      * @param iterable<Specification> $specifications
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
     public function __construct(iterable $specifications)
     {

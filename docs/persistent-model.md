@@ -29,7 +29,7 @@ $estimator = new PersistentModel(new KMeans(10), new Filesystem('example.model')
 
 ## Additional Methods
 
-Load the model from storage:
+Load the model from storage.
 
 ```php
 public static load(Persister $persister, ?Serializer $serializer = null) : self
@@ -43,7 +43,7 @@ use Rubix\ML\Serializers\RBX;
 $estimator = PersistentModel::load(new Filesystem('example.model'), new RBX());
 ```
 
-Save the model to storage:
+Save the model to storage.
 
 ```php
 public save() : void

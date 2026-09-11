@@ -44,9 +44,9 @@ class Ball implements Hypersphere, HasBinaryChildren
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{Labeled,Labeled}
+     * @var array{Labeled,Labeled}|null
      */
-    protected array $subsets;
+    protected ?array $subsets;
 
     /**
      * Factory method to build a hypersphere by splitting the dataset into left and right clusters.
@@ -152,6 +152,6 @@ class Ball implements Hypersphere, HasBinaryChildren
      */
     public function cleanup() : void
     {
-        unset($this->subsets);
+        $this->subsets = null;
     }
 }

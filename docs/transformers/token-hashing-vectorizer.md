@@ -17,7 +17,7 @@ Token Hashing Vectorizer builds token count vectors on the fly by employing a *h
 | --- | --- | --- | --- | --- |
 | 1 | dimensions | | int | The dimensionality of the vector space. |
 | 2 | tokenizer | Word | Tokenizer | The tokenizer used to extract tokens from blobs of text. |
-| 3 | hashFn | callable | 'crc32' | The hash function that accepts a string token and returns an integer. |
+| 3 | hashFn | callable | 'murmur3' | The hash function that accepts a string token and returns an integer. |
 
 ## Example
 
@@ -30,36 +30,33 @@ $transformer = new TokenHashingVectorizer(10000, new Word(), TokenHashingVectori
 
 ## Additional Constants
 
-The CRC32 callback function.
-
-```php
-public const CRC32 callable(string):int
-```
-
 The MurmurHash3 callback function.
 
 ```php
-public const MURMUR3 callable(string):int
+public const MURMUR3 callable(string) : int
+```
+
+The CRC32 callback function.
+
+```php
+public const CRC32 callable(string) : int
 ```
 
 The FNV1 callback function.
 
 ```php
-public const FNV1 callable(string):int
+public const FNV1 callable(string) : int
 ```
 
 ## Additional Methods
 
-The MurmurHash3 hashing function:
+The MurmurHash3 hashing function.
 
 ```php
 public static murmur3(string $input) : int
 ```
 
-!!! note
-    MurmurHash3 is only available on PHP 8.1 or above.
-
-The FNV1a 32-bit hashing function:
+The FNV1a 32-bit hashing function.
 
 ```php
 public static fnv1a32(string $input) : int

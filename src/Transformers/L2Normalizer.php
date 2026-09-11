@@ -66,6 +66,8 @@ class L2Normalizer implements Transformer
         foreach ($sample as &$value) {
             $value /= $norm;
         }
+
+        unset($value);
     }
 
     /**

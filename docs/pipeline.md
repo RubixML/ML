@@ -32,7 +32,7 @@ $estimator = new Pipeline([
     new MissingDataImputer(),
     new OneHotEncoder(),
     new PrincipalComponentAnalysis(20),
-], new SoftmaxClassifier(128), true);
+], new SoftmaxClassifier(batchSize: 128), true);
 ```
 
 ## Additional Methods

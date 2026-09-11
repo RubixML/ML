@@ -182,7 +182,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -201,11 +201,11 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return string
+     * @return string|int
      */
-    public function predictSample(array $sample) : string
+    public function predictSample(array $sample) : string|int
     {
-        [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
+        [, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
         if ($this->weighted) {
             $weights = array_fill_keys($labels, 0.0);
@@ -226,7 +226,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -245,7 +245,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @internal
      *
      * @param list<int|float> $sample
-     * @return float[]
+     * @return array<string|int,float>
      */
     public function probaSample(array $sample) : array
     {

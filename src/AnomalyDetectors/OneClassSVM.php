@@ -69,7 +69,7 @@ class OneClassSVM implements Estimator, Learner
      * @throws InvalidArgumentException
      */
     public function __construct(
-        float $nu = 0.5,
+        float $nu = 0.1,
         ?Kernel $kernel = null,
         bool $shrinking = true,
         float $tolerance = 1e-3,
@@ -85,7 +85,7 @@ class OneClassSVM implements Estimator, Learner
                 . "0 and 1, $nu given.");
         }
 
-        $kernel = $kernel ?? new RBF();
+        $kernel ??= new RBF();
 
         if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance must be,'

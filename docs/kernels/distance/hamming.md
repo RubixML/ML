@@ -4,6 +4,8 @@
 
 A categorical distance function that measures distance as the number of substitutions necessary to convert one sample to the other.
 
+**Interfaces:** Subadditive
+
 **Data Type Compatibility:** Categorical
 
 ## Parameters

@@ -32,13 +32,16 @@ $estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.0);
 
 ## Additional Methods
 
-Save the model data to the filesystem:
+Save the model data to the filesystem.
 
 ```php
 public save(string $path) : void
 ```
 
-Load the model data from the filesystem:
+!!! note
+    An additional class map in JSON format will be saved alongside the model weights.
+
+Load the model data from the filesystem.
 
 ```php
 public load(string $path) : void

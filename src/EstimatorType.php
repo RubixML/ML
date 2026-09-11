@@ -25,28 +25,28 @@ class EstimatorType implements Stringable
      *
      * @var int
      */
-    public const CLASSIFIER = 1;
+    public const int CLASSIFIER = 1;
 
     /**
      * The regressor estimator type code.
      *
      * @var int
      */
-    public const REGRESSOR = 2;
+    public const int REGRESSOR = 2;
 
     /**
      * The clusterer estimator type code.
      *
      * @var int
      */
-    public const CLUSTERER = 3;
+    public const int CLUSTERER = 3;
 
     /**
      * The anomaly detector estimator type code.
      *
      * @var int
      */
-    public const ANOMALY_DETECTOR = 4;
+    public const int ANOMALY_DETECTOR = 4;
 
     /**
      * An array of human-readable string representations of the estimator types.

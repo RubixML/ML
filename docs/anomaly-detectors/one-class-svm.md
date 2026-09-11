@@ -32,13 +32,13 @@ $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.0);
 
 ## Additional Methods
 
-Save the model data to the filesystem:
+Save the model data to the filesystem.
 
 ```php
 public save(string $path) : void
 ```
 
-Load the model data from the filesystem:
+Load the model data from the filesystem.
 
 ```php
 public load(string $path) : void

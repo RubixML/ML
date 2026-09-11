@@ -25,6 +25,16 @@ use Rubix\ML\Regressors\RegressionTree;
 $estimator = new BootstrapAggregator(new RegressionTree(10), 300, 0.2);
 ```
 
+## Parallel
+
+This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Swoole](backends/swoole.md) to speed up training and inference:
+
+```php
+use Rubix\ML\Backends\Swoole;
+
+$estimator->setBackend(new Swoole(8));
+```
+
 ## Additional Methods
 
 This meta estimator does not have any additional methods.

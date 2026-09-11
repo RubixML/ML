@@ -327,11 +327,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $this->losses[$epoch] = $loss;
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
-
-                $message = "Epoch: $epoch, "
-                    . "Inertia: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}";
+                $message = "Epoch: $epoch, Inertia: $loss";
 
                 $this->logger->info($message);
             }
@@ -339,9 +335,13 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             foreach ($sums as $cluster => $sigmas) {
                 $total = $totals[$cluster];
 
+                $centroid = [];
+
                 foreach ($sigmas as $j => $sigma) {
-                    $this->centroids[$cluster][$j] = $sigma / $total;
+                    $centroid[] = $sigma / $total;
                 }
+
+                $this->centroids[$cluster] = $centroid;
             }
 
             if (is_nan($loss)) {
@@ -473,6 +473,18 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         unset($properties['losses'], $properties['logger']);
 
         return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

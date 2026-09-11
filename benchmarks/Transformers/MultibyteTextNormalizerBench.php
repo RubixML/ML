@@ -18,12 +18,12 @@ class MultibyteTextNormalizerBench
     /**
      * @var Unlabeled
      */
-    public $dataset;
+    public Unlabeled $dataset;
 
     /**
      * @var MultibyteTextNormalizer
      */
-    protected $transformer;
+    protected MultibyteTextNormalizer $transformer;
 
     public function setUp() : void
     {

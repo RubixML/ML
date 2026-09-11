@@ -6,7 +6,6 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
-use Rubix\ML\Encoding;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -15,23 +14,26 @@ use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Snapshot;
-use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
+use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
@@ -39,10 +41,17 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function Rubix\ML\enumerate;
 use function is_nan;
 use function count;
 use function get_object_vars;
 use function number_format;
+use function array_map;
+use function is_dir;
+use function uniqid;
+use function sys_get_temp_dir;
+use function array_reverse;
+use function sqrt;
 
 /**
  * Multilayer Perceptron
@@ -57,6 +66,7 @@ use function number_format;
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.
  * [2] L. Prechelt. (1997). Early Stopping - but when?
+ * [3] R. Pascanu, et al. (2013). On the difficulty of training recurrent neural networks.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -81,6 +91,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected int $batchSize;
 
     /**
+     * The number of gradient accumulation steps before updating the network parameters.
+     *
+     * @var positive-int
+     */
+    protected int $gradientAccumulationSteps;
+
+    /**
      * The gradient descent optimizer used to update the network parameters.
      *
      * @var Optimizer
@@ -88,11 +105,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected Optimizer $optimizer;
 
     /**
-     * The amount of L2 regularization applied to the weights of the output layer.
+     * The maximum L2 norm of the gradient set. When exceeded all gradients are rescaled
+     * proportionally so that the global norm equals the maximum.
      *
-     * @var float
+     * @var float|null
      */
-    protected float $l2Penalty;
+    protected ?float $maxGradientNorm = null;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate before terminating.
@@ -107,6 +125,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var float
      */
     protected float $minChange;
+
+    /**
+     * The number of epochs to train before evaluating the model with the holdout set.
+     *
+     * @var int
+     */
+    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -146,7 +171,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * The unique class labels.
      *
-     * @var string[]|null
+     * @var (string|int)[]|null
      */
     protected ?array $classes = null;
 
@@ -165,12 +190,21 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected ?array $losses = null;
 
     /**
-     * @param Hidden[] $hiddenLayers
+     * The file path to store the snapshot on disk during training.
+     *
+     * @var string|null
+     */
+    protected ?string $snapshotPath = null;
+
+    /**
+     * @param mixed[] $hiddenLayers
      * @param int $batchSize
+     * @param int $gradientAccumulationSteps
      * @param Optimizer|null $optimizer
-     * @param float $l2Penalty
+     * @param float|null $maxGradientNorm
      * @param int $epochs
      * @param float $minChange
+     * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
      * @param ClassificationLoss|null $costFn
@@ -178,17 +212,24 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @throws InvalidArgumentException
      */
     public function __construct(
-        array $hiddenLayers = [],
+        array $hiddenLayers,
         int $batchSize = 128,
+        int $gradientAccumulationSteps = 1,
         ?Optimizer $optimizer = null,
-        float $l2Penalty = 1e-4,
+        ?float $maxGradientNorm = null,
         int $epochs = 1000,
         float $minChange = 1e-4,
+        int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
-        ?Metric $metric = null
+        ?Metric $metric = null,
     ) {
+        if (empty($hiddenLayers)) {
+            throw new InvalidArgumentException('At least one hidden layer'
+                . ' must be specified.');
+        }
+
         foreach ($hiddenLayers as $layer) {
             if (!$layer instanceof Hidden) {
                 throw new InvalidArgumentException('Hidden layer'
@@ -201,9 +242,14 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($l2Penalty < 0.0) {
-            throw new InvalidArgumentException('L2 Penalty must be'
-                . " greater than 0, $l2Penalty given.");
+        if ($gradientAccumulationSteps < 1) {
+            throw new InvalidArgumentException('Gradient accumulation steps'
+                . " must be greater than 0, $gradientAccumulationSteps given.");
+        }
+
+        if (isset($maxGradientNorm) and $maxGradientNorm <= 0.0) {
+            throw new InvalidArgumentException('Max gradient norm must be'
+                . " greater than 0, $maxGradientNorm given.");
         }
 
         if ($epochs < 0) {
@@ -216,6 +262,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " greater than 0, $minChange given.");
         }
 
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Eval interval must be'
+                . " greater than 0, $evalInterval given.");
+        }
+
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
@@ -226,19 +277,25 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . " between 0 and 0.5, $holdOut given.");
         }
 
+        if ($costFn and $costFn instanceof BinaryCrossEntropy) {
+            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
+        }
+
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
 
         $this->hiddenLayers = $hiddenLayers;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?? new Adam();
-        $this->l2Penalty = $l2Penalty;
+        $this->gradientAccumulationSteps = $gradientAccumulationSteps;
+        $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
+        $this->maxGradientNorm = $maxGradientNorm;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->evalInterval = $evalInterval;
         $this->window = $window;
         $this->holdOut = $holdOut;
-        $this->costFn = $costFn ?? new CrossEntropy();
+        $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
     }
 
@@ -280,10 +337,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         return [
             'hidden layers' => $this->hiddenLayers,
             'batch size' => $this->batchSize,
+            'gradient accumulation steps' => $this->gradientAccumulationSteps,
             'optimizer' => $this->optimizer,
-            'l2 penalty' => $this->l2Penalty,
+            'max gradient norm' => $this->maxGradientNorm,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
+            'eval interval' => $this->evalInterval,
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
@@ -344,11 +403,26 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return FeedForward|null
+     * @return Network|null
      */
-    public function network() : ?FeedForward
+    public function network() : ?Network
     {
         return $this->network;
+    }
+
+    /**
+     * Set the file path to store the snapshot on disk during training.
+     *
+     * @param string|null $path
+     * @throws InvalidArgumentException
+     */
+    public function setSnapshotPath(?string $path) : void
+    {
+        if (isset($path) and is_dir($path)) {
+            throw new InvalidArgumentException('Snapshot path must be to a file, folder given.');
+        }
+
+        $this->snapshotPath = $path;
     }
 
     /**
@@ -364,22 +438,45 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        /** @var list<string> $classes */
         $classes = $dataset->possibleOutcomes();
 
         $hiddenLayers = $this->hiddenLayers;
 
-        $hiddenLayers[] = new Dense(count($classes), $this->l2Penalty, true, new Xavier1());
+        $outputWidth = $dataset->numFeatures();
 
-        $this->network = new FeedForward(
+        foreach (array_reverse($hiddenLayers) as $layer) {
+            if ($layer instanceof Dense) {
+                $outputWidth = $layer->width();
+
+                break;
+            }
+        }
+
+        if ($outputWidth !== count($classes)) {
+            $hiddenLayers[] = new Dense(count($classes), 0.0, true, new Xavier1());
+
+            if ($this->logger) {
+                $this->logger->info('Final hidden layer dimensionality mismatch, '
+                    . 'adding projection layer to match output width of '
+                    . count($classes) . ' classes.');
+            }
+        }
+
+        $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Multiclass($classes, $this->costFn),
-            $this->optimizer
+            new Multiclass($classes, $this->costFn)
         );
 
-        $this->network->initialize();
+        $network->initialize();
+
+        foreach ($network->parameters() as $parameter) {
+            $this->optimizer->warm($parameter);
+        }
 
         $this->classes = $classes;
+        $this->network = $network;
 
         $this->partial($dataset);
     }
@@ -410,7 +507,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
             $numParams = number_format($this->network->numParams());
 
-            $this->logger->info("{$numParams} trainable parameters");
+            $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
         [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
@@ -419,13 +516,18 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEpochs = 0;
-        $loss = 0.0;
         $snapshot = null;
-        $prevLoss = INF;
+        $prevLoss = $averageLoss = INF;
+
+        $snapshotPath = $this->snapshotPath;
+
+        if (!$snapshotPath) {
+            $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
+        }
 
         if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, '
-                . 'some features are disabled');
+            $this->logger->notice('Insufficient validation data, snapshotting'
+                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = [];
@@ -433,19 +535,59 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $loss = 0.0;
+            $totalLoss = $norm = $totalNorm = 0.0;
 
-            foreach ($batches as $batch) {
-                $loss += $this->network->roundtrip($batch);
+            foreach (enumerate($batches, 1) as $step => $batch) {
+                $loss = $this->network->roundtrip($batch);
+
+                $updateThisStep = $step % $this->gradientAccumulationSteps === 0
+                    || $step === count($batches);
+
+                if ($updateThisStep) {
+                    $sumSquares = 0.0;
+
+                    $numSteps = $step % $this->gradientAccumulationSteps ?: $this->gradientAccumulationSteps;
+
+                    foreach ($this->network->trainableParameters() as $param) {
+                        $param->scaleGradient(1.0 / $numSteps);
+
+                        $paramNorm = $param->gradientNorm();
+
+                        $sumSquares += $paramNorm * $paramNorm;
+                    }
+
+                    $norm = sqrt($sumSquares);
+
+                    if ($this->maxGradientNorm and $norm > $this->maxGradientNorm) {
+                        $scale = $this->maxGradientNorm / $norm;
+
+                        foreach ($this->network->trainableParameters() as $param) {
+                            $param->scaleGradient($scale);
+                        }
+                    }
+
+                    foreach ($this->network->trainableParameters() as $param) {
+                        $param->update($this->optimizer);
+
+                        $param->resetGradient();
+                    }
+
+                    $this->optimizer->scheduler()->tick();
+
+                    $totalNorm += $norm;
+                }
+
+                $totalLoss += $loss;
             }
 
-            $loss /= count($batches);
+            $averageLoss = $totalLoss / count($batches);
+            $averageNorm = $totalNorm / count($batches);
 
-            $lossChange = abs($prevLoss - $loss);
+            $lossChange = abs($prevLoss - $averageLoss);
 
-            $this->losses[$epoch] = $loss;
+            $this->losses[$epoch] = $averageLoss;
 
-            if (is_nan($loss)) {
+            if (is_nan($averageLoss)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
@@ -453,7 +595,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break;
             }
 
-            if (!$testing->empty()) {
+            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+
+            if ($evalThisStep) {
                 $predictions = $this->predict($testing);
 
                 $score = $this->metric->score($predictions, $testing->labels());
@@ -462,17 +606,23 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             }
 
             if ($this->logger) {
-                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
+                $message = "Epoch: {$epoch}";
 
-                $message = "Epoch: $epoch, "
-                    . "{$this->costFn}: $loss, "
-                    . "Loss Change: {$lossDirection}{$lossChange}, "
-                    . "{$this->metric}: " . ($score ?? 'N/A');
+                if (!$this->optimizer->scheduler() instanceof Constant) {
+                    $message .= ", Learning Rate: {$this->optimizer->scheduler()->rate()}";
+                }
+
+                $message .= ", {$this->costFn}: $averageLoss";
+                $message .= ", Gradient Norm: $averageNorm";
+
+                if ($evalThisStep) {
+                    $message .= ", {$this->metric}: $score";
+                }
 
                 $this->logger->info($message);
             }
 
-            if (isset($score)) {
+            if ($evalThisStep) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -481,7 +631,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $snapshot = Snapshot::take($this->network);
+                    if ($snapshot) {
+                        $snapshot->destroy();
+                    }
+
+                    $snapshot = Snapshot::take($this->network, $snapshotPath);
 
                     $numWorseEpochs = 0;
                 } else {
@@ -497,15 +651,21 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 break;
             }
 
-            $prevLoss = $loss;
+            $prevLoss = $averageLoss;
         }
 
-        if ($snapshot and (end($this->scores) < $bestScore or is_nan($loss))) {
-            $snapshot->restore();
+        if ($snapshot) {
+            $lastScore = $this->scores[array_key_last($this->scores)];
 
-            if ($this->logger) {
-                $this->logger->info("Model state restored to epoch $bestEpoch");
+            if ($lastScore < $bestScore or is_nan($averageLoss)) {
+                $snapshot->restore();
+
+                if ($this->logger) {
+                    $this->logger->info("Network state restored to epoch $bestEpoch");
+                }
             }
+
+            $snapshot->destroy();
         }
 
         if ($this->logger) {
@@ -514,10 +674,18 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
+     * Clean up any leftover state after training.
+     */
+    public function cleanup() : void
+    {
+        $this->optimizer->flush();
+    }
+
+    /**
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<string>
+     * @return list<string|int>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -529,7 +697,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string,float>>
+     * @return list<array<string|int,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -551,21 +719,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
-     * Export the network architecture as a graph in dot format.
-     *
-     * @throws RuntimeException
-     * @return Encoding
-     */
-    public function exportGraphviz() : Encoding
-    {
-        if (!$this->network) {
-            throw new RuntimeException('Must train network first.');
-        }
-
-        return $this->network->exportGraphviz();
-    }
-
-    /**
      * Return an associative array containing the data used to serialize the object.
      *
      * @return mixed[]
@@ -574,9 +727,26 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset(
+            $properties['losses'],
+            $properties['scores'],
+            $properties['logger'],
+            $properties['snapshotPath']
+        );
 
         return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     /**

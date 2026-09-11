@@ -4,6 +4,9 @@
 
 Linear Discriminant Analysis (LDA) is a supervised dimensionality reduction technique that selects the most informative features using information in the class labels. More formally, LDA finds a linear combination of features that characterizes or best *discriminates* two or more classes.
 
+!!! note
+    Note that the [Tensor extension](https://github.com/RubixML/Tesnor is required to use this transformer.
+
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous only
@@ -24,7 +27,7 @@ $transformer = new LinearDiscriminantAnalysis(20);
 
 ## Additional Methods
 
-Return the proportion of information lost due to the transformation:
+Return the proportion of information lost due to the transformation.
 
 ```php
 public lossiness() : ?float

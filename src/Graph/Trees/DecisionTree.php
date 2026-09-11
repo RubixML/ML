@@ -17,7 +17,7 @@ use Traversable;
 use function strlen;
 use function substr;
 use function array_pop;
-use function is_string;
+use function is_float;
 use function array_fill;
 use function array_map;
 use function array_sum;
@@ -201,13 +201,13 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 continue;
             }
 
-            if ($left->numSamples() > $this->maxLeafSize && $this->impurity($left->labels()) > 0.0) {
+            if ($left->numSamples() > $this->maxLeafSize and $this->impurity($left->labels()) > 0.0) {
                 $leftNode = $this->split($left);
             } else {
                 $leftNode = $this->terminate($left);
             }
 
-            if ($right->numSamples() > $this->maxLeafSize && $this->impurity($right->labels()) > 0.0) {
+            if ($right->numSamples() > $this->maxLeafSize and $this->impurity($right->labels()) > 0.0) {
                 $rightNode = $this->split($right);
             } else {
                 $rightNode = $this->terminate($right);
@@ -252,14 +252,14 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
             if ($current instanceof Split) {
                 $value = $current->value();
 
-                if (is_string($value)) {
-                    if ($sample[$current->column()] === $value) {
+                if (is_float($value)) {
+                    if ($sample[$current->column()] <= $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
                     }
                 } else {
-                    if ($sample[$current->column()] <= $value) {
+                    if ($sample[$current->column()] === $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
@@ -445,7 +445,7 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 $carry .= "Feature {$column}";
             }
 
-            $operator = is_string($value) ? '==' : '<=';
+            $operator = is_float($value) ? '<=' : '==';
 
             $carry .= " $operator {$value}\"";
 
@@ -470,7 +470,10 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
 
             $carry .= '"';
 
-            if (is_string($outcome)) {
+            if (is_float($outcome)) {
+                $fillColor = 'cccccc';
+                $fontColor = '000000';
+            } else {
                 $fillColor = substr(hash('crc32b', $outcome), -6);
 
                 if (self::brightness($fillColor) > 128) {
@@ -478,9 +481,6 @@ abstract class DecisionTree implements BinaryTree, IteratorAggregate
                 } else {
                     $fontColor = 'ffffff';
                 }
-            } else {
-                $fillColor = 'cccccc';
-                $fontColor = '000000';
             }
 
             $carry .= ',style="rounded,filled"';

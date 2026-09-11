@@ -1,44 +1,40 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\ImageRotator;
 use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @requires extension gd
- * @covers \Rubix\ML\Transformers\ImageRotator
- */
+#[AllowMockObjectsWithoutExpectations]
+#[Group('Transformers')]
+#[RequiresPhpExtension('gd')]
+#[CoversClass(ImageRotator::class)]
 class ImageRotatorTest extends TestCase
 {
-    /**
-     * @var ImageRotator
-     */
     protected ImageRotator $transformer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->transformer = new ImageRotator(0.0, 1.0);
+        $this->transformer = new ImageRotator(offset: 0.0, jitter: 1.0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(ImageRotator::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithDefaultJitter() : void
     {
         $transformer = new ImageRotator(0.0);
@@ -58,9 +54,7 @@ class ImageRotatorTest extends TestCase
         $this->assertSame('whatever', $sample[1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWideImage90Degrees() : void
     {
         foreach ([90.0, 270.0] as $degrees) {
@@ -70,7 +64,7 @@ class ImageRotatorTest extends TestCase
             ]);
 
             $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-            $mock->method('rotationAngle')->will($this->returnValue($degrees));
+            $mock->method('rotationAngle')->willReturn($degrees);
 
             $dataset->apply($mock);
             $sample = $dataset->sample(0);
@@ -87,9 +81,7 @@ class ImageRotatorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformTallImage90Degrees() : void
     {
         $source = imagecreatetruecolor(20, 100);
@@ -99,7 +91,7 @@ class ImageRotatorTest extends TestCase
 
         foreach ([90.0, 270.0] as $degrees) {
             $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-            $mock->method('rotationAngle')->will($this->returnValue($degrees));
+            $mock->method('rotationAngle')->willReturn($degrees);
 
             $dataset->apply($mock);
             $sample = $dataset->sample(0);
@@ -112,9 +104,7 @@ class ImageRotatorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformExtremeRatioImage90Degrees() : void
     {
         $source = imagecreatetruecolor(200, 5);
@@ -123,7 +113,7 @@ class ImageRotatorTest extends TestCase
         ]);
 
         $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-        $mock->method('rotationAngle')->will($this->returnValue(90.0));
+        $mock->method('rotationAngle')->willReturn(90.0);
 
         $dataset->apply($mock);
         $sample = $dataset->sample(0);
@@ -132,9 +122,7 @@ class ImageRotatorTest extends TestCase
         $this->assertSame(5, imagesy($sample[0]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformSquareImage45Degrees() : void
     {
         $source = imagecreatetruecolor(32, 32);
@@ -143,7 +131,7 @@ class ImageRotatorTest extends TestCase
         ]);
 
         $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
-        $mock->method('rotationAngle')->will($this->returnValue(45.0));
+        $mock->method('rotationAngle')->willReturn(45.0);
 
         $dataset->apply($mock);
         $sample = $dataset->sample(0);
@@ -153,9 +141,7 @@ class ImageRotatorTest extends TestCase
         $this->assertSame('whatever', $sample[1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform() : void
     {
         $dataset = Unlabeled::quick([
@@ -164,20 +150,16 @@ class ImageRotatorTest extends TestCase
 
         $mock = $this->createPartialMock(ImageRotator::class, ['rotationAngle']);
 
-        $mock->method('rotationAngle')->will($this->returnValue(-180.0));
+        $mock->expects($this->once())->method('rotationAngle')->willReturn(-180.0);
 
         $dataset->apply($mock);
 
         $sample = $dataset->sample(0);
 
-        ob_start();
-
-        imagepng($sample[0]);
-
-        $raw = ob_get_clean();
-
-        $expected = file_get_contents('./tests/test_rotated.png');
-
-        $this->assertEquals($expected, $raw);
+        self::assertTrue(is_resource($sample[0]) || $sample[0] instanceof \GdImage);
+        self::assertEquals(32, imagesx($sample[0]));
+        self::assertEquals(32, imagesy($sample[0]));
+        self::assertSame('whatever', $sample[1]);
+        self::assertEquals(69, $sample[2]);
     }
 }

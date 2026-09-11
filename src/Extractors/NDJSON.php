@@ -7,6 +7,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
+use function Rubix\ML\enumerate;
 use function is_dir;
 use function is_file;
 use function is_readable;
@@ -60,9 +61,10 @@ class NDJSON implements Extractor, Exporter
      * Export an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
+     * @param bool $overwrite
      * @throws RuntimeException
      */
-    public function export(iterable $iterator) : void
+    public function export(iterable $iterator, bool $overwrite = false) : void
     {
         if (is_file($this->path) and !is_writable($this->path)) {
             throw new RuntimeException("Path {$this->path} is not writable.");
@@ -72,22 +74,18 @@ class NDJSON implements Extractor, Exporter
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
 
-        $handle = fopen($this->path, 'w');
+        $handle = fopen($this->path, $overwrite ? 'w' : 'a');
 
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
         }
 
-        $line = 1;
-
-        foreach ($iterator as $row) {
+        foreach (enumerate($iterator, 1) as $line => $row) {
             $length = fputs($handle, JSON::encode($row) . PHP_EOL);
 
             if ($length === false) {
                 throw new RuntimeException("Could not write row on line $line.");
             }
-
-            ++$line;
         }
 
         fclose($handle);

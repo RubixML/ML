@@ -5,56 +5,26 @@ namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group CostFunctions
- * @covers \Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy
- */
+#[Group('CostFunctions')]
+#[CoversClass(RelativeEntropy::class)]
 class RelativeEntropyTest extends TestCase
 {
     /**
      * @var RelativeEntropy
      */
-    protected $costFn;
-
-    /**
-     * @before
-     */
-    protected function setUp() : void
-    {
-        $this->costFn = new RelativeEntropy();
-    }
-
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(RelativeEntropy::class, $this->costFn);
-        $this->assertInstanceOf(CostFunction::class, $this->costFn);
-    }
-
-    /**
-     * @test
-     * @dataProvider computeProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param float $expected
-     */
-    public function compute(Matrix $output, Matrix $target, float $expected) : void
-    {
-        $loss = $this->costFn->compute($output, $target);
-
-        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
-    }
+    protected RelativeEntropy $costFn;
 
     /**
      * @return Generator<mixed[]>
      */
-    public function computeProvider() : Generator
+    public static function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -102,24 +72,9 @@ class RelativeEntropyTest extends TestCase
     }
 
     /**
-     * @test
-     * @dataProvider differentiateProvider
-     *
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param list<list<float>> $expected
-     */
-    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
-    {
-        $gradient = $this->costFn->differentiate($output, $target)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
-    }
-
-    /**
      * @return Generator<mixed[]>
      */
-    public function differentiateProvider() : Generator
+    public static function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -174,5 +129,45 @@ class RelativeEntropyTest extends TestCase
                 [-1.0e-7, -3.3333333333333334e-8, -1.6666666666666667],
             ],
         ];
+    }
+
+    protected function setUp() : void
+    {
+        $this->costFn = new RelativeEntropy();
+    }
+
+    #[Test]
+    public function build() : void
+    {
+        $this->assertInstanceOf(RelativeEntropy::class, $this->costFn);
+        $this->assertInstanceOf(CostFunction::class, $this->costFn);
+    }
+
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param float $expected
+     */
+    #[DataProvider('computeProvider')]
+    #[Test]
+    public function compute(Matrix $output, Matrix $target, float $expected) : void
+    {
+        $loss = $this->costFn->compute($output, $target);
+
+        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
+    }
+
+    /**
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param list<list<float>> $expected
+     */
+    #[DataProvider('differentiateProvider')]
+    #[Test]
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
+    {
+        $gradient = $this->costFn->differentiate($output, $target)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
     }
 }

@@ -11,12 +11,15 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant as Schedule;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-/**
- * @group Layers
- * @covers \Rubix\ML\NeuralNet\Layers\Swish
- */
+#[Group('Layers')]
+#[CoversClass(Swish::class)]
 class SwishTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -24,31 +27,28 @@ class SwishTest extends TestCase
     /**
      * @var positive-int
      */
-    protected $fanIn;
+    protected int $fanIn;
 
     /**
      * @var Matrix
      */
-    protected $input;
+    protected Matrix $input;
 
     /**
      * @var Deferred
      */
-    protected $prevGrad;
+    protected Deferred $prevGrad;
 
     /**
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     * @var Optimizer
      */
-    protected $optimizer;
+    protected Optimizer $optimizer;
 
     /**
      * @var Swish
      */
-    protected $layer;
+    protected Swish $layer;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -67,16 +67,14 @@ class SwishTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Stochastic(new Schedule(0.001));
 
         $this->layer = new Swish(new Constant(1.0));
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(Swish::class, $this->layer);
@@ -85,9 +83,7 @@ class SwishTest extends TestCase
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
@@ -105,7 +101,7 @@ class SwishTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
+        $gradient = $this->layer->back($this->prevGrad)->compute();
 
         $expected = [
             [0.2319176279678717, 0.7695807779390686, 0.045008320850177086],
@@ -115,6 +111,14 @@ class SwishTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
+
+        foreach ($this->layer->parameters() as $param) {
+            if ($param->hasGradient()) {
+                $this->optimizer->warm($param);
+
+                $param->update($this->optimizer);
+            }
+        }
 
         $expected = [
             [0.7309885581568221, 2.3101984637539816, -0.04750296929623488],
@@ -128,9 +132,7 @@ class SwishTest extends TestCase
         $this->assertEquals($expected, $infer->asArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeForwardBackInferWithNonDefaultBeta() : void
     {
         $layer = new Swish(new Constant(0.75));
@@ -162,7 +164,7 @@ class SwishTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        $gradient = $layer->back($prevGrad, $this->optimizer)->compute();
+        $gradient = $layer->back($prevGrad)->compute();
 
         $expected = [
             [0.8667545670195208, 0.165, -0.0020647077149571467],
@@ -172,6 +174,14 @@ class SwishTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
+
+        foreach ($layer->parameters() as $param) {
+            if ($param->hasGradient()) {
+                $this->optimizer->warm($param);
+
+                $param->update($this->optimizer);
+            }
+        }
 
         $expected = [
             [1.1322040679936571, 0.0, -0.36509242346948234],
@@ -185,9 +195,7 @@ class SwishTest extends TestCase
         $this->assertEquals($expected, $infer->asArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parametersRestoreRoundTrip() : void
     {
         $this->layer->initialize($this->fanIn);

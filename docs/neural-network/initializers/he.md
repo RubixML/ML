@@ -2,7 +2,9 @@
 
 # He
 
-The He initializer was designed to initialize parameters that feed into rectified [Activation](../hidden-layers/activation.md) layers such as those employing [ReLU](../activation-functions/relu.md), [Leaky ReLU](../activation-functions/leaky-relu.md), or [ELU](../activation-functions/elu.md). It draws values from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
+The He initializer was designed to initialize parameters that feed into rectified [Activation](../hidden-layers/activation.md) layers such as those employing [ReLU](../activation-functions/relu.md), [Leaky ReLU](../activation-functions/leaky-relu.md), or [ELU](../activation-functions/elu.md). It draws values from a uniform distribution with limits defined as +/- sqrt(6 / fanIn).
+
+> **Note:** In this library, [Xavier 2](xavier-2.md) is a backward-compatible alias of He. They share the same scale and are interchangeable.
 
 ## Parameters
 
