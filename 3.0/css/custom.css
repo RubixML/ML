@@ -1,0 +1,8 @@
+.md-typeset table:not([class]) th {
+    min-width: auto;
+}
+
+#version-selector {
+    display: none;
+}
+  
