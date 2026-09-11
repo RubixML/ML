@@ -200,7 +200,9 @@ nav:
         - Stochastic: neural-network/optimizers/stochastic.md
       - Schedulers:
         - Constant: neural-network/schedulers/constant.md
+        - Cosine: neural-network/schedulers/cosine.md
         - Cyclical: neural-network/schedulers/cyclical.md
+        - Ramp: neural-network/schedulers/ramp.md
         - Step Decay: neural-network/schedulers/step-decay.md
     - Graph:
       - Trees:
