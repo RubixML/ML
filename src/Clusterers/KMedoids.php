@@ -337,7 +337,45 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $distances = $this->distanceMatrix($samples);
 
-            $medoids = $this->refine($medoids, $samples, $distances);
+            $k = count($medoids);
+
+            $loss = $this->totalInertia($medoids, $samples, $distances);
+
+            do {
+                $improved = false;
+
+                for ($i = 0; $i < $k; ++$i) {
+                    $bestDelta = -$this->minChange;
+
+                    $bestOffset = -1;
+
+                    $candidate = $medoids;
+
+                    foreach ($samples as $j => $sample) {
+                        if (in_array($j, $medoids)) {
+                            continue;
+                        }
+
+                        $candidate[$i] = $j;
+
+                        $delta = $this->totalInertia($candidate, $samples, $distances) - $loss;
+
+                        if ($delta < $bestDelta) {
+                            $bestDelta = $delta;
+
+                            $bestOffset = $j;
+                        }
+                    }
+
+                    if ($bestOffset !== -1) {
+                        $medoids[$i] = $bestOffset;
+
+                        $loss += $bestDelta;
+
+                        $improved = true;
+                    }
+                }
+            } while ($improved);
 
             $candidate = array_map(fn ($offset) => $samples[$offset], $medoids);
 
@@ -494,64 +532,6 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         }
 
         return $distances;
-    }
-
-    /**
-     * Refine the set of medoids with the PAM (Partitioning Around Medoids) heuristic.
-     *
-     * At each pass, PAM attempts a SWAP exchange of each medoid in turn with the
-     * candidate sample that results in the largest decrease in the total inertia,
-     * continuing until no swap improves the inertia by at least *minChange* or no
-     * further improvements can be made.
-     *
-     * @param list<int> $medoids
-     * @param list<list<string|int|float>> $samples
-     * @param list<list<float>> $distances
-     * @return list<int>
-     */
-    protected function refine(array $medoids, array $samples, array $distances) : array
-    {
-        $k = count($medoids);
-
-        $loss = $this->totalInertia($medoids, $samples, $distances);
-
-        do {
-            $improved = false;
-
-            for ($i = 0; $i < $k; ++$i) {
-                $bestDelta = -$this->minChange;
-
-                $bestOffset = -1;
-
-                $candidate = $medoids;
-
-                foreach ($samples as $j => $sample) {
-                    if (in_array($j, $medoids)) {
-                        continue;
-                    }
-
-                    $candidate[$i] = $j;
-
-                    $delta = $this->totalInertia($candidate, $samples, $distances) - $loss;
-
-                    if ($delta < $bestDelta) {
-                        $bestDelta = $delta;
-
-                        $bestOffset = $j;
-                    }
-                }
-
-                if ($bestOffset !== -1) {
-                    $medoids[$i] = $bestOffset;
-
-                    $loss += $bestDelta;
-
-                    $improved = true;
-                }
-            }
-        } while ($improved);
-
-        return $medoids;
     }
 
     /**
