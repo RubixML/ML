@@ -10,8 +10,8 @@ A linear learning-rate schedule that ramps the rate from a starting rate to an e
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | startRate | 0.001 | float | The learning rate at the start of training. |
-| 2 | endRate | 0.01 | float | The learning rate reached at the end of the ramp and held thereafter. |
+| 1 | start | 0.001 | float | The learning rate at the start of training. |
+| 2 | end | 0.01 | float | The learning rate reached at the end of the ramp and held thereafter. |
 | 3 | steps | 1000 | int | The number of batches taken to move from the start rate to the end rate. |
 
 ## Example
@@ -20,7 +20,7 @@ A linear learning-rate schedule that ramps the rate from a starting rate to an e
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Ramp;
 
-$scheduler = new Ramp(startRate: 0.001, endRate: 0.01, steps: 500);
+$scheduler = new Ramp(start: 0.001, end: 0.01, steps: 500);
 
 $optimizer = new Stochastic(scheduler: $scheduler);
 ```
