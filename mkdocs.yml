@@ -201,6 +201,7 @@ nav:
       - Schedulers:
         - Constant: neural-network/schedulers/constant.md
         - Cyclical: neural-network/schedulers/cyclical.md
+        - Ramp: neural-network/schedulers/ramp.md
         - Step Decay: neural-network/schedulers/step-decay.md
     - Graph:
       - Trees:
