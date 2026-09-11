@@ -309,7 +309,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $numSamples = $dataset->numSamples();
 
         if ($numSamples < $this->k) {
-            throw new InvalidArgumentException("Dataset must contain at least $this->k"
+            throw new InvalidArgumentException("Dataset must contain at least {$this->k}"
                 . " samples, $numSamples given.");
         }
 
