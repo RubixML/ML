@@ -369,6 +369,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 $this->logger->info($message);
             }
 
+            $prevLoss = $loss;
+
             if ($loss > $lossThreshold) {
                 if ($this->logger) {
                     $this->logger->notice('Learner dropped due to high training loss');
@@ -428,8 +430,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
                 $totalWeight = $total ?: EPSILON;
             }
-
-            $prevLoss = $loss;
         }
 
         if ($this->logger) {
