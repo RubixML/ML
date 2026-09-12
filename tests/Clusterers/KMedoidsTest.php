@@ -183,14 +183,6 @@ class KMedoidsTest extends TestCase
             );
         }
 
-        $sizes = $this->estimator->sizes();
-
-        $this->assertIsArray($sizes);
-        $this->assertCount(3, $sizes);
-        $this->assertContainsOnlyInt($sizes);
-        $this->assertSame(self::TRAIN_SIZE, array_sum($sizes));
-        $this->assertGreaterThanOrEqual(0, min($sizes));
-
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);

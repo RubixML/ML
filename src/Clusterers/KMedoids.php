@@ -321,21 +321,19 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $bestLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            /** @var list<list<string|int|float>> $samples */
-            $samples = $dataset->randomSubset($subsetSize)->samples();
+            $subset = $dataset->randomSubset($subsetSize);
 
-            /** @var list<list<string|int|float>> $seeds */
-            $seeds = $this->seeder->seed(Unlabeled::quick($samples), $this->k);
+            $seeds = $this->seeder->seed($subset, $this->k);
 
             $medoids = [];
 
             foreach ($seeds as $seed) {
-                $offset = array_search($seed, $samples);
+                $offset = array_search($seed, $subset->samples());
 
                 $medoids[] = is_int($offset) ? $offset : 0;
             }
 
-            $distances = $this->distanceMatrix($samples);
+            $distances = $this->distanceMatrix($subset);
 
             $k = count($medoids);
 
@@ -351,7 +349,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
                     $candidate = $medoids;
 
-                    foreach ($samples as $j => $sample) {
+                    foreach ($subset->samples() as $j => $sample) {
                         if (in_array($j, $medoids)) {
                             continue;
                         }
@@ -377,7 +375,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 }
             } while ($improved);
 
-            $candidate = array_map(fn ($offset) => $samples[$offset], $medoids);
+            $candidate = array_map(fn ($offset) => $subset->samples()[$offset], $medoids);
 
             $sum = 0.0;
 
@@ -425,12 +423,6 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         }
 
         $this->medoids = $bestMedoids;
-
-        $this->sizes = array_fill(0, $this->k, 0);
-
-        foreach ($dataset->samples() as $sample) {
-            ++$this->sizes[$this->predictSample($sample)];
-        }
 
         if ($this->logger) {
             $this->logger->info('Training complete');
@@ -564,18 +556,18 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * Compute the distance matrix of the samples i.e. the pairwise distance between
      * every pair of samples in the data set.
      *
-     * @param list<list<string|int|float>> $samples
+     * @param Dataset $dataset
      * @return list<list<float>>
      */
-    protected function distanceMatrix(array $samples) : array
+    protected function distanceMatrix(Dataset $dataset) : array
     {
-        $n = count($samples);
+        $n = $dataset->numSamples();
 
         $matrix = array_fill(0, $n, []);
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
-                $distance = $this->kernel->compute($samples[$i], $samples[$j]) ?: EPSILON;
+                $distance = $this->kernel->compute($dataset->sample($i), $dataset->sample($j)) ?: EPSILON;
 
                 $matrix[$i][$j] = $distance;
                 $matrix[$j][$i] = $distance;

@@ -61,9 +61,11 @@ class KMedoidsBench
      */
     public function provideSampleSizes() : Generator
     {
-        yield 'sample_size_50' => ['sampleSize' => 50];
-        yield 'sample_size_100' => ['sampleSize' => 100];
-        yield 'sample_size_250' => ['sampleSize' => 250];
+        yield '50 sample size' => ['sampleSize' => 50];
+
+        yield '100 sample size' => ['sampleSize' => 100];
+
+        yield '250 sample size' => ['sampleSize' => 250];
     }
 
     /**
