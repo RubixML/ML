@@ -401,16 +401,19 @@ class TSNE implements Transformer, Verbose
      */
     protected function pairwiseDistances(array $samples) : array
     {
-        $distances = [];
+        $n = count($samples);
 
-        foreach ($samples as $i => $sampleA) {
-            $row = [];
+        $distances = array_fill(0, $n, []);
 
-            foreach ($samples as $j => $sampleB) {
-                $row[] = $i !== $j ? $this->kernel->compute($sampleA, $sampleB) : 0.0;
+        for ($i = 0; $i < $n; ++$i) {
+            for ($j = $i + 1; $j < $n; ++$j) {
+                $distance = $this->kernel->compute($samples[$i], $samples[$j]);
+
+                $distances[$i][$j] = $distance;
+                $distances[$j][$i] = $distance;
             }
 
-            $distances[] = $row;
+            $distances[$i][$i] = 0.0;
         }
 
         return $distances;
