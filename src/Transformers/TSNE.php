@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Symmetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Set;
@@ -243,6 +244,10 @@ class TSNE implements Transformer, Verbose
                 . " greater than 0, $minGradient given.");
         }
 
+        if (isset($kernel) and !$kernel instanceof Symmetric) {
+            throw new InvalidArgumentException('Kernel must implement the Symmetric interface.');
+        }
+
         $dofs = max($dimensions - 1, 1);
 
         $this->dimensions = $dimensions;
@@ -318,7 +323,7 @@ class TSNE implements Transformer, Verbose
             return;
         }
 
-        $distances = Matrix::quick($this->pairwiseDistances($samples))->square();
+        $distances = $this->pairwiseDistances($samples)->square();
 
         $p = $this->affinities($distances)
             ->multiply($this->exaggeration);
@@ -330,13 +335,11 @@ class TSNE implements Transformer, Verbose
         $gains = Matrix::ones($m, $this->dimensions)->asArray();
 
         $momentum = self::INIT_MOMENTUM;
-        $bestLoss = INF;
-        $numWorseEpochs = 0;
 
         $this->losses = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $squared = Matrix::quick($this->pairwiseDistances($y->asArray()))->square();
+            $squared = $this->pairwiseDistances($y->asArray())->square();
 
             $gradient = $this->gradient($p, $y, $squared);
 
@@ -396,24 +399,25 @@ class TSNE implements Transformer, Verbose
     /**
      * Calculate the pairwise distances for each sample and return them in a 2-d array.
      *
-     * @param array<mixed[]> $samples
-     * @return array<float[]>
+     * @param array<(float|int|string)[]> $samples
+     * @return Matrix
      */
-    protected function pairwiseDistances(array $samples) : array
+    protected function pairwiseDistances(array $samples) : Matrix
     {
-        $distances = [];
+        $n = count($samples);
 
-        foreach ($samples as $i => $sampleA) {
-            $row = [];
+        $distances = array_fill(0, $n, array_fill(0, $n, 0.0));
 
-            foreach ($samples as $j => $sampleB) {
-                $row[] = $i !== $j ? $this->kernel->compute($sampleA, $sampleB) : 0.0;
+        for ($i = 0; $i < $n; ++$i) {
+            for ($j = $i + 1; $j < $n; ++$j) {
+                $distance = $this->kernel->compute($samples[$i], $samples[$j]);
+
+                $distances[$i][$j] = $distance;
+                $distances[$j][$i] = $distance;
             }
-
-            $distances[] = $row;
         }
 
-        return $distances;
+        return Matrix::quick($distances);
     }
 
     /**

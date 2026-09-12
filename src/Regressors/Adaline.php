@@ -415,7 +415,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         if ($this->logger) {
             $this->logger->info("Training $this");
 
-            $numParams = number_format($this->network->numParams());
+            $numParams = number_format($this->network->numTrainableParams());
 
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
