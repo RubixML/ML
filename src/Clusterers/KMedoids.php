@@ -123,16 +123,6 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     ];
 
     /**
-     * The number of training samples contained within the Voronoi cell of each
-     * cluster medoid.
-     *
-     * @var int[]
-     */
-    protected array $sizes = [
-        //
-    ];
-
-    /**
      * The loss at each epoch from the last training session.
      *
      * @var float[]|null
@@ -246,16 +236,6 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     public function medoids() : array
     {
         return $this->medoids;
-    }
-
-    /**
-     * Return the number of training samples that each medoid is responsible for.
-     *
-     * @return int[]
-     */
-    public function sizes() : array
-    {
-        return $this->sizes;
     }
 
     /**
