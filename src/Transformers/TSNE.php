@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Symmetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Set;
@@ -243,6 +244,10 @@ class TSNE implements Transformer, Verbose
                 . " greater than 0, $minGradient given.");
         }
 
+        if (isset($kernel) and !$kernel instanceof Symmetric) {
+            throw new InvalidArgumentException('Kernel must implement the Symmetric interface.');
+        }
+
         $dofs = max($dimensions - 1, 1);
 
         $this->dimensions = $dimensions;
@@ -330,8 +335,6 @@ class TSNE implements Transformer, Verbose
         $gains = Matrix::ones($m, $this->dimensions)->asArray();
 
         $momentum = self::INIT_MOMENTUM;
-        $bestLoss = INF;
-        $numWorseEpochs = 0;
 
         $this->losses = [];
 
@@ -397,7 +400,7 @@ class TSNE implements Transformer, Verbose
      * Calculate the pairwise distances for each sample and return them in a 2-d array.
      *
      * @param array<(float|int|string)[]> $samples
-     * @return Matrix
+     * @return array<float[]>
      */
     protected function pairwiseDistances(array $samples) : Matrix
     {
