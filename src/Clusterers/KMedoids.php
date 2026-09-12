@@ -317,7 +317,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 $medoids[] = is_int($offset) ? $offset : 0;
             }
 
-            $distances = $this->distanceMatrix($subset);
+            $distances = $this->pairwiseDistances($subset);
 
             $loss = $this->totalInertia($medoids, $distances);
 
@@ -356,14 +356,14 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 }
             } while ($improved);
 
-            $candidates = array_map(fn ($offset) => $subset->samples()[$offset], $medoids);
+            $medoids = array_map(fn ($offset) => $subset->sample($offset), $medoids);
 
             $sum = 0.0;
 
             foreach ($dataset->samples() as $sample) {
                 $min = INF;
 
-                foreach ($candidates as $medoid) {
+                foreach ($medoids as $medoid) {
                     $distance = $this->kernel->compute($sample, $medoid);
 
                     if ($distance < $min) {
@@ -395,7 +395,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
 
-                $bestMedoids = $candidates;
+                $bestMedoids = $medoids;
             }
         }
 
@@ -540,7 +540,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param Dataset $dataset
      * @return list<list<float>>
      */
-    protected function distanceMatrix(Dataset $dataset) : array
+    protected function pairwiseDistances(Dataset $dataset) : array
     {
         $n = $dataset->numSamples();
 
