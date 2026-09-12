@@ -14,7 +14,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Manhattan implements Distance, Subadditive, Monotonic
+class Manhattan implements Distance, Subadditive, Monotonic, Symmetric
 {
     /**
      * Return the data types that this kernel is compatible with.
