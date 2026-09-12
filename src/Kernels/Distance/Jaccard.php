@@ -42,7 +42,7 @@ class Jaccard implements Distance, Subadditive, Symmetric
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = $min = $max = 0.0;
+        $min = $max = 0.0;
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
