@@ -16,7 +16,7 @@ use Rubix\ML\Clusterers\KMedoids;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Hamming;
-use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -79,10 +79,10 @@ class KMedoidsTest extends TestCase
         $this->estimator = new KMedoids(
             k: 3,
             batchSize: 50,
-            epochs: 100,
+            epochs: 10,
             minChange: 1e-4,
             kernel: new Euclidean(),
-            seeder: new PlusPlus()
+            seeder: new KMC2()
         );
 
         $this->metric = new VMeasure();
@@ -146,10 +146,10 @@ class KMedoidsTest extends TestCase
         $expected = [
             'k' => 3,
             'batch size' => 50,
-            'epochs' => 100,
+            'epochs' => 10,
             'min change' => 1e-4,
             'kernel' => new Euclidean(),
-            'seeder' => new PlusPlus(),
+            'seeder' => new KMC2(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());

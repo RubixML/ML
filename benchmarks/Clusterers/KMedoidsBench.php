@@ -51,7 +51,7 @@ class KMedoidsBench
 
         $batchSize = $params['batchSize'] ?? 100;
 
-        $this->estimator = new KMedoids(k: 3, batchSize: $batchSize, epochs: 50);
+        $this->estimator = new KMedoids(k: 3, batchSize: $batchSize, epochs: 10);
     }
 
     /**
@@ -61,11 +61,11 @@ class KMedoidsBench
      */
     public function provideSampleSizes() : Generator
     {
-        yield '50 batch size' => ['batchSize' => 50];
+        yield 'batch size 50' => ['batchSize' => 50];
 
-        yield '100 batch size' => ['batchSize' => 100];
+        yield 'batch size 100' => ['batchSize' => 100];
 
-        yield '250 batch size' => ['batchSize' => 250];
+        yield 'batch size 250' => ['batchSize' => 250];
     }
 
     /**
