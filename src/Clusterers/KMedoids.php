@@ -319,28 +319,25 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $distances = $this->distanceMatrix($subset);
 
-            $k = count($medoids);
-
             $loss = $this->totalInertia($medoids, $distances);
 
             do {
                 $improved = false;
 
-                for ($i = 0; $i < $k; ++$i) {
+                for ($i = 0; $i < count($medoids); ++$i) {
                     $bestDelta = -$this->minChange;
+                    $bestOffset = null;
 
-                    $bestOffset = -1;
+                    $candidates = $medoids;
 
-                    $candidate = $medoids;
-
-                    foreach ($subset->samples() as $j => $sample) {
+                    for ($j = 0; $j < $subset->numSamples(); ++$j) {
                         if (in_array($j, $medoids)) {
                             continue;
                         }
 
-                        $candidate[$i] = $j;
+                        $candidates[$i] = $j;
 
-                        $delta = $this->totalInertia($candidate, $distances) - $loss;
+                        $delta = $this->totalInertia($candidates, $distances) - $loss;
 
                         if ($delta < $bestDelta) {
                             $bestDelta = $delta;
@@ -349,7 +346,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                         }
                     }
 
-                    if ($bestOffset !== -1) {
+                    if (isset($bestOffset)) {
                         $medoids[$i] = $bestOffset;
 
                         $loss += $bestDelta;
@@ -359,14 +356,14 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 }
             } while ($improved);
 
-            $candidate = array_map(fn ($offset) => $subset->samples()[$offset], $medoids);
+            $candidates = array_map(fn ($offset) => $subset->samples()[$offset], $medoids);
 
             $sum = 0.0;
 
             foreach ($dataset->samples() as $sample) {
                 $min = INF;
 
-                foreach ($candidate as $medoid) {
+                foreach ($candidates as $medoid) {
                     $distance = $this->kernel->compute($sample, $medoid);
 
                     if ($distance < $min) {
@@ -398,7 +395,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
 
-                $bestMedoids = $candidate;
+                $bestMedoids = $candidates;
             }
         }
 
