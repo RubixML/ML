@@ -199,10 +199,10 @@ class TSNETest extends TestCase
                 $yArray = $y->asArray();
 
                 $yArray[$i][$d] += $eps;
-                $yPlus = Matrix::quick($yArray);
+                $yPlus = Matrix::build($yArray);
 
                 $yArray[$i][$d] -= 2.0 * $eps;
-                $yMinus = Matrix::quick($yArray);
+                $yMinus = Matrix::build($yArray);
 
                 $costPlus = $this->klCost($p, $yPlus);
                 $costMinus = $this->klCost($p, $yMinus);
@@ -213,7 +213,7 @@ class TSNETest extends TestCase
             $numericalGradient[] = $row;
         }
 
-        $numerical = Matrix::quick($numericalGradient);
+        $numerical = Matrix::build($numericalGradient);
 
         $codeNorm = $codeGradient->l2Norm();
         $diff = $codeGradient->subtract($numerical)->l2Norm();
