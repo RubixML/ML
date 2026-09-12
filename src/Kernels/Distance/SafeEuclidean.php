@@ -23,7 +23,7 @@ use function sqrt;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SafeEuclidean implements Distance, Subadditive, Monotonic, NaNSafe
+class SafeEuclidean implements Distance, Subadditive, Monotonic, NaNSafe, Symmetric
 {
     /**
      * Return the data types that this kernel is compatible with.

@@ -505,7 +505,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         if ($this->logger) {
             $this->logger->info("Training $this");
 
-            $numParams = number_format($this->network->numParams());
+            $numParams = number_format($this->network->numTrainableParams());
 
             $this->logger->info("Network has {$numParams} trainable parameters");
         }

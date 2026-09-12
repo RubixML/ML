@@ -20,7 +20,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cosine implements Distance
+class Cosine implements Distance, Symmetric
 {
     /**
      * Return the data types that this kernel is compatible with.
