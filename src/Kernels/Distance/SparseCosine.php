@@ -13,7 +13,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SparseCosine implements Distance
+class SparseCosine implements Distance, Symmetric
 {
     /**
      * Return the data types that this kernel is compatible with.

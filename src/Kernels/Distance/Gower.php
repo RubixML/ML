@@ -25,7 +25,7 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Gower implements Distance, Subadditive, Monotonic, NaNSafe
+class Gower implements Distance, Subadditive, Monotonic, NaNSafe, Symmetric
 {
     /**
      * The range of the continuous feature columns.

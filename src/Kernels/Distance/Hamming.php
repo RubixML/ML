@@ -17,7 +17,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Hamming implements Distance, Subadditive
+class Hamming implements Distance, Subadditive, Symmetric
 {
     /**
      * Return the data types that this kernel is compatible with.
