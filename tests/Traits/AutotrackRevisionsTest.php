@@ -10,6 +10,10 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Traits\AutotrackRevisions;
 use PHPUnit\Framework\TestCase;
 
+use function get_object_vars;
+use function unserialize;
+use function serialize;
+
 #[Group('Traits')]
 #[CoversClass(AutotrackRevisions::class)]
 class AutotrackRevisionsTest extends TestCase
@@ -38,6 +42,22 @@ class AutotrackRevisionsTest extends TestCase
         $two = new PinkNoiseRevisionable();
 
         $this->assertNotEquals($one->revision(), $two->revision());
+    }
+
+    #[Test]
+    public function revisionIgnoresNonPersistedTransientProperties() : void
+    {
+        $withLogger = new LoggerRevisionable();
+
+        $withLogger->configure(new StatefulLoggerStub());
+
+        $withoutLogger = new LoggerRevisionable();
+
+        $this->assertEquals($withoutLogger->revision(), $withLogger->revision());
+
+        $restored = unserialize(serialize($withLogger));
+
+        $this->assertEquals($withLogger->revision(), $restored->revision());
     }
 
     #[Test]
@@ -176,4 +196,49 @@ class SelfRefRevisionable
     use AutotrackRevisions;
 
     public object $self;
+}
+
+/**
+ * A revisionable fixture that carries a transient, non-persisted dependency (mimicking a
+ * logger attached to a trained estimator) that must not influence the class revision.
+ */
+class LoggerRevisionable
+{
+    use AutotrackRevisions;
+
+    public int $alpha = 1;
+
+    public ?object $log = null;
+
+    /**
+     * @param object|null $logger
+     */
+    public function configure(?object $logger) : void
+    {
+        $this->log = $logger;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['log']);
+
+        return $properties;
+    }
+}
+
+/**
+ * A stub dependency with state, to mimic a stateful logger attached to an estimator.
+ *
+ * @internal
+ */
+class StatefulLoggerStub
+{
+    public array $handlers = [
+        //
+    ];
 }
