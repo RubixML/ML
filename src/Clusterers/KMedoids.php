@@ -270,12 +270,6 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * Train the learner with a dataset.
      *
-     * The CLARA loop runs *R* (i.e. *epochs*) independent iterations. Each
-     * iteration proposes a candidate set of medoids by seeding a random subset
-     * and refining it with PAM to convergence, then evaluates the candidate on the
-     * **entire** dataset. The candidate yielding the lowest full-dataset inertia
-     * is kept.
-     *
      * @param Dataset $dataset
      * @throws InvalidArgumentException
      */
