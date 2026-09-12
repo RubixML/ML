@@ -35,7 +35,7 @@ class KMedoidsBench
     protected KMedoids $estimator;
 
     /**
-     * @param array{sampleSize?: int} $params
+     * @param array{batchSize?: int} $params
      */
     public function setUp(array $params = []) : void
     {
@@ -49,23 +49,23 @@ class KMedoidsBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $sampleSize = $params['sampleSize'] ?? 100;
+        $batchSize = $params['batchSize'] ?? 100;
 
-        $this->estimator = new KMedoids(k: 3, sampleSize: $sampleSize, epochs: 50);
+        $this->estimator = new KMedoids(k: 3, batchSize: $batchSize, epochs: 50);
     }
 
     /**
-     * Return the sample sizes to benchmark against.
+     * Return the batch sizes to benchmark against.
      *
-     * @return Generator<string, array{sampleSize: int}>
+     * @return Generator<string, array{batchSize: int}>
      */
     public function provideSampleSizes() : Generator
     {
-        yield '50 sample size' => ['sampleSize' => 50];
+        yield '50 batch size' => ['batchSize' => 50];
 
-        yield '100 sample size' => ['sampleSize' => 100];
+        yield '100 batch size' => ['batchSize' => 100];
 
-        yield '250 sample size' => ['sampleSize' => 250];
+        yield '250 batch size' => ['batchSize' => 250];
     }
 
     /**
@@ -74,7 +74,7 @@ class KMedoidsBench
      * @OutputTimeUnit("seconds", precision=3)
      * @ParamProviders("provideSampleSizes")
      *
-     * @param array{sampleSize: int} $params
+     * @param array{batchSize: int} $params
      */
     public function trainPredict(array $params) : void
     {

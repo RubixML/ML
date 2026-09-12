@@ -23,7 +23,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-use function array_sum;
 use function min;
 use function in_array;
 
@@ -79,7 +78,7 @@ class KMedoidsTest extends TestCase
 
         $this->estimator = new KMedoids(
             k: 3,
-            sampleSize: 50,
+            batchSize: 50,
             epochs: 100,
             minChange: 1e-4,
             kernel: new Euclidean(),
@@ -110,7 +109,7 @@ class KMedoidsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new KMedoids(k: 3, sampleSize: 2);
+        new KMedoids(k: 3, batchSize: 2);
     }
 
     #[Test]
@@ -146,7 +145,7 @@ class KMedoidsTest extends TestCase
     {
         $expected = [
             'k' => 3,
-            'sample size' => 50,
+            'batch size' => 50,
             'epochs' => 100,
             'min change' => 1e-4,
             'kernel' => new Euclidean(),
@@ -229,7 +228,7 @@ class KMedoidsTest extends TestCase
 
         $training = Labeled::quick($rows, $labels);
 
-        $estimator = new KMedoids(k: 3, sampleSize: 15, epochs: 10, kernel: new Hamming());
+        $estimator = new KMedoids(k: 3, batchSize: 15, epochs: 10, kernel: new Hamming());
 
         $estimator->train($training);
 
@@ -337,11 +336,11 @@ class KMedoidsTest extends TestCase
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
         srand(self::RANDOM_SEED);
-        $single = new KMedoids(k: 3, sampleSize: 100, epochs: 1, minChange: 1e-4);
+        $single = new KMedoids(k: 3, batchSize: 100, epochs: 1, minChange: 1e-4);
         $single->train($training);
 
         srand(self::RANDOM_SEED);
-        $many = new KMedoids(k: 3, sampleSize: 100, epochs: 10, minChange: 1e-4);
+        $many = new KMedoids(k: 3, batchSize: 100, epochs: 10, minChange: 1e-4);
         $many->train($training);
 
         $singleLoss = min($single->losses());
@@ -359,11 +358,11 @@ class KMedoidsTest extends TestCase
         $trainingAgain = $this->generator->generate(self::TRAIN_SIZE);
 
         srand(self::RANDOM_SEED);
-        $estimatorA = new KMedoids(k: 3, sampleSize: 100, epochs: 50, kernel: new Euclidean());
+        $estimatorA = new KMedoids(k: 3, batchSize: 100, epochs: 50, kernel: new Euclidean());
         $estimatorA->train($training);
 
         srand(self::RANDOM_SEED);
-        $estimatorB = new KMedoids(k: 3, sampleSize: 100, epochs: 50, kernel: new Euclidean());
+        $estimatorB = new KMedoids(k: 3, batchSize: 100, epochs: 50, kernel: new Euclidean());
         $estimatorB->train($trainingAgain);
 
         $this->assertEquals($estimatorA->medoids(), $estimatorB->medoids());

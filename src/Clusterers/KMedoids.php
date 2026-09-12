@@ -11,7 +11,6 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -79,7 +78,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @var positive-int
      */
-    protected int $sampleSize;
+    protected int $batchSize;
 
     /**
      * The number of CLARA iterations to run. Each iteration proposes an independent
@@ -141,7 +140,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
     /**
      * @param int $k
-     * @param int $sampleSize
+     * @param int $batchSize
      * @param int $epochs
      * @param float $minChange
      * @param Distance|null $kernel
@@ -150,8 +149,8 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      */
     public function __construct(
         int $k,
-        int $sampleSize = 100,
-        int $epochs = 100,
+        int $batchSize = 100,
+        int $epochs = 10,
         float $minChange = 1e-4,
         ?Distance $kernel = null,
         ?Seeder $seeder = null
@@ -161,9 +160,9 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " than 0, $k given.");
         }
 
-        if ($sampleSize < $k) {
-            throw new InvalidArgumentException('Sample size must be greater'
-                . " than or equal to $k, $sampleSize given.");
+        if ($batchSize < $k) {
+            throw new InvalidArgumentException('Batch size must be greater'
+                . " than or equal to $k, $batchSize given.");
         }
 
         if ($epochs < 1) {
@@ -179,7 +178,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $kernel ??= new Euclidean();
 
         $this->k = $k;
-        $this->sampleSize = $sampleSize;
+        $this->batchSize = $batchSize;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->kernel = $kernel;
@@ -215,7 +214,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     {
         return [
             'k' => $this->k,
-            'sample size' => $this->sampleSize,
+            'batch size' => $this->batchSize,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
             'kernel' => $this->kernel,
@@ -315,7 +314,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $this->losses = [];
 
-        $subsetSize = min($this->sampleSize, $numSamples);
+        $subsetSize = min($this->batchSize, $numSamples);
 
         $bestMedoids = null;
         $bestLoss = INF;
