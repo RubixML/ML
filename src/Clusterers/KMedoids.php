@@ -12,11 +12,12 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Clusterers\Seeders\KMC2;
+use Rubix\ML\Kernels\Distance\Symmetric;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -173,6 +174,10 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
+        }
+
+        if (isset($kernel) and !$kernel instanceof Symmetric) {
+            throw new InvalidArgumentException('Kernel must implement the Symmetric interface.');
         }
 
         $kernel ??= new Euclidean();
