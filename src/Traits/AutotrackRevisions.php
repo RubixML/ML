@@ -42,7 +42,9 @@ trait AutotrackRevisions
     {
         $seen = new SplObjectStorage();
 
-        $frames = [[$this, $this->persistableProperties($this), 0]];
+        $properties = $this->persistableProperties($this);
+
+        $frames = [[$this, $properties, 0]];
 
         $seen[$this] = true;
 
@@ -84,7 +86,9 @@ trait AutotrackRevisions
             $frames[] = [$node, $properties, $index + 1];
 
             if ($descend) {
-                $frames[] = [$descend, $this->persistableProperties($descend), 0];
+                $newProperties = $this->persistableProperties($descend);
+
+                $frames[] = [$descend, $newProperties, 0];
 
                 $seen[$descend] = true;
             }
