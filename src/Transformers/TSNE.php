@@ -406,7 +406,7 @@ class TSNE implements Transformer, Verbose
     {
         $n = count($samples);
 
-        $distances = array_fill(0, $n, []);
+        $distances = array_fill(0, $n, array_fill(0, $n, 0.0));
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
@@ -415,11 +415,9 @@ class TSNE implements Transformer, Verbose
                 $distances[$i][$j] = $distance;
                 $distances[$j][$i] = $distance;
             }
-
-            $distances[$i][$i] = 0.0;
         }
 
-        return Matrix::build($distances);
+        return Matrix::quick($distances);
     }
 
     /**

@@ -183,8 +183,6 @@ class TSNETest extends TestCase
 
         $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
 
-        $pwMethod->setAccessible(true);
-
         $distances = $pwMethod->invokeArgs($this->embedder, [$y->asArray()])->square();
 
         $codeGradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
