@@ -400,7 +400,7 @@ class TSNE implements Transformer, Verbose
      * Calculate the pairwise distances for each sample and return them in a 2-d array.
      *
      * @param array<(float|int|string)[]> $samples
-     * @return array<float[]>
+     * @return Matrix
      */
     protected function pairwiseDistances(array $samples) : Matrix
     {
