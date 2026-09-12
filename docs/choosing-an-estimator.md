@@ -58,6 +58,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 | [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | ● | ● | Continuous |
 | [Gaussian Mixture](clusterers/gaussian-mixture.md) | Medium | ● | | ● | ● | Continuous |
 | [K Means](clusterers/k-means.md) | Low | ● | ● | ● | ● | Continuous |
+| [K Medoids](clusterers/k-medoids.md) | Low | ● | | ● | ● | Depends on distance kernel |
 | [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | ● | ● | Continuous |
 
 ## Anomaly Detectors
