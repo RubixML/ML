@@ -4,9 +4,14 @@ namespace Rubix\ML\Traits;
 
 use ReflectionClass;
 use ReflectionNamedType;
+use ReflectionProperty;
 use SplObjectStorage;
 
+use Throwable;
+
 use function is_object;
+use function is_array;
+use function array_key_exists;
 use function array_pop;
 use function count;
 use function hash;
@@ -37,9 +42,7 @@ trait AutotrackRevisions
     {
         $seen = new SplObjectStorage();
 
-        $reflector = new ReflectionClass($this);
-
-        $frames = [[$this, $reflector->getProperties(), 0]];
+        $frames = [[$this, $this->persistableProperties($this), 0]];
 
         $seen[$this] = true;
 
@@ -81,9 +84,7 @@ trait AutotrackRevisions
             $frames[] = [$node, $properties, $index + 1];
 
             if ($descend) {
-                $reflector = new ReflectionClass($descend);
-
-                $frames[] = [$descend, $reflector->getProperties(), 0];
+                $frames[] = [$descend, $this->persistableProperties($descend), 0];
 
                 $seen[$descend] = true;
             }
@@ -92,5 +93,46 @@ trait AutotrackRevisions
         sort($tokens);
 
         return hash('crc32b', implode($tokens));
+    }
+
+    /**
+     * Return the set of properties of the node that are included when the object is
+     * serialized. Transient properties that are excluded from the serialized state are
+     * omitted, so that the revision hash reflects only the persisted definition.
+     *
+     * @internal
+     *
+     * @param object $node
+     * @return list<ReflectionProperty>
+     */
+    private function persistableProperties(object $node) : array
+    {
+        $reflector = new ReflectionClass($node);
+
+        $properties = $reflector->getProperties();
+
+        if (!$reflector->hasMethod('__serialize')) {
+            return $properties;
+        }
+
+        try {
+            $persisted = $reflector->getMethod('__serialize')->invoke($node);
+        } catch (Throwable $error) {
+            return $properties;
+        }
+
+        if (!is_array($persisted)) {
+            return $properties;
+        }
+
+        $persistable = [];
+
+        foreach ($properties as $property) {
+            if (array_key_exists($property->getName(), $persisted)) {
+                $persistable[] = $property;
+            }
+        }
+
+        return $persistable;
     }
 }
