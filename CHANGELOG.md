@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.5.15
+    - Optimize Prior guessing strategy
+
 - 2.5.14
     - Optimize Dataset validation
     - Fix AdaBoost early stopping with dropped learners

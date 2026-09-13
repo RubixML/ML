@@ -70,7 +70,12 @@ class Prior implements Strategy
                 . ' to at least 1 value.');
         }
 
-        $this->counts = array_count_values($values);
+        $counts = array_count_values($values);
+
+        // Amortized over subsequent guesses.
+        arsort($counts, SORT_NUMERIC);
+
+        $this->counts = $counts;
         $this->n = count($values);
     }
 
