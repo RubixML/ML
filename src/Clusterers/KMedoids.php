@@ -319,7 +319,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $distances = $this->pairwiseDistances($subset);
 
-            [$firsts, $argmins, $seconds] = $this->nearestMedoidCosts($medoids, $distances);
+            [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoids, $distances);
 
             do {
                 $improved = false;
@@ -351,7 +351,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                     if (isset($bestOffset)) {
                         $medoids[$i] = $bestOffset;
 
-                        [$firsts, $argmins, $seconds] = $this->nearestMedoidCosts($medoids, $distances);
+                        [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoids, $distances);
 
                         $improved = true;
                     }
@@ -515,11 +515,11 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @param list<int> $medoids
      * @param list<list<float>> $distances
-     * @return array{0: list<float>, 1: list<int>, 2: list<float>}
+     * @return array{0: list<int>, 1: list<float>, 2: list<float>}
      */
-    protected function nearestMedoidCosts(array $medoids, array $distances) : array
+    protected function nearestMedoidDistances(array $medoids, array $distances) : array
     {
-        $firsts = $seconds = $argmins = [];
+        $argmins = $firsts = $seconds = [];
 
         foreach ($distances as $row) {
             $min = $nextMin = INF;
@@ -537,12 +537,12 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 }
             }
 
+            $argmins[] = $argmin;
             $firsts[] = $min;
             $seconds[] = $nextMin;
-            $argmins[] = $argmin;
         }
 
-        return [$firsts, $argmins, $seconds];
+        return [$argmins, $firsts, $seconds];
     }
 
     /**

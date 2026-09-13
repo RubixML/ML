@@ -48,7 +48,6 @@
     - Optimizers now take a Scheduler rather than a raw learning rate
     - MLP Learners now have gradient accumulation and clipping
     - MLP Learners can now freeze first k layers for fine-tuning
-    - K Medoids PAM SWAP now uses classic swap-cost accumulation, O(k·n'^2) per sweep
     
 - 2.5.14
     - Fix Report and Tuple null values
