@@ -17,6 +17,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -29,6 +30,10 @@ use function Rubix\ML\argmax;
 use function count;
 use function is_nan;
 use function get_object_vars;
+use function in_array;
+use function implode;
+use function array_fill;
+use function array_map;
 
 use const Rubix\ML\EPSILON;
 
@@ -51,6 +56,14 @@ use const Rubix\ML\EPSILON;
 class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
+
+    /**
+     * The list of allowed distance kernels for the K Means algorithm.
+     */
+    public const array ALLOWED_KERNELS = [
+        Euclidean::class,
+        SafeEuclidean::class,
+    ];
 
     /**
      * The target number of clusters.
@@ -144,7 +157,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 . " greater than 1, $fuzz given.");
         }
 
-        if ($epochs < 0) {
+        if ($epochs < 1) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
@@ -152,6 +165,11 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
+        }
+
+        if (!in_array($kernel::class, self::ALLOWED_KERNELS)) {
+            throw new InvalidArgumentException('Kernel must be one of: '
+                . implode(', ', self::ALLOWED_KERNELS) . ", $kernel given.");
         }
 
         $this->c = $c;
@@ -300,6 +318,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
                 foreach ($row as $cluster => $distance) {
                     $weights[$cluster] = $distance ** -$this->rho;
+
                     $sigma += $weights[$cluster];
                 }
 
@@ -447,6 +466,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
         foreach ($distances as $cluster => $distance) {
             $weights[$cluster] = $distance ** -$this->rho;
+
             $sigma += $weights[$cluster];
         }
 
