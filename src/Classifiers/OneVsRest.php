@@ -11,6 +11,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Backends\Tasks\Proba;
 use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Traits\AutotrackRevisions;
@@ -140,7 +141,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -157,13 +158,14 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         foreach ($classes as $class) {
             $estimator = clone $this->base;
-            $subset = clone $dataset;
 
             $binarize = function ($label) use ($class) {
                 return $label === $class ? 'y' : 'n';
             };
 
-            $subset->transformLabels($binarize);
+            $labels = array_map($binarize, $dataset->labels());
+
+            $subset = Labeled::quick($dataset->samples(), $labels);
 
             $task = new TrainLearner($estimator, $subset);
 
