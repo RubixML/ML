@@ -1,5 +1,9 @@
 # Changelog
 
+- 2.5.15
+    - Optimize Dataset validation
+    - Fix AdaBoost early stopping with dropped learners
+
 - 2.5.14
     - Fix Report and Tuple null values
     - Fix Random Projector mangitudes
