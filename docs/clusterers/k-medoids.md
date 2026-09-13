@@ -37,12 +37,6 @@ Return the *k* computed medoids of the training set. Note that, unlike *centroid
 public medoids() : array[]
 ```
 
-Return the number of training samples that each medoid is responsible for.
-
-```php
-public sizes() : int[]
-```
-
 Return an iterable progress table with the steps from the last training session.
 
 ```php

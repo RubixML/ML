@@ -28,9 +28,13 @@ use Generator;
 
 use function Rubix\ML\argmin;
 use function count;
+use function min;
 use function array_search;
 use function array_fill;
+use function array_map;
 use function get_object_vars;
+use function is_nan;
+use function in_array;
 
 use const Rubix\ML\EPSILON;
 
@@ -53,7 +57,9 @@ use const Rubix\ML\EPSILON;
  *
  * This decouples the search space from the evaluation cost: PAM is run on the small
  * subset (O(n'²·k)) while the true objective — the full-dataset inertia — is what
- * ultimately selects the winning set of medoids.
+ * ultimately selects the winning set of medoids. The PAM SWAP exchange uses the
+ * classic swap-cost accumulation over each sample's nearest and second-nearest
+ * medoid distances, making each candidate swap O(n') to evaluate.
  *
  * References:
  * [1] A. K. Jain et al. (1999). Data Clustering: A Review.
@@ -313,7 +319,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $distances = $this->pairwiseDistances($subset);
 
-            $loss = $this->totalInertia($medoids, $distances);
+            [$firsts, $argmins, $seconds] = $this->nearestMedoidCosts($medoids, $distances);
 
             do {
                 $improved = false;
@@ -322,16 +328,18 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                     $bestDelta = -$this->minChange;
                     $bestOffset = null;
 
-                    $candidates = $medoids;
-
                     for ($j = 0; $j < $subset->numSamples(); ++$j) {
                         if (in_array($j, $medoids)) {
                             continue;
                         }
 
-                        $candidates[$i] = $j;
+                        $delta = 0.0;
 
-                        $delta = $this->totalInertia($candidates, $distances) - $loss;
+                        foreach ($distances as $offset => $row) {
+                            $without = $argmins[$offset] === $i ? $seconds[$offset] : $firsts[$offset];
+
+                            $delta += min($row[$j], $without) - $firsts[$offset];
+                        }
 
                         if ($delta < $bestDelta) {
                             $bestDelta = $delta;
@@ -343,7 +351,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                     if (isset($bestOffset)) {
                         $medoids[$i] = $bestOffset;
 
-                        $loss += $bestDelta;
+                        [$firsts, $argmins, $seconds] = $this->nearestMedoidCosts($medoids, $distances);
 
                         $improved = true;
                     }
@@ -502,29 +510,39 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Compute the total inertia of the sample assignments given a set of medoids.
+     * Compute the distance to the nearest and second nearest medoid as well as
+     * the index of the nearest medoid for each sample of the distance matrix.
      *
      * @param list<int> $medoids
      * @param list<list<float>> $distances
-     * @return float
+     * @return array{0: list<float>, 1: list<int>, 2: list<float>}
      */
-    protected function totalInertia(array $medoids, array $distances) : float
+    protected function nearestMedoidCosts(array $medoids, array $distances) : array
     {
-        $sum = 0.0;
+        $firsts = $seconds = $argmins = [];
 
         foreach ($distances as $row) {
-            $min = INF;
+            $min = $nextMin = INF;
+            $argmin = null;
 
-            foreach ($medoids as $offset) {
-                if ($row[$offset] < $min) {
-                    $min = $row[$offset];
+            foreach ($medoids as $i => $medoid) {
+                $distance = $row[$medoid];
+
+                if ($distance < $min) {
+                    $nextMin = $min;
+                    $min = $distance;
+                    $argmin = $i;
+                } elseif ($distance < $nextMin) {
+                    $nextMin = $distance;
                 }
             }
 
-            $sum += $min;
+            $firsts[] = $min;
+            $seconds[] = $nextMin;
+            $argmins[] = $argmin;
         }
 
-        return $sum;
+        return [$firsts, $argmins, $seconds];
     }
 
     /**
@@ -538,20 +556,18 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     {
         $n = $dataset->numSamples();
 
-        $matrix = array_fill(0, $n, []);
+        $distances = array_fill(0, $n, array_fill(0, $n, 0.0));
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
-                $distance = $this->kernel->compute($dataset->sample($i), $dataset->sample($j)) ?: EPSILON;
+                $distance = $this->kernel->compute($dataset->sample($i), $dataset->sample($j));
 
-                $matrix[$i][$j] = $distance;
-                $matrix[$j][$i] = $distance;
+                $distances[$i][$j] = $distance;
+                $distances[$j][$i] = $distance;
             }
-
-            $matrix[$i][$i] = 0.0;
         }
 
-        return $matrix;
+        return $distances;
     }
 
     /**
