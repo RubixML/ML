@@ -43,7 +43,7 @@ class Parameter
     /**
      * The accumulated gradient of the parameter.
      *
-     * @var Tensor<int|float|array>|null
+     * @var Tensor|null
      */
     protected ?Tensor $gradient;
 
@@ -53,25 +53,6 @@ class Parameter
      * @var bool
      */
     protected bool $frozen;
-
-    /**
-     * Flatten a matrix into a vector or return a vector as-is.
-     *
-     * @param Tensor $tensor
-     * @return Vector
-     */
-    protected static function vectorize(Tensor $tensor) : Vector
-    {
-        if ($tensor instanceof Matrix) {
-            return $tensor->flatten();
-        }
-
-        if ($tensor instanceof Vector) {
-            return $tensor;
-        }
-
-        throw new RuntimeException('Unable to compute the norm of the accumulated gradient.');
-    }
 
     /**
      * @param Tensor $param
@@ -107,7 +88,7 @@ class Parameter
     /**
      * Return the accumulated gradient of the parameter.
      *
-     * @return Tensor<int|float|array>|null
+     * @return Tensor|null
      */
     public function gradient()
     {
@@ -145,15 +126,17 @@ class Parameter
             throw new RuntimeException('No gradient to compute norm.');
         }
 
-        $tensor = self::vectorize($this->gradient);
+        if (!$this->gradient instanceof Matrix and !$this->gradient instanceof Vector) {
+            throw new RuntimeException('Unable to compute the norm of the accumulated gradient.');
+        }
 
-        return $tensor->l2Norm();
+        return $this->gradient->l2Norm();
     }
 
     /**
      * Accumulate the gradient of the parameter.
      *
-     * @param Tensor<int|float|array> $gradient
+     * @param Tensor $gradient
      */
     public function accumulateGradient(Tensor $gradient) : void
     {
