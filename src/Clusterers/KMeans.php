@@ -172,7 +172,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 . " greater than 0, $minChange given.");
         }
 
-        if (!in_array($kernel::class, self::ALLOWED_KERNELS)) {
+        if (isset($kernel) and !in_array($kernel::class, self::ALLOWED_KERNELS)) {
             throw new InvalidArgumentException('Kernel must be one of: '
                 . implode(', ', self::ALLOWED_KERNELS) . ", $kernel given.");
         }
