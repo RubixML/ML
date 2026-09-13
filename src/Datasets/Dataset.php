@@ -66,7 +66,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
 
             $n = count($prototype);
 
-            $types = array_map([DataType::class, 'detect'], $prototype);
+            $types = array_map([DataType::class, 'detectCode'], $prototype);
 
             foreach ($samples as $row => &$sample) {
                 $sample = is_array($sample) ? array_values($sample) : [$sample];
@@ -78,13 +78,14 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                 }
 
                 foreach ($sample as $column => $value) {
-                    $type = DataType::detect($value);
+                    $code = DataType::detectCode($value);
 
-                    if ($type != $types[$column]) {
+                    if ($code !== $types[$column]) {
                         throw new InvalidArgumentException("Column $column"
                             . ' must contain values of the same data type,'
-                            . " $types[$column] expected but $type given at"
-                            . " row offset $row.");
+                            . ' ' . DataType::build($types[$column]) . ' expected'
+                            . ' but ' . DataType::build($code) . ' given at row'
+                            . " offset $row.");
                     }
                 }
             }
