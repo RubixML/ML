@@ -9,6 +9,7 @@ use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
+use function in_array;
 
 /**
  * Plus Plus
@@ -81,7 +82,13 @@ class PlusPlus implements Seeder
                 $weights[] = $bestDistance ** 2;
             }
 
-            $centroids[] = $dataset->randomWeightedSubsetWithReplacement(1, $weights)->sample(0);
+            $centroid = $dataset->randomWeightedSubsetWithReplacement(1, $weights)->sample(0);
+
+            if (in_array($centroid, $centroids, true)) {
+                continue;
+            }
+
+            $centroids[] = $centroid;
         }
 
         return $centroids;
