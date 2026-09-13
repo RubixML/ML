@@ -6,8 +6,13 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 use GdImage;
 
-use function gettype;
 use function in_array;
+use function is_string;
+use function is_int;
+use function is_float;
+use function is_object;
+use function is_resource;
+use function get_resource_type;
 
 /**
  * Data Type
@@ -92,6 +97,42 @@ class DataType implements Stringable
     }
 
     /**
+     * Detect the integer-encoded data type code of an example value without
+     * allocating a new object.
+     *
+     * @param mixed $value
+     * @return int
+     */
+    public static function detectCode($value) : int
+    {
+        if (is_float($value)) {
+            return self::CONTINUOUS;
+        }
+
+        if (is_string($value) or is_int($value)) {
+            return self::CATEGORICAL;
+        }
+
+        if (is_object($value)) {
+            if (class_exists(GdImage::class) and $value instanceof GdImage) {
+                return self::IMAGE;
+            }
+
+            return self::OTHER;
+        }
+
+        if (is_resource($value)) {
+            if (get_resource_type($value) === 'gd') {
+                return self::IMAGE;
+            }
+
+            return self::OTHER;
+        }
+
+        return self::OTHER;
+    }
+
+    /**
      * Build a data type object from an example value.
      *
      * @param mixed $value
@@ -99,24 +140,7 @@ class DataType implements Stringable
      */
     public static function detect(mixed $value) : self
     {
-        switch (gettype($value)) {
-            case 'double':
-                return new self(self::CONTINUOUS);
-
-            case 'integer':
-            case 'string':
-                return new self(self::CATEGORICAL);
-
-            case 'object':
-                if (class_exists(GdImage::class) and $value instanceof GdImage) {
-                    return new self(self::IMAGE);
-                }
-
-                return new self(self::OTHER);
-
-            default:
-                return new self(self::OTHER);
-        }
+        return new self(self::detectCode($value));
     }
 
     /**

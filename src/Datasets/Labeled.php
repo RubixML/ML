@@ -143,18 +143,22 @@ class Labeled extends Dataset
         if ($verify and $labels) {
             $labels = array_values($labels);
 
-            $type = DataType::detect($labels[0]);
+            $code = DataType::detectCode($labels[0]);
 
-            if (!$type->isCategorical() and !$type->isContinuous()) {
+            if ($code !== DataType::CATEGORICAL and $code !== DataType::CONTINUOUS) {
                 throw new InvalidArgumentException('Label type must be'
-                    . " categorical or continuous, $type given.");
+                    . ' categorical or continuous, ' . DataType::build($code)
+                    . ' given.');
             }
 
             foreach ($labels as $offset => $label) {
-                if (DataType::detect($label) != $type) {
+                $labelCode = DataType::detectCode($label);
+
+                if ($labelCode !== $code) {
                     throw new InvalidArgumentException('Invalid label type'
-                        . " found at offset $offset, $type expected but "
-                        . DataType::detect($label) . ' given.');
+                        . " found at offset $offset, " . DataType::build($code)
+                        . ' expected but ' . DataType::build($labelCode)
+                        . ' given.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
