@@ -13,7 +13,7 @@ A robust medoid-based hard clustering algorithm capable of grouping linearly sep
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | k | | int | The number of target clusters. |
-| 2 | batch size | 100 | int | The number of samples drawn from the training set to propose a candidate set of medoids at each epoch. |
+| 2 | batch size | 100 | int | The number of samples drawn from the training set to propose a candidate set of medoids each round. |
 | 3 | numCandidates | 10 | int | The number of CLARA candidates to propose. The best candidate (lowest inertia) is kept. |
 | 4 | min change | 1e-4 | float | The minimum improvement in the inertia required for a PAM SWAP exchange to be accepted. |
 | 5 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
@@ -51,7 +51,7 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->steps());
 ```
 
-Return the full-dataset inertia of the best candidate medoid proposed at each CLARA epoch (i.e. the loss for each of the *epochs* candidates considered).
+Return the full-dataset inertia of the best candidate medoid proposed at each CLARA round.
 
 ```php
 public losses() : float[]|null

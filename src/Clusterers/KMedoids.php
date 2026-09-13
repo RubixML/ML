@@ -49,10 +49,10 @@ use const Rubix\ML\EPSILON;
  * sensitive to outliers and noise.
  *
  * K Medoids follows the *CLARA* (*Clustering LARge Applications*) scheme: at each
- * epoch, a random subset of the training set is refined using the *PAM*
+ * round, a random subset of the training set is refined using the *PAM*
  * (*Partitioning Around Medoids*) heuristic to obtain a candidate set of medoids,
  * which is then scored against the inertia cost function on the **entire** dataset.
- * After *R* independent candidates have been proposed (controlled by the *epochs*
+ * After *R* independent candidates have been proposed (controlled by the *numCandidates*
  * hyper-parameter), the candidate yielding the lowest full-dataset inertia is kept.
  *
  * This decouples the search space from the evaluation cost: PAM is run on the small
@@ -78,7 +78,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
     /**
      * The size of the CLARA sample i.e. the number of samples drawn from the
-     * training set to propose a candidate set of medoids at each epoch.
+     * training set to propose a candidate set of medoids each round.
      *
      * @var positive-int
      */
