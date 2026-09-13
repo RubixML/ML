@@ -50,6 +50,10 @@
     - MLP Learners can now freeze first k layers for fine-tuning
     - PlusPlus and KMC2 Seeders always return unique seeds
     
+- 2.5.15
+    - Optimize Dataset validation
+    - Fix AdaBoost early stopping with dropped learners
+
 - 2.5.14
     - Fix Report and Tuple null values
     - Fix Random Projector mangitudes
