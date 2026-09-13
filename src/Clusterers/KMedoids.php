@@ -8,6 +8,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\Set;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
@@ -34,7 +35,6 @@ use function array_fill;
 use function array_map;
 use function get_object_vars;
 use function is_nan;
-use function in_array;
 
 use const Rubix\ML\EPSILON;
 
@@ -309,36 +309,36 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $seeds = $this->seeder->seed($subset, $this->k);
 
-            $medoids = [];
+            $medoidSet = new Set();
 
             foreach ($seeds as $seed) {
                 $offset = array_search($seed, $subset->samples());
 
-                $medoids[] = is_int($offset) ? $offset : 0;
+                $medoidSet->add(is_int($offset) ? $offset : 0);
             }
 
             $distances = $this->pairwiseDistances($subset);
 
-            [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoids, $distances);
+            [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoidSet->toArray(), $distances);
 
             do {
                 $improved = false;
 
-                for ($i = 0; $i < count($medoids); ++$i) {
+                foreach ($medoidSet as $offset) {
                     $bestDelta = -$this->minChange;
                     $bestOffset = null;
 
                     for ($j = 0; $j < $subset->numSamples(); ++$j) {
-                        if (in_array($j, $medoids)) {
+                        if ($medoidSet->has($j)) {
                             continue;
                         }
 
                         $delta = 0.0;
 
-                        foreach ($distances as $offset => $row) {
-                            $without = $argmins[$offset] === $i ? $seconds[$offset] : $firsts[$offset];
+                        foreach ($distances as $i => $row) {
+                            $without = $argmins[$i] === $offset ? $seconds[$i] : $firsts[$i];
 
-                            $delta += min($row[$j], $without) - $firsts[$offset];
+                            $delta += min($row[$j], $without) - $firsts[$i];
                         }
 
                         if ($delta < $bestDelta) {
@@ -349,16 +349,17 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                     }
 
                     if (isset($bestOffset)) {
-                        $medoids[$i] = $bestOffset;
+                        $medoidSet->remove($offset);
+                        $medoidSet->add($bestOffset);
 
-                        [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoids, $distances);
+                        [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoidSet->toArray(), $distances);
 
                         $improved = true;
                     }
                 }
             } while ($improved);
 
-            $medoids = array_map(fn ($offset) => $subset->sample($offset), $medoids);
+            $medoids = array_map(fn ($offset) => $subset->sample($offset), $medoidSet->toArray());
 
             $sum = 0.0;
 
@@ -511,7 +512,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
     /**
      * Compute the distance to the nearest and second nearest medoid as well as
-     * the index of the nearest medoid for each sample of the distance matrix.
+     * the offset of the nearest medoid for each sample of the distance matrix.
      *
      * @param list<int> $medoids
      * @param list<list<float>> $distances
@@ -525,13 +526,13 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $min = $nextMin = INF;
             $argmin = null;
 
-            foreach ($medoids as $i => $medoid) {
+            foreach ($medoids as $medoid) {
                 $distance = $row[$medoid];
 
                 if ($distance < $min) {
                     $nextMin = $min;
                     $min = $distance;
-                    $argmin = $i;
+                    $argmin = $medoid;
                 } elseif ($distance < $nextMin) {
                     $nextMin = $distance;
                 }
