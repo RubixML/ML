@@ -48,6 +48,7 @@
     - Optimizers now take a Scheduler rather than a raw learning rate
     - MLP Learners now have gradient accumulation and clipping
     - MLP Learners can now freeze first k layers for fine-tuning
+    - PlusPlus and KMC2 Seeders always return unique seeds
     
 - 2.5.14
     - Fix Report and Tuple null values
