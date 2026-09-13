@@ -11,6 +11,7 @@ use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
 
 #[Group('Seeders')]
@@ -49,8 +50,29 @@ class KMC2Test extends TestCase
     {
         $dataset = $this->generator->generate(100);
 
-        $seeds = $this->seeder->seed(dataset: $dataset, k: 3);
+        $seeds = $this->seeder->seed(dataset: $dataset, k: 30);
 
-        $this->assertCount(3, $seeds);
+        $this->assertCount(30, $seeds);
+
+        $this->assertCount(30, array_unique($seeds, SORT_REGULAR));
+    }
+
+    #[Test]
+    public function seedsAreUnique() : void
+    {
+        $dataset = Unlabeled::quick(samples: [
+            [0.0, 0.0],
+            [1.0, 1.0],
+            [2.0, 2.0],
+            [3.0, 3.0],
+            [4.0, 4.0],
+            [5.0, 5.0],
+        ]);
+
+        $seeds = $this->seeder->seed(dataset: $dataset, k: 6);
+
+        $this->assertCount(6, $seeds);
+
+        $this->assertCount(6, array_unique($seeds, SORT_REGULAR));
     }
 }
