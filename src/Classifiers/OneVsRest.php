@@ -13,6 +13,7 @@ use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Backends\Tasks\Task;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Backends\Tasks\TrainLearner;
@@ -155,7 +156,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -172,13 +173,14 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
 
         foreach ($classes as $class) {
             $estimator = clone $this->base;
-            $subset = clone $dataset;
 
             $binarize = function ($label) use ($class) {
-                return $label === $class ? 'y' : 'n';
+                return $label === $class ? 1 : 0;
             };
 
-            $subset->transformLabels($binarize);
+            $labels = array_map($binarize, $dataset->labels());
+
+            $subset = Labeled::quick($dataset->samples(), $labels);
 
             $task = new TrainLearner($estimator, $subset);
 
@@ -268,7 +270,7 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
             $dist = [];
 
             foreach ($sampleVotes as $j => $proba) {
-                $dist[$classes[$j]] = $proba['y'];
+                $dist[$classes[$j]] = $proba[1];
             }
 
             $total = array_sum($dist);
