@@ -2,13 +2,13 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Set;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Set;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
