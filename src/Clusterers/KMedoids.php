@@ -314,7 +314,11 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             foreach ($seeds as $seed) {
                 $offset = array_search($seed, $subset->samples());
 
-                $medoidSet->add(is_int($offset) ? $offset : 0);
+                if ($offset === false) {
+                    throw new RuntimeException('Seed must be present in the training set.');
+                }
+
+                $medoidSet->add($offset);
             }
 
             $distances = $this->pairwiseDistances($subset);
