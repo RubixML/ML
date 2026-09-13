@@ -61,9 +61,6 @@ use const Rubix\ML\EPSILON;
  * classic swap-cost accumulation over each sample's nearest and second-nearest
  * medoid distances, making each candidate swap O(n') to evaluate.
  *
- * References:
- * [1] A. K. Jain et al. (1999). Data Clustering: A Review.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -75,7 +72,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * The target number of clusters.
      *
-     * @var int<0,max>
+     * @var positive-int
      */
     protected int $k;
 
@@ -92,9 +89,9 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * candidate set of medoids; the best candidate (lowest full-dataset inertia)
      * is kept.
      *
-     * @var int
+     * @var positive-int
      */
-    protected int $epochs;
+    protected int $numCandidates;
 
     /**
      * The minimum improvement in the total inertia required for a PAM SWAP exchange
@@ -138,7 +135,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     /**
      * @param int $k
      * @param int $batchSize
-     * @param int $epochs
+     * @param int $numCandidates
      * @param float $minChange
      * @param Distance|null $kernel
      * @param Seeder|null $seeder
@@ -147,7 +144,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     public function __construct(
         int $k,
         int $batchSize = 100,
-        int $epochs = 10,
+        int $numCandidates = 10,
         float $minChange = 1e-4,
         ?Distance $kernel = null,
         ?Seeder $seeder = null
@@ -162,9 +159,9 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " than or equal to $k, $batchSize given.");
         }
 
-        if ($epochs < 1) {
-            throw new InvalidArgumentException('Number of epochs'
-                . " must be greater than 0, $epochs given.");
+        if ($numCandidates < 1) {
+            throw new InvalidArgumentException('Number of candidates'
+                . " must be greater than 0, $numCandidates given.");
         }
 
         if ($minChange < 0.0) {
@@ -180,7 +177,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
         $this->k = $k;
         $this->batchSize = $batchSize;
-        $this->epochs = $epochs;
+        $this->numCandidates = $numCandidates;
         $this->minChange = $minChange;
         $this->kernel = $kernel;
         $this->seeder = $seeder ?? new KMC2(kernel: $kernel);
@@ -216,7 +213,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         return [
             'k' => $this->k,
             'batch size' => $this->batchSize,
-            'epochs' => $this->epochs,
+            'num candidates' => $this->numCandidates,
             'min change' => $this->minChange,
             'kernel' => $this->kernel,
             'seeder' => $this->seeder,
@@ -304,7 +301,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $bestMedoids = null;
         $bestLoss = INF;
 
-        for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
+        for ($round = 1; $round <= $this->numCandidates; ++$round) {
             $subset = $dataset->randomSubset($subsetSize);
 
             $seeds = $this->seeder->seed($subset, $this->k);
@@ -383,10 +380,10 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
 
             $loss = $sum / $dataset->numSamples();
 
-            $this->losses[$epoch] = $loss;
+            $this->losses[$round] = $loss;
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, Inertia: $loss";
+                $message = "Round: $round, Inertia: $loss";
 
                 $this->logger->info($message);
             }

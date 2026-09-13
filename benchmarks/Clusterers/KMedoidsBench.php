@@ -51,7 +51,7 @@ class KMedoidsBench
 
         $batchSize = $params['batchSize'] ?? 100;
 
-        $this->estimator = new KMedoids(k: 3, batchSize: $batchSize, epochs: 10);
+        $this->estimator = new KMedoids(k: 3, batchSize: $batchSize, numCandidates: 10);
     }
 
     /**
