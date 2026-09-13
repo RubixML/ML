@@ -58,7 +58,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     use AutotrackRevisions, LoggerAware;
 
     /**
-     * The list of allowed distance kernels for the K Means algorithm.
+     * The list of allowed distance kernels for the FCM algorithm.
      */
     public const array ALLOWED_KERNELS = [
         Euclidean::class,
