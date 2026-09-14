@@ -78,6 +78,10 @@ class Unlabeled extends Dataset
      */
     public static function chunked(iterable $iterator, int $n = 1024, bool $verify = true) : Generator
     {
+        if ($n < 1) {
+            throw new InvalidArgumentException('Chunk size must be greater than 0.');
+        }
+
         $samples = [];
 
         foreach ($iterator as $record) {
