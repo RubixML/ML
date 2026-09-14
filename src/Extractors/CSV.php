@@ -146,13 +146,15 @@ class CSV implements Extractor, Exporter
             throw new RuntimeException('Folder ' . dirname($this->path) . ' is not writable.');
         }
 
+        $writeHeader = $this->header && ($overwrite or !is_file($this->path));
+
         $handle = fopen($this->path, $overwrite ? 'w' : 'a');
 
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
         }
 
-        if ($this->header) {
+        if ($writeHeader) {
             $header = array_keys(iterator_first($iterator));
 
             $length = fputcsv($handle, $header, $this->delimiter, $this->enclosure, $this->escape);
@@ -162,7 +164,7 @@ class CSV implements Extractor, Exporter
             }
         }
 
-        foreach (enumerate($iterator, $this->header ? 2 : 1) as $line => $row) {
+        foreach (enumerate($iterator, $writeHeader ? 2 : 1) as $line => $row) {
             $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure, $this->escape);
 
             if ($length === false) {
