@@ -45,7 +45,7 @@ This is useful for training an [Online](online.md) learner on a dataset that is 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\NDJSON;
 
-foreach (Labeled::chunked(new NDJSON('too-large.jsonl'), 1024) as $batch) {
+foreach (Labeled::chunked(new NDJSON('too-large.jsonl'), size: 1024) as $batch) {
     $estimator->partial($batch);
 }
 ```

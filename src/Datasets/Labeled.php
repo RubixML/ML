@@ -98,13 +98,13 @@ class Labeled extends Dataset
      * may contain fewer than n samples.
      *
      * @param iterable<mixed[]> $iterator
-     * @param positive-int $n
+     * @param int $size
      * @param bool $verify
      * @return Generator<self>
      */
-    public static function chunked(iterable $iterator, int $n = 1024, bool $verify = true) : Generator
+    public static function chunked(iterable $iterator, int $size = 1024, bool $verify = true) : Generator
     {
-        if ($n < 1) {
+        if ($size < 1) {
             throw new InvalidArgumentException('Chunk size must be greater than 0.');
         }
 
@@ -114,7 +114,7 @@ class Labeled extends Dataset
             $labels[] = array_pop($record);
             $samples[] = $record;
 
-            if (count($samples) === $n) {
+            if (count($samples) === $size) {
                 yield new self($samples, $labels, $verify);
 
                 $samples = $labels = [];
