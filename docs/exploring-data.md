@@ -62,7 +62,7 @@ Another technique used in data analysis is plotting one or more of its dimension
 
 ### Exporting Data
 
-Before importing a dataset into your plotting software, you may need to export it in a format that can be recognized. For this, the library provides the [Writable](extractors/api.md) Extractor API to handle exporting dataset objects to various formats including [CSV](extractors/csv.md) and [NDJSON](extractors/ndjson.md). For example, to export a dataset in CSV format pass the CSV extractor to the `exportTo()` method on the dataset object. If the file already exists and `overwrite` is set to false, then the samples will be appended, otherwise the current samples will be overwritten.
+Before importing a dataset into your plotting software, you may need to export it in a format that can be recognized. For this, the library provides the [Exporter](extractors/api.md) Extractor API to handle exporting dataset objects to various formats including [CSV](extractors/csv.md) and [NDJSON](extractors/ndjson.md). For example, to export a dataset in CSV format pass the CSV extractor to the `exportTo()` method on the dataset object. If the file already exists and `overwrite` is set to false, then the samples will be appended, otherwise the current samples will be overwritten.
 
 ```php
 use Rubix\ML\Extractors\CSV;
@@ -72,7 +72,7 @@ $dataset->exportTo(new CSV('dataset.csv'), false);
 
 ### Converting Formats
 
-You may want to convert a dataset stored in one format to another format. To convert formats, pass an extractor object to the `export()` method on a target extractor that implements the [Writable](extractors/api.md) interface. In the example below, we'll convert a data table from CSV format to NDJSON, saving it to a new file.
+You may want to convert a dataset stored in one format to another format. To convert formats, pass an extractor object to the `export()` method on a target extractor that implements the [Exporter](extractors/api.md) interface. In the example below, we'll convert a data table from CSV format to NDJSON, saving it to a new file.
 
 ```php
 use Rubix\ML\Extractors\NDJSON;
