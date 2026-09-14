@@ -18,6 +18,8 @@ use function fputs;
 use function fclose;
 use function rtrim;
 
+use const JSON_PRESERVE_ZERO_FRACTION;
+
 /**
  * NDJSON
  *
@@ -81,7 +83,9 @@ class NDJSON implements Extractor, Exporter
         }
 
         foreach (enumerate($iterator, 1) as $line => $row) {
-            $length = fputs($handle, JSON::encode($row) . PHP_EOL);
+            $data = JSON::encode($row, JSON_PRESERVE_ZERO_FRACTION) . PHP_EOL;
+
+            $length = fputs($handle, $data);
 
             if ($length === false) {
                 throw new RuntimeException("Could not write row on line $line.");

@@ -10,6 +10,7 @@ use function json_last_error;
 use function is_array;
 
 use const JSON_ERROR_NONE;
+use const JSON_ERROR_STATE_MISMATCH;
 
 /**
  * JSON
