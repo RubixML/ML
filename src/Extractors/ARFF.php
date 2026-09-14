@@ -22,7 +22,7 @@ use function preg_split;
 use function rtrim;
 use function strlen;
 use function str_getcsv;
-use function strncmp;
+use function str_starts_with;
 use function strtolower;
 use function strtotime;
 use function strtoupper;
@@ -50,6 +50,13 @@ use function trim;
  */
 class ARFF implements Extractor
 {
+    /**
+     * The symbol used to denote a missing value in the file.
+     *
+     * @var string
+     */
+    protected const string MISSING = '?';
+
     /**
      * The continuous numeric attribute type code.
      *
@@ -97,7 +104,7 @@ class ARFF implements Extractor
      * @param string|int $categoricalPlaceholder
      * @throws InvalidArgumentException
      */
-    public function __construct(string $path, string|int $categoricalPlaceholder = '?')
+    public function __construct(string $path, string|int $categoricalPlaceholder = self::MISSING)
     {
         if (empty($path)) {
             throw new InvalidArgumentException('Path cannot be empty.');
@@ -175,15 +182,13 @@ class ARFF implements Extractor
                 }
 
                 if ($inHeader) {
-                    if ($this->directive($clean) === '@ATTRIBUTE') {
-                        [$name, $typespec] = $this->attribute($clean);
+                    $directive = $this->directive($clean);
 
-                        if ($name === '') {
-                            throw new RuntimeException("Attribute name not found on line $line.");
-                        }
+                    if ($directive === '@ATTRIBUTE') {
+                        [$name, $type] = $this->parseAttribute($clean, $line);
 
-                        $attributes[$name] = $this->attributeType($typespec, $line);
-                    } elseif ($this->directive($clean) === '@DATA') {
+                        $attributes[$name] = $type;
+                    } elseif ($directive === '@DATA') {
                         $inHeader = false;
                     }
                 } else {
@@ -202,7 +207,7 @@ class ARFF implements Extractor
 
                         switch ($type) {
                             case self::TYPE_FLOAT:
-                                if ($value !== '?') {
+                                if ($value !== self::MISSING) {
                                     if (!is_numeric($value)) {
                                         throw new RuntimeException("Expected numeric value on line $line.");
                                     }
@@ -215,14 +220,14 @@ class ARFF implements Extractor
                                 break;
 
                             case self::TYPE_STRING:
-                                if ($value === '?') {
+                                if ($value === self::MISSING) {
                                     $value = $this->categoricalPlaceholder;
                                 }
 
                                 break;
 
                             case self::TYPE_INTEGER:
-                                if ($value !== '?') {
+                                if ($value !== self::MISSING) {
                                     if (!is_numeric($value)) {
                                         throw new RuntimeException("Expected numeric value on line $line.");
                                     }
@@ -235,7 +240,7 @@ class ARFF implements Extractor
                                 break;
 
                             case self::TYPE_DATE:
-                                if ($value !== '?') {
+                                if ($value !== self::MISSING) {
                                     $timestamp = strtotime($value);
 
                                     if ($timestamp === false) {
@@ -277,16 +282,24 @@ class ARFF implements Extractor
     }
 
     /**
-     * Parse the name and type specifier of an attribute declaration.
+     * Parse the name and type code of an attribute declaration.
      *
      * @param string $line
-     * @return array{string, string}
+     * @param int $lineNumber
+     * @throws RuntimeException
+     * @return array{string, int}
      */
-    protected function attribute(string $line) : array
+    protected function parseAttribute(string $line, int $lineNumber) : array
     {
-        [$name, $remainder] = $this->token(ltrim(substr($line, strlen('@attribute'))));
+        [$name, $typespec] = $this->token(ltrim(substr($line, strlen('@attribute'))));
 
-        return [$name, $remainder];
+        if ($name === '') {
+            throw new RuntimeException("Attribute name not found on line $lineNumber.");
+        }
+
+        $type = $this->attributeType($typespec, $lineNumber);
+
+        return [$name, $type];
     }
 
     /**
@@ -313,7 +326,7 @@ class ARFF implements Extractor
             return self::TYPE_STRING;
         }
 
-        if ($typespec === 'date' or strncmp($typespec, 'date ', 5) === 0) {
+        if ($typespec === 'date' or str_starts_with($typespec, 'date ')) {
             return self::TYPE_DATE;
         }
 
