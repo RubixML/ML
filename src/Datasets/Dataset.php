@@ -462,25 +462,23 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function deduplicate() : self
     {
-        // $records = [];
+        $records = [];
 
-        // $seen = new Set();
+        $seen = new Set();
 
-        // foreach ($this as $record) {
-        //     $token = serialize($record);
+        foreach ($this as $record) {
+            $token = serialize($record);
 
-        //     if ($seen->has($token)) {
-        //         continue;
-        //     }
+            if ($seen->has($token)) {
+                continue;
+            }
 
-        //     $seen->add($token);
+            $seen->add($token);
 
-        //     $records[] = $record;
-        // }
+            $records[] = $record;
+        }
 
-        // return static::fromIterator($records);
-
-        return static::fromIterator(array_unique(iterator_to_array($this), SORT_REGULAR));
+        return static::fromIterator($records);
     }
 
     /**
