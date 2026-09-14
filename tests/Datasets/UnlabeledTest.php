@@ -501,9 +501,33 @@ class UnlabeledTest extends TestCase
     #[Test]
     public function deduplicate() : void
     {
-        $dataset = $this->dataset->deduplicate();
+        $dataset = new Unlabeled([
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'furry', 'friendly', 4.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['nice', 'furry', 'friendly', 4.0],
+        ]);
 
-        $this->assertCount(6, $dataset);
+        $deduplicated = $dataset->deduplicate();
+
+        $this->assertCount(2, $deduplicated);
+        $this->assertEquals([
+            ['nice', 'furry', 'friendly', 4.0],
+            ['mean', 'furry', 'loner', -1.5],
+        ], $deduplicated->samples());
+    }
+
+    #[Test]
+    public function deduplicateDoesNotMergeCategoricalAndContinuous() : void
+    {
+        $dataset = new Unlabeled([
+            ['1', 2.0],
+            [1, 2.0],
+        ]);
+
+        $deduplicated = $dataset->deduplicate();
+
+        $this->assertCount(2, $deduplicated);
     }
 
     #[Test]

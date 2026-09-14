@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Set;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Helpers\Stats;
@@ -21,6 +22,7 @@ use function Rubix\ML\iterator_filter;
 use function Rubix\ML\array_transpose;
 use function count;
 use function is_array;
+use function serialize;
 use function usort;
 
 /**
@@ -460,7 +462,23 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      */
     public function deduplicate() : self
     {
-        return static::fromIterator(array_unique(iterator_to_array($this), SORT_REGULAR));
+        $records = [];
+
+        $seen = new Set();
+
+        foreach ($this as $record) {
+            $token = serialize($record);
+
+            if ($seen->has($token)) {
+                continue;
+            }
+
+            $seen->add($token);
+
+            $records[] = $record;
+        }
+
+        return static::fromIterator($records);
     }
 
     /**

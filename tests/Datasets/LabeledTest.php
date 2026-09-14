@@ -764,9 +764,25 @@ class LabeledTest extends TestCase
     #[Test]
     public function deduplicate() : void
     {
-        $dataset = $this->dataset->deduplicate();
+        $samples = [
+            ['nice', 'furry', 'friendly', 4.0],
+            ['nice', 'furry', 'friendly', 4.0],
+            ['mean', 'furry', 'loner', -1.5],
+            ['nice', 'furry', 'friendly', 4.0],
+        ];
 
-        $this->assertCount(6, $dataset);
+        $labels = ['a', 'a', 'c', 'a'];
+
+        $dataset = new Labeled($samples, $labels, verify: false);
+
+        $deduplicated = $dataset->deduplicate();
+
+        $this->assertCount(2, $deduplicated);
+        $this->assertSame(['a', 'c'], $deduplicated->labels());
+        $this->assertEquals([
+            ['nice', 'furry', 'friendly', 4.0],
+            ['mean', 'furry', 'loner', -1.5],
+        ], $deduplicated->samples());
     }
 
     #[Test]
