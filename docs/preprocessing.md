@@ -185,11 +185,11 @@ use Rubix\ML\Transformers\TfIdfTransformer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
-$extractor1 = new ColumnPicker(new NDJSON('example.ndjson'), [
+$extractor1 = new ColumnPicker(new NDJSON('example.jsonl'), [
     'review', 'sentiment',
 ]);
 
-$extractor2 = new ColumnPicker(new NDJSON('example.ndjson'), [
+$extractor2 = new ColumnPicker(new NDJSON('example.jsonl'), [
     'category', 'clicks', 'rating',
 ]);
 

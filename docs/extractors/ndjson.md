@@ -20,7 +20,7 @@
 ```php
 use Rubix\ML\Extractors\NDJSON;
 
-$extractor = new NDJSON('example.ndjson');
+$extractor = new NDJSON('example.jsonl');
 ```
 
 ## Additional Methods

@@ -8,6 +8,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
+use Generator;
 
 use function count;
 use function gettype;
@@ -90,6 +91,35 @@ class Labeled extends Dataset
         }
 
         return new self($samples, $labels, $verify);
+    }
+
+    /**
+     * Build an iterable of datasets of size n from an iterator. The last batch
+     * may contain fewer than n samples.
+     *
+     * @param iterable<mixed[]> $iterator
+     * @param positive-int $n
+     * @param bool $verify
+     * @return Generator<self>
+     */
+    public static function chunked(iterable $iterator, int $n = 1024, bool $verify = true) : Generator
+    {
+        $samples = $labels = [];
+
+        foreach ($iterator as $record) {
+            $labels[] = array_pop($record);
+            $samples[] = $record;
+
+            if (count($samples) === $n) {
+                yield new self($samples, $labels, $verify);
+
+                $samples = $labels = [];
+            }
+        }
+
+        if ($samples) {
+            yield new self($samples, $labels, $verify);
+        }
     }
 
     /**
@@ -854,7 +884,7 @@ class Labeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function getIterator() : Traversable
     {

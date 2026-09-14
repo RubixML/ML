@@ -33,6 +33,26 @@ use Rubix\ML\Datasets\Extractors\CSV;
 $dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
 
+Build an iterable of datasets with the records of a 2-dimensional iterable data table in batches of at most n samples:
+
+```php
+public static chunked(Traversable $iterator, int $n = 1024, bool $verify = true) : Generator
+```
+
+This is useful for training an [Online](online.md) learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting `verify` to false.
+
+```php
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\NDJSON;
+
+foreach (Labeled::chunked(new NDJSON('too-large.jsonl'), 1024) as $batch) {
+    $estimator->partial($batch);
+}
+```
+
+!!! note
+    When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
+
 ## Properties
 
 Return the number of rows in the dataset:
@@ -418,5 +438,5 @@ public exportTo(Writable $extractor, bool $overwrite = false) : void
 ```php
 use Rubix\ML\Extractors\NDJSON;
 
-$dataset->exportTo(new NDJSON('example.ndjson'), false);
+$dataset->exportTo(new NDJSON('example.jsonl'), false);
 ```
