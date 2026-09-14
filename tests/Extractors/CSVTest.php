@@ -14,6 +14,9 @@ use PHPUnit\Framework\TestCase;
 use function sys_get_temp_dir;
 use function tempnam;
 use function file_put_contents;
+use function file_get_contents;
+use function substr_count;
+use function uniqid;
 use function unlink;
 
 #[Group('Extractors')]
@@ -102,6 +105,82 @@ class CSVTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         iterator_to_array($extractor, false);
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function exportAppendDoesNotRewriteHeader() : void
+    {
+        $path = sys_get_temp_dir() . '/csv_' . uniqid() . '.csv';
+
+        $extractor = new CSV($path, header: true);
+
+        $rowsA = [
+            ['attitude' => 'nice', 'texture' => 'furry'],
+            ['attitude' => 'mean', 'texture' => 'rough'],
+        ];
+
+        $rowsB = [
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+            ['attitude' => 'friendly', 'texture' => 'spotted'],
+        ];
+
+        $extractor->export($rowsA);
+
+        $this->assertFileExists($path);
+
+        $extractor->export($rowsB);
+
+        $records = iterator_to_array($extractor, false);
+
+        $this->assertCount(4, $records);
+
+        $this->assertEquals([
+            ['attitude' => 'nice', 'texture' => 'furry'],
+            ['attitude' => 'mean', 'texture' => 'rough'],
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+            ['attitude' => 'friendly', 'texture' => 'spotted'],
+        ], $records);
+
+        $contents = file_get_contents($path);
+
+        $this->assertSame(1, substr_count($contents, 'attitude,texture'));
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function exportOverwriteReplacesExistingFile() : void
+    {
+        $path = sys_get_temp_dir() . '/csv_' . uniqid() . '.csv';
+
+        $extractor = new CSV($path, header: true);
+
+        $rowsA = [
+            ['attitude' => 'nice', 'texture' => 'furry'],
+            ['attitude' => 'mean', 'texture' => 'rough'],
+        ];
+
+        $rowsB = [
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+        ];
+
+        $extractor->export($rowsA);
+
+        $extractor->export($rowsB, overwrite: true);
+
+        $records = iterator_to_array($extractor, false);
+
+        $this->assertCount(1, $records);
+
+        $this->assertEquals([
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+        ], $records);
+
+        $contents = file_get_contents($path);
+
+        $this->assertSame(1, substr_count($contents, 'attitude,texture'));
 
         unlink($path);
     }
