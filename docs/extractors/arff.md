@@ -14,7 +14,7 @@ The Attribute-Relation File Format (ARFF) is an ASCII text format that is native
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | path | | string | The path to the ARFF file on disk. |
-| 2 | categoricalPlaceholder | '?' | string | The string to substitute in place of missing date and categorical values. |
+| 2 | categoricalPlaceholder | '?' | string\|int | The string or integer to substitute in place of missing date and categorical values. |
 
 ## Example
 
