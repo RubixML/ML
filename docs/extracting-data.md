@@ -54,7 +54,7 @@ use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use LimitIterator;
 
-$extractor = new NDJSON('example.ndjson');
+$extractor = new NDJSON('example.jsonl');
 
 $iterator = new LimitIterator($extractor->getIterator(), 0, 1000);
 

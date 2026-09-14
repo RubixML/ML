@@ -52,6 +52,7 @@
     - `KMeans` and `Fuzzy C Means` now restrict non-Euclidean kernels
     - PlusPlus and KMC2 Seeders always return unique seeds
     - NDJSON exporter now preserves zero decimal numbers as floats
+    - Add Dataset chunked() factory for online training
     
 - 2.5.15
     - Optimize Prior guessing strategy

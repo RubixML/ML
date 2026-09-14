@@ -33,6 +33,24 @@ use Rubix\ML\Datasets\Extractors\CSV;
 $dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
 
+Stream Dataset chunks that are lazy-loaded from an iterator such as an [Extractor](../extractors/api.md). Useful for training an [Online](online.md) learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting `verify` to false.
+
+```php
+public static chunked(iterable $iterator, int $size = 1024, bool $verify = true) : Generator
+```
+
+```php
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\NDJSON;
+
+foreach (Labeled::chunked(new NDJSON('too-large.jsonl'), size: 1024) as $batch) {
+    $estimator->partial($batch);
+}
+```
+
+!!! note
+    When building a [Labeled](labeled.md) dataset, the label values should be in the last column of the data table.
+
 ## Properties
 
 Return the number of rows in the dataset:
@@ -418,5 +436,5 @@ public exportTo(Exporter $extractor, bool $overwrite = false) : void
 ```php
 use Rubix\ML\Extractors\NDJSON;
 
-$dataset->exportTo(new NDJSON('example.ndjson'), false);
+$dataset->exportTo(new NDJSON('example.jsonl'), false);
 ```
