@@ -167,7 +167,7 @@ class ARFF implements Extractor
 
                 $buffer .= $data;
 
-                if (!$this->balanced($buffer)) {
+                if (!$this->balanced($this->stripComment($buffer))) {
                     continue;
                 }
 
