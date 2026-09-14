@@ -48,6 +48,8 @@
     - Optimizers now take a Scheduler rather than a raw learning rate
     - MLP Learners now have gradient accumulation and clipping
     - MLP Learners can now freeze first k layers for fine-tuning
+    - `PlusPlus` and `KMC2` Seeders always return unique seeds
+    - `KMeans` and `Fuzzy C Means` now restrict non-Euclidean kernels
     - PlusPlus and KMC2 Seeders always return unique seeds
     - NDJSON exporter now preserves zero decimal numbers as floats
     

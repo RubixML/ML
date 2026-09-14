@@ -21,6 +21,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -56,6 +57,14 @@ use const Rubix\ML\EPSILON;
 class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
+
+    /**
+     * The list of allowed distance kernels for the Mean Shift algorithm.
+     */
+    public const array ALLOWED_KERNELS = [
+        Euclidean::class,
+        SafeEuclidean::class,
+    ];
 
     /**
      * The minimum number of initial centroids.
@@ -205,6 +214,15 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         if ($minShift < 0.0) {
             throw new InvalidArgumentException('Minimum shift must be'
                 . " greater than 0, $minShift given.");
+        }
+
+        if (isset($tree)) {
+            $kernel = $tree->kernel();
+
+            if (!in_array($kernel::class, self::ALLOWED_KERNELS)) {
+                throw new InvalidArgumentException('Kernel must be one of: '
+                    . implode(', ', self::ALLOWED_KERNELS) . ", $kernel given.");
+            }
         }
 
         $this->radius = $radius;
