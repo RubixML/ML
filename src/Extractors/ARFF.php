@@ -263,6 +263,10 @@ class ARFF implements Extractor
                     yield $record;
                 }
             }
+
+            if ($buffer !== '') {
+                throw new RuntimeException("Unterminated quoted string on line $line.");
+            }
         } finally {
             fclose($handle);
         }
