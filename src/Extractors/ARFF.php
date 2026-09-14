@@ -228,8 +228,8 @@ class ARFF implements Extractor
 
                             case self::TYPE_INTEGER:
                                 if ($value !== self::MISSING) {
-                                    if (!is_numeric($value)) {
-                                        throw new RuntimeException("Expected numeric value on line $line.");
+                                    if (\filter_var($value, \FILTER_VALIDATE_INT) === false) {
+                                        throw new RuntimeException("Expected integer value on line $line.");
                                     }
 
                                     $value = (int) $value;
