@@ -7,6 +7,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function Rubix\ML\iterator_first;
+use function filter_var;
 use function array_keys;
 use function count;
 use function fclose;
@@ -28,6 +29,8 @@ use function strtotime;
 use function strtoupper;
 use function substr;
 use function trim;
+
+use const FILTER_VALIDATE_INT;
 
 /**
  * ARFF
@@ -100,6 +103,177 @@ class ARFF implements Extractor
     protected string|int $categoricalPlaceholder;
 
     /**
+     * Return the uppercase directive at the beginning of a line.
+     *
+     * @param string $line
+     * @return string
+     */
+    protected static function directive(string $line) : string
+    {
+        $parts = preg_split('/\s+/', $line, 2) ?: [$line];
+
+        return strtoupper($parts[0]);
+    }
+
+    /**
+     * Parse the name and type code of an attribute declaration.
+     *
+     * @param string $line
+     * @param int $lineNumber
+     * @throws RuntimeException
+     * @return array{string, int}
+     */
+    protected static function parseAttribute(string $line, int $lineNumber) : array
+    {
+        [$name, $typespec] = self::token(ltrim(substr($line, strlen('@attribute'))));
+
+        if ($name === '') {
+            throw new RuntimeException("Attribute name not found on line $lineNumber.");
+        }
+
+        $type = self::attributeType($typespec, $lineNumber);
+
+        return [$name, $type];
+    }
+
+    /**
+     * Return the attribute type code corresponding to a type specifier.
+     *
+     * @param string $typespec
+     * @param int $line
+     * @throws RuntimeException
+     * @return int
+     */
+    protected static function attributeType(string $typespec, int $line) : int
+    {
+        $typespec = strtolower(trim($typespec));
+
+        if ($typespec === 'numeric' or $typespec === 'real') {
+            return self::TYPE_FLOAT;
+        }
+
+        if ($typespec === 'integer') {
+            return self::TYPE_INTEGER;
+        }
+
+        if ($typespec === 'string') {
+            return self::TYPE_STRING;
+        }
+
+        if ($typespec === 'date' or str_starts_with($typespec, 'date ')) {
+            return self::TYPE_DATE;
+        }
+
+        if (isset($typespec[0]) and $typespec[0] === '{') {
+            return self::TYPE_STRING;
+        }
+
+        throw new RuntimeException("Unsupported attribute type '$typespec' on line $line.");
+    }
+
+    /**
+     * Extract the first token of a string, either a bare token delimited by whitespace or a
+     * single-quoted token with '' representing a literal quote. Return the token and the
+     * remainder of the string.
+     *
+     * @param string $string
+     * @return array{string, string}
+     */
+    protected static function token(string $string) : array
+    {
+        $string = ltrim($string);
+
+        if (isset($string[0]) and $string[0] === "'") {
+            $token = '';
+            $length = strlen($string);
+
+            for ($i = 1; $i < $length; ++$i) {
+                if ($string[$i] !== "'") {
+                    $token .= $string[$i];
+
+                    continue;
+                }
+
+                if (isset($string[$i + 1]) and $string[$i + 1] === "'") {
+                    $token .= "'";
+                    ++$i;
+
+                    continue;
+                }
+
+                return [$token, substr($string, $i + 1)];
+            }
+
+            throw new RuntimeException('Unterminated quoted string.');
+        }
+
+        $parts = preg_split('/\s+/', $string, 2) ?: [$string];
+
+        return [$parts[0], $parts[1] ?? ''];
+    }
+
+    /**
+     * Do the single quotes in a line represent a balanced (fully enclosed) string?
+     *
+     * @param string $line
+     * @return bool
+     */
+    protected static function balanced(string $line) : bool
+    {
+        $inQuote = false;
+        $length = strlen($line);
+
+        for ($i = 0; $i < $length; ++$i) {
+            if ($line[$i] !== "'") {
+                continue;
+            }
+
+            if (isset($line[$i + 1]) and $line[$i + 1] === "'") {
+                ++$i;
+
+                continue;
+            }
+
+            $inQuote = !$inQuote;
+        }
+
+        return !$inQuote;
+    }
+
+    /**
+     * Strip the comment from a line of text. Comments begin with a percent sign (%) and may
+     * appear on their own line or at the end of a record.
+     *
+     * @param string $line
+     * @return string
+     */
+    protected static function stripComment(string $line) : string
+    {
+        $inQuote = false;
+        $length = strlen($line);
+
+        for ($i = 0; $i < $length; ++$i) {
+            if ($line[$i] === "'") {
+                if (isset($line[$i + 1]) and $line[$i + 1] === "'") {
+                    ++$i;
+
+                    continue;
+                }
+
+                $inQuote = !$inQuote;
+
+                continue;
+            }
+
+            if ($line[$i] === '%' and !$inQuote) {
+                return substr($line, 0, $i);
+            }
+        }
+
+        return $line;
+    }
+
+    /**
      * @param string $path
      * @param string|int $categoricalPlaceholder
      * @throws InvalidArgumentException
@@ -167,13 +341,13 @@ class ARFF implements Extractor
 
                 $buffer .= $data;
 
-                if (!$this->balanced($this->stripComment($buffer))) {
+                if (!self::balanced(self::stripComment($buffer))) {
                     continue;
                 }
 
                 $buffer = rtrim($buffer);
 
-                $clean = trim($this->stripComment($buffer));
+                $clean = trim(self::stripComment($buffer));
 
                 $buffer = '';
 
@@ -182,10 +356,10 @@ class ARFF implements Extractor
                 }
 
                 if ($inHeader) {
-                    $directive = $this->directive($clean);
+                    $directive = self::directive($clean);
 
                     if ($directive === '@ATTRIBUTE') {
-                        [$name, $type] = $this->parseAttribute($clean, $line);
+                        [$name, $type] = self::parseAttribute($clean, $line);
 
                         $attributes[$name] = $type;
                     } elseif ($directive === '@DATA') {
@@ -228,7 +402,7 @@ class ARFF implements Extractor
 
                             case self::TYPE_INTEGER:
                                 if ($value !== self::MISSING) {
-                                    if (\filter_var($value, \FILTER_VALIDATE_INT) === false) {
+                                    if (filter_var($value, FILTER_VALIDATE_INT) === false) {
                                         throw new RuntimeException("Expected integer value on line $line.");
                                     }
 
@@ -270,176 +444,5 @@ class ARFF implements Extractor
         } finally {
             fclose($handle);
         }
-    }
-
-    /**
-     * Return the uppercase directive at the beginning of a line.
-     *
-     * @param string $line
-     * @return string
-     */
-    protected function directive(string $line) : string
-    {
-        $parts = preg_split('/\s+/', $line, 2) ?: [$line];
-
-        return strtoupper($parts[0]);
-    }
-
-    /**
-     * Parse the name and type code of an attribute declaration.
-     *
-     * @param string $line
-     * @param int $lineNumber
-     * @throws RuntimeException
-     * @return array{string, int}
-     */
-    protected function parseAttribute(string $line, int $lineNumber) : array
-    {
-        [$name, $typespec] = $this->token(ltrim(substr($line, strlen('@attribute'))));
-
-        if ($name === '') {
-            throw new RuntimeException("Attribute name not found on line $lineNumber.");
-        }
-
-        $type = $this->attributeType($typespec, $lineNumber);
-
-        return [$name, $type];
-    }
-
-    /**
-     * Return the attribute type code corresponding to a type specifier.
-     *
-     * @param string $typespec
-     * @param int $line
-     * @throws RuntimeException
-     * @return int
-     */
-    protected function attributeType(string $typespec, int $line) : int
-    {
-        $typespec = strtolower(trim($typespec));
-
-        if ($typespec === 'numeric' or $typespec === 'real') {
-            return self::TYPE_FLOAT;
-        }
-
-        if ($typespec === 'integer') {
-            return self::TYPE_INTEGER;
-        }
-
-        if ($typespec === 'string') {
-            return self::TYPE_STRING;
-        }
-
-        if ($typespec === 'date' or str_starts_with($typespec, 'date ')) {
-            return self::TYPE_DATE;
-        }
-
-        if (isset($typespec[0]) and $typespec[0] === '{') {
-            return self::TYPE_STRING;
-        }
-
-        throw new RuntimeException("Unsupported attribute type '$typespec' on line $line.");
-    }
-
-    /**
-     * Extract the first token of a string, either a bare token delimited by whitespace or a
-     * single-quoted token with '' representing a literal quote. Return the token and the
-     * remainder of the string.
-     *
-     * @param string $string
-     * @return array{string, string}
-     */
-    protected function token(string $string) : array
-    {
-        $string = ltrim($string);
-
-        if (isset($string[0]) and $string[0] === "'") {
-            $token = '';
-            $length = strlen($string);
-
-            for ($i = 1; $i < $length; ++$i) {
-                if ($string[$i] !== "'") {
-                    $token .= $string[$i];
-
-                    continue;
-                }
-
-                if (isset($string[$i + 1]) and $string[$i + 1] === "'") {
-                    $token .= "'";
-                    ++$i;
-
-                    continue;
-                }
-
-                return [$token, substr($string, $i + 1)];
-            }
-
-            throw new RuntimeException('Unterminated quoted string.');
-        }
-
-        $parts = preg_split('/\s+/', $string, 2) ?: [$string];
-
-        return [$parts[0], $parts[1] ?? ''];
-    }
-
-    /**
-     * Do the single quotes in a line represent a balanced (fully enclosed) string?
-     *
-     * @param string $line
-     * @return bool
-     */
-    protected function balanced(string $line) : bool
-    {
-        $inQuote = false;
-        $length = strlen($line);
-
-        for ($i = 0; $i < $length; ++$i) {
-            if ($line[$i] !== "'") {
-                continue;
-            }
-
-            if (isset($line[$i + 1]) and $line[$i + 1] === "'") {
-                ++$i;
-
-                continue;
-            }
-
-            $inQuote = !$inQuote;
-        }
-
-        return !$inQuote;
-    }
-
-    /**
-     * Strip the comment from a line of text. Comments begin with a percent sign (%) and may
-     * appear on their own line or at the end of a record.
-     *
-     * @param string $line
-     * @return string
-     */
-    protected function stripComment(string $line) : string
-    {
-        $inQuote = false;
-        $length = strlen($line);
-
-        for ($i = 0; $i < $length; ++$i) {
-            if ($line[$i] === "'") {
-                if (isset($line[$i + 1]) and $line[$i + 1] === "'") {
-                    ++$i;
-
-                    continue;
-                }
-
-                $inQuote = !$inQuote;
-
-                continue;
-            }
-
-            if ($line[$i] === '%' and !$inQuote) {
-                return substr($line, 0, $i);
-            }
-        }
-
-        return $line;
     }
 }
