@@ -36,7 +36,7 @@ $dataset = Labeled::fromIterator(new CSV('example.csv'));
 Build an iterable of datasets with the records of a 2-dimensional iterable data table in batches of at most n samples:
 
 ```php
-public static chunked(iterable $iterator, int $n = 1024, bool $verify = true) : Generator
+public static chunked(iterable $iterator, int $size = 1024, bool $verify = true) : Generator
 ```
 
 This is useful for training an [Online](online.md) learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting `verify` to false.
