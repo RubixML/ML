@@ -36,9 +36,9 @@ use function trim;
  * machine learning workbench. Along with being widely used in academic research, ARFF files
  * retain the data type of each column via attribute declarations in the header of the file.
  *
- * > **Note:** Missing values are denoted by a question mark (?) in the file. Missing numeric
- * > and real values are imported as NAN, and missing integer, date, and categorical values are
- * > imported as the categorical placeholder string which defaults to '?'.
+ * > **Note:** Missing values are denoted by a question mark (?) in the file. Missing real values
+ * > are imported as NAN, and missing integer, date, and categorical values are imported as the
+ * > categorical placeholder which defaults to '?'.
  *
  * References:
  * [1] I. H. Witten et al. (1999). WEKA - Data Mining with the Java Algorithms for Machine
@@ -88,16 +88,16 @@ class ARFF implements Extractor
     /**
      * The string to substitute in place of missing date and categorical values.
      *
-     * @var string
+     * @var string|int
      */
-    protected string $categoricalPlaceholder;
+    protected string|int $categoricalPlaceholder;
 
     /**
      * @param string $path
-     * @param string $categoricalPlaceholder
+     * @param string|int $categoricalPlaceholder
      * @throws InvalidArgumentException
      */
-    public function __construct(string $path, string $categoricalPlaceholder = '?')
+    public function __construct(string $path, string|int $categoricalPlaceholder = '?')
     {
         if (empty($path)) {
             throw new InvalidArgumentException('Path cannot be empty.');
@@ -269,7 +269,7 @@ class ARFF implements Extractor
      * @param string $line
      * @return string
      */
-    private function directive(string $line) : string
+    protected function directive(string $line) : string
     {
         $parts = preg_split('/\s+/', $line, 2) ?: [$line];
 
@@ -282,7 +282,7 @@ class ARFF implements Extractor
      * @param string $line
      * @return array{string, string}
      */
-    private function attribute(string $line) : array
+    protected function attribute(string $line) : array
     {
         [$name, $remainder] = $this->token(ltrim(substr($line, strlen('@attribute'))));
 
@@ -297,7 +297,7 @@ class ARFF implements Extractor
      * @throws RuntimeException
      * @return int
      */
-    private function attributeType(string $typespec, int $line) : int
+    protected function attributeType(string $typespec, int $line) : int
     {
         $typespec = strtolower(trim($typespec));
 
@@ -332,7 +332,7 @@ class ARFF implements Extractor
      * @param string $string
      * @return array{string, string}
      */
-    private function token(string $string) : array
+    protected function token(string $string) : array
     {
         $string = ltrim($string);
 
@@ -371,7 +371,7 @@ class ARFF implements Extractor
      * @param string $line
      * @return bool
      */
-    private function balanced(string $line) : bool
+    protected function balanced(string $line) : bool
     {
         $inQuote = false;
         $length = strlen($line);
@@ -400,7 +400,7 @@ class ARFF implements Extractor
      * @param string $line
      * @return string
      */
-    private function stripComment(string $line) : string
+    protected function stripComment(string $line) : string
     {
         $inQuote = false;
         $length = strlen($line);
