@@ -188,6 +188,13 @@ class ARFF implements Extractor
             $length = strlen($string);
 
             for ($i = 1; $i < $length; ++$i) {
+                if ($string[$i] === '\\' and isset($string[$i + 1])) {
+                    $token .= $string[$i + 1];
+                    ++$i;
+
+                    continue;
+                }
+
                 if ($string[$i] !== "'") {
                     $token .= $string[$i];
 
@@ -224,6 +231,12 @@ class ARFF implements Extractor
         $length = strlen($line);
 
         for ($i = 0; $i < $length; ++$i) {
+            if ($line[$i] === '\\' and isset($line[$i + 1])) {
+                ++$i;
+
+                continue;
+            }
+
             if ($line[$i] !== "'") {
                 continue;
             }
@@ -253,6 +266,12 @@ class ARFF implements Extractor
         $length = strlen($line);
 
         for ($i = 0; $i < $length; ++$i) {
+            if ($line[$i] === '\\' and isset($line[$i + 1])) {
+                ++$i;
+
+                continue;
+            }
+
             if ($line[$i] === "'") {
                 if (isset($line[$i + 1]) and $line[$i + 1] === "'") {
                     ++$i;

@@ -7,6 +7,9 @@ The Attribute-Relation File Format (ARFF) is an ASCII text format that is native
 !!! note
     Missing values, denoted by a question mark (`?`), are imported as `NAN` for numeric and real attributes and as the categorical placeholder string for integer, date, and categorical attributes. The placeholder defaults to `?`. Integer attributes are imported as PHP integers.
 
+!!! note
+    Single-quoted strings may contain a literal single quote as a backslash-escaped apostrophe (`\'`). Multi-line quoted strings and trailing `%` comments after such values are still recognized correctly.
+
 **Interfaces:** [Extractor](api.md)
 
 ## Parameters

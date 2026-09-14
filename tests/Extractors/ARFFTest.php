@@ -116,6 +116,72 @@ class ARFFTest extends TestCase
     }
 
     #[Test]
+    public function extractEscapedApostrophe() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'arff_');
+
+        file_put_contents(
+            $path,
+            "@relation test\n@attribute a numeric\n@attribute b string\n@data\n1,'don\\'t'\n2,'ok'\n"
+        );
+
+        $extractor = new ARFF($path);
+
+        $expected = [
+            ['a' => 1.0, 'b' => 'don\\\'t'],
+            ['a' => 2.0, 'b' => 'ok'],
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($extractor, false));
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function extractEscapedApostropheWithComment() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'arff_');
+
+        file_put_contents(
+            $path,
+            "@relation test\n@attribute b string\n@data\n'don\\'t' % trailing note\n"
+        );
+
+        $extractor = new ARFF($path);
+
+        $expected = [
+            ['b' => 'don\\\'t'],
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($extractor, false));
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function attributeNameWithEscapedApostrophe() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'arff_');
+
+        file_put_contents(
+            $path,
+            "@relation test\n@attribute 'don\\'t' string\n@data\nhi\n"
+        );
+
+        $extractor = new ARFF($path);
+
+        $this->assertEquals(["don't"], $extractor->header());
+
+        $expected = [
+            ["don't" => 'hi'],
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($extractor, false));
+
+        unlink($path);
+    }
+
+    #[Test]
     public function extractCustomPlaceholder() : void
     {
         $path = tempnam(sys_get_temp_dir(), 'arff_');
