@@ -35,6 +35,13 @@ class Dense implements Hidden, Parametric
     protected int $neurons;
 
     /**
+     * The amount of L1 regularization applied to the weights.
+     *
+     * @var float
+     */
+    protected float $l1Penalty;
+
+    /**
      * The amount of L2 regularization applied to the weights.
      *
      * @var float
@@ -85,6 +92,7 @@ class Dense implements Hidden, Parametric
 
     /**
      * @param int $neurons
+     * @param float $l1Penalty
      * @param float $l2Penalty
      * @param bool $bias
      * @param Initializer|null $weightInitializer
@@ -93,6 +101,7 @@ class Dense implements Hidden, Parametric
      */
     public function __construct(
         int $neurons,
+        float $l1Penalty = 0.0,
         float $l2Penalty = 0.0,
         bool $bias = true,
         ?Initializer $weightInitializer = null,
@@ -103,12 +112,18 @@ class Dense implements Hidden, Parametric
                 . " must be greater than 0, $neurons given.");
         }
 
+        if ($l1Penalty < 0.0) {
+            throw new InvalidArgumentException('L1 Penalty must be'
+                . " greater than 0, $l1Penalty given.");
+        }
+
         if ($l2Penalty < 0.0) {
             throw new InvalidArgumentException('L2 Penalty must be'
                 . " greater than 0, $l2Penalty given.");
         }
 
         $this->neurons = $neurons;
+        $this->l1Penalty = $l1Penalty;
         $this->l2Penalty = $l2Penalty;
         $this->bias = $bias;
         $this->weightInitializer = $weightInitializer ?? new He();
@@ -157,14 +172,10 @@ class Dense implements Hidden, Parametric
     {
         $fanOut = $this->neurons;
 
-        $weights = $this->weightInitializer->initialize($fanIn, $fanOut);
-
-        $this->weights = new Parameter($weights);
+        $this->weights = $this->weightInitializer->initialize([$fanOut, $fanIn]);
 
         if ($this->bias) {
-            $biases = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
-
-            $this->biases = new Parameter($biases);
+            $this->biases = $this->biasInitializer->initialize([$fanOut]);
         }
 
         return $fanOut;
@@ -246,6 +257,10 @@ class Dense implements Hidden, Parametric
 
         $weights = $this->weights->param();
 
+        if ($this->l1Penalty) {
+            $dW = $dW->add($weights->sign()->multiply($this->l1Penalty));
+        }
+
         if ($this->l2Penalty) {
             $dW = $dW->add($weights->multiply($this->l2Penalty));
         }
@@ -318,7 +333,9 @@ class Dense implements Hidden, Parametric
      */
     public function __toString() : string
     {
-        return "Dense (neurons: {$this->neurons}, l2 penalty: {$this->l2Penalty},"
+        return "Dense (neurons: {$this->neurons},"
+            . " l1 penalty: {$this->l1Penalty},"
+            . " l2 penalty: {$this->l2Penalty},"
             . ' bias: ' . Params::toString($this->bias) . ','
             . " weight initializer: {$this->weightInitializer},"
             . " bias initializer: {$this->biasInitializer})";

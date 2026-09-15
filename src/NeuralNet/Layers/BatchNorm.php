@@ -153,11 +153,8 @@ class BatchNorm implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $beta = $this->betaInitializer->initialize(1, $fanOut)->columnAsVector(0);
-        $gamma = $this->gammaInitializer->initialize(1, $fanOut)->columnAsVector(0);
-
-        $this->beta = new Parameter($beta);
-        $this->gamma = new Parameter($gamma);
+        $this->beta = $this->betaInitializer->initialize([$fanOut]);
+        $this->gamma = $this->gammaInitializer->initialize([$fanOut]);
 
         $this->width = $fanOut;
 

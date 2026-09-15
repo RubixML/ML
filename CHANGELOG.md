@@ -52,6 +52,8 @@
     - `KMeans` and `Fuzzy C Means` now restrict non-Euclidean kernels
     - NDJSON exporter now preserves zero decimal numbers as floats
     - Add Dataset chunked() factory for online training
+    - Added L1 penalty to `Dense` layers
+    - `Adaline`, `Logistic Regression`, `Softmax Classifier` now elastic net
     
 - 2.5.15
     - Optimize Prior guessing strategy

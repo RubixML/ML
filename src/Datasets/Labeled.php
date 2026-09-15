@@ -102,7 +102,7 @@ class Labeled extends Dataset
      * @param bool $verify
      * @return Generator<self>
      */
-    public static function chunked(iterable $iterator, int $size = 1024, bool $verify = true) : Generator
+    public static function chunked(iterable $iterator, int $size, bool $verify = true) : Generator
     {
         if ($size < 1) {
             throw new InvalidArgumentException('Chunk size must be greater than 0.');
