@@ -47,8 +47,7 @@ class BinaryCrossEntropy implements ClassificationLoss
         $oneMinusOutput = Matrix::ones(...$output->shape())->subtract($output);
         $oneMinusTarget = Matrix::ones(...$target->shape())->subtract($target);
 
-        return $target
-            ->multiply($output->log())
+        return $target->multiply($output->log())
             ->add($oneMinusTarget->multiply($oneMinusOutput->log()))
             ->negate()
             ->mean()
