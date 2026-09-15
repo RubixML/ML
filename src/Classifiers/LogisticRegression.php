@@ -392,7 +392,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         }
 
         $hiddenLayers = [
-            new Dense(1, $this->l2Penalty, true, new Xavier1()),
+            new Dense(1, l2Penalty: $this->l2Penalty, bias: true, weightInitializer: new Xavier1()),
         ];
 
         $network = new FeedForward(

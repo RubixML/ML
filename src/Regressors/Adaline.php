@@ -377,7 +377,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new He())],
+            [new Dense(1, l2Penalty: $this->l2Penalty, bias: true, weightInitializer: new He())],
             new Continuous($this->costFn)
         );
 

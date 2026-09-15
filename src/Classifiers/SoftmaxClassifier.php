@@ -391,7 +391,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $classes = $dataset->possibleOutcomes();
 
         $hiddenLayers = [
-            new Dense(count($classes), $this->l2Penalty, true, new Xavier1()),
+            new Dense(count($classes), l2Penalty: $this->l2Penalty, bias: true, weightInitializer: new Xavier1()),
         ];
 
         $network = new FeedForward(
