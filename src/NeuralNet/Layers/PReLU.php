@@ -52,7 +52,7 @@ class PReLU implements Hidden, Parametric
      *
      * @var Matrix|null
      */
-    protected ?Matrix $input = null;
+    protected ?Matrix $x = null;
 
     /**
      * @param Initializer|null $initializer
@@ -105,14 +105,14 @@ class PReLU implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $this->input = $input;
+        $this->x = $x;
 
-        return $this->activate($input);
+        return $this->activate($x);
     }
 
     /**
@@ -120,12 +120,12 @@ class PReLU implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $this->activate($input);
+        return $this->activate($x);
     }
 
     /**
@@ -144,24 +144,24 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        if (!$this->input) {
+        if (!$this->x) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
         $dOut = $prevGradient();
 
-        $dIn = $this->input->clipUpper(0.0);
+        $dIn = $this->x->clipUpper(0.0);
 
         $dAlpha = $dOut->multiply($dIn)->sum();
 
         $this->alpha->accumulateGradient($dAlpha);
 
-        $input = $this->input;
+        $x = $this->x;
 
-        $this->input = null;
+        $this->x = null;
 
-        return new Deferred([$this, 'gradient'], [$input, $dOut]);
+        return new Deferred([$this, 'gradient'], [$x, $dOut]);
     }
 
     /**
@@ -169,13 +169,13 @@ class PReLU implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @param Matrix $dOut
      * @return Matrix
      */
-    public function gradient($input, $dOut) : Matrix
+    public function gradient($x, $dOut) : Matrix
     {
-        return $this->differentiate($input)->multiply($dOut);
+        return $this->differentiate($x)->multiply($dOut);
     }
 
     /**
@@ -210,11 +210,11 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the leaky ReLU activation function and return a matrix.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws RuntimeException
      * @return Matrix
      */
-    protected function activate(Matrix $input) : Matrix
+    protected function activate(Matrix $x) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -224,7 +224,7 @@ class PReLU implements Hidden, Parametric
 
         $computed = [];
 
-        foreach ($input as $i => $row) {
+        foreach ($x as $i => $row) {
             $alpha = $alphas[$i];
 
             $activations = [];
@@ -244,11 +244,11 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws RuntimeException
      * @return Matrix
      */
-    protected function differentiate(Matrix $input) : Matrix
+    protected function differentiate(Matrix $x) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
@@ -258,7 +258,7 @@ class PReLU implements Hidden, Parametric
 
         $gradient = [];
 
-        foreach ($input as $i => $row) {
+        foreach ($x as $i => $row) {
             $alpha = $alphas[$i];
 
             $derivative = [];

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Regressors;
 
+use Tensor\Matrix;
 use Generator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
@@ -516,7 +517,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $x = Matrix::quick($batch->samples())->transpose();
+                $y = Matrix::quick([$batch->labels()]);
+
+                $this->network->feed($x);
+
+                $loss = $this->network->backpropagate($y);
 
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0
                     || $step === count($batches);
@@ -545,7 +551,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                     }
 
                     foreach ($this->network->trainableParameters() as $param) {
-                        $param->update($this->optimizer);
+                        $this->optimizer->update($param);
 
                         $param->resetGradient();
                     }
@@ -675,7 +681,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $activations = $this->network->infer($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $activations = $this->network->infer($x);
 
         return array_column($activations->asArray(), 0);
     }

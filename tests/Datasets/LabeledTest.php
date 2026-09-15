@@ -12,6 +12,7 @@ use Rubix\ML\Report;
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
@@ -80,7 +81,7 @@ class LabeledTest extends TestCase
     #[Test]
     public function fromIterator() : void
     {
-        $dataset = Labeled::fromIterator(new NDJSON('tests/test.ndjson'), false);
+        $dataset = Labeled::fromIterator(new NDJSON('tests/test.jsonl'), false);
 
         $dataset->apply($this->transformer);
 
@@ -473,6 +474,112 @@ class LabeledTest extends TestCase
         $this->assertCount(2, $batches[0]);
         $this->assertCount(2, $batches[1]);
         $this->assertCount(2, $batches[2]);
+    }
+
+    #[Test]
+    public function chunked() : void
+    {
+        $records = [
+            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
+            ['mean', 'furry', 'loner', -1.5, 'monster'],
+            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
+            ['mean', 'rough', 'friendly', -1.0, 'monster'],
+            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
+            ['nice', 'furry', 'loner', -5.0, 'not monster'],
+        ];
+
+        $batches = iterator_to_array(Labeled::chunked($records, 4));
+
+        $this->assertCount(2, $batches);
+        $this->assertInstanceOf(Labeled::class, $batches[0]);
+
+        $this->assertCount(4, $batches[0]);
+        $this->assertCount(2, $batches[1]);
+
+        $this->assertEquals(array_slice(self::SAMPLES, 0, 4), $batches[0]->samples());
+        $this->assertEquals(array_slice(self::LABELS, 0, 4), $batches[0]->labels());
+        $this->assertEquals(array_slice(self::SAMPLES, 4), $batches[1]->samples());
+        $this->assertEquals(array_slice(self::LABELS, 4), $batches[1]->labels());
+    }
+
+    #[Test]
+    public function chunkedWithDefaultChunkSize() : void
+    {
+        $records = [
+            ['nice', 'furry', 'friendly', 4.0, 'not monster'],
+            ['mean', 'furry', 'loner', -1.5, 'monster'],
+            ['nice', 'rough', 'friendly', 2.6, 'not monster'],
+            ['mean', 'rough', 'friendly', -1.0, 'monster'],
+            ['nice', 'rough', 'friendly', 2.9, 'not monster'],
+            ['nice', 'furry', 'loner', -5.0, 'not monster'],
+        ];
+
+        $batches = iterator_to_array(Labeled::chunked($records));
+
+        $this->assertCount(1, $batches);
+        $this->assertCount(6, $batches[0]);
+    }
+
+    #[Test]
+    public function chunkedIsLazy() : void
+    {
+        $fetched = 0;
+
+        $iterator = (function () use (&$fetched) {
+            for ($i = 0; $i < 9; ++$i) {
+                ++$fetched;
+                yield [0.5, 0.5, 0.5, 0.5, 'label'];
+            }
+        })();
+
+        $batches = Labeled::chunked($iterator, 3);
+
+        $this->assertInstanceOf(Labeled::class, $batches->current());
+        $this->assertSame(3, $fetched);
+
+        $batches->next();
+
+        $this->assertInstanceOf(Labeled::class, $batches->current());
+        $this->assertSame(6, $fetched);
+    }
+
+    #[Test]
+    public function chunkedEmpty() : void
+    {
+        $batches = iterator_to_array(Labeled::chunked([]));
+
+        $this->assertCount(0, $batches);
+    }
+
+    #[Test]
+    public function chunkedVerifies() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        foreach (Labeled::chunked([['sample', 'label'], ['sample', 'mismatch', 'extra']]) as $batch) {
+            //
+        }
+    }
+
+    #[Test]
+    public function chunkedSkipsVerification() : void
+    {
+        $batches = iterator_to_array(Labeled::chunked(
+            [['sample', 'label'], ['sample', 'mismatch', 'extra']],
+            verify: false
+        ));
+
+        $this->assertCount(2, $batches[0]);
+    }
+
+    #[Test]
+    public function chunkedFromExtractor() : void
+    {
+        $batches = iterator_to_array(Labeled::chunked(new CSV('tests/test.csv', true), 4));
+
+        $this->assertCount(2, $batches);
+        $this->assertCount(4, $batches[0]);
+        $this->assertCount(2, $batches[1]);
     }
 
     #[Test]

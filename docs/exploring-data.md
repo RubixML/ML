@@ -78,7 +78,7 @@ You may want to convert a dataset stored in one format to another format. To con
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Extractors\CSV;
 
-$extractor = new NDJSON('dataset.ndjson');
+$extractor = new NDJSON('dataset.jsonl');
 
 $extractor->export(new CSV('dataset.csv'));
 ```

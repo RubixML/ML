@@ -20,6 +20,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -34,6 +35,8 @@ use function is_nan;
 use function array_fill;
 use function array_map;
 use function get_object_vars;
+use function in_array;
+use function implode;
 
 use const Rubix\ML\EPSILON;
 
@@ -56,6 +59,14 @@ use const Rubix\ML\EPSILON;
 class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
+
+    /**
+     * The list of allowed distance kernels for the K Means algorithm.
+     */
+    public const array ALLOWED_KERNELS = [
+        Euclidean::class,
+        SafeEuclidean::class,
+    ];
 
     /**
      * The target number of clusters.
@@ -136,7 +147,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     public function __construct(
         int $k,
         int $batchSize = 128,
-        int $epochs = 1000,
+        int $epochs = 300,
         float $minChange = 1e-4,
         ?Distance $kernel = null,
         ?Seeder $seeder = null
@@ -151,7 +162,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
                 . " greater than 0, $batchSize given.");
         }
 
-        if ($epochs < 0) {
+        if ($epochs < 1) {
             throw new InvalidArgumentException('Number of epochs'
                 . " must be greater than 0, $epochs given.");
         }
@@ -159,6 +170,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
         if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change must be'
                 . " greater than 0, $minChange given.");
+        }
+
+        if (isset($kernel) and !in_array($kernel::class, self::ALLOWED_KERNELS)) {
+            throw new InvalidArgumentException('Kernel must be one of: '
+                . implode(', ', self::ALLOWED_KERNELS) . ", $kernel given.");
         }
 
         $this->k = $k;

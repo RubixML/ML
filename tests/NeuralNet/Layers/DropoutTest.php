@@ -29,7 +29,7 @@ class DropoutTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var Deferred
@@ -50,7 +50,7 @@ class DropoutTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
@@ -92,7 +92,7 @@ class DropoutTest extends TestCase
             [0.004, -12.0, 0.0],
         ];
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
@@ -114,7 +114,7 @@ class DropoutTest extends TestCase
             [0.002, -6.0, -0.5],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEquals($expected, $infer->asArray());
