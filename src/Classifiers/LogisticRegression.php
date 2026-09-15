@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Tensor\Matrix;
 use Generator;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
@@ -47,6 +48,7 @@ use function uniqid;
 use function get_object_vars;
 use function number_format;
 use function array_map;
+use function array_flip;
 use function sys_get_temp_dir;
 
 /**
@@ -385,6 +387,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $classes = $dataset->possibleOutcomes();
 
+        if (count($classes) !== 2) {
+            throw new InvalidArgumentException('Logistic Regression requires exactly 2 classes.');
+        }
+
         $hiddenLayers = [
             new Dense(1, $this->l2Penalty, true, new Xavier1()),
         ];
@@ -392,7 +398,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Binary($classes, $this->costFn)
+            new Binary($this->costFn)
         );
 
         $network->initialize();
@@ -458,16 +464,28 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->scores = $this->losses = [];
 
+        $classMap = array_flip($this->classes);
+
+        $training = $training->transformLabels(
+            static fn ($label) => $classMap[$label]
+                ?? throw new RuntimeException("Unknown class $label encountered during training.")
+        );
+
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $x = Matrix::quick($batch->samples())->transpose();
+                $y = Matrix::quick([array_map('floatval', $batch->labels())]);
 
-                foreach ($this->network->parameters() as $param) {
-                    $param->update($this->optimizer);
+                $this->network->feed($x);
+
+                $loss = $this->network->backpropagate($y);
+
+                foreach ($this->network->trainableParameters() as $param) {
+                    $this->optimizer->update($param);
 
                     $param->resetGradient();
                 }
@@ -608,7 +626,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         [$classA, $classB] = $this->classes;
 
-        $activations = $this->network->infer($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $activations = $this->network->infer($x);
 
         $activations = array_column($activations->asArray(), 0);
 

@@ -169,21 +169,21 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws RuntimeException
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $mean = $input->mean();
-        $variance = $input->subtractColumnVector($mean)->square()->mean()->clipLower(EPSILON);
+        $mean = $x->mean();
+        $variance = $x->subtractColumnVector($mean)->square()->mean()->clipLower(EPSILON);
         $stdInv = $variance->sqrt()->reciprocal();
 
-        $xHat = $stdInv->multiply($input->subtract($mean));
+        $xHat = $stdInv->multiply($x->subtract($mean));
 
         if (!$this->mean or !$this->variance) {
             $this->mean = $mean;
@@ -208,17 +208,17 @@ class BatchNorm implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws RuntimeException
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
         if (!$this->mean or !$this->variance or !$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $xHat = $input->subtract($this->mean)
+        $xHat = $x->subtract($this->mean)
             ->divide($this->variance->sqrt());
 
         return $this->gamma->param()->multiply($xHat)

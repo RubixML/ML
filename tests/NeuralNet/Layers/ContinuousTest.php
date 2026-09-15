@@ -7,14 +7,11 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Continuous::class)]
@@ -25,17 +22,12 @@ class ContinuousTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
-     * @var (int|float)[]
+     * @var list<list<int|float>>
      */
     protected array $labels;
-
-    /**
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
 
     /**
      * @var Continuous
@@ -44,13 +36,11 @@ class ContinuousTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [2.5, 0.0, -6.0],
         ]);
 
-        $this->labels = [0.0, -2.5, 90];
-
-        $this->optimizer = new Stochastic(new Constant(0.001));
+        $this->labels = [[0.0, -2.5, 90]];
 
         $this->layer = new Continuous(new LeastSquares());
 
@@ -76,12 +66,12 @@ class ContinuousTest extends TestCase
             [2.5, 0.0, -6.0],
         ];
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back(Matrix::quick($this->labels));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
@@ -99,7 +89,7 @@ class ContinuousTest extends TestCase
             [2.5, 0.0, -6.0],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);

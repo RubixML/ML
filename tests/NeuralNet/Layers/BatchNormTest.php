@@ -29,7 +29,7 @@ class BatchNormTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var Deferred
@@ -50,7 +50,7 @@ class BatchNormTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1., 2.5, -0.1],
             [0.1, 0., 3.],
             [0.002, -6., -0.5],
@@ -91,7 +91,7 @@ class BatchNormTest extends TestCase
             [0.7974157342978961, -1.4101900024437888, 0.6127742681458925],
         ];
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
@@ -111,7 +111,7 @@ class BatchNormTest extends TestCase
             if ($param->hasGradient()) {
                 $this->optimizer->warm($param);
 
-                $param->update($this->optimizer);
+                $this->optimizer->update($param);
             }
         }
 
@@ -121,7 +121,7 @@ class BatchNormTest extends TestCase
             [0.7956943312039361, -1.4105786650534555, 0.6111643338495193],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
@@ -132,7 +132,7 @@ class BatchNormTest extends TestCase
     {
         $fanIn = 3;
 
-        $input = Matrix::quick([
+        $x = Matrix::quick([
             [1.0, 2.5, -0.1, 0.5],
             [0.1, 0.0, 3.0, -1.0],
             [0.002, -6.0, -0.5, 2.0],
@@ -158,7 +158,7 @@ class BatchNormTest extends TestCase
             [0.3797862163235, -1.643717441354, 0.21054282476168, 1.0533884002688],
         ];
 
-        $forward = $layer->forward($input);
+        $forward = $layer->forward($x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
@@ -178,7 +178,7 @@ class BatchNormTest extends TestCase
             if ($param->hasGradient()) {
                 $optimizer->warm($param);
 
-                $param->update($optimizer);
+                $optimizer->update($param);
             }
         }
 
@@ -188,7 +188,7 @@ class BatchNormTest extends TestCase
             [0.37766138009295, -1.6443246681253, 0.20854491954554, 1.0507583684868],
         ];
 
-        $infer = $layer->infer($input);
+        $infer = $layer->infer($x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);

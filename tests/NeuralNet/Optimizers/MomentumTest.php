@@ -102,9 +102,11 @@ class MomentumTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $before = $param->param();
 
-        $this->assertEquals($expected, $step->asArray());
+        $this->optimizer->update($param);
+
+        $this->assertEquals($before->subtract(Matrix::quick($expected))->asArray(), $param->param()->asArray());
     }
 
     #[Test]
@@ -128,9 +130,9 @@ class MomentumTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $this->optimizer->update($param);
 
-        $this->assertIsArray($step->asArray());
+        $this->assertIsArray($param->param()->asArray());
     }
 
     #[Test]

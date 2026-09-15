@@ -5,6 +5,7 @@ namespace Rubix\ML\Datasets;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Traversable;
+use Generator;
 
 use function count;
 use function array_slice;
@@ -64,6 +65,38 @@ class Unlabeled extends Dataset
         $samples = is_array($iterator) ? $iterator : iterator_to_array($iterator, false);
 
         return new self($samples, $verify);
+    }
+
+    /**
+     * Build an iterable of datasets of size n from an iterator. The last batch
+     * may contain fewer than n samples.
+     *
+     * @param iterable<mixed[]> $iterator
+     * @param int $size
+     * @param bool $verify
+     * @return Generator<self>
+     */
+    public static function chunked(iterable $iterator, int $size = 1024, bool $verify = true) : Generator
+    {
+        if ($size < 1) {
+            throw new InvalidArgumentException('Chunk size must be greater than 0.');
+        }
+
+        $samples = [];
+
+        foreach ($iterator as $record) {
+            $samples[] = $record;
+
+            if (count($samples) === $size) {
+                yield new self($samples, $verify);
+
+                $samples = [];
+            }
+        }
+
+        if ($samples) {
+            yield new self($samples, $verify);
+        }
     }
 
     /**
@@ -527,7 +560,7 @@ class Unlabeled extends Dataset
     /**
      * Get an iterator for the samples in the dataset.
      *
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function getIterator() : Traversable
     {

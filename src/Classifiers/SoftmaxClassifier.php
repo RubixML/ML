@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -47,6 +48,8 @@ use function uniqid;
 use function get_object_vars;
 use function number_format;
 use function array_map;
+use function array_flip;
+use function array_fill;
 use function sys_get_temp_dir;
 
 /**
@@ -394,7 +397,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Multiclass($classes, $this->costFn)
+            new Multiclass(count($classes), $this->costFn)
         );
 
         $network->initialize();
@@ -460,16 +463,28 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         $this->scores = $this->losses = [];
 
+        $classMap = array_flip($this->classes);
+
+        $training = $training->transformLabels(
+            static fn ($label) => $classMap[$label]
+                ?? throw new RuntimeException("Unknown class $label encountered during training.")
+        );
+
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $x = Matrix::quick($batch->samples())->transpose();
+                $y = $this->oneHot($batch->labels());
 
-                foreach ($this->network->parameters() as $param) {
-                    $param->update($this->optimizer);
+                $this->network->feed($x);
+
+                $loss = $this->network->backpropagate($y);
+
+                foreach ($this->network->trainableParameters() as $param) {
+                    $this->optimizer->update($param);
 
                     $param->resetGradient();
                 }
@@ -608,7 +623,9 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $activations = $this->network->infer($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $activations = $this->network->infer($x);
 
         $probabilities = [];
 
@@ -617,6 +634,25 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Build a one-hot encoded matrix from the given class indices.
+     *
+     * @internal
+     *
+     * @param list<int> $indices
+     * @return Matrix
+     */
+    protected function oneHot(array $indices) : Matrix
+    {
+        $y = array_fill(0, count($this->classes), array_fill(0, count($indices), 0.0));
+
+        foreach ($indices as $column => $index) {
+            $y[$index][$column] = 1.0;
+        }
+
+        return Matrix::quick($y);
     }
 
     /**

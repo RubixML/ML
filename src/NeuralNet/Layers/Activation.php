@@ -38,14 +38,14 @@ class Activation implements Hidden
      *
      * @var Matrix|null
      */
-    protected ?Matrix $input = null;
+    protected ?Matrix $x = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var Matrix|null
      */
-    protected ?Matrix $output = null;
+    protected ?Matrix $z = null;
 
     /**
      * @param ActivationFunction $activationFn
@@ -95,17 +95,17 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $output = $this->activationFn->activate($input);
+        $z = $this->activationFn->activate($x);
 
-        $this->input = $input;
-        $this->output = $output;
+        $this->x = $x;
+        $this->z = $z;
 
-        return $output;
+        return $z;
     }
 
     /**
@@ -113,12 +113,12 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $this->activationFn->activate($input);
+        return $this->activationFn->activate($x);
     }
 
     /**
@@ -132,19 +132,19 @@ class Activation implements Hidden
      */
     public function back(Deferred $prevGradient) : Deferred
     {
-        if (!$this->input or !$this->output) {
+        if (!$this->x or !$this->z) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $input = $this->input;
-        $output = $this->output;
+        $x = $this->x;
+        $z = $this->z;
 
-        $this->input = $this->output = null;
+        $this->x = $this->z = null;
 
         return new Deferred(
             [$this, 'gradient'],
-            [$input, $output, $prevGradient]
+            [$x, $z, $prevGradient]
         );
     }
 
@@ -153,14 +153,14 @@ class Activation implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param Matrix $x
+     * @param Matrix $z
      * @param Deferred $prevGradient
      * @return Matrix
      */
-    public function gradient(Matrix $input, Matrix $output, Deferred $prevGradient) : Matrix
+    public function gradient(Matrix $x, Matrix $z, Deferred $prevGradient) : Matrix
     {
-        return $this->activationFn->differentiate($input, $output)
+        return $this->activationFn->differentiate($x, $z)
             ->multiply($prevGradient());
     }
 
