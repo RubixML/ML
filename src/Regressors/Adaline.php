@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Regressors;
 
+use Tensor\Matrix;
 use Generator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -448,7 +449,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $input = Matrix::quick($batch->samples())->transpose();
+
+                $this->network->feed($input);
+
+                $loss = $this->network->backpropagate([$batch->labels()]);
 
                 foreach ($this->network->parameters() as $param) {
                     $param->update($this->optimizer);

@@ -24,6 +24,8 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Parameter;
 
+use function array_fill;
+
 #[Group('NeuralNet')]
 #[CoversClass(FeedForward::class)]
 class FeedForwardTest extends TestCase
@@ -138,16 +140,6 @@ class FeedForwardTest extends TestCase
     }
 
     #[Test]
-    public function roundtrip() : void
-    {
-        $this->network->initialize();
-
-        $loss = $this->network->roundtrip($this->dataset);
-
-        $this->assertIsFloat($loss);
-    }
-
-    #[Test]
     public function accumulatesGradients() : void
     {
         $network = new FeedForward($this->input, $this->hidden, $this->output);
@@ -158,7 +150,7 @@ class FeedForwardTest extends TestCase
 
         $initial = $dense->parameters()->current()->param()->asArray();
 
-        $network->roundtrip($this->dataset);
+        $this->train($network, $this->dataset);
 
         $this->assertEquals($initial, $dense->parameters()->current()->param()->asArray());
 
@@ -200,8 +192,8 @@ class FeedForwardTest extends TestCase
 
         $initial = array_map(static fn (Parameter $param) => $param->param()->asArray(), $params);
 
-        $network->roundtrip($batches[0]);
-        $network->roundtrip($batches[1]);
+        $this->train($network, $batches[0]);
+        $this->train($network, $batches[1]);
 
         $summed = array_map(static fn (Parameter $param) => $param->gradient()->asArray(), $params);
 
@@ -211,7 +203,7 @@ class FeedForwardTest extends TestCase
             $param->resetGradient();
         }
 
-        $network->roundtrip($combined);
+        $this->train($network, $combined);
 
         $single = array_map(static fn (Parameter $param) => $param->gradient()->asArray(), $params);
 
@@ -221,8 +213,8 @@ class FeedForwardTest extends TestCase
             $param->resetGradient();
         }
 
-        $network->roundtrip($batches[0]);
-        $network->roundtrip($batches[1]);
+        $this->train($network, $batches[0]);
+        $this->train($network, $batches[1]);
 
         foreach ($params as $param) {
             $param->scaleGradient(0.5);
@@ -308,7 +300,7 @@ class FeedForwardTest extends TestCase
     {
         $this->network->initialize();
 
-        $this->network->roundtrip($this->dataset);
+        $this->train($this->network, $this->dataset);
 
         /** @var list<Parameter> $params */
         $params = iterator_to_array($this->network->parameters());
@@ -327,7 +319,7 @@ class FeedForwardTest extends TestCase
             $param->freeze();
         }
 
-        $this->network->roundtrip($this->dataset);
+        $this->train($this->network, $this->dataset);
 
         foreach ($params as $i => $param) {
             if ($i < 2) {
@@ -420,11 +412,7 @@ class FeedForwardTest extends TestCase
 
         $network->initialize();
 
-        $input = Matrix::quick($this->dataset->samples())->transpose();
-
-        $network->feed($input);
-
-        $loss = $network->backpropagate($this->dataset->labels());
+        $loss = $this->train($network, $this->dataset);
 
         $this->assertIsFloat($loss);
         $this->assertTrue(is_finite($loss));
@@ -471,6 +459,31 @@ class FeedForwardTest extends TestCase
         }
 
         return $count;
+    }
+
+    /**
+     * Perform a forward and backward pass on the given network using
+     * a one-hot expected matrix built from the dataset labels.
+     *
+     * @param FeedForward $network
+     * @param Labeled $dataset
+     * @return float
+     */
+    private function train(FeedForward $network, Labeled $dataset) : float
+    {
+        $expected = array_fill(
+            0,
+            $network->output()->width(),
+            array_fill(0, $dataset->numSamples(), 0.0)
+        );
+
+        foreach ($dataset->labels() as $column => $label) {
+            $expected[$label][$column] = 1.0;
+        }
+
+        $network->feed(Matrix::quick($dataset->samples())->transpose());
+
+        return $network->backpropagate($expected);
     }
 
     /**

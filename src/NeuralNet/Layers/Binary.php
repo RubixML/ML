@@ -11,8 +11,6 @@ use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function array_map;
-
 /**
  * Binary
  *
@@ -127,7 +125,7 @@ class Binary implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param list<int> $labels
+     * @param list<list<int>> $labels
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
@@ -138,7 +136,7 @@ class Binary implements Output
                 . ' before backpropagating.');
         }
 
-        $expected = Matrix::quick([array_map('floatval', $labels)]);
+        $expected = Matrix::quick($labels);
 
         $input = $this->input;
         $output = $this->output;

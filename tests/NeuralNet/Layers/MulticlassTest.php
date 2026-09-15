@@ -7,15 +7,12 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Multiclass::class)]
@@ -29,14 +26,9 @@ class MulticlassTest extends TestCase
     protected Matrix $input;
 
     /**
-     * @var list<int>
+     * @var array<list<int>>
      */
-    protected array $indices;
-
-    /**
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
+    protected array $expected;
 
     /**
      * @var Multiclass
@@ -51,9 +43,11 @@ class MulticlassTest extends TestCase
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->indices = [0, 1, 2];
-
-        $this->optimizer = new Stochastic(new Constant(0.001));
+        $this->expected = [
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1],
+        ];
 
         $this->layer = new Multiclass(3, new MulticlassCrossEntropy());
 
@@ -86,7 +80,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->indices, $this->optimizer);
+        [$computation, $loss] = $this->layer->back($this->expected);
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);

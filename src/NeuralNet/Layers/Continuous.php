@@ -99,7 +99,7 @@ class Continuous implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param float[] $labels
+     * @param list<list<int|float>> $labels
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
@@ -110,7 +110,7 @@ class Continuous implements Output
                 . ' before backpropagating.');
         }
 
-        $expected = Matrix::quick([$labels]);
+        $expected = Matrix::quick($labels);
 
         $input = $this->input;
 

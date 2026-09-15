@@ -28,7 +28,7 @@ class ContinuousTest extends TestCase
     protected Matrix $input;
 
     /**
-     * @var (int|float)[]
+     * @var list<list<int|float>>
      */
     protected array $labels;
 
@@ -48,7 +48,7 @@ class ContinuousTest extends TestCase
             [2.5, 0.0, -6.0],
         ]);
 
-        $this->labels = [0.0, -2.5, 90];
+        $this->labels = [[0.0, -2.5, 90]];
 
         $this->optimizer = new Stochastic(new Constant(0.001));
 

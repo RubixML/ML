@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\NeuralNet;
 
+use Tensor\Matrix;
 use Tensor\Tensor;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -119,7 +120,11 @@ class SnapshotTest extends TestCase
             [0, 1, 0]
         );
 
-        $network->roundtrip($dataset);
+        $input = Matrix::quick($dataset->samples())->transpose();
+
+        $network->feed($input);
+
+        $network->backpropagate([$dataset->labels()]);
 
         $optimizer = new Stochastic(new Constant());
 

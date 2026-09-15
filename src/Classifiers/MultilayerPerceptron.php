@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -48,6 +49,7 @@ use function get_object_vars;
 use function number_format;
 use function array_map;
 use function array_flip;
+use function array_fill;
 use function is_dir;
 use function uniqid;
 use function sys_get_temp_dir;
@@ -196,6 +198,26 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var string|null
      */
     protected ?string $snapshotPath = null;
+
+    /**
+     * Build a one-hot encoded matrix from the given class indices.
+     *
+     * @internal
+     *
+     * @param list<int> $indices
+     * @param int $numClasses
+     * @return list<list<float>>
+     */
+    protected static function oneHot(array $indices, int $numClasses) : array
+    {
+        $expected = array_fill(0, $numClasses, array_fill(0, count($indices), 0.0));
+
+        foreach ($indices as $column => $index) {
+            $expected[$index][$column] = 1.0;
+        }
+
+        return $expected;
+    }
 
     /**
      * @param mixed[] $hiddenLayers
@@ -546,7 +568,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $input = Matrix::quick($batch->samples())->transpose();
+
+                $this->network->feed($input);
+
+                $expected = self::oneHot($batch->labels(), count($this->classes));
+
+                $loss = $this->network->backpropagate($expected);
 
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0
                     || $step === count($batches);

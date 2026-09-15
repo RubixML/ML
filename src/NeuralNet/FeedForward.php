@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet;
 use Tensor\Matrix;
 use Rubix\ML\Encoding;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
@@ -238,24 +237,6 @@ class FeedForward implements Network
     }
 
     /**
-     * Perform a forward and backward pass of the network in one call. Returns
-     * the loss from the backward pass.
-     *
-     * @param Labeled $dataset
-     * @return float
-     */
-    public function roundtrip(Labeled $dataset) : float
-    {
-        $input = Matrix::quick($dataset->samples())->transpose();
-
-        $this->feed($input);
-
-        $loss = $this->backpropagate($dataset->labels());
-
-        return $loss;
-    }
-
-    /**
      * Feed a batch through the network and return a matrix of activations at the output later.
      *
      * @param Matrix $input
@@ -273,7 +254,7 @@ class FeedForward implements Network
     /**
      * Backpropagate the gradient of the cost function and return the loss.
      *
-     * @param list<int|float> $labels
+     * @param list<list<int|float>> $labels
      * @return float
      */
     public function backpropagate(array $labels) : float

@@ -9,7 +9,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
-use function count;
 
 use const Rubix\ML\EPSILON;
 
@@ -153,7 +152,7 @@ class Multiclass implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param list<int> $labels
+     * @param array<list<int|float>> $labels
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
@@ -164,13 +163,7 @@ class Multiclass implements Output
                 . ' before backpropagating.');
         }
 
-        $expected = array_fill(0, $this->numClasses, array_fill(0, count($labels), 0.0));
-
-        foreach ($labels as $column => $index) {
-            $expected[$index][$column] = 1.0;
-        }
-
-        $expected = Matrix::quick($expected);
+        $expected = Matrix::quick($labels);
 
         $input = $this->input;
         $output = $this->output;

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -48,6 +49,7 @@ use function get_object_vars;
 use function number_format;
 use function array_map;
 use function array_flip;
+use function array_fill;
 use function sys_get_temp_dir;
 
 /**
@@ -168,6 +170,26 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
      * @var string|null
      */
     protected ?string $snapshotPath = null;
+
+    /**
+     * Build a one-hot encoded matrix from the given class indices.
+     *
+     * @internal
+     *
+     * @param list<int> $indices
+     * @param int $numClasses
+     * @return list<list<float>>
+     */
+    protected static function oneHot(array $indices, int $numClasses) : array
+    {
+        $expected = array_fill(0, $numClasses, array_fill(0, count($indices), 0.0));
+
+        foreach ($indices as $column => $index) {
+            $expected[$index][$column] = 1.0;
+        }
+
+        return $expected;
+    }
 
     /**
      * @param int $batchSize
@@ -474,7 +496,13 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $input = Matrix::quick($batch->samples())->transpose();
+
+                $this->network->feed($input);
+
+                $expected = self::oneHot($batch->labels(), count($this->classes));
+
+                $loss = $this->network->backpropagate($expected);
 
                 foreach ($this->network->parameters() as $param) {
                     $param->update($this->optimizer);

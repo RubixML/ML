@@ -28,7 +28,7 @@ class BinaryTest extends TestCase
     protected Matrix $input;
 
     /**
-     * @var list<int>
+     * @var list<list<int>>
      */
     protected array $indices;
 
@@ -48,7 +48,7 @@ class BinaryTest extends TestCase
             [1.0, 2.5, -0.1],
         ]);
 
-        $this->indices = [0, 1, 0];
+        $this->indices = [[0, 1, 0]];
 
         $this->optimizer = new Stochastic(new Constant(0.001));
 

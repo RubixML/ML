@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Tensor\Matrix;
 use Generator;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
@@ -472,7 +473,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $input = Matrix::quick($batch->samples())->transpose();
+
+                $this->network->feed($input);
+
+                $loss = $this->network->backpropagate([$batch->labels()]);
 
                 foreach ($this->network->parameters() as $param) {
                     $param->update($this->optimizer);

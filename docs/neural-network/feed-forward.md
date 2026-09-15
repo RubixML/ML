@@ -107,14 +107,8 @@ Run an inference pass and return the activations at the output layer:
 public function infer(Dataset $dataset) : Matrix
 ```
 
-Perform a forward and backward pass of the network in one call returning the loss from the backward pass:
-
-```php
-public function roundtrip(Labeled $dataset) : float
-```
-
 !!! note
-    Classification output layers such as `Multiclass` and `Binary` expect labels to be encoded as integer indices of their class neurons rather than the original class labels. The neural network learners (e.g. Softmax Classifier, Logistic Regression, Multilayer Perceptron) perform this mapping internally.
+    Output layers expect labels as a 2-dimensional target matrix in which the outer dimension indexes the output targets and the inner dimension indexes the samples in the batch. For example, a binary classification layer expects a single inner array of `0`/`1` labels whereas a `Multiclass` layer expects a one-hot encoded matrix with one row per class. The learners build the target matrix from the labels of the batch and feed it to the network — for instance, the Multilayer Perceptron and Softmax Classifier expand the class indices of each sample into a one-hot encoded matrix before backpropagating.
 
 Feed a batch through the network and return a matrix of activations at the output layer:
 
@@ -128,7 +122,7 @@ Backpropagate the gradient of the cost function and return the loss:
 public function backpropagate(array $labels) : float
 ```
 
-The `backpropagate` method accepts the same integer-encoded indices as `roundtrip`.
+The `backpropagate` method accepts the same 2-dimensional target matrix as the output layers.
 
 Export the network architecture as a graph in dot format:
 
