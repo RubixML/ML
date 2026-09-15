@@ -3,7 +3,11 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
+use Tensor\ColumnVector;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+
+use function count;
 
 /**
  * Uniform
@@ -39,17 +43,35 @@ class Uniform implements Initializer
     }
 
     /**
-     * Initialize a weight matrix W in the dimensions fan in x fan out.
+     * Initialize a parameter tensor given its target shape.
      *
      * @internal
      *
-     * @param int<0,max> $fanIn
-     * @param int<0,max> $fanOut
-     * @return Matrix
+     * @param int[] $shape
+     * @return Parameter
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix
+    public function initialize(array $shape) : Parameter
     {
-        return Matrix::uniform($fanOut, $fanIn)->multiply($this->beta);
+        switch (count($shape)) {
+            case 1:
+                $n = $shape[0];
+
+                $tensor = ColumnVector::uniform($n)->multiply($this->beta);
+
+                break;
+
+            case 2:
+                [$m, $n] = $shape;
+
+                $tensor = Matrix::uniform($m, $n)->multiply($this->beta);
+
+                break;
+
+            default:
+                throw new InvalidArgumentException('Invalid shape for Uniform initializer.');
+        }
+
+        return new Parameter($tensor);
     }
 
     /**
