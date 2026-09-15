@@ -426,6 +426,14 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
             $loss = Stats::mean($losses);
 
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
+            }
+
             $lossChange = abs($prevLoss - $loss);
 
             $this->losses[$epoch] = $loss;
