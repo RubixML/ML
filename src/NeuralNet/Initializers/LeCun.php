@@ -3,7 +3,11 @@
 namespace Rubix\ML\NeuralNet\Initializers;
 
 use Tensor\Matrix;
+use Tensor\ColumnVector;
+use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function count;
 use function sqrt;
 
 /**
@@ -24,19 +28,35 @@ use function sqrt;
 class LeCun implements Initializer
 {
     /**
-     * Initialize a weight matrix W in the dimensions fan in x fan out.
+     * Initialize a parameter tensor given its target shape.
      *
      * @internal
      *
-     * @param int<0,max> $fanIn
-     * @param int<0,max> $fanOut
-     * @return Matrix
+     * @param int[] $shape
+     * @return Parameter
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix
+    public function initialize(array $shape) : Parameter
     {
-        $scale = sqrt(3 / $fanIn);
+        switch (count($shape)) {
+            case 1:
+                $n = $shape[0];
 
-        return Matrix::uniform($fanOut, $fanIn)->multiply($scale);
+                $tensor = ColumnVector::uniform($n)->multiply(sqrt(3.0));
+
+                break;
+
+            case 2:
+                [$m, $n] = $shape;
+
+                $tensor = Matrix::uniform($m, $n)->multiply(sqrt(3.0 / $n));
+
+                break;
+
+            default:
+                throw new InvalidArgumentException('Invalid shape for Le Cun initializer.');
+        }
+
+        return new Parameter($tensor);
     }
 
     /**

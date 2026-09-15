@@ -110,6 +110,14 @@ class SoftmaxClassifierTest extends TestCase
     }
 
     #[Test]
+    public function negativeL1Penalty() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new SoftmaxClassifier(l1Penalty: -1.0);
+    }
+
+    #[Test]
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
@@ -131,6 +139,7 @@ class SoftmaxClassifierTest extends TestCase
         $expected = [
             'batch size' => 10,
             'optimizer' => new Adam(new Constant(0.01)),
+            'l1 penalty' => 1e-4,
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
