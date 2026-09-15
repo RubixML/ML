@@ -22,12 +22,12 @@ class Sigmoid implements ActivationFunction
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(Matrix $x) : Matrix
     {
-        return $input->map('Rubix\ML\sigmoid');
+        return $x->map('Rubix\ML\sigmoid');
     }
 
     /**
@@ -35,24 +35,24 @@ class Sigmoid implements ActivationFunction
      *
      * @internal
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param Matrix $x
+     * @param Matrix $z
      * @return Matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $output->map([$this, '_differentiate']);
+        return $z->map([$this, '_differentiate']);
     }
 
     /**
      * @internal
      *
-     * @param float $output
+     * @param float $z
      * @return float
      */
-    public function _differentiate(float $output) : float
+    public function _differentiate(float $z) : float
     {
-        return $output * (1.0 - $output);
+        return $z * (1.0 - $z);
     }
 
     /**

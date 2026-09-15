@@ -110,10 +110,8 @@ class RMSProp implements Optimizer
      * @internal
      *
      * @param Parameter $param
-     *
-     * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param) : void
     {
         if (!$param->hasGradient()) {
             throw new RuntimeException('Cannot update parameter with no gradient.');
@@ -129,7 +127,7 @@ class RMSProp implements Optimizer
         $step = $param->gradient()->multiply($this->scheduler->rate())
             ->divide($norm->sqrt()->clipLower(EPSILON));
 
-        return $step;
+        $param->update($step);
     }
 
     /**

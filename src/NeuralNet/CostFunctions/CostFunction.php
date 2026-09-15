@@ -19,20 +19,20 @@ interface CostFunction extends Stringable
      *
      * @internal
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float;
+    public function compute(Matrix $z, Matrix $y) : float;
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
      * @internal
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return Matrix
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix;
+    public function differentiate(Matrix $z, Matrix $y) : Matrix;
 }

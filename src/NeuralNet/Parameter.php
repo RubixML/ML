@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet;
 use Tensor\Tensor;
 use Tensor\Vector;
 use Tensor\Matrix;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Exceptions\RuntimeException;
 
 /**
@@ -166,15 +165,13 @@ class Parameter
     /**
      * Apply a step of gradient descent to the parameter.
      *
-     * @param Optimizer $optimizer
+     * @param Tensor $step
      */
-    public function update(Optimizer $optimizer) : void
+    public function update(Tensor $step) : void
     {
         if ($this->frozen) {
-            return;
+            throw new RuntimeException('Cannot update a frozen parameter.');
         }
-
-        $step = $optimizer->update($this);
 
         $this->param = $this->param->subtract($step);
     }

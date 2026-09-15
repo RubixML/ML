@@ -32,18 +32,18 @@ interface Layer extends Stringable
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix;
+    public function forward(Matrix $x) : Matrix;
 
     /**
      * Forward pass during inference.
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix;
+    public function infer(Matrix $x) : Matrix;
 }

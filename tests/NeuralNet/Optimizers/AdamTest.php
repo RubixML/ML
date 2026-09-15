@@ -115,9 +115,11 @@ class AdamTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $before = $param->param();
 
-        $this->assertEqualsWithDelta($expected, $step->asArray(), 1e-8);
+        $this->optimizer->update($param);
+
+        $this->assertEqualsWithDelta($before->subtract(Matrix::quick($expected))->asArray(), $param->param()->asArray(), 1e-8);
     }
 
     #[Test]
@@ -141,9 +143,9 @@ class AdamTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $this->optimizer->update($param);
 
-        $this->assertIsArray($step->asArray());
+        $this->assertIsArray($param->param()->asArray());
     }
 
     #[Test]

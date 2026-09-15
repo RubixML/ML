@@ -31,7 +31,7 @@ class PReLUTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var Deferred
@@ -52,7 +52,7 @@ class PReLUTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1., 2.5, -0.1],
             [0.1, 0., 3.],
             [0.002, -6., -0.5],
@@ -89,7 +89,7 @@ class PReLUTest extends TestCase
 
         $this->assertEquals($this->fanIn, $this->layer->width());
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $expected = [
             [1.0, 2.5, -0.025],
@@ -115,7 +115,7 @@ class PReLUTest extends TestCase
             if ($param->hasGradient()) {
                 $this->optimizer->warm($param);
 
-                $param->update($this->optimizer);
+                $this->optimizer->update($param);
             }
         }
 
@@ -125,7 +125,7 @@ class PReLUTest extends TestCase
             [0.002, -1.5062700000000002, -0.1255225],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEquals($expected, $infer->asArray());

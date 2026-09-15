@@ -9,7 +9,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
-use function count;
 
 use const Rubix\ML\EPSILON;
 
@@ -28,13 +27,11 @@ use const Rubix\ML\EPSILON;
 class Multiclass implements Output
 {
     /**
-     * The unique class labels.
+     * The number of class neurons in the layer.
      *
-     * @var string[]
+     * @var int
      */
-    protected array $classes = [
-        //
-    ];
+    protected int $numClasses;
 
     /**
      * The function that computes the loss of erroneous activations.
@@ -44,28 +41,21 @@ class Multiclass implements Output
     protected ClassificationLoss $costFn;
 
     /**
-     * The memorized input matrix.
-     *
-     * @var Matrix|null
-     */
-    protected ?Matrix $input = null;
-
-    /**
      * The memorized activation matrix.
      *
      * @var Matrix|null
      */
-    protected ?Matrix $output = null;
+    protected ?Matrix $z = null;
 
     /**
      * Compute the Softmax activation.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    protected static function softmax(Matrix $input) : Matrix
+    protected static function softmax(Matrix $x) : Matrix
     {
-        $z = $input->transpose();
+        $z = $x->transpose();
 
         $z = $z->subtractColumnVector($z->max())->exp();
 
@@ -75,26 +65,22 @@ class Multiclass implements Output
     }
 
     /**
-     * @param string[] $classes
+     * @param int $numClasses
      * @param ClassificationLoss $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ClassificationLoss $costFn)
+    public function __construct(int $numClasses, ClassificationLoss $costFn)
     {
-        $classes = array_values(array_unique($classes));
-
-        if (count($classes) < 2) {
+        if ($numClasses < 2) {
             throw new InvalidArgumentException('Number of classes'
-                . ' must be greater than 1, ' . count($classes)
-                . ' given.');
+                . " must be greater than 1, $numClasses given.");
         }
 
         if ($costFn instanceof BinaryCrossEntropy) {
             throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
 
-        $this->classes = $classes;
-
+        $this->numClasses = $numClasses;
         $this->costFn = $costFn;
     }
 
@@ -105,7 +91,7 @@ class Multiclass implements Output
      */
     public function width() : int
     {
-        return max(1, count($this->classes));
+        return $this->numClasses;
     }
 
     /**
@@ -118,7 +104,7 @@ class Multiclass implements Output
      */
     public function initialize(int $fanIn) : int
     {
-        $fanOut = count($this->classes);
+        $fanOut = $this->numClasses;
 
         if ($fanIn !== $fanOut) {
             throw new InvalidArgumentException('Fan in must be'
@@ -132,66 +118,50 @@ class Multiclass implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $output = self::softmax($input);
+        $z = self::softmax($x);
 
-        $this->input = $input;
-        $this->output = $output;
+        $this->z = $z;
 
-        return $output;
+        return $z;
     }
 
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return self::softmax($input);
+        return self::softmax($x);
     }
 
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param string[] $labels
+     * @param Matrix $y
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
-    public function back(array $labels) : array
+    public function back(Matrix $y) : array
     {
-        if (!$this->input or !$this->output) {
+        if (!$this->z) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
-        $expected = [];
+        $z = $this->z;
 
-        foreach ($this->classes as $class) {
-            $dist = [];
+        $gradient = new Deferred([$this, 'gradient'], [$z, $y]);
 
-            foreach ($labels as $label) {
-                $dist[] = $class == $label ? 1.0 : 0.0;
-            }
+        $loss = $this->costFn->compute($z, $y);
 
-            $expected[] = $dist;
-        }
-
-        $expected = Matrix::quick($expected);
-
-        $input = $this->input;
-        $output = $this->output;
-
-        $gradient = new Deferred([$this, 'gradient'], [$input, $output, $expected]);
-
-        $loss = $this->costFn->compute($output, $expected);
-
-        $this->input = $this->output = null;
+        $this->z = null;
 
         return [$gradient, $loss];
     }
@@ -199,25 +169,25 @@ class Multiclass implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param Matrix $input
-     * @param Matrix $output
-     * @param Matrix $expected
+     * @param Matrix $z
+     * @param Matrix $y
      * @return Matrix
      */
-    public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
+    public function gradient(Matrix $z, Matrix $y) : Matrix
     {
         if ($this->costFn instanceof MulticlassCrossEntropy) {
-            return $output->subtract($expected)
-                ->divide($output->n());
+            return $z->subtract($y)
+                ->divide($z->n());
         }
 
-        $dLoss = $this->costFn->differentiate($output, $expected)
-            ->divide($output->n());
+        $dLoss = $this->costFn->differentiate($z, $y)
+            ->divide($z->n());
 
-        $outputT = $output->transpose();
-        $prod = $outputT->multiply($dLoss->transpose());
+        $zT = $z->transpose();
 
-        return $prod->subtract($outputT->multiply($prod->sum()))->transpose();
+        $prod = $zT->multiply($dLoss->transpose());
+
+        return $prod->subtract($zT->multiply($prod->sum()))->transpose();
     }
 
     /**

@@ -19,19 +19,19 @@ interface ActivationFunction extends Stringable
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function activate(Matrix $input) : Matrix;
+    public function activate(Matrix $x) : Matrix;
 
     /**
      * Calculate the derivative of the activation.
      *
      * @internal
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param Matrix $x
+     * @param Matrix $z
      * @return Matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix;
+    public function differentiate(Matrix $x, Matrix $z) : Matrix;
 }
