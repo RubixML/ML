@@ -29,7 +29,7 @@ class NoiseTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var Deferred
@@ -50,7 +50,7 @@ class NoiseTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1., 2.5, -0.1],
             [0.1, 0., 3.],
             [0.002, -6., -0.5],
@@ -92,7 +92,7 @@ class NoiseTest extends TestCase
             [-0.08825748362793215, -5.936776081560676, -0.5918333225801408],
         ];
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
@@ -114,7 +114,7 @@ class NoiseTest extends TestCase
             [0.002, -6.0, -0.5],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);

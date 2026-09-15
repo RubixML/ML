@@ -34,7 +34,7 @@ class Continuous implements Output
      *
      * @var Matrix|null
      */
-    protected ?Matrix $input = null;
+    protected ?Matrix $x = null;
 
     /**
      * @param RegressionLoss|null $costFn
@@ -75,25 +75,25 @@ class Continuous implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $this->input = $input;
+        $this->x = $x;
 
-        return $input;
+        return $x;
     }
 
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $input;
+        return $x;
     }
 
     /**
@@ -105,18 +105,18 @@ class Continuous implements Output
      */
     public function back(Matrix $y) : array
     {
-        if (!$this->input) {
+        if (!$this->x) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
-        $input = $this->input;
+        $x = $this->x;
 
-        $gradient = new Deferred([$this, 'gradient'], [$input, $y]);
+        $gradient = new Deferred([$this, 'gradient'], [$x, $y]);
 
-        $loss = $this->costFn->compute($input, $y);
+        $loss = $this->costFn->compute($x, $y);
 
-        $this->input = null;
+        $this->x = null;
 
         return [$gradient, $loss];
     }
@@ -124,14 +124,14 @@ class Continuous implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @param Matrix $expected
      * @return Matrix
      */
-    public function gradient(Matrix $input, Matrix $expected) : Matrix
+    public function gradient(Matrix $x, Matrix $expected) : Matrix
     {
-        return $this->costFn->differentiate($input, $expected)
-            ->divide($input->n());
+        return $this->costFn->differentiate($x, $expected)
+            ->divide($x->n());
     }
 
     /**

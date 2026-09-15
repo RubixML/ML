@@ -32,7 +32,7 @@ class DenseTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var Deferred
@@ -53,7 +53,7 @@ class DenseTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
@@ -94,7 +94,7 @@ class DenseTest extends TestCase
             [1.0048212865204000, -3.6402121844350117, 0.2683915072737035],
         ];
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
@@ -123,7 +123,7 @@ class DenseTest extends TestCase
             [1.0029028755203999, -3.6487466844350114, 0.2585853572737035],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);

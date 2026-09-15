@@ -32,7 +32,7 @@ class SwishTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var Deferred
@@ -53,7 +53,7 @@ class SwishTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1.0, 2.5, -0.1],
             [0.1, 0.1, 3.0],
             [0.002, -6.0, -0.5],
@@ -90,7 +90,7 @@ class SwishTest extends TestCase
 
         $this->assertEquals($this->fanIn, $this->layer->width());
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $expected = [
             [0.7310585786300049, 2.3103545499468914, -0.047502081252106004],
@@ -126,7 +126,7 @@ class SwishTest extends TestCase
             [0.0010009999384987184, -0.014841171304366609, -0.1887739280898519],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEquals($expected, $infer->asArray());

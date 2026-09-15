@@ -92,17 +92,17 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $noise = Matrix::gaussian(...$input->shape())
+        $noise = Matrix::gaussian(...$x->shape())
             ->multiply($this->stdDev);
 
-        $output = $input->add($noise);
+        $z = $x->add($noise);
 
-        return $output;
+        return $z;
     }
 
     /**
@@ -110,12 +110,12 @@ class Noise implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $input;
+        return $x;
     }
 
     /**

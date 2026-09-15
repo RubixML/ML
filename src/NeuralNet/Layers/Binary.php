@@ -44,14 +44,14 @@ class Binary implements Output
      *
      * @var Matrix|null
      */
-    protected ?Matrix $input = null;
+    protected ?Matrix $x = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var Matrix|null
      */
-    protected ?Matrix $output = null;
+    protected ?Matrix $z = null;
 
     /**
      * @param ClassificationLoss $costFn
@@ -98,28 +98,28 @@ class Binary implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $output = $this->sigmoid->activate($input);
+        $z = $this->sigmoid->activate($x);
 
-        $this->input = $input;
-        $this->output = $output;
+        $this->x = $x;
+        $this->z = $z;
 
-        return $output;
+        return $z;
     }
 
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $this->sigmoid->activate($input);
+        return $this->sigmoid->activate($x);
     }
 
     /**
@@ -131,19 +131,19 @@ class Binary implements Output
      */
     public function back(Matrix $y) : array
     {
-        if (!$this->input or !$this->output) {
+        if (!$this->x or !$this->z) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
-        $input = $this->input;
-        $output = $this->output;
+        $x = $this->x;
+        $z = $this->z;
 
-        $gradient = new Deferred([$this, 'gradient'], [$input, $output, $y]);
+        $gradient = new Deferred([$this, 'gradient'], [$x, $z, $y]);
 
-        $loss = $this->costFn->compute($output, $y);
+        $loss = $this->costFn->compute($z, $y);
 
-        $this->input = $this->output = null;
+        $this->x = $this->z = null;
 
         return [$gradient, $loss];
     }
@@ -151,22 +151,22 @@ class Binary implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param Matrix $x
+     * @param Matrix $z
      * @param Matrix $expected
      * @return Matrix
      */
-    public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
+    public function gradient(Matrix $x, Matrix $z, Matrix $expected) : Matrix
     {
         if ($this->costFn instanceof BinaryCrossEntropy) {
-            return $output->subtract($expected)
-                ->divide($output->n());
+            return $z->subtract($expected)
+                ->divide($z->n());
         }
 
-        $dLoss = $this->costFn->differentiate($output, $expected)
-            ->divide($output->n());
+        $dLoss = $this->costFn->differentiate($z, $expected)
+            ->divide($z->n());
 
-        return $this->sigmoid->differentiate($input, $output)
+        return $this->sigmoid->differentiate($x, $z)
             ->multiply($dLoss);
     }
 

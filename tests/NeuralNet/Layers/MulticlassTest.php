@@ -23,7 +23,7 @@ class MulticlassTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var array<list<int>>
@@ -37,7 +37,7 @@ class MulticlassTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
@@ -69,7 +69,7 @@ class MulticlassTest extends TestCase
 
         $this->assertEquals(3, $this->layer->width());
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $expected = [
             [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
@@ -96,7 +96,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $expected = [
             [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
@@ -119,7 +119,7 @@ class MulticlassTest extends TestCase
 
         $layer->initialize(3);
 
-        $forward = $layer->forward($this->input);
+        $forward = $layer->forward($this->x);
 
         $expected = [
             [0.6, 0.1, 0.2],
@@ -127,7 +127,7 @@ class MulticlassTest extends TestCase
             [0.1, 0.3, 0.7],
         ];
 
-        $gradient = $layer->gradient($this->input, $forward, Matrix::quick($expected));
+        $gradient = $layer->gradient($this->x, $forward, Matrix::quick($expected));
 
         $expected = [
             [-0.012226206614022184, 0.27465602763572997, -0.0527011251844229],

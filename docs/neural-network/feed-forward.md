@@ -104,7 +104,7 @@ public function unfreeze() : void
 Run an inference pass and return the activations at the output layer:
 
 ```php
-public function infer(Matrix $input) : Matrix
+public function infer(Matrix $x) : Matrix
 ```
 
 !!! note
@@ -113,7 +113,7 @@ public function infer(Matrix $input) : Matrix
 Feed a batch through the network and return a matrix of activations at the output layer:
 
 ```php
-public function feed(Matrix $input) : Matrix
+public function feed(Matrix $x) : Matrix
 ```
 
 Backpropagate the gradient of the cost function and return the loss:

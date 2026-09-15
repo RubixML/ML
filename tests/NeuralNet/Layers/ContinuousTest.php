@@ -22,7 +22,7 @@ class ContinuousTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var list<list<int|float>>
@@ -36,7 +36,7 @@ class ContinuousTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [2.5, 0.0, -6.0],
         ]);
 
@@ -66,7 +66,7 @@ class ContinuousTest extends TestCase
             [2.5, 0.0, -6.0],
         ];
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
@@ -89,7 +89,7 @@ class ContinuousTest extends TestCase
             [2.5, 0.0, -6.0],
         ];
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
