@@ -58,12 +58,12 @@ class GELU implements ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param Matrix $z
+     * @param Matrix $x
      * @return Matrix
      */
-    public function activate(Matrix $z) : Matrix
+    public function activate(Matrix $x) : Matrix
     {
-        return $z->map([$this, 'compute']);
+        return $x->map([$this, 'compute']);
     }
 
     /**
@@ -71,36 +71,36 @@ class GELU implements ActivationFunction
      *
      * @internal
      *
+     * @param Matrix $x
      * @param Matrix $z
-     * @param Matrix $computed
      * @return Matrix
      */
-    public function differentiate(Matrix $z, Matrix $computed) : Matrix
+    public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $z->map([$this, '_differentiate']);
+        return $x->map([$this, '_differentiate']);
     }
 
     /**
-     * @param float $z
+     * @param float $x
      * @return float
      */
-    public function compute(float $z) : float
+    public function compute(float $x) : float
     {
-        return 0.5 * $z * (1.0 + tanh(self::ALPHA * ($z + self::BETA * $z ** 3)));
+        return 0.5 * $x * (1.0 + tanh(self::ALPHA * ($x + self::BETA * $x ** 3)));
     }
 
     /**
      * @internal
      *
-     * @param float $z
+     * @param float $x
      * @return float
      */
-    public function _differentiate(float $z) : float
+    public function _differentiate(float $x) : float
     {
-        $zHat = $z ** 3;
+        $xHat = $x ** 3;
 
-        $alpha = 0.0356774 * $zHat + self::ALPHA * $z;
-        $beta = 0.0535161 * $zHat + 0.398942 * $z;
+        $alpha = 0.0356774 * $xHat + self::ALPHA * $x;
+        $beta = 0.0535161 * $xHat + 0.398942 * $x;
 
         return 0.5 * tanh($alpha) + $beta * self::sech2($alpha) + 0.5;
     }

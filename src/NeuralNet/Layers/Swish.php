@@ -61,14 +61,14 @@ class Swish implements Hidden, Parametric
      *
      * @var Matrix|null
      */
-    protected ?Matrix $input = null;
+    protected ?Matrix $x = null;
 
     /**
      * The memorized activation matrix.
      *
      * @var Matrix|null
      */
-    protected ?Matrix $output = null;
+    protected ?Matrix $z = null;
 
     /**
      * @param Initializer|null $initializer
@@ -122,17 +122,17 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $output = $this->activate($input);
+        $z = $this->activate($x);
 
-        $this->input = $input;
-        $this->output = $output;
+        $this->x = $x;
+        $this->z = $z;
 
-        return $output;
+        return $z;
     }
 
     /**
@@ -140,12 +140,12 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $this->activate($input);
+        return $this->activate($x);
     }
 
     /**
@@ -164,27 +164,27 @@ class Swish implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        if (!$this->input or !$this->output) {
+        if (!$this->x or !$this->z) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
         $dOut = $prevGradient();
 
-        $input = $this->input;
-        $output = $this->output;
+        $x = $this->x;
+        $z = $this->z;
 
-        $dInput = $input->multiply($output)->subtract($output->square());
+        $dX = $x->multiply($z)->subtract($z->square());
 
-        $dBeta = $dOut->multiply($dInput)->sum();
+        $dBeta = $dOut->multiply($dX)->sum();
 
         $beta = $this->beta->param();
 
         $this->beta->accumulateGradient($dBeta);
 
-        $this->input = $this->output = null;
+        $this->x = $this->z = null;
 
-        return new Deferred([$this, 'gradient'], [$input, $output, $dOut, $beta]);
+        return new Deferred([$this, 'gradient'], [$x, $z, $dOut, $beta]);
     }
 
     /**
@@ -192,15 +192,15 @@ class Swish implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param Matrix $x
+     * @param Matrix $z
      * @param Matrix $dOut
      * @param Vector $beta
      * @return Matrix
      */
-    public function gradient($input, $output, $dOut, $beta) : Matrix
+    public function gradient($x, $z, $dOut, $beta) : Matrix
     {
-        return $this->differentiate($input, $output, $beta)->multiply($dOut);
+        return $this->differentiate($x, $z, $beta)->multiply($dOut);
     }
 
     /**
@@ -235,19 +235,19 @@ class Swish implements Hidden, Parametric
     /**
      * Compute the Swish activation function and return a matrix.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws RuntimeException
      * @return Matrix
      */
-    protected function activate(Matrix $input) : Matrix
+    protected function activate(Matrix $x) : Matrix
     {
         if (!$this->beta) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $zHat = $input->multiply($this->beta->param());
+        $zHat = $x->multiply($this->beta->param());
 
-        return $this->sigmoid->activate($zHat)->multiply($input);
+        return $this->sigmoid->activate($zHat)->multiply($x);
     }
 
     /**
@@ -258,18 +258,18 @@ class Swish implements Hidden, Parametric
      * where z = beta * x. This formulation is defined at x = 0 and for any
      * value of beta.
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param Matrix $x
+     * @param Matrix $z
      * @param Vector $beta
      * @return Matrix
      */
-    protected function differentiate(Matrix $input, Matrix $output, Vector $beta) : Matrix
+    protected function differentiate(Matrix $x, Matrix $z, Vector $beta) : Matrix
     {
-        $zHat = $input->multiply($beta);
+        $zHat = $x->multiply($beta);
 
         $sigmoid = $this->sigmoid->activate($zHat);
 
-        $ones = Matrix::ones(...$output->shape());
+        $ones = Matrix::ones(...$z->shape());
 
         $term = $zHat->multiply($sigmoid)->multiply($ones->subtract($sigmoid));
 

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Tensor\Tensor;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
@@ -61,15 +60,14 @@ class Stochastic implements Optimizer
      * @internal
      *
      * @param Parameter $param
-     * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param) : void
     {
         if (!$param->hasGradient()) {
             throw new RuntimeException('Cannot update parameter with no gradient.');
         }
 
-        return $param->gradient()->multiply($this->scheduler->rate());
+        $param->update($param->gradient()->multiply($this->scheduler->rate()));
     }
 
     /**

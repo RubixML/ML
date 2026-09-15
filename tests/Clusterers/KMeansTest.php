@@ -75,7 +75,7 @@ class KMeansTest extends TestCase
         );
 
         $this->estimator = new KMeans(
-            k:3,
+            k: 3,
             batchSize: 128,
             epochs: 300,
             minChange: 1e-4,

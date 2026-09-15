@@ -78,28 +78,28 @@ class GELUTest extends TestCase
     }
 
     /**
-     * @param Matrix $input
+     * @param Matrix $x
      * @param array<array<mixed>> $expected
      */
     #[DataProvider('computeProvider')]
     #[Test]
-    public function compute(Matrix $input, array $expected) : void
+    public function compute(Matrix $x, array $expected) : void
     {
-        $activations = $this->activationFn->activate($input)->asArray();
+        $activations = $this->activationFn->activate($x)->asArray();
 
         $this->assertEqualsWithDelta($expected, $activations, 1e-8);
     }
 
     /**
-     * @param Matrix $input
+     * @param Matrix $x
      * @param Matrix $activations
      * @param array<array<mixed>> $expected
      */
     #[DataProvider('differentiateProvider')]
     #[Test]
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    public function differentiate(Matrix $x, Matrix $activations, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+        $derivatives = $this->activationFn->differentiate($x, $activations)->asArray();
 
         $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }

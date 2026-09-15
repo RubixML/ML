@@ -77,9 +77,8 @@ class AdaMax extends Adam
      * @internal
      *
      * @param Parameter $param
-     * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param) : void
     {
         if (!$param->hasGradient()) {
             throw new RuntimeException('Cannot update parameter with no gradient.');
@@ -102,7 +101,7 @@ class AdaMax extends Adam
 
         $step = $velocity->divide($norm)->multiply($this->scheduler->rate());
 
-        return $step;
+        $param->update($step);
     }
 
     /**

@@ -108,20 +108,20 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        $mask = Matrix::rand(...$input->shape())
+        $mask = Matrix::rand(...$x->shape())
             ->greater($this->ratio)
             ->multiply($this->scale);
 
-        $output = $input->multiply($mask);
+        $z = $x->multiply($mask);
 
         $this->mask = $mask;
 
-        return $output;
+        return $z;
     }
 
     /**
@@ -129,12 +129,12 @@ class Dropout implements Hidden
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $input;
+        return $x;
     }
 
     /**

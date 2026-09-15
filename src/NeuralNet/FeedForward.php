@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet;
 
 use Tensor\Matrix;
 use Rubix\ML\Encoding;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
@@ -223,62 +221,42 @@ class FeedForward implements Network
     /**
      * Run an inference pass and return the activations at the output layer.
      *
-     * @param Dataset $dataset
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Dataset $dataset) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        $input = Matrix::quick($dataset->samples())->transpose();
-
         foreach ($this->layers() as $layer) {
-            $input = $layer->infer($input);
+            $x = $layer->infer($x);
         }
 
-        return $input->transpose();
+        return $x->transpose();
     }
 
     /**
-     * Perform a forward and backward pass of the network in one call. Returns
-     * the loss from the backward pass.
+     * Feed a batch through the network and return a matrix of activations at the output layer.
      *
-     * @param Labeled $dataset
-     * @return float
-     */
-    public function roundtrip(Labeled $dataset) : float
-    {
-        $input = Matrix::quick($dataset->samples())->transpose();
-
-        $this->feed($input);
-
-        $loss = $this->backpropagate($dataset->labels());
-
-        return $loss;
-    }
-
-    /**
-     * Feed a batch through the network and return a matrix of activations at the output later.
-     *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function feed(Matrix $input) : Matrix
+    public function feed(Matrix $x) : Matrix
     {
         foreach ($this->layers() as $layer) {
-            $input = $layer->forward($input);
+            $x = $layer->forward($x);
         }
 
-        return $input;
+        return $x;
     }
 
     /**
      * Backpropagate the gradient of the cost function and return the loss.
      *
-     * @param list<string|int|float> $labels
+     * @param Matrix $y
      * @return float
      */
-    public function backpropagate(array $labels) : float
+    public function backpropagate(Matrix $y) : float
     {
-        [$gradient, $loss] = $this->output->back($labels);
+        [$gradient, $loss] = $this->output->back($y);
 
         $cutoff = $this->backpropagationCutoff();
 

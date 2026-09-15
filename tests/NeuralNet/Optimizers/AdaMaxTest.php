@@ -117,16 +117,26 @@ class AdaMaxTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $adamStep = $adam->update($param)->asArray()[0];
+        $before = $param->param()->asArray()[0];
+
+        $adam->update($param);
+
+        $adamStep = [];
+
+        foreach ($before as $i => $value) {
+            $adamStep[] = $value - $param->param()->asArray()[0][$i];
+        }
 
         $param->resetGradient();
 
         $param->accumulateGradient($gradient);
 
-        $adamaxStep = $adamax->update($param)->asArray()[0];
+        $before = $param->param()->asArray()[0];
 
-        foreach ($adamStep as $i => $adamValue) {
-            $this->assertLessThan(abs($adamValue), abs($adamaxStep[$i]));
+        $adamax->update($param);
+
+        foreach ($before as $i => $value) {
+            $this->assertLessThan(abs($adamStep[$i]), abs($value - $param->param()->asArray()[0][$i]));
         }
     }
 
@@ -143,9 +153,11 @@ class AdaMaxTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $before = $param->param();
 
-        $this->assertEqualsWithDelta($expected, $step->asArray(), 1e-8);
+        $this->optimizer->update($param);
+
+        $this->assertEqualsWithDelta($before->subtract(Matrix::quick($expected))->asArray(), $param->param()->asArray(), 1e-8);
     }
 
     #[Test]
@@ -169,9 +181,9 @@ class AdaMaxTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $this->optimizer->update($param);
 
-        $this->assertIsArray($step->asArray());
+        $this->assertIsArray($param->param()->asArray());
     }
 
     #[Test]

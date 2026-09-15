@@ -63,30 +63,30 @@ class Placeholder1D implements Input
     /**
      * Compute a forward pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws InvalidArgumentException
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
-        if ($input->m() !== $this->inputs) {
+        if ($x->m() !== $this->inputs) {
             throw new InvalidArgumentException('The number of features'
                 . ' and input nodes must be equal,'
-                . " $this->inputs expected but {$input->m()} given.");
+                . " $this->inputs expected but {$x->m()} given.");
         }
 
-        return $input;
+        return $x;
     }
 
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        return $this->forward($input);
+        return $this->forward($x);
     }
 
     /**
