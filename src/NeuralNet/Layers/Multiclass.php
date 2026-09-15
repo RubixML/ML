@@ -41,13 +41,6 @@ class Multiclass implements Output
     protected ClassificationLoss $costFn;
 
     /**
-     * The memorized input matrix.
-     *
-     * @var Matrix|null
-     */
-    protected ?Matrix $x = null;
-
-    /**
      * The memorized activation matrix.
      *
      * @var Matrix|null
@@ -132,7 +125,6 @@ class Multiclass implements Output
     {
         $z = self::softmax($x);
 
-        $this->x = $x;
         $this->z = $z;
 
         return $z;
@@ -158,19 +150,18 @@ class Multiclass implements Output
      */
     public function back(Matrix $y) : array
     {
-        if (!$this->x or !$this->z) {
+        if (!$this->z) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
-        $x = $this->x;
         $z = $this->z;
 
-        $gradient = new Deferred([$this, 'gradient'], [$x, $z, $y]);
+        $gradient = new Deferred([$this, 'gradient'], [$z, $y]);
 
         $loss = $this->costFn->compute($z, $y);
 
-        $this->x = $this->z = null;
+        $this->z = null;
 
         return [$gradient, $loss];
     }
@@ -178,12 +169,11 @@ class Multiclass implements Output
     /**
      * Calculate the gradient for the previous layer.
      *
-     * @param Matrix $x
      * @param Matrix $z
      * @param Matrix $expected
      * @return Matrix
      */
-    public function gradient(Matrix $x, Matrix $z, Matrix $expected) : Matrix
+    public function gradient(Matrix $z, Matrix $expected) : Matrix
     {
         if ($this->costFn instanceof MulticlassCrossEntropy) {
             return $z->subtract($expected)

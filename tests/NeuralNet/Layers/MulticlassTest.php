@@ -127,7 +127,7 @@ class MulticlassTest extends TestCase
             [0.1, 0.3, 0.7],
         ];
 
-        $gradient = $layer->gradient($this->x, $forward, Matrix::quick($expected));
+        $gradient = $layer->gradient($forward, Matrix::quick($expected));
 
         $expected = [
             [-0.012226206614022184, 0.27465602763572997, -0.0527011251844229],
