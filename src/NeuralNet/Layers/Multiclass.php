@@ -170,23 +170,24 @@ class Multiclass implements Output
      * Calculate the gradient for the previous layer.
      *
      * @param Matrix $z
-     * @param Matrix $expected
+     * @param Matrix $y
      * @return Matrix
      */
-    public function gradient(Matrix $z, Matrix $expected) : Matrix
+    public function gradient(Matrix $z, Matrix $y) : Matrix
     {
         if ($this->costFn instanceof MulticlassCrossEntropy) {
-            return $z->subtract($expected)
+            return $z->subtract($y)
                 ->divide($z->n());
         }
 
-        $dLoss = $this->costFn->differentiate($z, $expected)
+        $dLoss = $this->costFn->differentiate($z, $y)
             ->divide($z->n());
 
-        $outputT = $z->transpose();
-        $prod = $outputT->multiply($dLoss->transpose());
+        $zT = $z->transpose();
 
-        return $prod->subtract($outputT->multiply($prod->sum()))->transpose();
+        $prod = $zT->multiply($dLoss->transpose());
+
+        return $prod->subtract($zT->multiply($prod->sum()))->transpose();
     }
 
     /**

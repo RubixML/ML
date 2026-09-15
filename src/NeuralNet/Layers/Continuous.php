@@ -125,12 +125,12 @@ class Continuous implements Output
      * Calculate the gradient for the previous layer.
      *
      * @param Matrix $x
-     * @param Matrix $expected
+     * @param Matrix $y
      * @return Matrix
      */
-    public function gradient(Matrix $x, Matrix $expected) : Matrix
+    public function gradient(Matrix $x, Matrix $y) : Matrix
     {
-        return $this->costFn->differentiate($x, $expected)
+        return $this->costFn->differentiate($x, $y)
             ->divide($x->n());
     }
 

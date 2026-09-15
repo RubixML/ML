@@ -153,17 +153,17 @@ class Binary implements Output
      *
      * @param Matrix $x
      * @param Matrix $z
-     * @param Matrix $expected
+     * @param Matrix $y
      * @return Matrix
      */
-    public function gradient(Matrix $x, Matrix $z, Matrix $expected) : Matrix
+    public function gradient(Matrix $x, Matrix $z, Matrix $y) : Matrix
     {
         if ($this->costFn instanceof BinaryCrossEntropy) {
-            return $z->subtract($expected)
+            return $z->subtract($y)
                 ->divide($z->n());
         }
 
-        $dLoss = $this->costFn->differentiate($z, $expected)
+        $dLoss = $this->costFn->differentiate($z, $y)
             ->divide($z->n());
 
         return $this->sigmoid->differentiate($x, $z)
