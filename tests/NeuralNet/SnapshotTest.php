@@ -120,9 +120,9 @@ class SnapshotTest extends TestCase
             [0, 1, 0]
         );
 
-        $input = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::quick($dataset->samples())->transpose();
 
-        $network->feed($input);
+        $network->feed($x);
 
         $network->backpropagate([$dataset->labels()]);
 

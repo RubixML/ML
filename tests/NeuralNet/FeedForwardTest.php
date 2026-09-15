@@ -367,7 +367,9 @@ class FeedForwardTest extends TestCase
     {
         $this->network->initialize();
 
-        $output = $this->network->infer($this->dataset);
+        $x = Matrix::quick($this->dataset->samples())->transpose();
+
+        $output = $this->network->infer($x);
 
         $this->assertInstanceOf(Matrix::class, $output);
         $this->assertEquals([3, 3], $output->shape());
@@ -393,14 +395,14 @@ class FeedForwardTest extends TestCase
 
         $network->initialize();
 
-        $input = Matrix::quick($this->dataset->samples())->transpose();
+        $x = Matrix::quick($this->dataset->samples())->transpose();
 
-        $forward = $network->feed($input);
+        $forward = $network->feed($x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals([3, 3], $forward->shape());
 
-        $inferred = $network->infer($this->dataset);
+        $inferred = $network->infer($x);
 
         $this->assertEquals($forward->transpose()->asArray(), $inferred->asArray());
     }

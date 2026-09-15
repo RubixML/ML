@@ -139,11 +139,11 @@ class SwishTest extends TestCase
 
         $layer->initialize(3);
 
-        $input = Matrix::quick([
-            [1.5, 0.0, -2.0],
-            [0.75, -0.25, 4.0],
-            [0.0, -7.5, 0.001],
-        ]);
+        $x = Matrix::quick([
+             [1.5, 0.0, -2.0],
+             [0.75, -0.25, 4.0],
+             [0.0, -7.5, 0.001],
+         ]);
 
         $prevGrad = new Deferred(function () {
             return Matrix::quick([
@@ -153,7 +153,7 @@ class SwishTest extends TestCase
             ]);
         });
 
-        $forward = $layer->forward($input);
+        $forward = $layer->forward($x);
 
         $expected = [
             [1.1323724803014423, 0.0, -0.3648510476127127],
@@ -189,7 +189,7 @@ class SwishTest extends TestCase
             [0.0, -0.026955265002565797, 0.0005001874959628773],
         ];
 
-        $infer = $layer->infer($input);
+        $infer = $layer->infer($x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEquals($expected, $infer->asArray());

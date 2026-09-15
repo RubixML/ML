@@ -104,7 +104,7 @@ public function unfreeze() : void
 Run an inference pass and return the activations at the output layer:
 
 ```php
-public function infer(Dataset $dataset) : Matrix
+public function infer(Matrix $input) : Matrix
 ```
 
 !!! note

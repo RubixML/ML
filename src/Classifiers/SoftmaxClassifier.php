@@ -623,7 +623,9 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $activations = $this->network->infer($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $activations = $this->network->infer($x);
 
         $probabilities = [];
 

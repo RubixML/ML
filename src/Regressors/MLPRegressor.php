@@ -681,7 +681,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $activations = $this->network->infer($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $activations = $this->network->infer($x);
 
         return array_column($activations->asArray(), 0);
     }

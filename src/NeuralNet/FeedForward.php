@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet;
 
 use Tensor\Matrix;
 use Rubix\ML\Encoding;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
@@ -222,33 +221,31 @@ class FeedForward implements Network
     /**
      * Run an inference pass and return the activations at the output layer.
      *
-     * @param Dataset $dataset
+     * @param Matrix $x
      * @return Matrix
      */
-    public function infer(Dataset $dataset) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
-        $input = Matrix::quick($dataset->samples())->transpose();
-
         foreach ($this->layers() as $layer) {
-            $input = $layer->infer($input);
+            $x = $layer->infer($x);
         }
 
-        return $input->transpose();
+        return $x->transpose();
     }
 
     /**
-     * Feed a batch through the network and return a matrix of activations at the output later.
+     * Feed a batch through the network and return a matrix of activations at the output layer.
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function feed(Matrix $input) : Matrix
+    public function feed(Matrix $x) : Matrix
     {
         foreach ($this->layers() as $layer) {
-            $input = $layer->forward($input);
+            $x = $layer->forward($x);
         }
 
-        return $input;
+        return $x;
     }
 
     /**

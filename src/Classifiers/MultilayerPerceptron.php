@@ -722,7 +722,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $activations = $this->network->infer($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $activations = $this->network->infer($x);
 
         $probabilities = [];
 
