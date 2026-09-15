@@ -1,6 +1,7 @@
 # Changelog
 
 - 2.5.15
+    - Optimize random weighted subset with replacement
     - Optimize Prior guessing strategy
 
 - 2.5.14
