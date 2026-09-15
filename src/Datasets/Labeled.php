@@ -17,12 +17,10 @@ use function is_numeric;
 use function is_float;
 use function is_nan;
 use function array_slice;
-use function array_sum;
 use function array_map;
 use function array_chunk;
 use function array_rand;
 use function round;
-use function sqrt;
 use function getrandmax;
 use function rand;
 
@@ -754,14 +752,17 @@ class Labeled extends Dataset
                 . ' but ' . count($weights) . ' given.');
         }
 
-        /** @var positive-int $numLevels */
-        $numLevels = (int) round(sqrt(count($weights))) ?: 1;
+        $total = 0.0;
+        $cums = [];
 
-        $levels = array_chunk($weights, $numLevels, true);
+        foreach ($weights as $weight) {
+            $total += $weight;
 
-        $levelTotals = array_map('array_sum', $levels);
+            $cums[] = $total;
+        }
 
-        $total = array_sum($levelTotals);
+        /** @var positive-int $numWeights */
+        $numWeights = count($cums);
 
         $phi = getrandmax() / $total;
         $max = (int) round($total * $phi);
@@ -771,26 +772,21 @@ class Labeled extends Dataset
         while (count($samples) < $n) {
             $delta = rand(0, $max) / $phi;
 
-            foreach ($levels as $i => $level) {
-                $levelTotal = $levelTotals[$i];
+            $lower = 0;
+            $upper = $numWeights - 1;
 
-                if ($delta - $levelTotal > 0) {
-                    $delta -= $levelTotal;
+            while ($lower < $upper) {
+                $mid = intdiv($lower + $upper, 2);
 
-                    continue;
-                }
-
-                foreach ($level as $offset => $weight) {
-                    $delta -= $weight;
-
-                    if ($delta <= 0.0) {
-                        $samples[] = $this->samples[$offset];
-                        $labels[] = $this->labels[$offset];
-
-                        break 2;
-                    }
+                if ($cums[$mid] < $delta) {
+                    $lower = ++$mid;
+                } else {
+                    $upper = $mid;
                 }
             }
+
+            $samples[] = $this->samples[$lower];
+            $labels[] = $this->labels[$lower];
         }
 
         return self::quick($samples, $labels);
