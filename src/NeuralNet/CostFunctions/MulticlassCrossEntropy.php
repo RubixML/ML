@@ -28,19 +28,19 @@ class MulticlassCrossEntropy implements ClassificationLoss
      *
      * L(y, ŷ) = -Σ(y * log(ŷ)) / n
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float
+    public function compute(Matrix $z, Matrix $y) : float
     {
-        if ($output->shape() !== $target->shape()) {
+        if ($z->shape() !== $y->shape()) {
             throw new InvalidArgumentException('Output and target must have the same shape.');
         }
 
-        $clippedOutput = $output->clip(EPSILON, 1.0);
+        $clippedOutput = $z->clip(EPSILON, 1.0);
 
-        return $target
+        return $y
             ->multiply($clippedOutput->log())
             ->negate()
             ->mean()
@@ -52,17 +52,17 @@ class MulticlassCrossEntropy implements ClassificationLoss
      *
      * ∂L/∂ŷ = -y / ŷ
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return Matrix
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix
+    public function differentiate(Matrix $z, Matrix $y) : Matrix
     {
-        if ($output->shape() !== $target->shape()) {
+        if ($z->shape() !== $y->shape()) {
             throw new InvalidArgumentException('Output and target must have the same shape.');
         }
 
-        return $target->negate()->divide($output->clip(EPSILON, 1.0));
+        return $y->negate()->divide($z->clip(EPSILON, 1.0));
     }
 
     /**
