@@ -5,7 +5,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
-use function exp;
+use function expm1;
 
 /**
  * ELU
@@ -80,9 +80,7 @@ class ELU implements ActivationFunction
      */
     public function _activate(float $input) : float
     {
-        return $input > 0.0
-            ? $input
-            : $this->alpha * (exp($input) - 1.0);
+        return $input > 0.0 ? $input : $this->alpha * expm1($input);
     }
 
     /**
@@ -93,9 +91,7 @@ class ELU implements ActivationFunction
      */
     public function _differentiate(float $output) : float
     {
-        return $output > 0.0
-            ? 1.0
-            : $output + $this->alpha;
+        return $output > 0.0 ? 1.0 : $output + $this->alpha;
     }
 
     /**

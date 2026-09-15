@@ -58,7 +58,7 @@ class ELUTest extends TestCase
     {
         $activations = $this->activationFn->activate($input)->asArray();
 
-        $this->assertEquals($expected, $activations);
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
     }
 
     /**
@@ -101,7 +101,7 @@ class ELUTest extends TestCase
     {
         $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
 
-        $this->assertEquals($expected, $derivatives);
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 
     /**

@@ -3,6 +3,7 @@
 - 2.5.15
     - Optimize random weighted subset with replacement
     - Optimize Prior guessing strategy
+    - Added numerical stability to ELU and SELU
 
 - 2.5.14
     - Optimize Dataset validation
