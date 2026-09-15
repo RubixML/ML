@@ -125,11 +125,11 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * may contain fewer than n samples.
      *
      * @param iterable<mixed[]> $iterator
-     * @param positive-int $n
+     * @param int $size
      * @param bool $verify
      * @return Generator<static>
      */
-    abstract public static function chunked(iterable $iterator, int $n = 1024, bool $verify = true) : Generator;
+    abstract public static function chunked(iterable $iterator, int $size, bool $verify = true) : Generator;
 
     /**
      * Stack a number of datasets on top of each other to form a single dataset.

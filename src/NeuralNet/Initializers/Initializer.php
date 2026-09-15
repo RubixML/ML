@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Initializers;
 
-use Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use Stringable;
 
 /**
@@ -15,13 +15,16 @@ use Stringable;
 interface Initializer extends Stringable
 {
     /**
-     * Initialize a weight matrix W in the dimensions fan in x fan out.
+     * Initialize a parameter tensor given its target shape.
+     *
+     * A one-dimensional shape of [$n] initializes a column vector of length $n.
+     * A two-dimensional shape of [$m, $n] initializes a matrix with shape ($m, $n)
+     * where $m is the number of outputs and $n is the number of inputs.
      *
      * @internal
      *
-     * @param int<0,max> $fanIn
-     * @param int<0,max> $fanOut
-     * @return Matrix
+     * @param int[] $shape
+     * @return Parameter
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix;
+    public function initialize(array $shape) : Parameter;
 }
