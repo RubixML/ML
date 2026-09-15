@@ -99,7 +99,7 @@ class Continuous implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param (int|float)[] $labels
+     * @param float[] $labels
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
