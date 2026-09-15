@@ -92,10 +92,8 @@ class PReLU implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $alpha = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
-
         $this->width = $fanOut;
-        $this->alpha = new Parameter($alpha);
+        $this->alpha = $this->initializer->initialize([$fanOut]);
 
         return $fanOut;
     }

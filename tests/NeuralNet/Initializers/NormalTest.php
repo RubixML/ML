@@ -3,6 +3,8 @@
 namespace Rubix\ML\Tests\NeuralNet\Initializers;
 
 use Tensor\Matrix;
+use Tensor\Vector;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Normal;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -34,9 +36,20 @@ class NormalTest extends TestCase
     #[Test]
     public function initialize() : void
     {
-        $w = $this->initializer->initialize(4, 3);
+        $parameter = $this->initializer->initialize([3, 4]);
 
-        $this->assertInstanceOf(Matrix::class, $w);
-        $this->assertEquals([3, 4], $w->shape());
+        $this->assertInstanceOf(Parameter::class, $parameter);
+        $this->assertInstanceOf(Matrix::class, $parameter->param());
+        $this->assertEquals([3, 4], $parameter->param()->shape());
+    }
+
+    #[Test]
+    public function initializeVector() : void
+    {
+        $parameter = $this->initializer->initialize([4]);
+
+        $this->assertInstanceOf(Parameter::class, $parameter);
+        $this->assertInstanceOf(Vector::class, $parameter->param());
+        $this->assertEquals([4], $parameter->param()->shape());
     }
 }

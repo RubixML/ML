@@ -52,8 +52,8 @@ use function uniqid;
  * Adaline
  *
  * *Adaptive Linear Neuron* is a single layer neural network with a continuous linear
- * output neuron. Training is equivalent to solving L2 regularized linear regression
- * (Ridge) iteratively using mini batch Gradient Descent.
+ * output neuron. Training is equivalent to solving regularized linear regression iteratively
+ * using mini batch Gradient Descent.
  *
  * References:
  * [1] B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical "Memistors".
@@ -80,6 +80,13 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
      * @var Optimizer
      */
     protected Optimizer $optimizer;
+
+    /**
+     * The amount of L1 regularization applied to the weights of the output layer.
+     *
+     * @var float
+     */
+    protected float $l1Penalty;
 
     /**
      * The amount of L2 regularization applied to the weights of the output layer.
@@ -169,6 +176,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     /**
      * @param int $batchSize
      * @param Optimizer|null $optimizer
+     * @param float $l1Penalty
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
@@ -182,6 +190,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     public function __construct(
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
+        float $l1Penalty = 1e-4,
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
@@ -194,6 +203,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
+        }
+
+        if ($l1Penalty < 0.0) {
+            throw new InvalidArgumentException('L1 Penalty must be'
+                . " greater than 0, $l1Penalty given.");
         }
 
         if ($l2Penalty < 0.0) {
@@ -232,6 +246,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
+        $this->l1Penalty = $l1Penalty;
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -280,6 +295,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         return [
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
+            'l1 penalty' => $this->l1Penalty,
             'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
@@ -375,9 +391,13 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     {
         DatasetIsNotEmpty::with($dataset)->check();
 
+        $hiddenLayers = [
+            new Dense(1, $this->l1Penalty, $this->l2Penalty, true, new He()),
+        ];
+
         $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
-            [new Dense(1, $this->l2Penalty, true, new He())],
+            $hiddenLayers,
             new Continuous($this->costFn)
         );
 
