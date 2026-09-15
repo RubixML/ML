@@ -8435,6 +8435,20 @@
 
 <span class="nv">$dataset</span> <span class="o">=</span> <span class="nx">Labeled</span><span class="o">::</span><span class="na">fromIterator</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
+<p>Stream Dataset chunks that are lazy-loaded from an iterator such as an <a href="../extractors/api.html">Extractor</a>. Useful for training an <a href="online.md">Online</a> learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting <code>verify</code> to false.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">static</span> <span class="nx">chunked</span><span class="p">(</span><span class="nx">iterable</span> <span class="nv">$iterator</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$size</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="nx">bool</span> <span class="nv">$verify</span> <span class="o">=</span> <span class="k">true</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Generator</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Datasets\Labeled</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Extractors\NDJSON</span><span class="p">;</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="nx">Labeled</span><span class="o">::</span><span class="na">chunked</span><span class="p">(</span><span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;too-large.jsonl&#39;</span><span class="p">),</span> <span class="nx">size</span><span class="o">:</span> <span class="mi">1024</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$batch</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">partial</span><span class="p">(</span><span class="nv">$batch</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When building a <a href="labeled.html">Labeled</a> dataset, the label values should be in the last column of the data table.</p>
+</div>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">#</a></h2>
 <p>Return the number of rows in the dataset:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">numSamples</span><span class="p">()</span> <span class="o">:</span> <span class="nx">int</span>
@@ -8657,12 +8671,12 @@
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">deduplicate</span><span class="p">()</span> <span class="o">:</span> <span class="nx">self</span>
 </code></pre></div>
 <h2 id="exporting">Exporting<a class="headerlink" href="#exporting" title="Permanent link">#</a></h2>
-<p>Export the dataset to the location and format given by a <a href="../extractors/api.html">Writable</a> extractor. If <code>overwrite</code> is true then the current samples will be overwritten, otherwise they will be appended if the file or database already exists.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">exportTo</span><span class="p">(</span><span class="nx">Writable</span> <span class="nv">$extractor</span><span class="p">,</span> <span class="nx">bool</span> <span class="nv">$overwrite</span> <span class="o">=</span> <span class="k">false</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
+<p>Export the dataset to the location and format given by a <a href="../extractors/api.html">Exporter</a> extractor. If <code>overwrite</code> is true then the current samples will be overwritten, otherwise they will be appended if the file or database already exists.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">exportTo</span><span class="p">(</span><span class="nx">Exporter</span> <span class="nv">$extractor</span><span class="p">,</span> <span class="nx">bool</span> <span class="nv">$overwrite</span> <span class="o">=</span> <span class="k">false</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\NDJSON</span><span class="p">;</span>
 
-<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;example.ndjson&#39;</span><span class="p">),</span> <span class="k">false</span><span class="p">);</span>
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">exportTo</span><span class="p">(</span><span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;example.jsonl&#39;</span><span class="p">),</span> <span class="k">false</span><span class="p">);</span>
 </code></pre></div>
 
 
@@ -8686,7 +8700,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 7, 2026 15:48:19">September 7, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 14, 2026 18:41:12">September 14, 2026</span>
   </span>
 
     
@@ -8696,7 +8710,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2019 23:40:06">June 25, 2019</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2024 17:37:43">August 30, 2024</span>
   </span>
 
     

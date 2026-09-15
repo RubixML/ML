@@ -1036,6 +1036,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#streaming-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streaming Training
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -8048,6 +8057,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#streaming-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streaming Training
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -8085,6 +8103,40 @@
 <p class="admonition-title">Note</p>
 <p>Learner will continue to train as long as you are using the <code>partial()</code> method, however, calling <code>train()</code> on a trained or partially trained learner will reset it back to baseline first.</p>
 </div>
+<h2 id="streaming-training">Streaming Training<a class="headerlink" href="#streaming-training" title="Permanent link">#</a></h2>
+<p>For datasets that are too large to fit into memory all at once, you can stream the records from disk using an <a href="extracting-data.html">Extractor</a> and train in batches with the <code>chunked()</code> dataset factory method. In the example below, we stream the records of a large NDJSON file from disk and partially train an <a href="regressors/mlp-regressor.html">MLP Regressor</a> that is wrapped in a <a href="pipeline.html">Pipeline</a> with an elastic transformer to update its fitting as the batches are processed.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Pipeline</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Datasets\Labeled</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Extractors\NDJSON</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Regressors\MLPRegressor</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\MinMaxNormalizer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Layers\Dense</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Layers\Activation</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\ActivationFunctions\SiLU</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Optimizers\Adam</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant</span><span class="p">;</span>
+
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span>
+    <span class="k">new</span> <span class="nx">MinMaxNormalizer</span><span class="p">(),</span>
+<span class="p">],</span> <span class="k">new</span> <span class="nx">MLPRegressor</span><span class="p">([</span>
+    <span class="k">new</span> <span class="nx">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">Activation</span><span class="p">(</span><span class="k">new</span> <span class="nx">SiLU</span><span class="p">()),</span>
+    <span class="k">new</span> <span class="nx">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">Activation</span><span class="p">(</span><span class="k">new</span> <span class="nx">SiLU</span><span class="p">()),</span>
+    <span class="k">new</span> <span class="nx">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">],</span> <span class="nx">optimizer</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Adam</span><span class="p">(</span><span class="k">new</span> <span class="nx">Constant</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)));</span>
+
+<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDJSON</span><span class="p">(</span><span class="s1">&#39;too-large.jsonl&#39;</span><span class="p">);</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="nx">Labeled</span><span class="o">::</span><span class="na">chunked</span><span class="p">(</span><span class="nv">$extractor</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$batch</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">partial</span><span class="p">(</span><span class="nv">$batch</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Because <code>partial()</code> warms up a learner on the first call, there is no need to call <code>train()</code> beforehand. Every batch must be of the same shape and feature order, and since each batch is validated on construction, the first batch will fail fast if a record is malformed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Streaming training does not shuffle the dataset, so order may effect training.</p>
+</div>
 
 
 
@@ -8107,7 +8159,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2026 01:02:37">August 30, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 14, 2026 18:41:12">September 14, 2026</span>
   </span>
 
     
@@ -8117,7 +8169,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2019 23:40:06">June 25, 2019</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2024 17:37:43">August 30, 2024</span>
   </span>
 
     

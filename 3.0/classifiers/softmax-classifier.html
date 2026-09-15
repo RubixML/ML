@@ -8140,55 +8140,62 @@
 </tr>
 <tr>
 <td>3</td>
+<td>l1Penalty</td>
+<td>1e-4</td>
+<td>float</td>
+<td>The amount of L1 regularization applied to the weights of the output layer.</td>
+</tr>
+<tr>
+<td>4</td>
 <td>l2Penalty</td>
 <td>1e-4</td>
 <td>float</td>
 <td>The amount of L2 regularization applied to the weights of the output layer.</td>
 </tr>
 <tr>
-<td>4</td>
+<td>5</td>
 <td>epochs</td>
 <td>1000</td>
 <td>int</td>
 <td>The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating.</td>
 </tr>
 <tr>
-<td>5</td>
+<td>6</td>
 <td>minChange</td>
 <td>1e-4</td>
 <td>float</td>
 <td>The minimum change in the training loss necessary to continue training.</td>
 </tr>
 <tr>
-<td>6</td>
+<td>7</td>
 <td>evalInterval</td>
 <td>3</td>
 <td>int</td>
 <td>The number of epochs to train before evaluating the model using the holdout set.</td>
 </tr>
 <tr>
-<td>7</td>
+<td>8</td>
 <td>window</td>
 <td>5</td>
 <td>int</td>
 <td>The number of epochs without improvement in the validation score to wait before considering an early stop.</td>
 </tr>
 <tr>
-<td>8</td>
+<td>9</td>
 <td>holdOut</td>
 <td>0.1</td>
 <td>float</td>
 <td>The proportion of training samples to use for internal validation. Set to 0 to disable.</td>
 </tr>
 <tr>
-<td>9</td>
+<td>10</td>
 <td>costFn</td>
 <td>MulticlassCrossEntropy</td>
 <td>ClassificationLoss</td>
 <td>The function that computes the loss associated with an erroneous activation during training.</td>
 </tr>
 <tr>
-<td>10</td>
+<td>11</td>
 <td>metric</td>
 <td>FBeta</td>
 <td>Metric</td>
@@ -8206,6 +8213,7 @@
 <span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SoftmaxClassifier</span><span class="p">(</span>
     <span class="nx">batchSize</span><span class="o">:</span> <span class="mi">256</span><span class="p">,</span>
     <span class="nx">optimizer</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Momentum</span><span class="p">(</span><span class="nx">scheduler</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Constant</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)),</span>
+    <span class="nx">l1Penalty</span><span class="o">:</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="nx">l2Penalty</span><span class="o">:</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="nx">epochs</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
     <span class="nx">minChange</span><span class="o">:</span> <span class="mf">1e-4</span><span class="p">,</span>
@@ -8263,7 +8271,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 10, 2026 21:39:21">September 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 15, 2026 16:44:21">September 15, 2026</span>
   </span>
 
     
@@ -8273,7 +8281,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2019 23:40:06">June 25, 2019</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2024 17:37:43">August 30, 2024</span>
   </span>
 
     
