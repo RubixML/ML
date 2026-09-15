@@ -141,6 +141,15 @@ class AdalineTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Throws an exception for a negative L1 penalty')]
+    public function negativeL1Penalty() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Adaline(l1Penalty: -1.0);
+    }
+
+    #[Test]
     #[TestDox('Reports the estimator type')]
     public function type() : void
     {
@@ -165,6 +174,7 @@ class AdalineTest extends TestCase
         $expected = [
             'batch size' => 32,
             'optimizer' => new Adam(new Constant(0.001)),
+            'l1 penalty' => 1e-4,
             'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-4,
