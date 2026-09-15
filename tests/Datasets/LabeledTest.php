@@ -503,7 +503,7 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
-    public function chunkedWithDefaultChunkSize() : void
+    public function chunkedSingleBatch() : void
     {
         $records = [
             ['nice', 'furry', 'friendly', 4.0, 'not monster'],
@@ -514,7 +514,7 @@ class LabeledTest extends TestCase
             ['nice', 'furry', 'loner', -5.0, 'not monster'],
         ];
 
-        $batches = iterator_to_array(Labeled::chunked($records));
+        $batches = iterator_to_array(Labeled::chunked($records, 10));
 
         $this->assertCount(1, $batches);
         $this->assertCount(6, $batches[0]);
@@ -546,7 +546,7 @@ class LabeledTest extends TestCase
     #[Test]
     public function chunkedEmpty() : void
     {
-        $batches = iterator_to_array(Labeled::chunked([]));
+        $batches = iterator_to_array(Labeled::chunked([], 4));
 
         $this->assertCount(0, $batches);
     }
@@ -556,7 +556,7 @@ class LabeledTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        foreach (Labeled::chunked([['sample', 'label'], ['sample', 'mismatch', 'extra']]) as $batch) {
+        foreach (Labeled::chunked([['sample', 'label'], ['sample', 'mismatch', 'extra']], 2) as $batch) {
             //
         }
     }
@@ -566,6 +566,7 @@ class LabeledTest extends TestCase
     {
         $batches = iterator_to_array(Labeled::chunked(
             [['sample', 'label'], ['sample', 'mismatch', 'extra']],
+            2,
             verify: false
         ));
 

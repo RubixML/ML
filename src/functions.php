@@ -16,6 +16,7 @@ namespace Rubix\ML
     use function array_map;
     use function exp;
     use function log;
+    use function log1p;
     use function max;
     use function trigger_error;
 
@@ -142,6 +143,19 @@ namespace Rubix\ML
     function sigmoid(float $value) : float
     {
         return 1.0 / (1.0 + exp(-$value));
+    }
+
+    /**
+     * The softplus function i.e. the log of the sum of exponentials.
+     *
+     * @internal
+     *
+     * @param float $value
+     * @return float
+     */
+    function softplus(float $value) : float
+    {
+        return $value > 0.0 ? $value + log1p(exp(-$value)) : log1p(exp($value));
     }
 
     /**

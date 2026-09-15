@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
+use function expm1;
+
 /**
  * SELU
  *
@@ -77,9 +79,7 @@ class SELU implements ActivationFunction
      */
     public function _activate(float $x) : float
     {
-        return $x > 0.0
-            ? self::SCALE * $x
-            : self::BETA * (exp($x) - 1.0);
+        return $x > 0.0 ? self::SCALE * $x : self::BETA * expm1($x);
     }
 
     /**
@@ -90,9 +90,7 @@ class SELU implements ActivationFunction
      */
     public function _differentiate(float $z) : float
     {
-        return $z > 0.0
-            ? self::SCALE
-            : $z + self::BETA;
+        return $z > 0.0 ? self::SCALE : $z + self::BETA;
     }
 
     /**

@@ -30,8 +30,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
+use function Rubix\ML\softplus;
 use function count;
-use function is_nan;
 use function get_class;
 use function in_array;
 use function array_map;
@@ -41,7 +41,6 @@ use function array_flip;
 use function round;
 use function max;
 use function abs;
-use function log;
 use function get_object_vars;
 
 /**
@@ -423,13 +422,9 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $gradient = array_map([$this, 'gradient'], $out, $targets);
-            $losses = array_map([$this, 'crossEntropy'], $out, $targets);
+            $losses = array_map([$this, 'crossEntropy'], $z, $targets);
 
             $loss = Stats::mean($losses);
-
-            $lossChange = abs($prevLoss - $loss);
-
-            $this->losses[$epoch] = $loss;
 
             if (is_nan($loss)) {
                 if ($this->logger) {
@@ -438,6 +433,10 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
 
                 break;
             }
+
+            $lossChange = abs($prevLoss - $loss);
+
+            $this->losses[$epoch] = $loss;
 
             $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
 
@@ -648,13 +647,16 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * Compute the binary cross entropy loss function.
      *
-     * @param float $out
+     * This is expressed in terms of the logit `z` using the numerically stable softplus
+     * function so that it remains finite for any real value of `z`.
+     *
+     * @param float $z
      * @param float $target
      * @return float
      */
-    protected function crossEntropy(float $out, float $target) : float
+    protected function crossEntropy(float $z, float $target) : float
     {
-        return $target >= 0.5 ? -log($out) : -log(1.0 - $out);
+        return $target >= 0.5 ? softplus(-$z) : softplus($z);
     }
 
     /**

@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
-use function log1p;
 use function exp;
 
 /**
@@ -32,7 +31,7 @@ class SoftPlus implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, '_activate']);
+        return $x->map('Rubix\ML\softplus');
     }
 
     /**
@@ -47,19 +46,6 @@ class SoftPlus implements ActivationFunction
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
         return $x->map([$this, '_differentiate']);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _activate(float $x) : float
-    {
-        return $x > 0.0
-            ? $x + log1p(exp(-$x))
-            : log1p(exp($x));
     }
 
     /**
