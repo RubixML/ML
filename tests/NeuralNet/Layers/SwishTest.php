@@ -140,10 +140,10 @@ class SwishTest extends TestCase
         $layer->initialize(3);
 
         $x = Matrix::quick([
-             [1.5, 0.0, -2.0],
-             [0.75, -0.25, 4.0],
-             [0.0, -7.5, 0.001],
-         ]);
+            [1.5, 0.0, -2.0],
+            [0.75, -0.25, 4.0],
+            [0.0, -7.5, 0.001],
+        ]);
 
         $prevGrad = new Deferred(function () {
             return Matrix::quick([
