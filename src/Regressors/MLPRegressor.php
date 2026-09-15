@@ -518,7 +518,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
             foreach (enumerate($batches, 1) as $step => $batch) {
                 $x = Matrix::quick($batch->samples())->transpose();
-                $y = [$batch->labels()];
+                $y = Matrix::quick([$batch->labels()]);
 
                 $this->network->feed($x);
 

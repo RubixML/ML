@@ -99,24 +99,22 @@ class Continuous implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param list<list<int|float>> $labels
+     * @param Matrix $y
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
-    public function back(array $labels) : array
+    public function back(Matrix $y) : array
     {
         if (!$this->input) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
-        $expected = Matrix::quick($labels);
-
         $input = $this->input;
 
-        $gradient = new Deferred([$this, 'gradient'], [$input, $expected]);
+        $gradient = new Deferred([$this, 'gradient'], [$input, $y]);
 
-        $loss = $this->costFn->compute($input, $expected);
+        $loss = $this->costFn->compute($input, $y);
 
         $this->input = null;
 

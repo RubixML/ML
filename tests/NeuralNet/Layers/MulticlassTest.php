@@ -80,7 +80,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->expected);
+        [$computation, $loss] = $this->layer->back(Matrix::quick($this->expected));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);

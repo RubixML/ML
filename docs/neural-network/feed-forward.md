@@ -119,10 +119,10 @@ public function feed(Matrix $input) : Matrix
 Backpropagate the gradient of the cost function and return the loss:
 
 ```php
-public function backpropagate(array $labels) : float
+public function backpropagate(Matrix $y) : float
 ```
 
-The `backpropagate` method accepts the same 2-dimensional target matrix as the output layers.
+The `backpropagate` method accepts the same target matrix as the output layers.
 
 Export the network architecture as a graph in dot format:
 

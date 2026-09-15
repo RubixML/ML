@@ -485,7 +485,7 @@ class FeedForwardTest extends TestCase
 
         $network->feed(Matrix::quick($dataset->samples())->transpose());
 
-        return $network->backpropagate($expected);
+        return $network->backpropagate(Matrix::quick($expected));
     }
 
     /**

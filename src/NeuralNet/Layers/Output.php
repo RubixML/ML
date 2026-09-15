@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Tensor\Matrix;
+
 /**
  * Output
  *
@@ -16,9 +18,9 @@ interface Output extends Layer
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param array<list<int|float>> $labels
+     * @param Matrix $y
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */
-    public function back(array $labels) : array;
+    public function back(Matrix $y) : array;
 }

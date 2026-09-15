@@ -741,17 +741,17 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @internal
      *
      * @param list<int> $indices
-     * @return list<list<float>>
+     * @return Matrix
      */
-    protected function oneHot(array $indices) : array
+    protected function oneHot(array $indices) : Matrix
     {
-        $expected = array_fill(0, count($this->classes), array_fill(0, count($indices), 0.0));
+        $y = array_fill(0, count($this->classes), array_fill(0, count($indices), 0.0));
 
         foreach ($indices as $column => $index) {
-            $expected[$index][$column] = 1.0;
+            $y[$index][$column] = 1.0;
         }
 
-        return $expected;
+        return Matrix::quick($y);
     }
 
     /**

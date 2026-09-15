@@ -124,7 +124,7 @@ class SnapshotTest extends TestCase
 
         $network->feed($x);
 
-        $network->backpropagate([$dataset->labels()]);
+        $network->backpropagate(Matrix::quick([$dataset->labels()]));
 
         $optimizer = new Stochastic(new Constant());
 

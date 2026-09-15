@@ -7,14 +7,11 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Binary::class)]
@@ -33,11 +30,6 @@ class BinaryTest extends TestCase
     protected array $indices;
 
     /**
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
-
-    /**
      * @var Binary
      */
     protected Binary $layer;
@@ -49,8 +41,6 @@ class BinaryTest extends TestCase
         ]);
 
         $this->indices = [[0, 1, 0]];
-
-        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Binary(new BinaryCrossEntropy());
 
@@ -81,7 +71,7 @@ class BinaryTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->indices, $this->optimizer);
+        [$computation, $loss] = $this->layer->back(Matrix::quick($this->indices));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);

@@ -7,14 +7,11 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Continuous::class)]
@@ -33,11 +30,6 @@ class ContinuousTest extends TestCase
     protected array $labels;
 
     /**
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
-
-    /**
      * @var Continuous
      */
     protected Continuous $layer;
@@ -49,8 +41,6 @@ class ContinuousTest extends TestCase
         ]);
 
         $this->labels = [[0.0, -2.5, 90]];
-
-        $this->optimizer = new Stochastic(new Constant(0.001));
 
         $this->layer = new Continuous(new LeastSquares());
 
@@ -81,7 +71,7 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back(Matrix::quick($this->labels));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);

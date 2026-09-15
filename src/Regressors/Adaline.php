@@ -450,7 +450,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
 
             foreach ($batches as $batch) {
                 $x = Matrix::quick($batch->samples())->transpose();
-                $y = [$batch->labels()];
+                $y = Matrix::quick([$batch->labels()]);
 
                 $this->network->feed($x);
 

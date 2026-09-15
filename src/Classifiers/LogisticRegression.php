@@ -474,7 +474,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
             foreach ($batches as $batch) {
                 $x = Matrix::quick($batch->samples())->transpose();
-                $y = [array_map('floatval', $batch->labels())];
+                $y = Matrix::quick([array_map('floatval', $batch->labels())]);
 
                 $this->network->feed($x);
 

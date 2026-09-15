@@ -125,25 +125,23 @@ class Binary implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param list<list<int>> $labels
+     * @param Matrix $y
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
-    public function back(array $labels) : array
+    public function back(Matrix $y) : array
     {
         if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
-        $expected = Matrix::quick($labels);
-
         $input = $this->input;
         $output = $this->output;
 
-        $gradient = new Deferred([$this, 'gradient'], [$input, $output, $expected]);
+        $gradient = new Deferred([$this, 'gradient'], [$input, $output, $y]);
 
-        $loss = $this->costFn->compute($output, $expected);
+        $loss = $this->costFn->compute($output, $y);
 
         $this->input = $this->output = null;
 
