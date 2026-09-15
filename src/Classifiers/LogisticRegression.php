@@ -387,6 +387,10 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $classes = $dataset->possibleOutcomes();
 
+        if (count($classes) !== 2) {
+            throw new InvalidArgumentException('Logistic Regression requires exactly 2 classes.');
+        }
+
         $hiddenLayers = [
             new Dense(1, $this->l2Penalty, true, new Xavier1()),
         ];
