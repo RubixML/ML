@@ -26,7 +26,7 @@ use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\Random;
 
-$estimator = new FuzzyCMeans(5, 1.2, 400, 1., new Euclidean(), new Random());
+$estimator = new FuzzyCMeans(5, 1.2, 400, 1.0, new Euclidean(), new Random());
 ```
 
 ## Additional Methods

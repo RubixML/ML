@@ -110,9 +110,8 @@ class Momentum implements Optimizer
      * @internal
      *
      * @param Parameter $param
-     * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param) : void
     {
         if (!$param->hasGradient()) {
             throw new RuntimeException('Cannot update parameter with no gradient.');
@@ -130,7 +129,7 @@ class Momentum implements Optimizer
                 ->add($velocity->multiply(1.0 - $this->decay));
         }
 
-        return $velocity;
+        $param->update($velocity);
     }
 
     /**

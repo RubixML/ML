@@ -107,28 +107,28 @@ class ELUTest extends TestCase
     }
 
     /**
-     * @param Matrix $input
+     * @param Matrix $x
      * @param list<list<float>> $expected $expected
      */
     #[DataProvider('computeProvider')]
     #[Test]
-    public function activate(Matrix $input, array $expected) : void
+    public function activate(Matrix $x, array $expected) : void
     {
-        $activations = $this->activationFn->activate($input)->asArray();
+        $activations = $this->activationFn->activate($x)->asArray();
 
         $this->assertEquals($expected, $activations);
     }
 
     /**
-     * @param Matrix $input
+     * @param Matrix $x
      * @param Matrix $activations
      * @param list<list<float>> $expected $expected
      */
     #[DataProvider('differentiateProvider')]
     #[Test]
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    public function differentiate(Matrix $x, Matrix $activations, array $expected) : void
     {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+        $derivatives = $this->activationFn->differentiate($x, $activations)->asArray();
 
         $this->assertEquals($expected, $derivatives);
     }

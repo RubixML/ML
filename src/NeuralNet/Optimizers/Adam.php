@@ -121,9 +121,8 @@ class Adam implements Optimizer
      * @internal
      *
      * @param Parameter $param
-     * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function update(Parameter $param) : void
     {
         if (!$param->hasGradient()) {
             throw new RuntimeException('Cannot update parameter with no gradient.');
@@ -147,7 +146,7 @@ class Adam implements Optimizer
 
         $step = $velocity->multiply($this->scheduler->rate())->divide($norm);
 
-        return $step;
+        $param->update($step);
     }
 
     /**

@@ -23,17 +23,17 @@ class RelativeEntropy implements ClassificationLoss
      *
      * @internal
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float
+    public function compute(Matrix $z, Matrix $y) : float
     {
-        $target = $target->clip(EPSILON, 1.0);
-        $output = $output->clip(EPSILON, 1.0);
+        $y = $y->clip(EPSILON, 1.0);
+        $z = $z->clip(EPSILON, 1.0);
 
-        return $target->divide($output)->log()
-            ->multiply($target)
+        return $y->divide($z)->log()
+            ->multiply($y)
             ->mean()
             ->mean();
     }
@@ -43,16 +43,16 @@ class RelativeEntropy implements ClassificationLoss
      *
      * @internal
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return Matrix
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix
+    public function differentiate(Matrix $z, Matrix $y) : Matrix
     {
-        $target = $target->clip(EPSILON, 1.0);
-        $output = $output->clip(EPSILON, 1.0);
+        $y = $y->clip(EPSILON, 1.0);
+        $z = $z->clip(EPSILON, 1.0);
 
-        return $target->negate()->divide($output);
+        return $y->negate()->divide($z);
     }
 
     /**

@@ -31,18 +31,18 @@ class BinaryCrossEntropy implements ClassificationLoss
      *
      * L(y, ŷ) = -Σ(y * log(ŷ) + (1 - y) * log(1 - ŷ)) / n
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return float
      */
-    public function compute(Matrix $output, Matrix $target) : float
+    public function compute(Matrix $z, Matrix $y) : float
     {
-        if ($output->shape() !== $target->shape()) {
+        if ($z->shape() !== $y->shape()) {
             throw new InvalidArgumentException('Output and target must have the same shape.');
         }
 
-        $output = $output->clip(EPSILON, 1.0 - EPSILON);
-        $target = $target->clip(EPSILON, 1.0 - EPSILON);
+        $output = $z->clip(EPSILON, 1.0 - EPSILON);
+        $target = $y->clip(EPSILON, 1.0 - EPSILON);
 
         $oneMinusOutput = Matrix::ones(...$output->shape())->subtract($output);
         $oneMinusTarget = Matrix::ones(...$target->shape())->subtract($target);
@@ -60,17 +60,17 @@ class BinaryCrossEntropy implements ClassificationLoss
      *
      * ∂L/∂ŷ = (ŷ - y) / (ŷ * (1 - ŷ))
      *
-     * @param Matrix $output
-     * @param Matrix $target
+     * @param Matrix $z
+     * @param Matrix $y
      * @return Matrix
      */
-    public function differentiate(Matrix $output, Matrix $target) : Matrix
+    public function differentiate(Matrix $z, Matrix $y) : Matrix
     {
-        if ($output->shape() !== $target->shape()) {
+        if ($z->shape() !== $y->shape()) {
             throw new InvalidArgumentException('Output and target must have the same shape.');
         }
 
-        $clippedOutput = $output->clip(EPSILON, 1.0 - EPSILON);
+        $clippedOutput = $z->clip(EPSILON, 1.0 - EPSILON);
 
         $oneMinusOutput = Matrix::ones(...$clippedOutput->shape())->subtract($clippedOutput);
 
@@ -78,7 +78,7 @@ class BinaryCrossEntropy implements ClassificationLoss
             ->multiply($oneMinusOutput)
             ->clip(EPSILON, 1.0);
 
-        return $output->subtract($target)->divide($denominator);
+        return $z->subtract($y)->divide($denominator);
     }
 
     /**

@@ -7,15 +7,12 @@ use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 #[Group('Layers')]
 #[CoversClass(Multiclass::class)]
@@ -26,17 +23,12 @@ class MulticlassTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
-     * @var string[]
+     * @var array<list<int>>
      */
-    protected array $labels;
-
-    /**
-     * @var Optimizer
-     */
-    protected Optimizer $optimizer;
+    protected array $expected;
 
     /**
      * @var Multiclass
@@ -45,17 +37,19 @@ class MulticlassTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->labels = ['hot', 'cold', 'ice cold'];
+        $this->expected = [
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1],
+        ];
 
-        $this->optimizer = new Stochastic(new Constant(0.001));
-
-        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new MulticlassCrossEntropy());
+        $this->layer = new Multiclass(3, new MulticlassCrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
@@ -75,7 +69,7 @@ class MulticlassTest extends TestCase
 
         $this->assertEquals(3, $this->layer->width());
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $expected = [
             [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
@@ -86,7 +80,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back(Matrix::quick($this->expected));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
@@ -102,7 +96,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $expected = [
             [0.5633213801579335, 0.9239680829071899, 0.0418966244467313],
@@ -121,11 +115,11 @@ class MulticlassTest extends TestCase
     #[Test]
     public function gradientWithSoftmaxJacobian() : void
     {
-        $layer = new Multiclass(['hot', 'cold', 'ice cold'], new RelativeEntropy());
+        $layer = new Multiclass(3, new RelativeEntropy());
 
         $layer->initialize(3);
 
-        $forward = $layer->forward($this->input);
+        $forward = $layer->forward($this->x);
 
         $expected = [
             [0.6, 0.1, 0.2],
@@ -133,7 +127,7 @@ class MulticlassTest extends TestCase
             [0.1, 0.3, 0.7],
         ];
 
-        $gradient = $layer->gradient($this->input, $forward, Matrix::quick($expected));
+        $gradient = $layer->gradient($forward, Matrix::quick($expected));
 
         $expected = [
             [-0.012226206614022184, 0.27465602763572997, -0.0527011251844229],

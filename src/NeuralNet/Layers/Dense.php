@@ -81,7 +81,7 @@ class Dense implements Hidden, Parametric
      *
      * @var Matrix|null
      */
-    protected ?Matrix $input = null;
+    protected ?Matrix $x = null;
 
     /**
      * @param int $neurons
@@ -175,25 +175,25 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws RuntimeException
      * @return Matrix
      */
-    public function forward(Matrix $input) : Matrix
+    public function forward(Matrix $x) : Matrix
     {
         if (!$this->weights) {
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $output = $this->weights->param()->matmul($input);
+        $z = $this->weights->param()->matmul($x);
 
         if ($this->biases) {
-            $output = $output->add($this->biases->param());
+            $z = $z->add($this->biases->param());
         }
 
-        $this->input = $input;
+        $this->x = $x;
 
-        return $output;
+        return $z;
     }
 
     /**
@@ -201,23 +201,23 @@ class Dense implements Hidden, Parametric
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @throws RuntimeException
      * @return Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $x) : Matrix
     {
         if (!$this->weights) {
             throw new RuntimeException('Layer is not initialized');
         }
 
-        $output = $this->weights->param()->matmul($input);
+        $z = $this->weights->param()->matmul($x);
 
         if ($this->biases) {
-            $output = $output->add($this->biases->param());
+            $z = $z->add($this->biases->param());
         }
 
-        return $output;
+        return $z;
     }
 
     /**
@@ -235,14 +235,14 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        if (!$this->input) {
+        if (!$this->x) {
             throw new RuntimeException('Must perform forward pass'
                 . ' before backpropagating.');
         }
 
         $dOut = $prevGradient();
 
-        $dW = $dOut->matmul($this->input->transpose());
+        $dW = $dOut->matmul($this->x->transpose());
 
         $weights = $this->weights->param();
 
@@ -256,7 +256,7 @@ class Dense implements Hidden, Parametric
             $this->biases->accumulateGradient($dOut->sum());
         }
 
-        $this->input = null;
+        $this->x = null;
 
         return new Deferred([$this, 'gradient'], [$weights, $dOut]);
     }

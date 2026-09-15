@@ -47,12 +47,12 @@ class SELU implements ActivationFunction
      *
      * @internal
      *
-     * @param Matrix $input
+     * @param Matrix $x
      * @return Matrix
      */
-    public function activate(Matrix $input) : Matrix
+    public function activate(Matrix $x) : Matrix
     {
-        return $input->map([$this, '_activate']);
+        return $x->map([$this, '_activate']);
     }
 
     /**
@@ -60,39 +60,39 @@ class SELU implements ActivationFunction
      *
      * @internal
      *
-     * @param Matrix $input
-     * @param Matrix $output
+     * @param Matrix $x
+     * @param Matrix $z
      * @return Matrix
      */
-    public function differentiate(Matrix $input, Matrix $output) : Matrix
+    public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $output->map([$this, '_differentiate']);
+        return $z->map([$this, '_differentiate']);
     }
 
     /**
      * @internal
      *
-     * @param float $input
+     * @param float $x
      * @return float
      */
-    public function _activate(float $input) : float
+    public function _activate(float $x) : float
     {
-        return $input > 0.0
-            ? self::SCALE * $input
-            : self::BETA * (exp($input) - 1.0);
+        return $x > 0.0
+            ? self::SCALE * $x
+            : self::BETA * (exp($x) - 1.0);
     }
 
     /**
      * @internal
      *
-     * @param float $output
+     * @param float $z
      * @return float
      */
-    public function _differentiate(float $output) : float
+    public function _differentiate(float $z) : float
     {
-        return $output > 0.0
+        return $z > 0.0
             ? self::SCALE
-            : $output + self::BETA;
+            : $z + self::BETA;
     }
 
     /**

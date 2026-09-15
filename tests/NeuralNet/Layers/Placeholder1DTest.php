@@ -18,7 +18,7 @@ class Placeholder1DTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected Matrix $x;
 
     /**
      * @var Placeholder1D
@@ -27,7 +27,7 @@ class Placeholder1DTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->input = Matrix::quick([
+        $this->x = Matrix::quick([
             [1.0, 2.5],
             [0.1, 0.0],
             [0.002, -6.0],
@@ -55,12 +55,12 @@ class Placeholder1DTest extends TestCase
             [0.002, -6.0],
         ];
 
-        $forward = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->x);
 
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        $infer = $this->layer->infer($this->input);
+        $infer = $this->layer->infer($this->x);
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEquals($expected, $infer->asArray());

@@ -20,7 +20,7 @@ We can also instantiate a new [Dataset](../datasets/api.md) object by passing an
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\NDJSON;
 
-$dataset = Labeled::fromIterator(new NDJSON('example.ndjson'));
+$dataset = Labeled::fromIterator(new NDJSON('example.jsonl'));
 ```
 
 ## Export
@@ -50,7 +50,7 @@ use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use LimitIterator;
 
-$extractor = new NDJSON('example.ndjson');
+$extractor = new NDJSON('example.jsonl');
 
 $iterator = new LimitIterator($extractor->getIterator(), 500, 1000);
 

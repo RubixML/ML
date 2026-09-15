@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\NeuralNet;
 
+use Tensor\Matrix;
 use Tensor\Tensor;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -116,10 +117,14 @@ class SnapshotTest extends TestCase
 
         $dataset = Labeled::quick(
             [[1.0], [0.5], [2.0]],
-            ['yes', 'no', 'yes']
+            [0, 1, 0]
         );
 
-        $network->roundtrip($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $network->feed($x);
+
+        $network->backpropagate(Matrix::quick([$dataset->labels()]));
 
         $optimizer = new Stochastic(new Constant());
 
@@ -128,7 +133,7 @@ class SnapshotTest extends TestCase
                 foreach ($layer->parameters() as $param) {
                     $optimizer->warm($param);
 
-                    $param->update($optimizer);
+                    $optimizer->update($param);
                 }
             }
         }
@@ -285,8 +290,7 @@ class SnapshotTest extends TestCase
                 new Dense(1),
             ],
             output: new Binary(
-                classes: ['yes', 'no'],
-                costFn:  new BinaryCrossEntropy()
+                costFn: new BinaryCrossEntropy()
             )
         );
 

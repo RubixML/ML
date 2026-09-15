@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Tensor\Matrix;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
@@ -47,6 +48,8 @@ use function count;
 use function get_object_vars;
 use function number_format;
 use function array_map;
+use function array_flip;
+use function array_fill;
 use function is_dir;
 use function uniqid;
 use function sys_get_temp_dir;
@@ -466,7 +469,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Multiclass($classes, $this->costFn)
+            new Multiclass(count($classes), $this->costFn)
         );
 
         $network->initialize();
@@ -532,13 +535,25 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $this->scores = $this->losses = [];
 
+        $classMap = array_flip($this->classes);
+
+        $training = $training->transformLabels(
+            static fn ($label) => $classMap[$label]
+                ?? throw new RuntimeException("Unknown class $label encountered during training.")
+        );
+
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
 
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $loss = $this->network->roundtrip($batch);
+                $x = Matrix::quick($batch->samples())->transpose();
+                $y = $this->oneHot($batch->labels());
+
+                $this->network->feed($x);
+
+                $loss = $this->network->backpropagate($y);
 
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0
                     || $step === count($batches);
@@ -567,7 +582,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                     }
 
                     foreach ($this->network->trainableParameters() as $param) {
-                        $param->update($this->optimizer);
+                        $this->optimizer->update($param);
 
                         $param->resetGradient();
                     }
@@ -707,7 +722,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $activations = $this->network->infer($dataset);
+        $x = Matrix::quick($dataset->samples())->transpose();
+
+        $activations = $this->network->infer($x);
 
         $probabilities = [];
 
@@ -716,6 +733,25 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Build a one-hot encoded matrix from the given class indices.
+     *
+     * @internal
+     *
+     * @param list<int> $indices
+     * @return Matrix
+     */
+    protected function oneHot(array $indices) : Matrix
+    {
+        $y = array_fill(0, count($this->classes), array_fill(0, count($indices), 0.0));
+
+        foreach ($indices as $column => $index) {
+            $y[$index][$column] = 1.0;
+        }
+
+        return Matrix::quick($y);
     }
 
     /**

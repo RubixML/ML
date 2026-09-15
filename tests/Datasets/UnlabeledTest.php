@@ -361,6 +361,79 @@ class UnlabeledTest extends TestCase
     }
 
     #[Test]
+    public function chunked() : void
+    {
+        $batches = iterator_to_array(Unlabeled::chunked(self::SAMPLES, 4));
+
+        $this->assertCount(2, $batches);
+        $this->assertInstanceOf(Unlabeled::class, $batches[0]);
+
+        $this->assertCount(4, $batches[0]);
+        $this->assertCount(2, $batches[1]);
+
+        $this->assertEquals(array_slice(self::SAMPLES, 0, 4), $batches[0]->samples());
+        $this->assertEquals(array_slice(self::SAMPLES, 4), $batches[1]->samples());
+    }
+
+    #[Test]
+    public function chunkedWithDefaultChunkSize() : void
+    {
+        $batches = iterator_to_array(Unlabeled::chunked(self::SAMPLES));
+
+        $this->assertCount(1, $batches);
+        $this->assertCount(6, $batches[0]);
+    }
+
+    #[Test]
+    public function chunkedIsLazy() : void
+    {
+        $fetched = 0;
+
+        $iterator = (function () use (&$fetched) {
+            for ($i = 0; $i < 9; ++$i) {
+                ++$fetched;
+                yield [0.5, 0.5, 0.5, 0.5];
+            }
+        })();
+
+        $batches = Unlabeled::chunked($iterator, 3);
+
+        $this->assertInstanceOf(Unlabeled::class, $batches->current());
+        $this->assertSame(3, $fetched);
+
+        $batches->next();
+
+        $this->assertInstanceOf(Unlabeled::class, $batches->current());
+        $this->assertSame(6, $fetched);
+    }
+
+    #[Test]
+    public function chunkedEmpty() : void
+    {
+        $batches = iterator_to_array(Unlabeled::chunked([]));
+
+        $this->assertCount(0, $batches);
+    }
+
+    #[Test]
+    public function chunkedVerifies() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        foreach (Unlabeled::chunked([['sample'], ['sample', 'extra']]) as $batch) {
+            //
+        }
+    }
+
+    #[Test]
+    public function chunkedSkipsVerification() : void
+    {
+        $batches = iterator_to_array(Unlabeled::chunked([['sample'], ['sample', 'extra']], verify: false));
+
+        $this->assertCount(2, $batches[0]);
+    }
+
+    #[Test]
     public function partition() : void
     {
         [$left, $right] = $this->dataset->splitByFeature(column: 2, value: 'loner');

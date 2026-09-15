@@ -16,12 +16,20 @@ use Rubix\ML\Exceptions\RuntimeException;
 use IteratorAggregate;
 use ArrayAccess;
 use Countable;
+use Generator;
 
 use function Rubix\ML\iterator_first;
 use function Rubix\ML\iterator_filter;
 use function Rubix\ML\array_transpose;
 use function count;
 use function is_array;
+use function array_is_list;
+use function array_key_first;
+use function array_values;
+use function array_map;
+use function array_column;
+use function array_splice;
+use function array_unique;
 use function serialize;
 use function usort;
 
@@ -62,16 +70,24 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     public function __construct(array $samples = [], bool $verify = true)
     {
         if ($samples and $verify) {
-            $samples = array_values($samples);
+            if (!array_is_list($samples)) {
+                $samples = array_values($samples);
+            }
 
-            $prototype = array_values((array) current($samples));
+            $prototype = $samples[array_key_first($samples)];
+
+            $prototype = array_values((array) $prototype);
 
             $n = count($prototype);
 
-            $types = array_map([DataType::class, 'detectCode'], $prototype);
+            $typeCodes = array_map([DataType::class, 'detectCode'], $prototype);
 
             foreach ($samples as $row => &$sample) {
-                $sample = is_array($sample) ? array_values($sample) : [$sample];
+                if (!is_array($sample)) {
+                    $sample = [$sample];
+                } elseif (!array_is_list($sample)) {
+                    $sample = array_values($sample);
+                }
 
                 if (count($sample) !== $n) {
                     throw new InvalidArgumentException('Number of columns'
@@ -82,10 +98,10 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
                 foreach ($sample as $column => $value) {
                     $code = DataType::detectCode($value);
 
-                    if ($code !== $types[$column]) {
+                    if ($code !== $typeCodes[$column]) {
                         throw new InvalidArgumentException("Column $column"
                             . ' must contain values of the same data type,'
-                            . ' ' . DataType::build($types[$column]) . ' expected'
+                            . ' ' . DataType::build($typeCodes[$column]) . ' expected'
                             . ' but ' . DataType::build($code) . ' given at row'
                             . " offset $row.");
                     }
@@ -103,6 +119,17 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      * @return static
      */
     abstract public static function fromIterator(iterable $iterator) : self;
+
+    /**
+     * Build an iterable of datasets of size n from an iterator. The last batch
+     * may contain fewer than n samples.
+     *
+     * @param iterable<mixed[]> $iterator
+     * @param positive-int $n
+     * @param bool $verify
+     * @return Generator<static>
+     */
+    abstract public static function chunked(iterable $iterator, int $n = 1024, bool $verify = true) : Generator;
 
     /**
      * Stack a number of datasets on top of each other to form a single dataset.
