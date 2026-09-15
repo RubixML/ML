@@ -27,7 +27,7 @@ $network = new FeedForward(
         new Activation(activationFn: new LeakyReLU()),
     ],
     new Multiclass(
-        classes: ['cat', 'dog', 'bird'],
+        numClasses: 3,
         costFn: new MulticlassCrossEntropy()
     )
 );
@@ -113,6 +113,9 @@ Perform a forward and backward pass of the network in one call returning the los
 public function roundtrip(Labeled $dataset) : float
 ```
 
+!!! note
+    Classification output layers such as `Multiclass` and `Binary` expect labels to be encoded as integer indices of their class neurons rather than the original class labels. The neural network learners (e.g. Softmax Classifier, Logistic Regression, Multilayer Perceptron) perform this mapping internally.
+
 Feed a batch through the network and return a matrix of activations at the output layer:
 
 ```php
@@ -124,6 +127,8 @@ Backpropagate the gradient of the cost function and return the loss:
 ```php
 public function backpropagate(array $labels) : float
 ```
+
+The `backpropagate` method accepts the same integer-encoded indices as `roundtrip`.
 
 Export the network architecture as a graph in dot format:
 

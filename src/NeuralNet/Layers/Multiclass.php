@@ -28,13 +28,11 @@ use const Rubix\ML\EPSILON;
 class Multiclass implements Output
 {
     /**
-     * The unique class labels.
+     * The number of class neurons in the layer.
      *
-     * @var string[]
+     * @var int
      */
-    protected array $classes = [
-        //
-    ];
+    protected int $numClasses;
 
     /**
      * The function that computes the loss of erroneous activations.
@@ -75,26 +73,22 @@ class Multiclass implements Output
     }
 
     /**
-     * @param string[] $classes
+     * @param int $numClasses
      * @param ClassificationLoss $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ClassificationLoss $costFn)
+    public function __construct(int $numClasses, ClassificationLoss $costFn)
     {
-        $classes = array_values(array_unique($classes));
-
-        if (count($classes) < 2) {
+        if ($numClasses < 2) {
             throw new InvalidArgumentException('Number of classes'
-                . ' must be greater than 1, ' . count($classes)
-                . ' given.');
+                . " must be greater than 1, $numClasses given.");
         }
 
         if ($costFn instanceof BinaryCrossEntropy) {
             throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
 
-        $this->classes = $classes;
-
+        $this->numClasses = $numClasses;
         $this->costFn = $costFn;
     }
 
@@ -105,7 +99,7 @@ class Multiclass implements Output
      */
     public function width() : int
     {
-        return max(1, count($this->classes));
+        return $this->numClasses;
     }
 
     /**
@@ -118,7 +112,7 @@ class Multiclass implements Output
      */
     public function initialize(int $fanIn) : int
     {
-        $fanOut = count($this->classes);
+        $fanOut = $this->numClasses;
 
         if ($fanIn !== $fanOut) {
             throw new InvalidArgumentException('Fan in must be'
@@ -159,7 +153,7 @@ class Multiclass implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param string[] $labels
+     * @param list<int> $labels
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
@@ -170,16 +164,10 @@ class Multiclass implements Output
                 . ' before backpropagating.');
         }
 
-        $expected = [];
+        $expected = array_fill(0, $this->numClasses, array_fill(0, count($labels), 0.0));
 
-        foreach ($this->classes as $class) {
-            $dist = [];
-
-            foreach ($labels as $label) {
-                $dist[] = $class == $label ? 1.0 : 0.0;
-            }
-
-            $expected[] = $dist;
+        foreach ($labels as $column => $index) {
+            $expected[$index][$column] = 1.0;
         }
 
         $expected = Matrix::quick($expected);

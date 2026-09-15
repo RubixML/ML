@@ -11,7 +11,7 @@ use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function count;
+use function array_map;
 
 /**
  * Binary
@@ -27,15 +27,6 @@ use function count;
  */
 class Binary implements Output
 {
-    /**
-     * The labels of either of the possible outcomes.
-     *
-     * @var float[]
-     */
-    protected array $classes = [
-        //
-    ];
-
     /**
      * The function that computes the loss of erroneous activations.
      *
@@ -65,29 +56,15 @@ class Binary implements Output
     protected ?Matrix $output = null;
 
     /**
-     * @param string[] $classes
      * @param ClassificationLoss $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ClassificationLoss $costFn)
+    public function __construct(ClassificationLoss $costFn)
     {
-        $classes = array_values(array_unique($classes));
-
-        if (count($classes) !== 2) {
-            throw new InvalidArgumentException('Number of classes'
-                . ' must be 2, ' . count($classes) . ' given.');
-        }
-
         if ($costFn instanceof MulticlassCrossEntropy) {
-            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
+            throw new InvalidArgumentException('Not compatible with multiclass cross entropy.');
         }
 
-        $classes = [
-            $classes[0] => 0.0,
-            $classes[1] => 1.0,
-        ];
-
-        $this->classes = $classes;
         $this->costFn = $costFn;
         $this->sigmoid = new Sigmoid();
     }
@@ -150,7 +127,7 @@ class Binary implements Output
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param string[] $labels
+     * @param list<int> $labels
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
@@ -161,13 +138,7 @@ class Binary implements Output
                 . ' before backpropagating.');
         }
 
-        $expected = [];
-
-        foreach ($labels as $label) {
-            $expected[] = $this->classes[$label];
-        }
-
-        $expected = Matrix::quick([$expected]);
+        $expected = Matrix::quick([array_map('floatval', $labels)]);
 
         $input = $this->input;
         $output = $this->output;

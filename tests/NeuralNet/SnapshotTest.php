@@ -116,7 +116,7 @@ class SnapshotTest extends TestCase
 
         $dataset = Labeled::quick(
             [[1.0], [0.5], [2.0]],
-            ['yes', 'no', 'yes']
+            [0, 1, 0]
         );
 
         $network->roundtrip($dataset);
@@ -285,8 +285,7 @@ class SnapshotTest extends TestCase
                 new Dense(1),
             ],
             output: new Binary(
-                classes: ['yes', 'no'],
-                costFn:  new BinaryCrossEntropy()
+                costFn: new BinaryCrossEntropy()
             )
         );
 

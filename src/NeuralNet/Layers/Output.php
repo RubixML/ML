@@ -16,7 +16,7 @@ interface Output extends Layer
     /**
      * Compute the gradient and loss at the output.
      *
-     * @param (string|int|float)[] $labels
+     * @param (int|float)[] $labels
      * @throws \Rubix\ML\Exceptions\RuntimeException
      * @return mixed[]
      */

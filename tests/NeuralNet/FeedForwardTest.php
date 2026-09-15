@@ -81,7 +81,7 @@ class FeedForwardTest extends TestCase
             [1.0, 2.5],
             [0.1, 0.0],
             [0.002, -6.0],
-        ], ['yes', 'no', 'maybe']);
+        ], [0, 1, 2]);
 
         $this->input = new Placeholder1D(2);
 
@@ -93,7 +93,7 @@ class FeedForwardTest extends TestCase
             new Dense(3),
         ];
 
-        $this->output = new Multiclass(['yes', 'no', 'maybe'], new MulticlassCrossEntropy());
+        $this->output = new Multiclass(3, new MulticlassCrossEntropy());
 
         $this->network = new FeedForward($this->input, $this->hidden, $this->output);
     }
@@ -185,7 +185,7 @@ class FeedForwardTest extends TestCase
             [0.1, 0.0],
             [0.002, -6.0],
             [0.5, 1.0],
-        ], ['yes', 'no', 'maybe', 'yes']);
+        ], [0, 1, 2, 0]);
 
         $batches = $dataset->batch(2);
 

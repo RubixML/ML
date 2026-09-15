@@ -47,6 +47,7 @@ use function count;
 use function get_object_vars;
 use function number_format;
 use function array_map;
+use function array_flip;
 use function is_dir;
 use function uniqid;
 use function sys_get_temp_dir;
@@ -466,7 +467,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         $network = new FeedForward(
             new Placeholder1D($dataset->numFeatures()),
             $hiddenLayers,
-            new Multiclass($classes, $this->costFn)
+            new Multiclass(count($classes), $this->costFn)
         );
 
         $network->initialize();
@@ -531,6 +532,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         $this->scores = $this->losses = [];
+
+        $classMap = array_flip($this->classes);
+
+        $training = $training->transformLabels(
+            static fn ($label) => $classMap[$label]
+                ?? throw new InvalidArgumentException("Unknown class '$label' encountered during training.")
+        );
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);

@@ -29,9 +29,9 @@ class MulticlassTest extends TestCase
     protected Matrix $input;
 
     /**
-     * @var string[]
+     * @var list<int>
      */
-    protected array $labels;
+    protected array $indices;
 
     /**
      * @var Optimizer
@@ -51,11 +51,11 @@ class MulticlassTest extends TestCase
             [0.002, -6.0, -0.5],
         ]);
 
-        $this->labels = ['hot', 'cold', 'ice cold'];
+        $this->indices = [0, 1, 2];
 
         $this->optimizer = new Stochastic(new Constant(0.001));
 
-        $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], new MulticlassCrossEntropy());
+        $this->layer = new Multiclass(3, new MulticlassCrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
@@ -86,7 +86,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back($this->indices, $this->optimizer);
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
@@ -121,7 +121,7 @@ class MulticlassTest extends TestCase
     #[Test]
     public function gradientWithSoftmaxJacobian() : void
     {
-        $layer = new Multiclass(['hot', 'cold', 'ice cold'], new RelativeEntropy());
+        $layer = new Multiclass(3, new RelativeEntropy());
 
         $layer->initialize(3);
 

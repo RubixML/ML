@@ -28,9 +28,9 @@ class BinaryTest extends TestCase
     protected Matrix $input;
 
     /**
-     * @var string[]
+     * @var list<int>
      */
-    protected array $labels;
+    protected array $indices;
 
     /**
      * @var Optimizer
@@ -48,11 +48,11 @@ class BinaryTest extends TestCase
             [1.0, 2.5, -0.1],
         ]);
 
-        $this->labels = ['hot', 'cold', 'hot'];
+        $this->indices = [0, 1, 0];
 
         $this->optimizer = new Stochastic(new Constant(0.001));
 
-        $this->layer = new Binary(['hot', 'cold'], new BinaryCrossEntropy());
+        $this->layer = new Binary(new BinaryCrossEntropy());
 
         srand(self::RANDOM_SEED);
     }
@@ -81,7 +81,7 @@ class BinaryTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back($this->labels, $this->optimizer);
+        [$computation, $loss] = $this->layer->back($this->indices, $this->optimizer);
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
