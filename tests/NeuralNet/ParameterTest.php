@@ -210,7 +210,7 @@ class ParameterTest extends TestCase
         $this->param->freeze();
 
         $this->expectException(RuntimeException::class);
-        
+
         $this->optimizer->update($this->param);
     }
 }
