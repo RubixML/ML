@@ -537,7 +537,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         $training = $training->transformLabels(
             static fn ($label) => $classMap[$label]
-                ?? throw new InvalidArgumentException("Unknown class '$label' encountered during training.")
+                ?? throw new RuntimeException("Unknown class $label encountered during training.")
         );
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
