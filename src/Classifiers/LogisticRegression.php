@@ -480,8 +480,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
                 $loss = $this->network->backpropagate($y);
 
-                foreach ($this->network->parameters() as $param) {
-                    $param->update($this->optimizer);
+                foreach ($this->network->trainableParameters() as $param) {
+                    $this->optimizer->update($param);
 
                     $param->resetGradient();
                 }

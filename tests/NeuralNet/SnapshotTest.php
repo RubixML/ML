@@ -133,7 +133,7 @@ class SnapshotTest extends TestCase
                 foreach ($layer->parameters() as $param) {
                     $optimizer->warm($param);
 
-                    $param->update($optimizer);
+                    $optimizer->update($param);
                 }
             }
         }

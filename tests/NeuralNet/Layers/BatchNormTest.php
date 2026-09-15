@@ -111,7 +111,7 @@ class BatchNormTest extends TestCase
             if ($param->hasGradient()) {
                 $this->optimizer->warm($param);
 
-                $param->update($this->optimizer);
+                $this->optimizer->update($param);
             }
         }
 
@@ -178,7 +178,7 @@ class BatchNormTest extends TestCase
             if ($param->hasGradient()) {
                 $optimizer->warm($param);
 
-                $param->update($optimizer);
+                $optimizer->update($param);
             }
         }
 

@@ -551,7 +551,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                     }
 
                     foreach ($this->network->trainableParameters() as $param) {
-                        $param->update($this->optimizer);
+                        $this->optimizer->update($param);
 
                         $param->resetGradient();
                     }

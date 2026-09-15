@@ -162,7 +162,7 @@ class ParameterTest extends TestCase
 
         $this->param->accumulateGradient($gradient);
 
-        $this->param->update($this->optimizer);
+        $this->optimizer->update($this->param);
 
         $this->assertEquals($expected, $this->param->param()->asArray());
     }
@@ -209,20 +209,8 @@ class ParameterTest extends TestCase
 
         $this->param->freeze();
 
-        $this->param->update($this->optimizer);
-
-        $this->assertEquals([
-            [5, 4],
-            [-2, 6],
-        ], $this->param->param()->asArray());
-
-        $this->param->unfreeze();
-
-        $this->param->update($this->optimizer);
-
-        $this->assertEquals([
-            [4.98, 3.99],
-            [-2.01, 6.02],
-        ], $this->param->param()->asArray());
+        $this->expectException(RuntimeException::class);
+        
+        $this->optimizer->update($this->param);
     }
 }

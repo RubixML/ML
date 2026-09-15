@@ -115,7 +115,7 @@ class PReLUTest extends TestCase
             if ($param->hasGradient()) {
                 $this->optimizer->warm($param);
 
-                $param->update($this->optimizer);
+                $this->optimizer->update($param);
             }
         }
 

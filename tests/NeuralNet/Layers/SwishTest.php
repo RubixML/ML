@@ -116,7 +116,7 @@ class SwishTest extends TestCase
             if ($param->hasGradient()) {
                 $this->optimizer->warm($param);
 
-                $param->update($this->optimizer);
+                $this->optimizer->update($param);
             }
         }
 
@@ -179,7 +179,7 @@ class SwishTest extends TestCase
             if ($param->hasGradient()) {
                 $this->optimizer->warm($param);
 
-                $param->update($this->optimizer);
+                $this->optimizer->update($param);
             }
         }
 

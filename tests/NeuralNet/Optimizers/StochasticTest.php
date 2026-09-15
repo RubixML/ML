@@ -106,9 +106,11 @@ class StochasticTest extends TestCase
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $before = $param->param();
 
-        $this->assertEquals($expected, $step->asArray());
+        $this->optimizer->update($param);
+
+        $this->assertEquals($before->subtract(Matrix::quick($expected))->asArray(), $param->param()->asArray());
     }
 
     #[Test]
@@ -128,13 +130,15 @@ class StochasticTest extends TestCase
 
         $this->optimizer->flush();
 
+        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+
         $this->optimizer->warm($param);
 
         $param->accumulateGradient($gradient);
 
-        $step = $this->optimizer->update($param);
+        $this->optimizer->update($param);
 
-        $this->assertEquals([[0.01 * 0.001, -0.03 * 0.001]], $step->asArray());
+        $this->assertEquals([[0.1 - 0.01 * 0.001, 0.2 + 0.03 * 0.001]], $param->param()->asArray());
     }
 
     #[Test]
