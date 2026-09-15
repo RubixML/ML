@@ -172,14 +172,10 @@ class Dense implements Hidden, Parametric
     {
         $fanOut = $this->neurons;
 
-        $weights = $this->weightInitializer->initialize($fanIn, $fanOut);
-
-        $this->weights = new Parameter($weights);
+        $this->weights = $this->weightInitializer->initialize([$fanOut, $fanIn]);
 
         if ($this->bias) {
-            $biases = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
-
-            $this->biases = new Parameter($biases);
+            $this->biases = $this->biasInitializer->initialize([$fanOut]);
         }
 
         return $fanOut;

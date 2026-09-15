@@ -109,10 +109,8 @@ class Swish implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $beta = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
-
         $this->width = $fanOut;
-        $this->beta = new Parameter($beta);
+        $this->beta = $this->initializer->initialize([$fanOut]);
 
         return $fanOut;
     }
