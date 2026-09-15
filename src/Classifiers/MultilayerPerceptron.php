@@ -200,26 +200,6 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     protected ?string $snapshotPath = null;
 
     /**
-     * Build a one-hot encoded matrix from the given class indices.
-     *
-     * @internal
-     *
-     * @param list<int> $indices
-     * @param int $numClasses
-     * @return list<list<float>>
-     */
-    protected static function oneHot(array $indices, int $numClasses) : array
-    {
-        $expected = array_fill(0, $numClasses, array_fill(0, count($indices), 0.0));
-
-        foreach ($indices as $column => $index) {
-            $expected[$index][$column] = 1.0;
-        }
-
-        return $expected;
-    }
-
-    /**
      * @param mixed[] $hiddenLayers
      * @param int $batchSize
      * @param int $gradientAccumulationSteps
@@ -568,13 +548,12 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $input = Matrix::quick($batch->samples())->transpose();
+                $x = Matrix::quick($batch->samples())->transpose();
+                $y = $this->oneHot($batch->labels());
 
-                $this->network->feed($input);
+                $this->network->feed($x);
 
-                $expected = self::oneHot($batch->labels(), count($this->classes));
-
-                $loss = $this->network->backpropagate($expected);
+                $loss = $this->network->backpropagate($y);
 
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0
                     || $step === count($batches);
@@ -752,6 +731,25 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Build a one-hot encoded matrix from the given class indices.
+     *
+     * @internal
+     *
+     * @param list<int> $indices
+     * @return list<list<float>>
+     */
+    protected function oneHot(array $indices) : array
+    {
+        $expected = array_fill(0, count($this->classes), array_fill(0, count($indices), 0.0));
+
+        foreach ($indices as $column => $index) {
+            $expected[$index][$column] = 1.0;
+        }
+
+        return $expected;
     }
 
     /**

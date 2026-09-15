@@ -172,26 +172,6 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     protected ?string $snapshotPath = null;
 
     /**
-     * Build a one-hot encoded matrix from the given class indices.
-     *
-     * @internal
-     *
-     * @param list<int> $indices
-     * @param int $numClasses
-     * @return list<list<float>>
-     */
-    protected static function oneHot(array $indices, int $numClasses) : array
-    {
-        $expected = array_fill(0, $numClasses, array_fill(0, count($indices), 0.0));
-
-        foreach ($indices as $column => $index) {
-            $expected[$index][$column] = 1.0;
-        }
-
-        return $expected;
-    }
-
-    /**
      * @param int $batchSize
      * @param Optimizer|null $optimizer
      * @param float $l2Penalty
@@ -496,13 +476,12 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $input = Matrix::quick($batch->samples())->transpose();
+                $x = Matrix::quick($batch->samples())->transpose();
+                $y = $this->oneHot($batch->labels());
 
-                $this->network->feed($input);
+                $this->network->feed($x);
 
-                $expected = self::oneHot($batch->labels(), count($this->classes));
-
-                $loss = $this->network->backpropagate($expected);
+                $loss = $this->network->backpropagate($y);
 
                 foreach ($this->network->parameters() as $param) {
                     $param->update($this->optimizer);
@@ -653,6 +632,25 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Build a one-hot encoded matrix from the given class indices.
+     *
+     * @internal
+     *
+     * @param list<int> $indices
+     * @return list<list<float>>
+     */
+    protected function oneHot(array $indices) : array
+    {
+        $expected = array_fill(0, count($this->classes), array_fill(0, count($indices), 0.0));
+
+        foreach ($indices as $column => $index) {
+            $expected[$index][$column] = 1.0;
+        }
+
+        return $expected;
     }
 
     /**

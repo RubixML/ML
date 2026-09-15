@@ -517,11 +517,12 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $input = Matrix::quick($batch->samples())->transpose();
+                $x = Matrix::quick($batch->samples())->transpose();
+                $y = [$batch->labels()];
 
-                $this->network->feed($input);
+                $this->network->feed($x);
 
-                $loss = $this->network->backpropagate([$batch->labels()]);
+                $loss = $this->network->backpropagate($y);
 
                 $updateThisStep = $step % $this->gradientAccumulationSteps === 0
                     || $step === count($batches);
