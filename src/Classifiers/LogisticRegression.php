@@ -82,6 +82,13 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected Optimizer $optimizer;
 
     /**
+     * The amount of L1 regularization applied to the weights of the output layer.
+     *
+     * @var float
+     */
+    protected float $l1Penalty;
+
+    /**
      * The amount of L2 regularization applied to the weights of the output layer.
      *
      * @var float
@@ -175,6 +182,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     /**
      * @param int $batchSize
      * @param Optimizer|null $optimizer
+     * @param float $l1Penalty
      * @param float $l2Penalty
      * @param int $epochs
      * @param float $minChange
@@ -188,6 +196,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     public function __construct(
         int $batchSize = 128,
         ?Optimizer $optimizer = null,
+        float $l1Penalty = 1e-4,
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
@@ -200,6 +209,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
+        }
+
+        if ($l1Penalty < 0.0) {
+            throw new InvalidArgumentException('L1 Penalty must be'
+                . " greater than 0, $l1Penalty given.");
         }
 
         if ($l2Penalty < 0.0) {
@@ -238,6 +252,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam(new Constant(0.001));
+        $this->l1Penalty = $l1Penalty;
         $this->l2Penalty = $l2Penalty;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -286,6 +301,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         return [
             'batch size' => $this->batchSize,
             'optimizer' => $this->optimizer,
+            'l1 penalty' => $this->l1Penalty,
             'l2 penalty' => $this->l2Penalty,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
@@ -392,7 +408,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         }
 
         $hiddenLayers = [
-            new Dense(1, l2Penalty: $this->l2Penalty, bias: true, weightInitializer: new Xavier1()),
+            new Dense(1, $this->l1Penalty, $this->l2Penalty, true, new Xavier1()),
         ];
 
         $network = new FeedForward(
