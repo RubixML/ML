@@ -167,7 +167,7 @@ class Swish implements Hidden, Parametric
                 . ' before backpropagating.');
         }
 
-        $dOut = $prevGradient();
+        $dOut = $prevGradient->compute();
 
         $x = $this->x;
         $z = $this->z;

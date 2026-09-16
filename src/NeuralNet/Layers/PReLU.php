@@ -147,7 +147,7 @@ class PReLU implements Hidden, Parametric
                 . ' before backpropagating.');
         }
 
-        $dOut = $prevGradient();
+        $dOut = $prevGradient->compute();
 
         $dIn = $this->x->clipUpper(0.0);
 
