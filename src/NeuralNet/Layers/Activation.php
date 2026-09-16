@@ -157,7 +157,7 @@ class Activation implements Hidden
      */
     public function gradient(Matrix $x, Matrix $z, Deferred $prevGradient) : Matrix
     {
-        return $this->activationFn->differentiate($x, $z)->multiply($prevGradient());
+        return $this->activationFn->differentiate($x, $z)->multiply($prevGradient->compute());
     }
 
     /**

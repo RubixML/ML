@@ -170,7 +170,7 @@ class Dropout implements Hidden
      */
     public function gradient(Deferred $prevGradient, Matrix $mask)
     {
-        return $prevGradient()->multiply($mask);
+        return $prevGradient->compute()->multiply($mask);
     }
 
     /**
