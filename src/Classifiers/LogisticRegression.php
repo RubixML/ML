@@ -5,6 +5,7 @@ namespace Rubix\ML\Classifiers;
 use Tensor\Matrix;
 use Generator;
 use Rubix\ML\Online;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -63,7 +64,7 @@ use function sys_get_temp_dir;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
+class LogisticRegression implements Estimator, Learner, Iterative, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -117,7 +118,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     protected int $evalInterval;
 
     /**
-     * The number of epochs without improvement in the validation score to wait before considering an early stop.
+     * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
      * @var positive-int
      */
@@ -199,9 +200,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         float $l1Penalty = 1e-4,
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
-        float $minChange = 1e-4,
-        int $evalInterval = 3,
-        int $window = 5,
+        float $minChange = 1e-5,
+        int $evalInterval = 1,
+        int $window = 10,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null,
@@ -324,11 +325,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;
@@ -337,8 +338,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }

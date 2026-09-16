@@ -7,7 +7,7 @@
 !!! note
     If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -20,9 +20,9 @@
 | 3 | l1Penalty | 1e-4 | float | The amount of L1 regularization applied to the weights of the output layer. |
 | 4 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
-| 6 | minChange | 1e-4 | float | The minimum change in the training loss necessary to continue training. |
-| 7 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
-| 8 | window | 5 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
+| 6 | minChange | 1e-5 | float | The minimum change in the training loss necessary to continue training. |
+| 7 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the holdout set. |
+| 8 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. |
 | 9 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
 | 10 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 11 | metric | RMSE | Metric | The validation metric used to score the generalization performance of the model during training. |
@@ -42,9 +42,9 @@ $estimator = new Adaline(
     l1Penalty: 1e-4,
     l2Penalty: 1e-4,
     epochs: 500,
-    minChange: 1e-6,
-    evalInterval: 3,
-    window: 5,
+    minChange: 1e-5,
+    evalInterval: 1,
+    window: 10,
     holdOut: 0.1,
     costFn: new HuberLoss(alpha: 2.5),
     metric: new RMSE()
@@ -52,26 +52,6 @@ $estimator = new Adaline(
 ```
 
 ## Additional Methods
-
-Clean up any leftover state after training. Only do this if you plan to use the model for inference.
-
-```php
-public cleanup() : void
-```
-
-Return an iterable progress table with the steps from the last training session.
-
-```php
-public steps() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->steps());
-```
 
 Return the loss for each epoch from the last training session.
 
@@ -95,6 +75,12 @@ Set the path of the temporary snapshot file used to store network parameters dur
 
 ```php
 public setSnapshotPath(?string $path) : void
+```
+
+Clean up any leftover state after training. Only do this if you plan to use the model for inference.
+
+```php
+public cleanup() : void
 ```
 
 ## References
