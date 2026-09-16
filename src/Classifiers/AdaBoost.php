@@ -121,7 +121,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     protected int $evalInterval;
 
     /**
-     * The number of epochs without improvement in the validation score to wait before considering an early stop.
+     * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
      * @var positive-int
      */
@@ -200,7 +200,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         float $rate = 1.0,
         float $ratio = 0.8,
         int $epochs = 100,
-        float $minChange = 1e-4,
+        float $minChange = 1e-5,
         int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,

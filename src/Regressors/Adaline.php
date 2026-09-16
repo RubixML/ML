@@ -117,7 +117,7 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     protected int $evalInterval;
 
     /**
-     * The number of epochs without improvement in the validation score to wait before considering an early stop.
+     * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
      * @var positive-int
      */
@@ -193,9 +193,9 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         float $l1Penalty = 1e-4,
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
-        float $minChange = 1e-4,
-        int $evalInterval = 3,
-        int $window = 5,
+        float $minChange = 1e-5,
+        int $evalInterval = 1,
+        int $window = 10,
         float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
         ?Metric $metric = null

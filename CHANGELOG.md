@@ -54,6 +54,7 @@
     - Add Dataset chunked() factory for online training
     - Added L1 penalty to `Dense` layers
     - `Adaline`, `Logistic Regression`, `Softmax Classifier` now elastic net
+    - Changed default gradient-based `minChange` from 1e-4 to 1e-5
     
 - 2.5.15
     - Optimize random weighted subset with replacement
