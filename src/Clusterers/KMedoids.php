@@ -4,6 +4,7 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Set;
 use Rubix\ML\Learner;
+use Rubix\ML\Iterative;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
@@ -65,7 +66,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistable
+class KMedoids implements Estimator, Learner, Iterative, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -246,7 +247,7 @@ class KMedoids implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;

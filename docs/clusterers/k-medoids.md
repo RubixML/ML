@@ -4,7 +4,7 @@
 
 A robust medoid-based hard clustering algorithm capable of grouping linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). Unlike centroid-based algorithms such as [K Means](k-means.md), K Medoids anchors each cluster with an *actual* sample of the training set (called a *medoid*) rather than with a mean vector, making the resultant clustering less sensitive to outliers and noise.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 
@@ -40,7 +40,7 @@ public medoids() : array[]
 Return an iterable progress table with the steps from the last training session.
 
 ```php
-public steps() : iterable
+public progress() : iterable
 ```
 
 ```php
@@ -48,7 +48,7 @@ use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('progress.csv', true);
 
-$extractor->export($estimator->steps());
+$extractor->export($estimator->progress());
 ```
 
 Return the full-dataset inertia of the best candidate medoid proposed at each CLARA round.

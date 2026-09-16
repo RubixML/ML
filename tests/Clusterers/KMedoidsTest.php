@@ -97,6 +97,45 @@ class KMedoidsTest extends TestCase
     }
 
     #[Test]
+    public function progressContract() : void
+    {
+        $this->assertSame([], iterator_to_array($this->estimator->progress(), false));
+
+        srand(self::RANDOM_SEED);
+
+        $estimator = new KMedoids(
+            k: 3,
+            batchSize: 100,
+            numCandidates: 3,
+            minChange: 1e-6,
+            kernel: new Euclidean(),
+            seeder: new KMC2()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $losses = $estimator->losses();
+
+        $this->assertIsArray($losses);
+        $this->assertNotEmpty($losses);
+
+        $rows = iterator_to_array($estimator->progress(), false);
+
+        $this->assertCount(count($losses), $rows);
+
+        foreach ($rows as $row) {
+            $this->assertIsInt($row['epoch']);
+            $this->assertIsFloat($row['loss']);
+        }
+    }
+
+    #[Test]
     public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
