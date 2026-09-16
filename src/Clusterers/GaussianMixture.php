@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -60,7 +61,7 @@ use const Rubix\ML\TWO_PI;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
+class GaussianMixture implements Estimator, Learner, Iterative, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -254,11 +255,11 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;

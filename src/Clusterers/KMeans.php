@@ -3,6 +3,7 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -56,7 +57,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -255,11 +256,11 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Pers
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;

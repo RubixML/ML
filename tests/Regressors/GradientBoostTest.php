@@ -154,6 +154,52 @@ class GradientBoostTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Assert the iterative progress contract')]
+    public function progressContract() : void
+    {
+        self::assertSame([], iterator_to_array($this->estimator->progress(), false));
+
+        srand(self::RANDOM_SEED);
+
+        $estimator = new GradientBoost(
+            booster: new RegressionTree(maxHeight: 3),
+            rate: 0.1,
+            ratio: 0.3,
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1,
+            holdOut: 0.1,
+            metric: new RMSE()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+
+        $losses = $estimator->losses();
+
+        self::assertIsArray($losses);
+        self::assertNotEmpty($losses);
+
+        $rows = iterator_to_array($estimator->progress(), false);
+
+        self::assertCount(count($losses), $rows);
+
+        foreach ($rows as $row) {
+            self::assertIsInt($row['epoch']);
+            self::assertIsFloat($row['loss']);
+            self::assertArrayHasKey('score', $row);
+        }
+
+        self::assertSame(array_values($losses), array_column($rows, 'loss'));
+        self::assertSame(array_keys($losses), array_column($rows, 'epoch'));
+    }
+
+    #[Test]
     #[TestDox('Trains, predicts, and returns importances')]
     public function trainPredictImportances() : void
     {

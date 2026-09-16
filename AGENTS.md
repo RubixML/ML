@@ -42,7 +42,7 @@ docs/         →  MkDocs documentation
 
 ### Core Interfaces
 
-`Estimator`, `Learner`, `Online`, `Parallel`, `Probabilistic`, `Persistable`, `Verbose`, `RanksFeatures`, `Scoring`
+`Estimator`, `Learner`, `Online`, `Iterative`, `Parallel`, `Probabilistic`, `Persistable`, `Verbose`, `RanksFeatures`, `Scoring`
 
 ### High-level data types
 

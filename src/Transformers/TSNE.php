@@ -7,6 +7,7 @@ use Tensor\ColumnVector;
 use Rubix\ML\Verbose;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Iterative;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -43,7 +44,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Transformer, Verbose
+class TSNE implements Transformer, Iterative, Verbose
 {
     use LoggerAware;
 
@@ -276,11 +277,11 @@ class TSNE implements Transformer, Verbose
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;

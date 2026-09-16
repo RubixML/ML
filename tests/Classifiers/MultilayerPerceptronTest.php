@@ -125,6 +125,58 @@ class MultilayerPerceptronTest extends TestCase
     }
 
     #[Test]
+    public function progressContract() : void
+    {
+        $this->assertSame([], iterator_to_array($this->estimator->progress(), false));
+
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new LeakyReLU(0.1)),
+                new Dense(4),
+                new Swish(),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(new Constant(0.01)),
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1,
+            holdOut: 0.1,
+            costFn: new MulticlassCrossEntropy(),
+            metric: new FBeta()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $losses = $estimator->losses();
+
+        $this->assertIsArray($losses);
+        $this->assertNotEmpty($losses);
+
+        $rows = iterator_to_array($estimator->progress(), false);
+
+        $this->assertCount(count($losses), $rows);
+
+        foreach ($rows as $row) {
+            $this->assertIsInt($row['epoch']);
+            $this->assertIsFloat($row['loss']);
+            $this->assertArrayHasKey('norm', $row);
+            $this->assertArrayHasKey('score', $row);
+        }
+
+        $this->assertSame(array_values($losses), array_column($rows, 'loss'));
+        $this->assertSame(array_keys($losses), array_column($rows, 'epoch'));
+    }
+
+    #[Test]
     public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -222,6 +274,11 @@ class MultilayerPerceptronTest extends TestCase
 
         $this->assertIsArray($scores);
         $this->assertContainsOnlyFloat($scores);
+
+        $norms = $this->estimator->norms();
+
+        $this->assertIsArray($norms);
+        $this->assertContainsOnlyFloat($norms);
 
         $predictions = $this->estimator->predict($testing);
 
