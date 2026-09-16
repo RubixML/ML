@@ -17,19 +17,19 @@ The project documentation is located in the `/docs` folder in the project root.
 - [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support.
 - [GraphViz](https://graphviz.org/) for graph visualization.
 
-## Key Commands
+## Composer Commands
 
 | Command | Action |
 | --- | --- |
-| `composer test` | Run PHPUnit tests |
+| `composer test` | Run full PHPUnit testing suite |
 | `composer analyze` | PHPStan static analysis |
 | `composer check` | PHP-CS-Fixer dry-run (style check) |
 | `composer fix` | PHP code style auto-fixer |
-| `composer benchmark` | PHPBench benchmarks |
+| `composer benchmark` | Run full PHPBench benchmarking suite |
 | `composer coverage` | Analyze test coverage |
 | `composer build` | Full pipeline: install → analyze → test → check |
 
-## Architecture
+## Folder and Namespace Structure
 
 Namespace `Rubix\ML` autoloaded from `src/`.
 
