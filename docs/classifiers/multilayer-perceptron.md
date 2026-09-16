@@ -94,6 +94,12 @@ Return the validation score for each epoch from the last training session.
 public scores() : float[]|null
 ```
 
+Return the gradient norm for each epoch from the last training session.
+
+```php
+public norms() : float[]|null
+```
+
 Returns the underlying neural network instance or `null` if untrained. See [FeedForward](../neural-network/feed-forward.md) for more details.
 
 ```php

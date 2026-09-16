@@ -182,6 +182,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     protected ?array $losses = null;
 
     /**
+     * The gradient norms at each epoch from the last training session.
+     *
+     * @var float[]|null
+     */
+    protected ?array $norms = null;
+
+    /**
      * The file path to store the snapshot on disk during training.
      *
      * @var string|null
@@ -361,8 +368,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'norm' => $this->norms[$epoch] ?? null,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }
@@ -385,6 +393,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     public function losses() : ?array
     {
         return $this->losses;
+    }
+
+    /**
+     * Return the gradient norms for each epoch from the last training session.
+     *
+     * @return float[]|null
+     */
+    public function norms() : ?array
+    {
+        return $this->norms;
     }
 
     /**
@@ -509,7 +527,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . ' and early stopping is disabled.');
         }
 
-        $this->scores = $this->losses = [];
+        $this->scores = $this->losses = $this->norms = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -570,6 +588,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $lossChange = abs($prevLoss - $averageLoss);
 
             $this->losses[$epoch] = $averageLoss;
+            $this->norms[$epoch] = $averageNorm;
 
             if (is_nan($averageLoss)) {
                 if ($this->logger) {
@@ -699,6 +718,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         unset(
             $properties['losses'],
+            $properties['norms'],
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath']

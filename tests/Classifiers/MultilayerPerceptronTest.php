@@ -223,6 +223,11 @@ class MultilayerPerceptronTest extends TestCase
         $this->assertIsArray($scores);
         $this->assertContainsOnlyFloat($scores);
 
+        $norms = $this->estimator->norms();
+
+        $this->assertIsArray($norms);
+        $this->assertContainsOnlyFloat($norms);
+
         $predictions = $this->estimator->predict($testing);
 
         $score = $this->metric->score(

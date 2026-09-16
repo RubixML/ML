@@ -202,6 +202,11 @@ class MLPRegressorTest extends TestCase
         self::assertIsArray($scores);
         self::assertContainsOnlyFloat($scores);
 
+        $norms = $this->estimator->norms();
+
+        self::assertIsArray($norms);
+        self::assertContainsOnlyFloat($norms);
+
         $predictions = $this->estimator->predict($testing);
 
         /** @var list<int|float> $labels */
@@ -398,7 +403,7 @@ class MLPRegressorTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Trained model exposes network, losses, and scores')]
+    #[TestDox('Trained model exposes network, losses, norms, and scores')]
     public function trainedModelExposesNetworkLossesAndScores() : void
     {
         [$testing] = $this->trainEstimatorAndGetTestingSet();
@@ -408,13 +413,17 @@ class MLPRegressorTest extends TestCase
 
         $losses = $this->estimator->losses();
         $scores = $this->estimator->scores();
+        $norms = $this->estimator->norms();
 
         self::assertIsArray($losses);
         self::assertIsArray($scores);
+        self::assertIsArray($norms);
         self::assertNotEmpty($losses);
         self::assertNotEmpty($scores);
+        self::assertNotEmpty($norms);
         self::assertContainsOnlyFloat($losses);
         self::assertContainsOnlyFloat($scores);
+        self::assertContainsOnlyFloat($norms);
 
         $predictions = $this->estimator->predict($testing);
 
