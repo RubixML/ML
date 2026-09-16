@@ -14,6 +14,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
@@ -69,7 +70,7 @@ use function sqrt;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
+class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -180,6 +181,13 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
      * @var float[]|null
      */
     protected ?array $losses = null;
+
+    /**
+     * The gradient norms at each epoch from the last training session.
+     *
+     * @var float[]|null
+     */
+    protected ?array $norms = null;
 
     /**
      * The file path to store the snapshot on disk during training.
@@ -348,11 +356,11 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;
@@ -361,8 +369,9 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'norm' => $this->norms[$epoch] ?? null,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }
@@ -385,6 +394,16 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
     public function losses() : ?array
     {
         return $this->losses;
+    }
+
+    /**
+     * Return the gradient norms for each epoch from the last training session.
+     *
+     * @return float[]|null
+     */
+    public function norms() : ?array
+    {
+        return $this->norms;
     }
 
     /**
@@ -509,7 +528,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
                 . ' and early stopping is disabled.');
         }
 
-        $this->scores = $this->losses = [];
+        $this->scores = $this->losses = $this->norms = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -570,6 +589,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
             $lossChange = abs($prevLoss - $averageLoss);
 
             $this->losses[$epoch] = $averageLoss;
+            $this->norms[$epoch] = $averageNorm;
 
             if (is_nan($averageLoss)) {
                 if ($this->logger) {
@@ -699,6 +719,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         unset(
             $properties['losses'],
+            $properties['norms'],
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath']

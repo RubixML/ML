@@ -12,6 +12,7 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
@@ -63,7 +64,7 @@ use function uniqid;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
+class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -318,11 +319,11 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;
@@ -331,8 +332,8 @@ class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Per
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }

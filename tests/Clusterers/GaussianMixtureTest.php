@@ -95,6 +95,47 @@ class GaussianMixtureTest extends TestCase
     }
 
     #[Test]
+    public function progressContract() : void
+    {
+        $this->assertSame([], iterator_to_array($this->estimator->progress(), false));
+
+        srand(self::RANDOM_SEED);
+
+        $estimator = new GaussianMixture(
+            k: 3,
+            smoothing: 1e-9,
+            epochs: 5,
+            minChange: 1e-6,
+            seeder: new KMC2(m: 50)
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $losses = $estimator->losses();
+
+        $this->assertIsArray($losses);
+        $this->assertNotEmpty($losses);
+
+        $rows = iterator_to_array($estimator->progress(), false);
+
+        $this->assertCount(count($losses), $rows);
+
+        foreach ($rows as $row) {
+            $this->assertIsInt($row['epoch']);
+            $this->assertIsFloat($row['loss']);
+        }
+
+        $this->assertSame(array_values($losses), array_column($rows, 'loss'));
+        $this->assertSame(array_keys($losses), array_column($rows, 'epoch'));
+    }
+
+    #[Test]
     public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -5,6 +5,7 @@ namespace Rubix\ML\Classifiers;
 use Tensor\Matrix;
 use Generator;
 use Rubix\ML\Online;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -63,7 +64,7 @@ use function sys_get_temp_dir;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
+class LogisticRegression implements Estimator, Learner, Iterative, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -324,11 +325,11 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;
@@ -337,8 +338,8 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }

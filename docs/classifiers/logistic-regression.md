@@ -7,7 +7,7 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 !!! note
     If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -53,26 +53,6 @@ $estimator = new LogisticRegression(
 
 ## Additional Methods
 
-Clean up any leftover state after training. Only do this if you plan to use the model for inference.
-
-```php
-public cleanup() : void
-```
-
-Return an iterable progress table with the steps from the last training session.
-
-```php
-public steps() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->steps());
-```
-
 Return the loss for each epoch from the last training session.
 
 ```php
@@ -95,4 +75,10 @@ Set the path of the temporary snapshot file used to store network parameters dur
 
 ```php
 public setSnapshotPath(?string $path) : void
+```
+
+Clean up any leftover state after training. Only do this if you plan to use the model for inference.
+
+```php
+public cleanup() : void
 ```

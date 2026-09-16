@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
@@ -60,7 +61,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable
+class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -318,11 +319,11 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;
@@ -331,8 +332,8 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }

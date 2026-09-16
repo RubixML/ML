@@ -4,7 +4,7 @@
 
 A hierarchical clustering algorithm that uses peak (maxima) finding to locate the candidate centroids of a training set given a radius constraint. Near-duplicate centroids are merged together and the algorithm iterates on the remaining candidates in subsequent steps until the centroids stabilize.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -44,20 +44,6 @@ Return the centroids computed from the training set.
 
 ```php
 public centroids() : array[]
-```
-
-Return an iterable progress table with the steps from the last training session.
-
-```php
-public steps() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->steps());
 ```
 
 Returns the amount of centroid shift during each epoch of training.

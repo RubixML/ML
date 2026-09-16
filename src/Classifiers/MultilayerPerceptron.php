@@ -4,6 +4,7 @@ namespace Rubix\ML\Classifiers;
 
 use Tensor\Matrix;
 use Rubix\ML\Online;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -75,7 +76,7 @@ use function sqrt;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -191,6 +192,13 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
      * @var float[]|null
      */
     protected ?array $losses = null;
+
+    /**
+     * The gradient norms at each epoch from the last training session.
+     *
+     * @var float[]|null
+     */
+    protected ?array $norms = null;
 
     /**
      * The file path to store the snapshot on disk during training.
@@ -364,11 +372,11 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;
@@ -377,8 +385,9 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'norm' => $this->norms[$epoch] ?? null,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }
@@ -401,6 +410,16 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
     public function losses() : ?array
     {
         return $this->losses;
+    }
+
+    /**
+     * Return the gradient norms for each epoch from the last training session.
+     *
+     * @return float[]|null
+     */
+    public function norms() : ?array
+    {
+        return $this->norms;
     }
 
     /**
@@ -533,7 +552,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
                 . ' and early stopping is disabled.');
         }
 
-        $this->scores = $this->losses = [];
+        $this->scores = $this->losses = $this->norms = [];
 
         $classMap = array_flip($this->classes);
 
@@ -601,6 +620,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
             $lossChange = abs($prevLoss - $averageLoss);
 
             $this->losses[$epoch] = $averageLoss;
+            $this->norms[$epoch] = $averageNorm;
 
             if (is_nan($averageLoss)) {
                 if ($this->logger) {
@@ -765,6 +785,7 @@ class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic,
 
         unset(
             $properties['losses'],
+            $properties['norms'],
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath']
