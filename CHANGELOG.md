@@ -54,6 +54,8 @@
     - Add Dataset chunked() factory for online training
     - Added L1 penalty to `Dense` layers
     - `Adaline`, `Logistic Regression`, `Softmax Classifier` now elastic net
+    - Added Iterative interace with progress() method
+    - Iterative Learners renamed steps() method to progress()
     
 - 2.5.15
     - Optimize random weighted subset with replacement
