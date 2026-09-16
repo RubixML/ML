@@ -69,6 +69,39 @@ class TSNETest extends TestCase
     }
 
     #[Test]
+    public function progressContract() : void
+    {
+        $this->assertSame([], iterator_to_array($this->embedder->progress(), false));
+
+        srand(self::RANDOM_SEED);
+
+        $embedder = new TSNE(1, 10.0, 10, 12.0, 5, 1e-7, new Euclidean());
+
+        $embedder->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TEST_SIZE);
+
+        $dataset->apply($embedder);
+
+        $losses = $embedder->losses();
+
+        $this->assertIsArray($losses);
+        $this->assertNotEmpty($losses);
+
+        $rows = iterator_to_array($embedder->progress(), false);
+
+        $this->assertCount(count($losses), $rows);
+
+        foreach ($rows as $row) {
+            $this->assertIsInt($row['epoch']);
+            $this->assertIsFloat($row['loss']);
+        }
+
+        $this->assertSame(array_values($losses), array_column($rows, 'loss'));
+        $this->assertSame(array_keys($losses), array_column($rows, 'epoch'));
+    }
+
+    #[Test]
     public function badNumDimensions() : void
     {
         $this->expectException(InvalidArgumentException::class);

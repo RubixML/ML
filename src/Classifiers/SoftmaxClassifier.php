@@ -4,6 +4,7 @@ namespace Rubix\ML\Classifiers;
 
 use Tensor\Matrix;
 use Rubix\ML\Online;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -62,7 +63,7 @@ use function sys_get_temp_dir;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -116,7 +117,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     protected int $evalInterval;
 
     /**
-     * The number of epochs without improvement in the validation score to wait before considering an early stop.
+     * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
      * @var positive-int
      */
@@ -198,9 +199,9 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         float $l1Penalty = 1e-4,
         float $l2Penalty = 1e-4,
         int $epochs = 1000,
-        float $minChange = 1e-4,
-        int $evalInterval = 3,
-        int $window = 5,
+        float $minChange = 1e-5,
+        int $evalInterval = 1,
+        int $window = 10,
         float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null
@@ -327,11 +328,11 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
     }
 
     /**
-     * Return an iterable progress table with the steps from the last training session.
+     * Return an iterable progress table from the last training session.
      *
      * @return Generator<mixed[]>
      */
-    public function steps() : Generator
+    public function progress() : Generator
     {
         if (!$this->losses) {
             return;
@@ -340,8 +341,8 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         foreach ($this->losses as $epoch => $loss) {
             yield [
                 'epoch' => $epoch,
-                'score' => $this->scores[$epoch] ?? null,
                 'loss' => $loss,
+                'score' => $this->scores[$epoch] ?? null,
             ];
         }
     }

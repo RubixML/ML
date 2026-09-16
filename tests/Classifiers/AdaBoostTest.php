@@ -96,6 +96,51 @@ class AdaBoostTest extends TestCase
     }
 
     #[Test]
+    public function progressContract() : void
+    {
+        $this->assertSame([], iterator_to_array($this->estimator->progress(), false));
+
+        srand(self::RANDOM_SEED);
+
+        $estimator = new AdaBoost(
+            base: new ClassificationTree(1),
+            rate: 1.0,
+            ratio: 0.5,
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1,
+            holdOut: 0.1,
+            metric: new FBeta()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $losses = $estimator->losses();
+
+        $this->assertIsArray($losses);
+        $this->assertNotEmpty($losses);
+
+        $rows = iterator_to_array($estimator->progress(), false);
+
+        $this->assertCount(count($losses), $rows);
+
+        foreach ($rows as $row) {
+            $this->assertIsInt($row['epoch']);
+            $this->assertIsFloat($row['loss']);
+            $this->assertArrayHasKey('score', $row);
+        }
+
+        $this->assertSame(array_values($losses), array_column($rows, 'loss'));
+        $this->assertSame(array_keys($losses), array_column($rows, 'epoch'));
+    }
+
+    #[Test]
     public function badLearningRate() : void
     {
         $this->expectException(InvalidArgumentException::class);

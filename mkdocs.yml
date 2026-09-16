@@ -32,6 +32,7 @@ nav:
   - API Reference:
     - Fundamental Interfaces:
       - Estimator: estimator.md
+      - Iterative: iterative.md
       - Learner: learner.md
       - Online: online.md
       - Parallel: parallel.md
