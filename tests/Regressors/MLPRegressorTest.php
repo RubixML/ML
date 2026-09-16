@@ -101,6 +101,59 @@ class MLPRegressorTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Assert the iterative progress contract')]
+    public function progressContract() : void
+    {
+        self::assertSame([], iterator_to_array($this->estimator->progress(), false));
+
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new SELU()),
+                new Dense(4),
+                new Activation(new SiLU()),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(new Constant(0.01)),
+            epochs: 5,
+            minChange: 1e-6,
+            evalInterval: 1,
+            holdOut: 0.1,
+            costFn: new LeastSquares(),
+            metric: new RMSE()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+
+        $losses = $estimator->losses();
+
+        self::assertIsArray($losses);
+        self::assertNotEmpty($losses);
+
+        $rows = iterator_to_array($estimator->progress(), false);
+
+        self::assertCount(count($losses), $rows);
+
+        foreach ($rows as $row) {
+            self::assertIsInt($row['epoch']);
+            self::assertIsFloat($row['loss']);
+            self::assertArrayHasKey('norm', $row);
+            self::assertArrayHasKey('score', $row);
+        }
+
+        self::assertSame(array_values($losses), array_column($rows, 'loss'));
+        self::assertSame(array_keys($losses), array_column($rows, 'epoch'));
+    }
+
+    #[Test]
     #[TestDox('Bad batch size')]
     public function badBatchSize() : void
     {
