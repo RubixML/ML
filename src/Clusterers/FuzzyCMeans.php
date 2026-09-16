@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -53,7 +54,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persistable
+class FuzzyCMeans implements Estimator, Learner, Iterative, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 

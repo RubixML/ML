@@ -10,7 +10,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 !!! note
     If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on base learner
 
@@ -40,20 +40,6 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 3, 5,
 
 ## Additional Methods
 
-Return an iterable progress table from the last training session.
-
-```php
-public progress() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->progress());
-```
-
 Return the loss for each epoch from the last training session.
 
 ```php
@@ -61,6 +47,7 @@ public losses() : float[]|null
 ```
 
 Return the validation score for each epoch from the last training session.
+
 ```php
 public scores() : float[]|null
 ```

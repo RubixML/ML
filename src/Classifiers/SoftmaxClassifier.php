@@ -4,6 +4,7 @@ namespace Rubix\ML\Classifiers;
 
 use Tensor\Matrix;
 use Rubix\ML\Online;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -62,7 +63,7 @@ use function sys_get_temp_dir;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 

@@ -4,7 +4,7 @@
 
 A distance-based soft-clustering algorithm that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the fuzz hyper-parameter. Like [K Means](k-means.md), Fuzzy C Means minimizes the inertia cost function, however, unlike K Means, FCM uses a batch solver that requires the entire training set to compute the update to the cluster centroids at each step.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -35,20 +35,6 @@ Return the *c* computed centroids of the training set.
 
 ```php
 public centroids() : array[]
-```
-
-Return an iterable progress table from the last training session.
-
-```php
-public progress() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->progress());
 ```
 
 Returns the inertia at each epoch from the last round of training.

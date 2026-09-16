@@ -7,7 +7,7 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 !!! note
     If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -67,20 +67,6 @@ $estimator = new MLPRegressor(
 
 ## Additional Methods
 
-Return an iterable progress table from the last training session.
-
-```php
-public progress() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->progress());
-```
-
 Return the validation score for each epoch from the last training session.
 
 ```php
@@ -105,16 +91,16 @@ Returns the underlying neural network instance or `null` if untrained. See [Feed
 public network() : FeedForward|null
 ```
 
-Clean up any leftover state after training. Only do this if you plan to use the model for inference.
-
-```php
-public cleanup() : void
-```
-
 Set the path of the temporary snapshot file used to store network parameters during training.
 
 ```php
 public setSnapshotPath(?string $path) : void
+```
+
+Clean up any leftover state after training. Only do this if you plan to use the model for inference.
+
+```php
+public cleanup() : void
 ```
 
 ## References

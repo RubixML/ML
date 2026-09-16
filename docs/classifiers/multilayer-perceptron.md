@@ -7,7 +7,7 @@ A multiclass feed-forward neural network classifier with user-defined hidden lay
 !!! note
     If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -67,20 +67,6 @@ $estimator = new MultilayerPerceptron(
 ```
 
 ## Additional Methods
-
-Return an iterable progress table from the last training session.
-
-```php
-public progress() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->progress());
-```
 
 Return the loss for each epoch from the last training session.
 

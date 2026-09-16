@@ -4,7 +4,7 @@
 
 A fast online centroid-based hard clustering algorithm capable of grouping linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means is trained using adaptive Mini Batch Gradient Descent and minimizes the inertia cost function at each epoch. Inertia is defined as the average sum of distances between each sample and its nearest cluster centroid.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -41,20 +41,6 @@ Return the number of training samples that each centroid is responsible for.
 
 ```php
 public sizes() : int[]
-```
-
-Return an iterable progress table from the last training session.
-
-```php
-public progress() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->progress());
 ```
 
 Return the loss for each epoch from the last training session.

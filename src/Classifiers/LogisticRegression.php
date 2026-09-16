@@ -5,6 +5,7 @@ namespace Rubix\ML\Classifiers;
 use Tensor\Matrix;
 use Generator;
 use Rubix\ML\Online;
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -63,7 +64,7 @@ use function sys_get_temp_dir;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
+class LogisticRegression implements Estimator, Learner, Iterative, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 

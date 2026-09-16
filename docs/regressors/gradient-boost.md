@@ -10,7 +10,7 @@ Gradient Boost (GBM) is a stage-wise additive ensemble that uses a Gradient Desc
 !!! note
     Gradient Boost utilizes progress monitoring via an internal validation set for snapshotting and early stopping. If there are not enough training samples to build an internal validation set given the user-specified holdout ratio then training will proceed with progress monitoring disabled.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Verbose](../verbose.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Verbose](../verbose.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical and Continuous
 
@@ -39,20 +39,6 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 3, 1
 ```
 
 ## Additional Methods
-
-Return an iterable progress table from the last training session.
-
-```php
-public progress() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($estimator->progress());
-```
 
 Return the validation score for each epoch from the last training session.
 

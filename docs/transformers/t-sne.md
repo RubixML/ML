@@ -7,7 +7,7 @@
 !!! note
     T-SNE is implemented using the *exact* method which scales quadratically in the number of samples. Therefore, it is recommended to subsample datasets larger than a few thousand samples.
 
-**Interfaces:** [Transformer](../transformers/api.md#transformer), [Verbose](../verbose.md)
+**Interfaces:** [Transformer](../transformers/api.md#transformer), [Iterative](../iterative.md), [Verbose](../verbose.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -31,20 +31,6 @@ $transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
 ```
 
 ## Additional Methods
-
-Return an iterable progress table from the last training session.
-
-```php
-public progress() : iterable
-```
-
-```php
-use Rubix\ML\Extractors\CSV;
-
-$extractor = new CSV('progress.csv', true);
-
-$extractor->export($transformer->progress());
-```
 
 Return the magnitudes of the gradient at each epoch from the last embedding.
 

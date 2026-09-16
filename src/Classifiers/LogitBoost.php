@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
@@ -62,7 +63,7 @@ use function get_object_vars;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Verbose, Persistable
+class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
