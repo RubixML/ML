@@ -243,7 +243,7 @@ class BatchNorm implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient();
+        $dOut = $prevGradient->compute();
 
         $dBeta = $dOut->sum();
         $dGamma = $dOut->multiply($this->xHat)->sum();
