@@ -32,10 +32,10 @@ $transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
 
 ## Additional Methods
 
-Return an iterable progress table with the steps from the last training session.
+Return an iterable progress table from the last training session.
 
 ```php
-public steps() : iterable
+public progress() : iterable
 ```
 
 ```php
@@ -43,7 +43,7 @@ use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('progress.csv', true);
 
-$extractor->export($transformer->steps());
+$extractor->export($transformer->progress());
 ```
 
 Return the magnitudes of the gradient at each epoch from the last embedding.

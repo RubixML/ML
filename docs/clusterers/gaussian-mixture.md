@@ -47,10 +47,10 @@ Return the variance of each feature column for each cluster.
 public variances() : array[]
 ```
 
-Return an iterable progress table with the steps from the last training session.
+Return an iterable progress table from the last training session.
 
 ```php
-public steps() : iterable
+public progress() : iterable
 ```
 
 ```php
@@ -58,7 +58,7 @@ use Rubix\ML\Extractors\CSV;
 
 $extractor = new CSV('progress.csv', true);
 
-$extractor->export($estimator->steps());
+$extractor->export($estimator->progress());
 ```
 
 Return the loss for each epoch from the last training session.
