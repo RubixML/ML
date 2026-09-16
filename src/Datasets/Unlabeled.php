@@ -9,12 +9,10 @@ use Generator;
 
 use function count;
 use function array_slice;
-use function array_sum;
 use function array_map;
 use function array_chunk;
 use function array_rand;
 use function round;
-use function sqrt;
 use function getrandmax;
 use function rand;
 
@@ -500,13 +498,17 @@ class Unlabeled extends Dataset
                 . ' but ' . count($weights) . ' given.');
         }
 
-        /** @var positive-int $numLevels */
-        $numLevels = (int) round(sqrt(count($weights)));
+        $total = 0.0;
+        $cums = [];
 
-        $levels = array_chunk($weights, $numLevels, true);
-        $levelTotals = array_map('array_sum', $levels);
+        foreach ($weights as $weight) {
+            $total += $weight;
 
-        $total = array_sum($levelTotals);
+            $cums[] = $total;
+        }
+
+        /** @var positive-int $numWeights */
+        $numWeights = count($cums);
 
         $phi = getrandmax() / $total;
         $max = (int) round($total * $phi);
@@ -516,25 +518,20 @@ class Unlabeled extends Dataset
         while (count($samples) < $n) {
             $delta = rand(0, $max) / $phi;
 
-            foreach ($levels as $i => $level) {
-                $levelTotal = $levelTotals[$i];
+            $lower = 0;
+            $upper = $numWeights - 1;
 
-                if ($delta - $levelTotal > 0) {
-                    $delta -= $levelTotal;
+            while ($lower < $upper) {
+                $mid = intdiv($lower + $upper, 2);
 
-                    continue;
-                }
-
-                foreach ($level as $offset => $weight) {
-                    $delta -= $weight;
-
-                    if ($delta <= 0.0) {
-                        $samples[] = $this->samples[$offset];
-
-                        break 2;
-                    }
+                if ($cums[$mid] < $delta) {
+                    $lower = ++$mid;
+                } else {
+                    $upper = $mid;
                 }
             }
+
+            $samples[] = $this->samples[$lower];
         }
 
         return self::quick($samples);

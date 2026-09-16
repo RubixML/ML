@@ -142,10 +142,7 @@ class Activation implements Hidden
 
         $this->x = $this->z = null;
 
-        return new Deferred(
-            [$this, 'gradient'],
-            [$x, $z, $prevGradient]
-        );
+        return new Deferred([$this, 'gradient'], [$x, $z, $prevGradient]);
     }
 
     /**
@@ -160,8 +157,7 @@ class Activation implements Hidden
      */
     public function gradient(Matrix $x, Matrix $z, Deferred $prevGradient) : Matrix
     {
-        return $this->activationFn->differentiate($x, $z)
-            ->multiply($prevGradient());
+        return $this->activationFn->differentiate($x, $z)->multiply($prevGradient->compute());
     }
 
     /**

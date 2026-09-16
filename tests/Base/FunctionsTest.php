@@ -18,6 +18,7 @@ use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 use function Rubix\ML\minmax;
 use function Rubix\ML\sigmoid;
+use function Rubix\ML\softplus;
 use function Rubix\ML\comb;
 use function Rubix\ML\linspace;
 use function Rubix\ML\array_pack;
@@ -46,6 +47,7 @@ use function is_infinite;
 #[CoversFunction('\Rubix\ML\logsumexp')]
 #[CoversFunction('\Rubix\ML\minmax')]
 #[CoversFunction('\Rubix\ML\sigmoid')]
+#[CoversFunction('\Rubix\ML\softplus')]
 #[CoversFunction('\Rubix\ML\warn')]
 #[CoversFunction('\Rubix\ML\warn_deprecated')]
 class FunctionsTest extends TestCase
@@ -204,6 +206,20 @@ class FunctionsTest extends TestCase
     /**
      * @return Generator<mixed[]>
      */
+    public static function softplusProvider() : Generator
+    {
+        yield [0.0, 0.6931471805599453];
+
+        yield [2.0, 2.126928011042973];
+
+        yield [-2.0, 0.1269280110429726];
+
+        yield [10.0, 10.000045398899218];
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
     public static function minmaxProvider() : Generator
     {
         yield [[4.2], 4.2, 4.2];
@@ -279,6 +295,25 @@ class FunctionsTest extends TestCase
     public function sigmoid(float $value, float $expected) : void
     {
         $this->assertEquals($expected, sigmoid($value));
+    }
+
+    /**
+     * @param float $value
+     * @param float $expected
+     */
+    #[Test]
+    #[DataProvider('softplusProvider')]
+    public function softplus(float $value, float $expected) : void
+    {
+        $this->assertEqualsWithDelta($expected, softplus($value), 1e-9);
+    }
+
+    #[Test]
+    public function softplusExtremeValues() : void
+    {
+        foreach ([1000.0, -1000.0] as $value) {
+            $this->assertFalse(is_infinite(softplus($value)));
+        }
     }
 
     /**

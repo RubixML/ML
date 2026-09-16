@@ -376,9 +376,9 @@ class UnlabeledTest extends TestCase
     }
 
     #[Test]
-    public function chunkedWithDefaultChunkSize() : void
+    public function chunkedSingleBatch() : void
     {
-        $batches = iterator_to_array(Unlabeled::chunked(self::SAMPLES));
+        $batches = iterator_to_array(Unlabeled::chunked(self::SAMPLES, 10));
 
         $this->assertCount(1, $batches);
         $this->assertCount(6, $batches[0]);
@@ -410,7 +410,7 @@ class UnlabeledTest extends TestCase
     #[Test]
     public function chunkedEmpty() : void
     {
-        $batches = iterator_to_array(Unlabeled::chunked([]));
+        $batches = iterator_to_array(Unlabeled::chunked([], 4));
 
         $this->assertCount(0, $batches);
     }
@@ -420,7 +420,7 @@ class UnlabeledTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        foreach (Unlabeled::chunked([['sample'], ['sample', 'extra']]) as $batch) {
+        foreach (Unlabeled::chunked([['sample'], ['sample', 'extra']], 2) as $batch) {
             //
         }
     }
@@ -428,7 +428,7 @@ class UnlabeledTest extends TestCase
     #[Test]
     public function chunkedSkipsVerification() : void
     {
-        $batches = iterator_to_array(Unlabeled::chunked([['sample'], ['sample', 'extra']], verify: false));
+        $batches = iterator_to_array(Unlabeled::chunked([['sample'], ['sample', 'extra']], 2, verify: false));
 
         $this->assertCount(2, $batches[0]);
     }

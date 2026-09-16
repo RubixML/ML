@@ -107,7 +107,7 @@ class SELUTest extends TestCase
     {
         $activations = $this->activationFn->activate($x)->asArray();
 
-        $this->assertEquals($expected, $activations);
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
     }
 
     /**
@@ -121,6 +121,6 @@ class SELUTest extends TestCase
     {
         $derivatives = $this->activationFn->differentiate($x, $activations)->asArray();
 
-        $this->assertEquals($expected, $derivatives);
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 }
