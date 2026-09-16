@@ -1,6 +1,6 @@
 # Iterative
 
-Learners and estimators that implement the `Iterative` interface record their progress over the course of training and expose it on a per-epoch basis. In addition to the scalar values returned by the `losses()` and `scores()` accessors, the `progress()` method returns an iterable table that combines every recorded epoch into a single, ordered sequence suitable for inspecting how the model evolved round over round.
+Learners, estimators, and transformers that implement the `Iterative` interface record their progress over training or transformation and expose it on a per-epoch basis. In addition to the scalar values returned by the `losses()` and `scores()` accessors, the `progress()` method returns an iterable table that combines every recorded epoch into a single, ordered sequence suitable for inspecting how the model evolved round over round.
 
 This is most useful when the loss and score do not move in tandem — for example, when a training loss continues to drop long after the validation score has begun to plateau or regress. Lining up the epochs side by side makes it possible to identify when the model stopped generalizing and to pick a reasonable point to stop at.
 
