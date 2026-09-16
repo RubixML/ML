@@ -56,6 +56,7 @@
     - `Adaline`, `Logistic Regression`, `Softmax Classifier` now elastic net
     - Added Iterative interface with progress() method
     - Iterative Learners renamed steps() method to progress()
+    - Changed default gradient-based `minChange` from 1e-4 to 1e-5
     
 - 2.5.15
     - Optimize random weighted subset with replacement

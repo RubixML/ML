@@ -127,7 +127,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     protected int $evalInterval;
 
     /**
-     * The number of epochs without improvement in the validation score to wait before considering an early stop.
+     * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
      * @var positive-int
      */
@@ -199,7 +199,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
         float $rate = 0.1,
         float $ratio = 0.5,
         int $epochs = 1000,
-        float $minChange = 1e-4,
+        float $minChange = 1e-5,
         int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
