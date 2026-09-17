@@ -130,8 +130,8 @@ class KMedoidsTest extends TestCase
         $this->assertCount(count($losses), $rows);
 
         foreach ($rows as $row) {
-            $this->assertIsInt($row['epoch']);
-            $this->assertIsFloat($row['loss']);
+            $this->assertIsInt($row['Epoch']);
+            $this->assertIsFloat($row['Loss']);
         }
     }
 
