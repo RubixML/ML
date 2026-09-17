@@ -60,7 +60,7 @@ class DBSCANTest extends TestCase
             ]
         );
 
-        $this->estimator = new DBSCAN(radius: 1.2, minDensity: 20, tree: new BallTree());
+        $this->estimator = new DBSCAN(radius: 3.0, minDensity: 10, tree: new BallTree());
 
         $this->metric = new VMeasure();
 
@@ -101,8 +101,8 @@ class DBSCANTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'radius' => 1.2,
-            'min density' => 20,
+            'radius' => 3.0,
+            'min density' => 10,
             'tree' => new BallTree(),
         ];
 
