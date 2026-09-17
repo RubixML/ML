@@ -446,7 +446,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         array_multisort($scores, SORT_DESC, $combinations);
 
-        $best = $combinations[array_key_first($combinations) ?: 0];
+        $best = $combinations[array_key_first($combinations)];
 
         $estimator = new $this->base(...$best);
 
