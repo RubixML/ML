@@ -27,6 +27,13 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Generator;
 use ReflectionClass;
 
+use function in_array;
+use function class_exists;
+use function array_unique;
+use function array_keys;
+use function array_key_exists;
+use function is_array;
+
 /**
  * Grid Search
  *
@@ -174,7 +181,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
     /**
      * @param class-string $class
-     * @param array<mixed[]> $params
+     * @param array<mixed> $params
      * @param Metric|null $metric
      * @param Validator|null $validator
      * @throws InvalidArgumentException
@@ -202,6 +209,10 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         }
 
         foreach ($params as &$tuple) {
+            if (!is_array($tuple)) {
+                throw new InvalidArgumentException('Each param value must be an array.');
+            }
+
             $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
         }
 
