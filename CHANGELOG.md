@@ -59,6 +59,7 @@
     - Changed default gradient-based `minChange` from 1e-4 to 1e-5
     - `Prior` is now default `Strategy` of `Missing Data Imputer`
     - `DBSCAN` is now a `Learner` and `Persistable`
+    - `DBSCAN` now drops noise samples from the model during training
     
 - 2.5.15
     - Optimize random weighted subset with replacement

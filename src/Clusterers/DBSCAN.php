@@ -22,7 +22,6 @@ use SplQueue;
 
 use function array_map;
 use function count;
-use function ksort;
 use function max;
 
 /**
@@ -33,12 +32,10 @@ use function max;
  * density constraint. In addition, DBSCAN also has the ability to mark outliers as *noise*
  * and thus can be used as a *quasi* anomaly detector.
  *
- * > **Note**: Noise samples are assigned to the cluster number *-1*.
- *
- * During training the algorithm is run once on the training set, after which the clustered
- * samples are stored in a spatial tree. Unseen samples are then assigned to the cluster that
- * is most common among the samples within *radius* of them during inference, or as noise if
- * no samples are within *radius*.
+ * During training the algorithm is run once on the training set, after which the non-noisy
+ * clustered samples are stored in a spatial tree. Unseen samples are then assigned to the
+ * cluster that is most common among the samples within *radius* of them during inference, or
+ * as noise if no samples are within *radius*.
  *
  * References:
  * [1] M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.
@@ -252,11 +249,26 @@ class DBSCAN implements Estimator, Learner, Persistable
         }
 
         // Align the predictions with the original sample order.
-        ksort($predictions);
+        $samples = $labels = [];
+
+        foreach ($dataset->samples() as $i => $sample) {
+            $label = $predictions[$i] ?? self::NOISE;
+
+            if ($label === self::NOISE) {
+                continue;
+            }
+
+            $samples[] = $sample;
+            $labels[] = $label;
+        }
+
+        if ($samples === []) {
+            throw new RuntimeException('No non-noisy samples found to form clusters.');
+        }
 
         $this->featureCount = $dataset->numFeatures();
 
-        $this->tree->grow(Labeled::quick($dataset->samples(), $predictions));
+        $this->tree->grow(Labeled::quick($samples, $labels));
     }
 
     /**

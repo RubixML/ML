@@ -4,10 +4,7 @@
 
 *Density-Based Spatial Clustering of Applications with Noise* (DBSCAN) is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters given a radius and density constraint. In addition, DBSCAN can flag outliers (noise samples) and thus be used as a quasi-anomaly detector.
 
-!!! note
-    Noise samples are assigned the cluster number -1.
-
-During training, the algorithm is run once on the training set and the clustered samples are stored in a spatial tree for fast inference. Unseen samples are then assigned to the cluster that is most common among the samples within *radius* of them, or as noise if no samples are within *radius* of them. The `minDensity` constraint is only applied during training and does not affect the assignment of unseen samples.
+During training, the algorithm is run once on the training set and the non-noisy clustered samples are stored in a spatial tree for fast inference. Unseen samples are then assigned to the cluster that is most common among the samples within *radius* of them, or as noise if no samples are within *radius* of them. The `minDensity` constraint is only applied during training and does not affect the assignment of unseen samples.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
@@ -28,7 +25,7 @@ use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new DBSCAN(4.0, 5, new BallTree(20, new Diagonal()));
+$estimator = new DBSCAN(3.0, 10, new BallTree(20, new Diagonal()));
 
 $estimator->train($dataset);
 

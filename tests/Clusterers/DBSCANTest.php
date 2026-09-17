@@ -130,6 +130,19 @@ class DBSCANTest extends TestCase
     }
 
     #[Test]
+    public function predictsNoiseForIsolatedSamples() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertSame(
+            [DBSCAN::NOISE],
+            $this->estimator->predict(Unlabeled::quick(samples: [[0.0, 100.0]]))
+        );
+    }
+
+    #[Test]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
