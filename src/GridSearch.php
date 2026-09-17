@@ -24,6 +24,8 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Generator;
+use ReflectionClass;
 
 /**
  * Grid Search
@@ -237,6 +239,38 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return a table of the validation score obtained from each parameter
+     * combination from the last search.
+     *
+     * @return Generator<mixed[]>
+     */
+    public function results() : Generator
+    {
+        if (!$this->scores) {
+            return;
+        }
+
+        $combinations = $this->combinations();
+        $scores = $this->scores;
+
+        array_multisort($scores, SORT_DESC, $combinations);
+
+        $names = $this->paramNames();
+
+        foreach ($scores as $i => $score) {
+            $row = [];
+
+            foreach ($combinations[$i] as $j => $param) {
+                $row[$names[$j] ?? 'param ' . ($j + 1)] = Params::toString($param);
+            }
+
+            $row["{$this->metric}"] = Params::toString($score);
+
+            yield $row;
+        }
+    }
+
+    /**
      * Return a list of all possible combinations of parameters i.e their Cartesian product.
      *
      * @return list<list<mixed>>
@@ -308,9 +342,11 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         $scores = $this->backend()->process();
 
+        $this->scores = $scores;
+
         array_multisort($scores, SORT_DESC, $combinations);
 
-        $best = reset($combinations) ?: [];
+        $best = $combinations[array_key_first($combinations) ?: 0];
 
         $estimator = new $this->base(...$best);
 
@@ -326,7 +362,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         }
 
         $this->base = $estimator;
-        $this->scores = $scores;
     }
 
     /**
@@ -339,6 +374,26 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     public function predict(Dataset $dataset) : array
     {
         return $this->base->predict($dataset);
+    }
+
+    /**
+     * Return the names of the base learner's constructor parameters.
+     *
+     * @return list<string>
+     */
+    private function paramNames() : array
+    {
+        $names = [];
+
+        $constructor = (new ReflectionClass($this->class))->getConstructor();
+
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $parameter) {
+                $names[] = $parameter->getName();
+            }
+        }
+
+        return $names;
     }
 
     /**

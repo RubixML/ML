@@ -210,4 +210,56 @@ class GridSearchTest extends TestCase
 
         self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
+
+    #[Test]
+    public function resultsAreTableOfCombinationsAndScores() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertNotEmpty($this->estimator->scores());
+
+        $progress = $this->estimator->results();
+
+        $this->assertInstanceOf(Generator::class, $progress);
+
+        $rows = iterator_to_array($progress);
+
+        $this->assertCount(6, $rows);
+
+        $metric = new FBeta();
+
+        $expectedBest = [
+            'k' => '10',
+            'weighted' => 'true',
+            'kernel' => 'Manhattan',
+        ];
+
+        $first = $rows[0];
+
+        foreach ($expectedBest as $key => $value) {
+            $this->assertArrayHasKey($key, $first);
+            $this->assertSame($value, $first[$key]);
+        }
+
+        $this->assertArrayHasKey("{$metric}", $first);
+
+        $scores = [];
+
+        foreach ($rows as $row) {
+            $this->assertSame(
+                ['k', 'weighted', 'kernel', "{$metric}"],
+                array_keys($row)
+            );
+
+            $scores[] = (float) $row["{$metric}"];
+        }
+
+        $sorted = $scores;
+
+        rsort($sorted);
+
+        $this->assertSame($sorted, $scores);
+    }
 }

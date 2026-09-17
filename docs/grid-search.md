@@ -63,3 +63,9 @@ Return the validation scores of each of the parameter combinations.
 ```php
 public scores() : ?array
 ```
+
+Return an iterable table of every parameter combination tested along with its validation score from the last search.
+
+```php
+public results() : \Generator
+```
