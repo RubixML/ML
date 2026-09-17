@@ -31,6 +31,7 @@ use function class_exists;
 use function array_unique;
 use function array_keys;
 use function array_key_exists;
+use function array_is_list;
 use function is_array;
 
 /**
@@ -55,7 +56,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     /**
      * The threshold for the number of search parameter combinations considered to be huge.
      */
-    protected const int HUGE_SPACE_THRESHOLD = 1000;
+    protected const int HUGE_SEARCH_THRESHOLD = 1000;
 
     /**
      * The class name of the base estimator.
@@ -206,12 +207,26 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 . ' supplied in the order they are given to the constructor.');
         }
 
-        foreach ($params as &$tuple) {
+        $reflector = new ReflectionClass($class);
+
+        $parameters = $reflector->getConstructor()?->getParameters() ?? [];
+
+        foreach ($params as $index => &$tuple) {
             if (!is_array($tuple)) {
                 throw new InvalidArgumentException('Each param value must be an array.');
             }
 
-            $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
+            if (empty($tuple)) {
+                $tuple = [null];
+
+                $parameter = $parameters[$index] ?? null;
+
+                if ($parameter and $parameter->isDefaultValueAvailable()) {
+                    $tuple = [$parameter->getDefaultValue()];
+                }
+            } else {
+                $tuple = array_unique($tuple, SORT_REGULAR);
+            }
         }
 
         $proxy = new $class(...array_map('current', $params));
@@ -442,7 +457,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             $this->logger->info("Total parameter combinations is {$numCombinations}");
         }
 
-        if (count($combinations) > self::HUGE_SPACE_THRESHOLD) {
+        if (count($combinations) > self::HUGE_SEARCH_THRESHOLD) {
             warn('Huge search space detected, consider reducing the number of search parameters.');
         }
 
@@ -480,7 +495,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         $estimator = new $this->base(...$best);
 
         if ($this->logger) {
-            $this->logger->info('Now training with best hyper-parameters'
+            $this->logger->info('Training with best hyper-parameters'
                 . Params::stringify($best) . ' on full dataset.');
         }
 

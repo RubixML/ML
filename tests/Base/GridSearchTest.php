@@ -374,6 +374,28 @@ class GridSearchTest extends TestCase
     }
 
     #[Test]
+    public function fillsEmptyTuplesWithDefaults() : void
+    {
+        $estimator = new GridSearch(
+            class: KNearestNeighbors::class,
+            params: [[], [], []],
+        );
+
+        $expected = [
+            'class' => KNearestNeighbors::class,
+            'params' => [
+                [5],
+                [false],
+                [null],
+            ],
+            'metric' => new FBeta(),
+            'validator' => new KFold(5),
+        ];
+
+        $this->assertEquals($expected, $estimator->params());
+    }
+
+    #[Test]
     public function fromNamedParamsRejectsUnknownParam() : void
     {
         $this->expectException(InvalidArgumentException::class);

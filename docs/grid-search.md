@@ -34,6 +34,8 @@ $params = [
 $estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
 ```
 
+Passing an empty array `[]` for any of the base learner's constructor parameters tells Grid Search to use that parameter's default value from the base learner's constructor (or `null` if no default exists).
+
 You can also construct a Grid Search instance via the `fromNamedParams()` factory. Specify the hyper-parameters by the name of the base learner's constructor parameter (order does not matter). Hyper-parameters that are omitted are assigned their default value from the base learner's constructor.
 
 ```php
