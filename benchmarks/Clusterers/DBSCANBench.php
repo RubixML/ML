@@ -13,7 +13,14 @@ use Rubix\ML\Datasets\Labeled;
  */
 class DBSCANBench
 {
+    protected const TRAINING_SIZE = 10000;
+
     protected const TESTING_SIZE = 10000;
+
+    /**
+     * @var Labeled
+     */
+    protected Labeled $training;
 
     /**
      * @var Labeled
@@ -33,6 +40,8 @@ class DBSCANBench
             'Iris-virginica' => new Blob([6.59, 2.97, 5.55, 2.03], [0.63, 0.32, 0.55, 0.27]),
         ]);
 
+        $this->training = $generator->generate(self::TRAINING_SIZE);
+
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
         $this->estimator = new DBSCAN(0.25);
@@ -43,8 +52,10 @@ class DBSCANBench
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
      */
-    public function predict() : void
+    public function trainPredict() : void
     {
+        $this->estimator->train($this->training);
+
         $this->estimator->predict($this->testing);
     }
 }
