@@ -23,13 +23,15 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Generator;
 use ReflectionClass;
+use Generator;
 
 use function in_array;
 use function class_exists;
 use function array_unique;
 use function array_keys;
+use function array_pop;
+use function array_multisort;
 use function array_key_exists;
 use function array_is_list;
 use function is_array;
