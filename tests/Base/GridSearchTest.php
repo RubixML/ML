@@ -32,6 +32,8 @@ use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 
+use function Rubix\ML\iterator_first;
+
 #[Group('MetaEstimators')]
 #[CoversClass(GridSearch::class)]
 class GridSearchTest extends TestCase
@@ -266,6 +268,41 @@ class GridSearchTest extends TestCase
     }
 
     #[Test]
+    public function bestIsNullsBeforeTraining() : void
+    {
+        $this->assertSame([null, null], $this->estimator->best());
+    }
+
+    #[Test]
+    public function bestReturnsTopPerformingParamsAndScore() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        [$bestParams, $bestScore] = $this->estimator->best();
+
+        $expectedParams = [
+            'k' => '10',
+            'weighted' => 'true',
+            'kernel' => 'Manhattan',
+        ];
+
+        $this->assertSame($expectedParams, $bestParams);
+
+        $this->assertSame(
+            ['k', 'weighted', 'kernel'],
+            array_keys($bestParams)
+        );
+
+        $metric = new FBeta();
+
+        $first = iterator_first($this->estimator->results());
+
+        $this->assertSame($first["{$metric}"], $bestScore);
+    }
+
+    #[Test]
     public function fromNamedParams() : void
     {
         $estimator = GridSearch::fromNamedParams(
@@ -330,7 +367,7 @@ class GridSearchTest extends TestCase
                 [new Euclidean(), new Manhattan()],
             ],
             'metric' => new FBeta(),
-            'validator' => new KFold(3),
+            'validator' => new KFold(5),
         ];
 
         $this->assertEquals($expected, $estimator->params());

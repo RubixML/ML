@@ -16,7 +16,6 @@ use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -52,6 +51,11 @@ use function is_array;
 class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persistable
 {
     use AutotrackRevisions, Multiprocessing, LoggerAware;
+
+    /**
+     * The threshold for the number of search parameter combinations considered to be huge.
+     */
+    protected const int HUGE_SPACE_THRESHOLD = 1000;
 
     /**
      * The class name of the base estimator.
@@ -239,16 +243,13 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                     $metric = new FBeta();
 
                     break;
-
-                default:
-                    $metric = new Accuracy();
             }
         }
 
         $this->class = $class;
         $this->params = $params;
         $this->metric = $metric;
-        $this->validator = $validator ?? new KFold(3);
+        $this->validator = $validator ?? new KFold(5);
         $this->base = $proxy;
     }
 
@@ -371,6 +372,25 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return the best combination of parameters found during the last search along
+     * with their validation score in a 2-tuple.
+     *
+     * @return array{0: array<mixed>|null, 1: float|null}
+     */
+    public function best() : array
+    {
+        if (!$this->scores) {
+            return [null, null];
+        }
+
+        $params = iterator_first($this->results());
+
+        $score = array_pop($params);
+
+        return [$params, $score];
+    }
+
+    /**
      * Return a list of all possible combinations of parameters i.e their Cartesian product.
      *
      * @return list<list<mixed>>
@@ -411,11 +431,19 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        $combinations = $this->combinations();
+
         if ($this->logger) {
             $this->logger->info("Training $this");
+
+            $numCombinations = number_format(count($combinations));
+
+            $this->logger->info("Total parameter combinations is {$numCombinations}");
         }
 
-        $combinations = $this->combinations();
+        if (count($combinations) > self::HUGE_SPACE_THRESHOLD) {
+            warn('Huge search space detected, consider reducing the number of search parameters.');
+        }
 
         $this->backend()->flush();
 

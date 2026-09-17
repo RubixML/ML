@@ -67,20 +67,26 @@ Return the base learner instance.
 public base() : ?\Rubix\ML\Learner
 ```
 
-Return all the parameter combinations.
-
-```php
-public combinations() : array
-```
-
 Return an iterable table of every parameter combination tested along with its validation score from the last search.
 
 ```php
 public results() : Generator
 ```
 
+Return the best combination of parameters found during the last search along with their validation score in a 2-tuple.
+
+```php
+public best() : array
+```
+
 Return the validation scores of each of the parameter combinations.
 
 ```php
 public scores() : ?array
+```
+
+Return all the parameter combinations.
+
+```php
+public combinations() : array
 ```
