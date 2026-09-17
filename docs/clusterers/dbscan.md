@@ -37,9 +37,10 @@ $predictions = $estimator->predict($unseen);
 
 ## Additional Methods
 
-Return whether the learner has been trained or not:
+Return the base spatial tree instance.
+
 ```php
-public function trained() : bool
+public tree() : Spatial
 ```
 
 ## References

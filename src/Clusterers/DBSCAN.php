@@ -162,6 +162,16 @@ class DBSCAN implements Estimator, Learner, Persistable
     }
 
     /**
+     * Return the base spatial tree instance.
+     *
+     * @return Spatial
+     */
+    public function tree() : Spatial
+    {
+        return $this->tree;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param Dataset $dataset

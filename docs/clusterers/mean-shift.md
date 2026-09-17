@@ -52,6 +52,12 @@ Returns the amount of centroid shift during each epoch of training.
 public losses() : float[]|null
 ```
 
+Return the base spatial tree instance.
+
+```php
+public tree() : Spatial
+```
+
 ## References
 
 [^1]: M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.

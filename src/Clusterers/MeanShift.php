@@ -324,6 +324,16 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
     }
 
     /**
+     * Return the base spatial tree instance.
+     *
+     * @return Spatial
+     */
+    public function tree() : Spatial
+    {
+        return $this->tree;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param Dataset $dataset
