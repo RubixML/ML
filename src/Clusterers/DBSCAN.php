@@ -4,18 +4,26 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Learner;
+use Rubix\ML\Persistable;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use SplQueue;
 
+use function array_map;
 use function count;
+use function ksort;
+use function max;
 
 /**
  * DBSCAN
@@ -27,6 +35,11 @@ use function count;
  *
  * > **Note**: Noise samples are assigned to the cluster number *-1*.
  *
+ * During training the algorithm is run once on the training set, after which the clustered
+ * samples are stored in a spatial tree. Unseen samples are then assigned to the cluster that
+ * is most common among the samples within *radius* of them during inference, or as noise if
+ * no samples are within *radius*.
+ *
  * References:
  * [1] M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.
  *
@@ -34,8 +47,10 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DBSCAN implements Estimator
+class DBSCAN implements Estimator, Learner, Persistable
 {
+    use AutotrackRevisions;
+
     /**
      * The starting cluster number.
      *
@@ -71,6 +86,13 @@ class DBSCAN implements Estimator
      * @var Spatial
      */
     protected Spatial $tree;
+
+    /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected ?int $featureCount = null;
 
     /**
      * @param float $radius
@@ -130,12 +152,21 @@ class DBSCAN implements Estimator
     }
 
     /**
-     * Make predictions from a dataset.
+     * Has the learner been trained?
+     *
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !$this->tree->bare();
+    }
+
+    /**
+     * Train the learner with a dataset.
      *
      * @param Dataset $dataset
-     * @return list<int>
      */
-    public function predict(Dataset $dataset) : array
+    public function train(Dataset $dataset) : void
     {
         SpecificationChain::with([
             new DatasetIsNotEmpty($dataset),
@@ -210,9 +241,72 @@ class DBSCAN implements Estimator
             ++$cluster;
         }
 
-        $this->tree->destroy();
+        // Align the predictions with the original sample order.
+        ksort($predictions);
 
-        return $predictions;
+        $this->featureCount = $dataset->numFeatures();
+
+        $this->tree->grow(Labeled::quick($dataset->samples(), $predictions));
+    }
+
+    /**
+     * Cluster the dataset by assigning a label to each sample.
+     *
+     * @param Dataset $dataset
+     * @throws RuntimeException
+     * @return list<int>
+     */
+    public function predict(Dataset $dataset) : array
+    {
+        if ($this->tree->bare() or $this->featureCount === null) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        [, $labels, $distances] = $this->tree->range($sample, $this->radius);
+
+        if ($labels === []) {
+            return self::NOISE;
+        }
+
+        $counts = [];
+
+        foreach ($labels as $label) {
+            $label = (int) $label;
+
+            $counts[$label] = ($counts[$label] ?? 0) + 1;
+        }
+
+        $max = max($counts);
+
+        $cluster = self::NOISE;
+        $minDistance = INF;
+
+        foreach ($labels as $i => $label) {
+            $label = (int) $label;
+
+            if ($counts[$label] === $max and $distances[$i] < $minDistance) {
+                $cluster = $label;
+
+                $minDistance = $distances[$i];
+            }
+        }
+
+        return $cluster;
     }
 
     /**
