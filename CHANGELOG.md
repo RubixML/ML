@@ -57,7 +57,8 @@
     - Added Iterative interface with progress() method
     - Iterative Learners renamed steps() method to progress()
     - Changed default gradient-based `minChange` from 1e-4 to 1e-5
-    - `Prior` is now default Strategy of Missing Data Imputer
+    - `Prior` is now default `Strategy` of `Missing Data Imputer`
+    - `DBSCAN` is now a `Learner`, `Probabilistic` and `Persistable`
     
 - 2.5.15
     - Optimize random weighted subset with replacement

@@ -4,17 +4,29 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Learner;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use SplQueue;
 
+use function Rubix\ML\argmax;
+use function array_fill;
+use function array_fill_keys;
+use function array_map;
+use function array_count_values;
+use function array_sum;
 use function count;
 
 /**
@@ -25,7 +37,10 @@ use function count;
  * density constraint. In addition, DBSCAN also has the ability to mark outliers as *noise*
  * and thus can be used as a *quasi* anomaly detector.
  *
- * > **Note**: Noise samples are assigned to the cluster number *-1*.
+ * During training the algorithm is run once on the training set, after which the non-noisy
+ * clustered samples are stored in a spatial tree. Unseen samples are then assigned to the
+ * cluster that is most common among the samples within *radius* of them during inference, or
+ * as noise if no samples are within *radius*.
  *
  * References:
  * [1] M. Ester et al. (1996). A Density-Based Algorithm for Discovering Clusters.
@@ -34,8 +49,10 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DBSCAN implements Estimator
+class DBSCAN implements Estimator, Learner, Probabilistic, Persistable
 {
+    use AutotrackRevisions;
+
     /**
      * The starting cluster number.
      *
@@ -66,6 +83,13 @@ class DBSCAN implements Estimator
     protected int $minDensity;
 
     /**
+     * Should we consider the distances of our nearest neighbors when making predictions?
+     *
+     * @var bool
+     */
+    protected bool $weighted;
+
+    /**
      * The spatial tree used to run range searches.
      *
      * @var Spatial
@@ -73,13 +97,32 @@ class DBSCAN implements Estimator
     protected Spatial $tree;
 
     /**
+     * The dimensionality of the training set.
+     *
+     * @var int|null
+     */
+    protected ?int $featureCount = null;
+
+    /**
+     * The number of clusters discovered during training.
+     *
+     * @var int
+     */
+    protected int $clusterCount = 0;
+
+    /**
      * @param float $radius
      * @param int $minDensity
+     * @param bool $weighted
      * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
-    public function __construct(float $radius = 1.0, int $minDensity = 5, ?Spatial $tree = null)
-    {
+    public function __construct(
+        float $radius = 1.0,
+        int $minDensity = 5,
+        bool $weighted = false,
+        ?Spatial $tree = null
+    ) {
         if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
@@ -92,6 +135,7 @@ class DBSCAN implements Estimator
 
         $this->radius = $radius;
         $this->minDensity = $minDensity;
+        $this->weighted = $weighted;
         $this->tree = $tree ?? new BallTree();
     }
 
@@ -125,17 +169,37 @@ class DBSCAN implements Estimator
         return [
             'radius' => $this->radius,
             'min density' => $this->minDensity,
+            'weighted' => $this->weighted,
             'tree' => $this->tree,
         ];
     }
 
     /**
-     * Make predictions from a dataset.
+     * Has the learner been trained?
+     *
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !$this->tree->bare();
+    }
+
+    /**
+     * Return the base spatial tree instance.
+     *
+     * @return Spatial
+     */
+    public function tree() : Spatial
+    {
+        return $this->tree;
+    }
+
+    /**
+     * Train the learner with a dataset.
      *
      * @param Dataset $dataset
-     * @return list<int>
      */
-    public function predict(Dataset $dataset) : array
+    public function train(Dataset $dataset) : void
     {
         SpecificationChain::with([
             new DatasetIsNotEmpty($dataset),
@@ -212,7 +276,134 @@ class DBSCAN implements Estimator
 
         $this->tree->destroy();
 
-        return $predictions;
+        $samples = $labels = [];
+
+        foreach ($dataset->samples() as $i => $sample) {
+            $label = $predictions[$i];
+
+            if ($label === self::NOISE) {
+                continue;
+            }
+
+            $samples[] = $sample;
+            $labels[] = $label;
+        }
+
+        if ($samples === []) {
+            throw new RuntimeException('No samples remaining to form clusters.');
+        }
+
+        $this->clusterCount = $cluster;
+        $this->featureCount = $dataset->numFeatures();
+
+        $this->tree->grow(Labeled::quick($samples, $labels));
+    }
+
+    /**
+     * Cluster the dataset by assigning a label to each sample.
+     *
+     * @param Dataset $dataset
+     * @throws RuntimeException
+     * @return list<int>
+     */
+    public function predict(Dataset $dataset) : array
+    {
+        if ($this->tree->bare() or $this->featureCount === null) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        [, $labels, $distances] = $this->tree->range($sample, $this->radius);
+
+        if (empty($labels)) {
+            return self::NOISE;
+        }
+
+        if ($this->weighted) {
+            $weights = array_fill_keys($labels, 0.0);
+
+            foreach ($labels as $i => $label) {
+                $weights[$label] += 1.0 / (1.0 + $distances[$i]);
+            }
+        } else {
+            $weights = array_count_values($labels);
+        }
+
+        /** @var array<int,float> $weights */
+        return argmax($weights);
+    }
+
+    /**
+     * Estimate the joint probabilities for each possible outcome.
+     *
+     * @param Dataset $dataset
+     * @throws RuntimeException
+     * @return list<float[]>
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        if ($this->tree->bare() or $this->featureCount === null) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
+
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
+
+    /**
+     * Estimate the joint probabilities of a sample belonging to each cluster.
+     *
+     * @internal
+     *
+     * @param list<int|float> $sample
+     * @return array<int,float>
+     */
+    public function probaSample(array $sample) : array
+    {
+        $dist = array_fill(self::START_CLUSTER, $this->clusterCount, 0.0);
+
+        $dist[self::NOISE] = 0.0;
+
+        [, $labels, $distances] = $this->tree->range($sample, $this->radius);
+
+        if (empty($labels)) {
+            $dist[self::NOISE] = 1.0;
+
+            return $dist;
+        }
+
+        if ($this->weighted) {
+            $weights = array_fill_keys($labels, 0.0);
+
+            foreach ($labels as $i => $label) {
+                $weights[$label] += 1.0 / (1.0 + $distances[$i]);
+            }
+        } else {
+            $weights = array_count_values($labels);
+        }
+
+        $total = array_sum($weights);
+
+        foreach ($weights as $cluster => $weight) {
+            $dist[$cluster] = (float) $weight / $total;
+        }
+
+        return $dist;
     }
 
     /**
