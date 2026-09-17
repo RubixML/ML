@@ -380,4 +380,20 @@ class GridSearchTest extends TestCase
 
         GridSearch::fromNamedParams(KNearestNeighbors::class, ['nope' => [true]]);
     }
+
+    #[Test]
+    public function rejectsScalarTuple() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new GridSearch(KNearestNeighbors::class, [10, [1, 5]]);
+    }
+
+    #[Test]
+    public function rejectsUnorderedParams() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new GridSearch(KNearestNeighbors::class, ['k' => [1, 5]]);
+    }
 }

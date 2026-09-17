@@ -154,8 +154,8 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 continue;
             }
 
-                throw new InvalidArgumentException("$name is a required constructor"
-                    . " parameter of $class.");
+            throw new InvalidArgumentException("$name is a required constructor"
+                . " parameter of $class.");
         }
 
         return new self($class, $ordered, $metric, $validator);
@@ -201,13 +201,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             throw new InvalidArgumentException("Class $class does not exist.");
         }
 
-        $proxy = new $class(...array_map('current', $params));
-
-        if (!$proxy instanceof Learner) {
-            throw new InvalidArgumentException('Base class must'
-                . ' implement the Learner Interface.');
-        }
-
         if (!array_is_list($params)) {
             throw new InvalidArgumentException('Hyper-parameters must be'
                 . ' supplied in the order they are given to the constructor.');
@@ -219,6 +212,13 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             }
 
             $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
+        }
+
+        $proxy = new $class(...array_map('current', $params));
+
+        if (!$proxy instanceof Learner) {
+            throw new InvalidArgumentException('Base class must'
+                . ' implement the Learner Interface.');
         }
 
         if ($metric) {
