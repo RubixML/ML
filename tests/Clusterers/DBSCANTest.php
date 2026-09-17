@@ -17,21 +17,30 @@ use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+
+use function Rubix\ML\argmax;
+use function array_sum;
 
 #[Group('Clusterers')]
 #[CoversClass(DBSCAN::class)]
 class DBSCANTest extends TestCase
 {
     /**
+     * The number of samples in the training set.
+     */
+    protected const int TRAIN_SIZE = 512;
+
+    /**
      * The number of samples in the validation set.
      */
-    protected const int TEST_SIZE = 512;
+    protected const int TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
      */
-    protected const float MIN_SCORE = 0.65;
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
@@ -46,7 +55,7 @@ class DBSCANTest extends TestCase
 
     protected function setUp() : void
     {
-        generators: $this->generator = new Agglomerate(
+        $this->generator = new Agglomerate(
             [
                 'inner' => new Circle(x: 0.0, y: 0.0, scale: 1.0, noise: 0.01),
                 'middle' => new Circle(x: 0.0, y: 0.0, scale: 5.0, noise: 0.05),
@@ -54,11 +63,17 @@ class DBSCANTest extends TestCase
             ]
         );
 
-        $this->estimator = new DBSCAN(radius: 1.2, minDensity: 20, tree: new BallTree());
+        $this->estimator = new DBSCAN(radius: 3.0, minDensity: 10, tree: new BallTree());
 
         $this->metric = new VMeasure();
 
         srand(self::RANDOM_SEED);
+    }
+
+    #[Test]
+    public function preConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
     }
 
     #[Test]
@@ -89,8 +104,9 @@ class DBSCANTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'radius' => 1.2,
-            'min density' => 20,
+            'radius' => 3.0,
+            'min density' => 10,
+            'weighted' => false,
             'tree' => new BallTree(),
         ];
 
@@ -98,9 +114,14 @@ class DBSCANTest extends TestCase
     }
 
     #[Test]
-    public function predict() : void
+    public function trainPredict() : void
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
@@ -113,11 +134,119 @@ class DBSCANTest extends TestCase
     }
 
     #[Test]
+    public function predictsNoiseForIsolatedSamples() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertSame(
+            [DBSCAN::NOISE],
+            $this->estimator->predict(Unlabeled::quick(samples: [[0.0, 100.0]]))
+        );
+    }
+
+    #[Test]
+    public function proba() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        foreach ([false, true] as $weighted) {
+            $estimator = new DBSCAN(
+                radius: 3.0,
+                minDensity: 10,
+                weighted: $weighted,
+                tree: new BallTree()
+            );
+
+            $estimator->train($training);
+
+            $proba = $estimator->proba($testing);
+
+            $predictions = $estimator->predict($testing);
+
+            $this->assertCount($testing->numSamples(), $proba);
+
+            foreach ($proba as $i => $dist) {
+                $this->assertIsArray($dist);
+                $this->assertContainsOnlyFloat($dist);
+                $this->assertEqualsWithDelta(1.0, array_sum($dist), 1e-8);
+                $this->assertSame($predictions[$i], argmax($dist));
+            }
+        }
+    }
+
+    #[Test]
+    public function probaForIsolatedSamples() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        [$dist] = $this->estimator->proba(Unlabeled::quick(samples: [[0.0, 100.0]]));
+
+        $this->assertSame(1.0, $dist[DBSCAN::NOISE]);
+
+        foreach ($dist as $cluster => $probability) {
+            if ($cluster !== DBSCAN::NOISE) {
+                $this->assertSame(0.0, $probability);
+            }
+        }
+    }
+
+    #[Test]
+    public function probaUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->proba(Unlabeled::quick(samples: [[1.0, 2.0]]));
+    }
+
+    #[Test]
+    public function trainIncompatible() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
+    }
+
+    #[Test]
+    public function predictUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict(Unlabeled::quick(samples: [[1.0, 2.0]]));
+    }
+
+    #[Test]
     #[TestDox('Throws an exception when predicting with incompatible data')]
     public function predictIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->predict(Unlabeled::quick(samples: [['bad']]));
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->estimator->predict(Unlabeled::quick(samples: [[1.0]]));
+    }
+
+    #[Test]
+    public function restoreStateFromSerializedModel() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $restored = unserialize(serialize($this->estimator));
+
+        $this->assertTrue($restored->trained());
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
     }
 }
