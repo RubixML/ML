@@ -143,14 +143,14 @@ class MLPRegressorTest extends TestCase
         self::assertCount(count($losses), $rows);
 
         foreach ($rows as $row) {
-            self::assertIsInt($row['epoch']);
-            self::assertIsFloat($row['loss']);
-            self::assertArrayHasKey('norm', $row);
-            self::assertArrayHasKey('score', $row);
+            self::assertIsInt($row['Epoch']);
+            self::assertIsFloat($row['Least Squares']);
+            self::assertArrayHasKey('Gradient Norm', $row);
+            self::assertArrayHasKey('RMSE', $row);
         }
 
-        self::assertSame(array_values($losses), array_column($rows, 'loss'));
-        self::assertSame(array_keys($losses), array_column($rows, 'epoch'));
+        self::assertSame(array_values($losses), array_column($rows, 'Least Squares'));
+        self::assertSame(array_keys($losses), array_column($rows, 'Epoch'));
     }
 
     #[Test]

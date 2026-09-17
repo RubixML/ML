@@ -331,9 +331,9 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
-                'score' => $this->scores[$epoch] ?? null,
+                'Epoch' => $epoch,
+                "{$this->costFn}" => $loss,
+                "{$this->metric}" => $this->scores[$epoch] ?? null,
             ];
         }
     }

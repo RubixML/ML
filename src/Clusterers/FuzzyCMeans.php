@@ -254,8 +254,8 @@ class FuzzyCMeans implements Estimator, Learner, Iterative, Probabilistic, Verbo
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
+                'Epoch' => $epoch,
+                'Inertia' => $loss,
             ];
         }
     }
