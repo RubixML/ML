@@ -20,6 +20,9 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+use function Rubix\ML\argmax;
+use function array_sum;
+
 #[Group('Clusterers')]
 #[CoversClass(DBSCAN::class)]
 class DBSCANTest extends TestCase
@@ -103,6 +106,7 @@ class DBSCANTest extends TestCase
         $expected = [
             'radius' => 3.0,
             'min density' => 10,
+            'weighted' => false,
             'tree' => new BallTree(),
         ];
 
@@ -140,6 +144,63 @@ class DBSCANTest extends TestCase
             [DBSCAN::NOISE],
             $this->estimator->predict(Unlabeled::quick(samples: [[0.0, 100.0]]))
         );
+    }
+
+    #[Test]
+    public function proba() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        foreach ([false, true] as $weighted) {
+            $estimator = new DBSCAN(
+                radius: 3.0,
+                minDensity: 10,
+                weighted: $weighted,
+                tree: new BallTree()
+            );
+
+            $estimator->train($training);
+
+            $proba = $estimator->proba($testing);
+
+            $predictions = $estimator->predict($testing);
+
+            $this->assertCount($testing->numSamples(), $proba);
+
+            foreach ($proba as $i => $dist) {
+                $this->assertIsArray($dist);
+                $this->assertContainsOnlyFloat($dist);
+                $this->assertEqualsWithDelta(1.0, array_sum($dist), 1e-8);
+                $this->assertSame($predictions[$i], argmax($dist));
+            }
+        }
+    }
+
+    #[Test]
+    public function probaForIsolatedSamples() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        [$dist] = $this->estimator->proba(Unlabeled::quick(samples: [[0.0, 100.0]]));
+
+        $this->assertSame(1.0, $dist[DBSCAN::NOISE]);
+
+        foreach ($dist as $cluster => $probability) {
+            if ($cluster !== DBSCAN::NOISE) {
+                $this->assertSame(0.0, $probability);
+            }
+        }
+    }
+
+    #[Test]
+    public function probaUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->proba(Unlabeled::quick(samples: [[1.0, 2.0]]));
     }
 
     #[Test]
