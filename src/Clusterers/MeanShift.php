@@ -307,8 +307,8 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
+                'Epoch' => $epoch,
+                'Shift' => $loss,
             ];
         }
     }

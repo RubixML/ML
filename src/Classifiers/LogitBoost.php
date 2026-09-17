@@ -331,9 +331,9 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
-                'score' => $this->scores[$epoch] ?? null,
+                'Epoch' => $epoch,
+                'Cross Entropy' => $loss,
+                "{$this->metric}" => $this->scores[$epoch] ?? null,
             ];
         }
     }

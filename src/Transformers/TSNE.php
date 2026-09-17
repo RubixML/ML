@@ -289,8 +289,8 @@ class TSNE implements Transformer, Iterative, Verbose
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
+                'Epoch' => $epoch,
+                'KL Divergence' => $loss,
             ];
         }
     }

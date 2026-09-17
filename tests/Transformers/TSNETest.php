@@ -93,12 +93,12 @@ class TSNETest extends TestCase
         $this->assertCount(count($losses), $rows);
 
         foreach ($rows as $row) {
-            $this->assertIsInt($row['epoch']);
-            $this->assertIsFloat($row['loss']);
+            $this->assertIsInt($row['Epoch']);
+            $this->assertIsFloat($row['KL Divergence']);
         }
 
-        $this->assertSame(array_values($losses), array_column($rows, 'loss'));
-        $this->assertSame(array_keys($losses), array_column($rows, 'epoch'));
+        $this->assertSame(array_values($losses), array_column($rows, 'KL Divergence'));
+        $this->assertSame(array_keys($losses), array_column($rows, 'Epoch'));
     }
 
     #[Test]

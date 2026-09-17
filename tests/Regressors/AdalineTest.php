@@ -169,13 +169,13 @@ class AdalineTest extends TestCase
         self::assertCount(count($losses), $rows);
 
         foreach ($rows as $row) {
-            self::assertIsInt($row['epoch']);
-            self::assertIsFloat($row['loss']);
-            self::assertArrayHasKey('score', $row);
+            self::assertIsInt($row['Epoch']);
+            self::assertIsFloat($row['Huber Loss (alpha: 1)']);
+            self::assertArrayHasKey('RMSE', $row);
         }
 
-        self::assertSame(array_values($losses), array_column($rows, 'loss'));
-        self::assertSame(array_keys($losses), array_column($rows, 'epoch'));
+        self::assertSame(array_values($losses), array_column($rows, 'Huber Loss (alpha: 1)'));
+        self::assertSame(array_keys($losses), array_column($rows, 'Epoch'));
     }
 
     #[Test]
