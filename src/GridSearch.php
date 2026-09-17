@@ -109,7 +109,9 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             throw new InvalidArgumentException("Class $class does not exist.");
         }
 
-        $parameters = (new ReflectionClass($class))->getConstructor()?->getParameters() ?? [];
+        $reflector = new ReflectionClass($class);
+
+        $parameters = $reflector->getConstructor()?->getParameters() ?? [];
 
         $names = [];
 
@@ -155,9 +157,11 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
      */
     protected static function constructorParamNames(string $class) : array
     {
-        $names = [];
+        $reflector = new ReflectionClass($class);
 
-        $constructor = (new ReflectionClass($class))->getConstructor();
+        $constructor = $reflector->getConstructor();
+
+        $names = [];
 
         if ($constructor) {
             foreach ($constructor->getParameters() as $parameter) {

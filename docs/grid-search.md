@@ -34,9 +34,7 @@ $params = [
 $estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
 ```
 
-## Factories
-
-You can also construct a Grid Search instance via a static factory. Specify the hyper-parameters by the name of the base learner's constructor parameter (order does not matter). Hyper-parameters that are omitted are assigned their default value from the base learner's constructor.
+You can also construct a Grid Search instance via the `fromNamedParams()` factory. Specify the hyper-parameters by the name of the base learner's constructor parameter (order does not matter). Hyper-parameters that are omitted are assigned their default value from the base learner's constructor.
 
 ```php
 $estimator = GridSearch::fromNamedParams(
@@ -49,12 +47,6 @@ $estimator = GridSearch::fromNamedParams(
     new FBeta(),
     new KFold(5)
 );
-```
-
-Or, pass them positionally for convenience.
-
-```php
-$estimator = GridSearch::fromOrderedParams(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
 ```
 
 ## Parallel
@@ -81,14 +73,14 @@ Return all the parameter combinations.
 public combinations() : array
 ```
 
+Return an iterable table of every parameter combination tested along with its validation score from the last search.
+
+```php
+public results() : Generator
+```
+
 Return the validation scores of each of the parameter combinations.
 
 ```php
 public scores() : ?array
-```
-
-Return an iterable table of every parameter combination tested along with its validation score from the last search.
-
-```php
-public results() : \Generator
 ```
