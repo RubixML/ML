@@ -307,8 +307,8 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
+                'Epoch' => $epoch,
+                'Shift' => $loss,
             ];
         }
     }
@@ -321,6 +321,16 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
     public function losses() : ?array
     {
         return $this->losses;
+    }
+
+    /**
+     * Return the base spatial tree instance.
+     *
+     * @return Spatial
+     */
+    public function tree() : Spatial
+    {
+        return $this->tree;
     }
 
     /**
