@@ -16,6 +16,8 @@ use Rubix\ML\GridSearch;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -261,5 +263,84 @@ class GridSearchTest extends TestCase
         rsort($sorted);
 
         $this->assertSame($sorted, $scores);
+    }
+
+    #[Test]
+    public function fromNamedParams() : void
+    {
+        $estimator = GridSearch::fromNamedParams(
+            KNearestNeighbors::class,
+            params: [
+                'kernel' => [new Manhattan(), new Euclidean()],
+                'weighted' => [true],
+                'k' => [1, 5, 10],
+            ],
+            metric: new FBeta(),
+            validator: new HoldOut(0.2)
+        );
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $expectedBest = [
+            'k' => 10,
+            'weighted' => true,
+            'kernel' => new Manhattan(),
+        ];
+
+        $this->assertEquals($expectedBest, $estimator->base()->params());
+
+        $rows = iterator_to_array($estimator->results());
+
+        $expectedFirst = [
+            'k' => '10',
+            'weighted' => 'true',
+            'kernel' => 'Manhattan',
+        ];
+
+        foreach ($expectedFirst as $key => $value) {
+            $this->assertSame($value, $rows[0][$key]);
+        }
+
+        $this->assertSame(
+            ['k', 'weighted', 'kernel'],
+            array_slice(array_keys($rows[0]), 0, 3)
+        );
+    }
+
+    #[Test]
+    public function fromNamedParamsFillsDefaults() : void
+    {
+        $estimator = GridSearch::fromNamedParams(
+            KNearestNeighbors::class,
+            params: [
+                'k' => [1, 5, 10],
+                'kernel' => [new Euclidean(), new Manhattan()],
+            ]
+        );
+
+        $expected = [
+            'class' => KNearestNeighbors::class,
+            'params' => [
+                [1, 5, 10],
+                [false],
+                [new Euclidean(), new Manhattan()],
+            ],
+            'metric' => new FBeta(),
+            'validator' => new KFold(3),
+        ];
+
+        $this->assertEquals($expected, $estimator->params());
+    }
+
+    #[Test]
+    public function fromNamedParamsRejectsUnknownParam() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        GridSearch::fromNamedParams(KNearestNeighbors::class, ['nope' => [true]]);
     }
 }

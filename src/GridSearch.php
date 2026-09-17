@@ -89,6 +89,86 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     protected ?array $scores = null;
 
     /**
+     * Return a Grid Search instance from a set of hyper-parameters keyed by the
+     * name of the base learner's constructor parameter.
+     *
+     * @param class-string $class
+     * @param array<string, list<mixed>> $params
+     * @param Metric|null $metric
+     * @param Validator|null $validator
+     * @throws InvalidArgumentException
+     * @return self
+     */
+    public static function fromNamedParams(
+        string $class,
+        array $params,
+        ?Metric $metric = null,
+        ?Validator $validator = null
+    ) : self {
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException("Class $class does not exist.");
+        }
+
+        $parameters = (new ReflectionClass($class))->getConstructor()?->getParameters() ?? [];
+
+        $names = [];
+
+        foreach ($parameters as $parameter) {
+            $names[] = $parameter->getName();
+        }
+
+        foreach (array_keys($params) as $name) {
+            if (!in_array($name, $names, true)) {
+                throw new InvalidArgumentException("$name is not a constructor"
+                    . " parameter of $class.");
+            }
+        }
+
+        $ordered = [];
+
+        foreach ($parameters as $parameter) {
+            $name = $parameter->getName();
+
+            if (array_key_exists($name, $params)) {
+                $ordered[] = $params[$name];
+
+                continue;
+            }
+
+            if ($parameter->isDefaultValueAvailable()) {
+                $ordered[] = [$parameter->getDefaultValue()];
+
+                continue;
+            }
+
+            $ordered[] = [null];
+        }
+
+        return new self($class, $ordered, $metric, $validator);
+    }
+
+    /**
+     * Return the names of a class' constructor parameters.
+     *
+     * @param class-string $class
+     * @return list<string>
+     */
+    protected static function constructorParamNames(string $class) : array
+    {
+        $names = [];
+
+        $constructor = (new ReflectionClass($class))->getConstructor();
+
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $parameter) {
+                $names[] = $parameter->getName();
+            }
+        }
+
+        return $names;
+    }
+
+    /**
      * @param class-string $class
      * @param array<mixed[]> $params
      * @param Metric|null $metric
@@ -110,6 +190,11 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         if (!$proxy instanceof Learner) {
             throw new InvalidArgumentException('Base class must'
                 . ' implement the Learner Interface.');
+        }
+
+        if (!array_is_list($params)) {
+            throw new InvalidArgumentException('Hyper-parameters must be'
+                . ' supplied in the order they are given to the constructor.');
         }
 
         foreach ($params as &$tuple) {
@@ -255,7 +340,7 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         array_multisort($scores, SORT_DESC, $combinations);
 
-        $names = $this->paramNames();
+        $names = self::constructorParamNames($this->class);
 
         foreach ($scores as $i => $score) {
             $row = [];
@@ -374,26 +459,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     public function predict(Dataset $dataset) : array
     {
         return $this->base->predict($dataset);
-    }
-
-    /**
-     * Return the names of the base learner's constructor parameters.
-     *
-     * @return list<string>
-     */
-    private function paramNames() : array
-    {
-        $names = [];
-
-        $constructor = (new ReflectionClass($this->class))->getConstructor();
-
-        if ($constructor) {
-            foreach ($constructor->getParameters() as $parameter) {
-                $names[] = $parameter->getName();
-            }
-        }
-
-        return $names;
     }
 
     /**

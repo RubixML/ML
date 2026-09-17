@@ -34,6 +34,29 @@ $params = [
 $estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
 ```
 
+## Factories
+
+You can also construct a Grid Search instance via a static factory. Specify the hyper-parameters by the name of the base learner's constructor parameter (order does not matter). Hyper-parameters that are omitted are assigned their default value from the base learner's constructor.
+
+```php
+$estimator = GridSearch::fromNamedParams(
+    KNearestNeighbors::class,
+    [
+        'kernel' => [new Euclidean(), new Manhattan()],
+        'k' => [1, 3, 5, 10],
+        'weighted' => [true, false],
+    ],
+    new FBeta(),
+    new KFold(5)
+);
+```
+
+Or, pass them positionally for convenience.
+
+```php
+$estimator = GridSearch::fromOrderedParams(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
+```
+
 ## Parallel
 
 This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Amp](backends/amp.md) to speed up training and inference:
