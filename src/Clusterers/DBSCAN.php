@@ -301,17 +301,11 @@ class DBSCAN implements Estimator, Learner, Persistable
     {
         [, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
-        if ($labels === []) {
+        if (empty($labels)) {
             return self::NOISE;
         }
 
-        $counts = [];
-
-        foreach ($labels as $label) {
-            $label = (int) $label;
-
-            $counts[$label] = ($counts[$label] ?? 0) + 1;
-        }
+        $counts = array_count_values($labels);
 
         $max = max($counts);
 
@@ -319,8 +313,6 @@ class DBSCAN implements Estimator, Learner, Persistable
         $minDistance = INF;
 
         foreach ($labels as $i => $label) {
-            $label = (int) $label;
-
             if ($counts[$label] === $max and $distances[$i] < $minDistance) {
                 $cluster = $label;
 
