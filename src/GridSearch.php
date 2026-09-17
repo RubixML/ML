@@ -154,7 +154,8 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                 continue;
             }
 
-            $ordered[] = [null];
+                throw new InvalidArgumentException("$name is a required constructor"
+                    . " parameter of $class.");
         }
 
         return new self($class, $ordered, $metric, $validator);
