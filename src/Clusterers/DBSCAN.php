@@ -343,7 +343,7 @@ class DBSCAN implements Estimator, Learner, Probabilistic, Persistable
             $weights = array_count_values($labels);
         }
 
-        /** @var array<int|string,float|int> $weights */
+        /** @var array<int,float> $weights */
         return argmax($weights);
     }
 
