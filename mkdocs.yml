@@ -120,6 +120,7 @@ nav:
         - L2 Normalizer: transformers/l2-normalizer.md
         - Max Absolute Scaler: transformers/max-absolute-scaler.md
         - Min Max Normalizer: transformers/min-max-normalizer.md
+        - Power Transformer: transformers/power-transformer.md
         - Robust Standardizer: transformers/robust-standardizer.md
         - Z Scale Standardizer: transformers/z-scale-standardizer.md
       - Dimensionality Reduction:
