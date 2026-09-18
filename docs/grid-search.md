@@ -34,6 +34,23 @@ $params = [
 $estimator = new GridSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
 ```
 
+Passing an empty array `[]` for any of the base learner's constructor parameters tells Grid Search to use that parameter's default value from the base learner's constructor (or `null` if no default exists).
+
+You can also construct a Grid Search instance via the `fromNamedParams()` factory. Specify the hyper-parameters by the name of the base learner's constructor parameter (order does not matter). Hyper-parameters that are omitted are assigned their default value from the base learner's constructor.
+
+```php
+$estimator = GridSearch::fromNamedParams(
+    KNearestNeighbors::class,
+    [
+        'kernel' => [new Euclidean(), new Manhattan()],
+        'k' => [1, 3, 5, 10],
+        'weighted' => [true, false],
+    ],
+    new FBeta(),
+    new KFold(5)
+);
+```
+
 ## Parallel
 
 This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Amp](backends/amp.md) to speed up training and inference:
@@ -52,14 +69,26 @@ Return the base learner instance.
 public base() : ?\Rubix\ML\Learner
 ```
 
-Return all the parameter combinations.
+Return an iterable table of every parameter combination tested along with its validation score from the last search.
 
 ```php
-public combinations() : array
+public results() : Generator
+```
+
+Return the best combination of parameters found during the last search along with their validation score in a 2-tuple.
+
+```php
+public best() : array
 ```
 
 Return the validation scores of each of the parameter combinations.
 
 ```php
 public scores() : ?array
+```
+
+Return all the parameter combinations.
+
+```php
+public combinations() : array
 ```
