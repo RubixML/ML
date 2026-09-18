@@ -8,8 +8,6 @@ use Tensor\Vector;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
-use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use const Rubix\ML\EPSILON;
 
@@ -64,10 +62,6 @@ class AdaMax extends Adam
      */
     public function __construct(Scheduler $scheduler, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
-        if (ExtensionIsLoaded::with('tensor')->passes()) {
-            ExtensionMinimumVersion::with('tensor', '3.0.0-beta')->check();
-        }
-
         parent::__construct($scheduler, $momentumDecay, $normDecay);
     }
 

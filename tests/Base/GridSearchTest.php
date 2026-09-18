@@ -16,6 +16,8 @@ use Rubix\ML\GridSearch;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -29,6 +31,8 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+
+use function Rubix\ML\iterator_first;
 
 #[Group('MetaEstimators')]
 #[CoversClass(GridSearch::class)]
@@ -209,5 +213,209 @@ class GridSearchTest extends TestCase
         self::assertCount($training->numSamples(), $predictions);
 
         self::assertArrayNotHasKey('backend', $copy->__serialize());
+    }
+
+    #[Test]
+    public function resultsAreTableOfCombinationsAndScores() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertNotEmpty($this->estimator->scores());
+
+        $progress = $this->estimator->results();
+
+        $this->assertInstanceOf(Generator::class, $progress);
+
+        $rows = iterator_to_array($progress);
+
+        $this->assertCount(6, $rows);
+
+        $metric = new FBeta();
+
+        $expectedBest = [
+            'k' => '10',
+            'weighted' => 'true',
+            'kernel' => 'Manhattan',
+        ];
+
+        $first = $rows[0];
+
+        foreach ($expectedBest as $key => $value) {
+            $this->assertArrayHasKey($key, $first);
+            $this->assertSame($value, $first[$key]);
+        }
+
+        $this->assertArrayHasKey("{$metric}", $first);
+
+        $scores = [];
+
+        foreach ($rows as $row) {
+            $this->assertSame(
+                ['k', 'weighted', 'kernel', "{$metric}"],
+                array_keys($row)
+            );
+
+            $scores[] = (float) $row["{$metric}"];
+        }
+
+        $sorted = $scores;
+
+        rsort($sorted);
+
+        $this->assertSame($sorted, $scores);
+    }
+
+    #[Test]
+    public function bestIsNullsBeforeTraining() : void
+    {
+        $this->assertSame([null, null], $this->estimator->best());
+    }
+
+    #[Test]
+    public function bestReturnsTopPerformingParamsAndScore() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        [$bestParams, $bestScore] = $this->estimator->best();
+
+        $expectedParams = [
+            'k' => '10',
+            'weighted' => 'true',
+            'kernel' => 'Manhattan',
+        ];
+
+        $this->assertSame($expectedParams, $bestParams);
+
+        $this->assertSame(
+            ['k', 'weighted', 'kernel'],
+            array_keys($bestParams)
+        );
+
+        $metric = new FBeta();
+
+        $first = iterator_first($this->estimator->results());
+
+        $this->assertSame($first["{$metric}"], $bestScore);
+    }
+
+    #[Test]
+    public function fromNamedParams() : void
+    {
+        $estimator = GridSearch::fromNamedParams(
+            KNearestNeighbors::class,
+            params: [
+                'kernel' => [new Manhattan(), new Euclidean()],
+                'weighted' => [true],
+                'k' => [1, 5, 10],
+            ],
+            metric: new FBeta(),
+            validator: new HoldOut(0.2)
+        );
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $expectedBest = [
+            'k' => 10,
+            'weighted' => true,
+            'kernel' => new Manhattan(),
+        ];
+
+        $this->assertEquals($expectedBest, $estimator->base()->params());
+
+        $rows = iterator_to_array($estimator->results());
+
+        $expectedFirst = [
+            'k' => '10',
+            'weighted' => 'true',
+            'kernel' => 'Manhattan',
+        ];
+
+        foreach ($expectedFirst as $key => $value) {
+            $this->assertSame($value, $rows[0][$key]);
+        }
+
+        $this->assertSame(
+            ['k', 'weighted', 'kernel'],
+            array_slice(array_keys($rows[0]), 0, 3)
+        );
+    }
+
+    #[Test]
+    public function fromNamedParamsFillsDefaults() : void
+    {
+        $estimator = GridSearch::fromNamedParams(
+            KNearestNeighbors::class,
+            params: [
+                'k' => [1, 5, 10],
+                'kernel' => [new Euclidean(), new Manhattan()],
+            ]
+        );
+
+        $expected = [
+            'class' => KNearestNeighbors::class,
+            'params' => [
+                [1, 5, 10],
+                [false],
+                [new Euclidean(), new Manhattan()],
+            ],
+            'metric' => new FBeta(),
+            'validator' => new KFold(5),
+        ];
+
+        $this->assertEquals($expected, $estimator->params());
+    }
+
+    #[Test]
+    public function fillsEmptyTuplesWithDefaults() : void
+    {
+        $estimator = new GridSearch(
+            class: KNearestNeighbors::class,
+            params: [[], [], []],
+        );
+
+        $expected = [
+            'class' => KNearestNeighbors::class,
+            'params' => [
+                [5],
+                [false],
+                [null],
+            ],
+            'metric' => new FBeta(),
+            'validator' => new KFold(5),
+        ];
+
+        $this->assertEquals($expected, $estimator->params());
+    }
+
+    #[Test]
+    public function fromNamedParamsRejectsUnknownParam() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        GridSearch::fromNamedParams(KNearestNeighbors::class, ['nope' => [true]]);
+    }
+
+    #[Test]
+    public function rejectsScalarTuple() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new GridSearch(KNearestNeighbors::class, [10, [1, 5]]);
+    }
+
+    #[Test]
+    public function rejectsUnorderedParams() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new GridSearch(KNearestNeighbors::class, ['k' => [1, 5]]);
     }
 }
