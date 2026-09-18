@@ -1,0 +1,613 @@
+<?php
+
+namespace Rubix\ML\Clusterers;
+
+use Rubix\ML\Set;
+use Rubix\ML\Learner;
+use Rubix\ML\Iterative;
+use Rubix\ML\Verbose;
+use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Clusterers\Seeders\KMC2;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Clusterers\Seeders\Seeder;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Symmetric;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
+
+use function Rubix\ML\argmin;
+use function count;
+use function min;
+use function array_search;
+use function array_fill;
+use function array_map;
+use function get_object_vars;
+use function is_nan;
+
+use const Rubix\ML\EPSILON;
+
+/**
+ * K Medoids
+ *
+ * A robust medoid-based hard clustering algorithm capable of grouping linearly
+ * separable data points given some prior knowledge of the target number of clusters
+ * (defined by *k*). Unlike centroid-based algorithms such as [K Means](k-means.md),
+ * K Medoids anchors each cluster with an *actual* sample of the training set (called
+ * a *medoid*) rather than a mean vector, making the resultant clustering less
+ * sensitive to outliers and noise.
+ *
+ * K Medoids follows the *CLARA* (*Clustering LARge Applications*) scheme: at each
+ * round, a random subset of the training set is refined using the *PAM*
+ * (*Partitioning Around Medoids*) heuristic to obtain a candidate set of medoids,
+ * which is then scored against the inertia cost function on the **entire** dataset.
+ * After *R* independent candidates have been proposed (controlled by the *numCandidates*
+ * hyper-parameter), the candidate yielding the lowest full-dataset inertia is kept.
+ *
+ * This decouples the search space from the evaluation cost: PAM is run on the small
+ * subset (O(n'²·k)) while the true objective — the full-dataset inertia — is what
+ * ultimately selects the winning set of medoids. The PAM SWAP exchange uses the
+ * classic swap-cost accumulation over each sample's nearest and second-nearest
+ * medoid distances, making each candidate swap O(n') to evaluate.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
+class KMedoids implements Estimator, Learner, Iterative, Probabilistic, Verbose, Persistable
+{
+    use AutotrackRevisions, LoggerAware;
+
+    /**
+     * The target number of clusters.
+     *
+     * @var positive-int
+     */
+    protected int $k;
+
+    /**
+     * The size of the CLARA sample i.e. the number of samples drawn from the
+     * training set to propose a candidate set of medoids each round.
+     *
+     * @var positive-int
+     */
+    protected int $batchSize;
+
+    /**
+     * The number of CLARA iterations to run. Each iteration proposes an independent
+     * candidate set of medoids; the best candidate (lowest full-dataset inertia)
+     * is kept.
+     *
+     * @var positive-int
+     */
+    protected int $numCandidates;
+
+    /**
+     * The minimum improvement in the total inertia required for a PAM SWAP exchange
+     * to be accepted.
+     *
+     * @var float
+     */
+    protected float $minChange;
+
+    /**
+     * The distance kernel to use when computing the distances between samples.
+     *
+     * @var Distance
+     */
+    protected Distance $kernel;
+
+    /**
+     * The cluster medoid seeder.
+     *
+     * @var Seeder
+     */
+    protected Seeder $seeder;
+
+    /**
+     * The computed medoid vectors, i.e. the actual samples selected from the training
+     * data.
+     *
+     * @var list<list<string|int|float>>
+     */
+    protected array $medoids = [
+        //
+    ];
+
+    /**
+     * The loss at each epoch from the last training session.
+     *
+     * @var float[]|null
+     */
+    protected ?array $losses = null;
+
+    /**
+     * @param int $k
+     * @param int $batchSize
+     * @param int $numCandidates
+     * @param float $minChange
+     * @param Distance|null $kernel
+     * @param Seeder|null $seeder
+     * @throws InvalidArgumentException
+     */
+    public function __construct(
+        int $k,
+        int $batchSize = 100,
+        int $numCandidates = 10,
+        float $minChange = 1e-4,
+        ?Distance $kernel = null,
+        ?Seeder $seeder = null
+    ) {
+        if ($k < 1) {
+            throw new InvalidArgumentException('K must be greater'
+                . " than 0, $k given.");
+        }
+
+        if ($batchSize < $k) {
+            throw new InvalidArgumentException('Batch size must be greater'
+                . " than or equal to $k, $batchSize given.");
+        }
+
+        if ($numCandidates < 1) {
+            throw new InvalidArgumentException('Number of candidates'
+                . " must be greater than 0, $numCandidates given.");
+        }
+
+        if ($minChange < 0.0) {
+            throw new InvalidArgumentException('Minimum change must be'
+                . " greater than 0, $minChange given.");
+        }
+
+        if (isset($kernel) and !$kernel instanceof Symmetric) {
+            throw new InvalidArgumentException('Kernel must implement the Symmetric interface.');
+        }
+
+        $kernel ??= new Euclidean();
+
+        $this->k = $k;
+        $this->batchSize = $batchSize;
+        $this->numCandidates = $numCandidates;
+        $this->minChange = $minChange;
+        $this->kernel = $kernel;
+        $this->seeder = $seeder ?? new KMC2(kernel: $kernel);
+    }
+
+    /**
+     * Return the estimator type.
+     *
+     * @return EstimatorType
+     */
+    public function type() : EstimatorType
+    {
+        return EstimatorType::clusterer();
+    }
+
+    /**
+     * Return the data types that the estimator is compatible with.
+     *
+     * @return list<DataType>
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
+     * Return the settings of the hyper-parameters in an associative array.
+     *
+     * @return mixed[]
+     */
+    public function params() : array
+    {
+        return [
+            'k' => $this->k,
+            'batch size' => $this->batchSize,
+            'num candidates' => $this->numCandidates,
+            'min change' => $this->minChange,
+            'kernel' => $this->kernel,
+            'seeder' => $this->seeder,
+        ];
+    }
+
+    /**
+     * Has the learner been trained?
+     *
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !empty($this->medoids);
+    }
+
+    /**
+     * Return the computed cluster medoids, i.e. the actual samples of the training
+     * set that anchor each cluster.
+     *
+     * @return list<list<string|int|float>>
+     */
+    public function medoids() : array
+    {
+        return $this->medoids;
+    }
+
+    /**
+     * Return an iterable progress table with the steps from the last training session.
+     *
+     * @return Generator<mixed[]>
+     */
+    public function progress() : Generator
+    {
+        if (!$this->losses) {
+            return;
+        }
+
+        foreach ($this->losses as $epoch => $loss) {
+            yield [
+                'Epoch' => $epoch,
+                'Loss' => $loss,
+            ];
+        }
+    }
+
+    /**
+     * Return the loss for each epoch from the last training session.
+     *
+     * @return float[]|null
+     */
+    public function losses() : ?array
+    {
+        return $this->losses;
+    }
+
+    /**
+     * Train the learner with a dataset.
+     *
+     * @param Dataset $dataset
+     * @throws InvalidArgumentException
+     */
+    public function train(Dataset $dataset) : void
+    {
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithEstimator($dataset, $this),
+        ])->check();
+
+        if ($this->logger) {
+            $this->logger->info("Training $this");
+        }
+
+        $numSamples = $dataset->numSamples();
+
+        if ($numSamples < $this->k) {
+            throw new InvalidArgumentException("Dataset must contain at least {$this->k}"
+                . " samples, $numSamples given.");
+        }
+
+        $this->losses = [];
+
+        $subsetSize = min($this->batchSize, $numSamples);
+
+        $bestMedoids = null;
+        $bestLoss = INF;
+
+        for ($round = 1; $round <= $this->numCandidates; ++$round) {
+            $subset = $dataset->randomSubset($subsetSize);
+
+            $seeds = $this->seeder->seed($subset, $this->k);
+
+            $medoidSet = new Set();
+
+            foreach ($seeds as $seed) {
+                $offset = array_search($seed, $subset->samples());
+
+                if ($offset === false) {
+                    throw new RuntimeException('Seed must be present in the training set.');
+                }
+
+                $medoidSet->add($offset);
+            }
+
+            $distances = $this->pairwiseDistances($subset);
+
+            [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoidSet->toArray(), $distances);
+
+            do {
+                $improved = false;
+
+                foreach ($medoidSet as $offset) {
+                    $bestDelta = -$this->minChange;
+                    $bestOffset = null;
+
+                    for ($j = 0; $j < $subset->numSamples(); ++$j) {
+                        if ($medoidSet->has($j)) {
+                            continue;
+                        }
+
+                        $delta = 0.0;
+
+                        foreach ($distances as $i => $row) {
+                            $without = $argmins[$i] === $offset ? $seconds[$i] : $firsts[$i];
+
+                            $delta += min($row[$j], $without) - $firsts[$i];
+                        }
+
+                        if ($delta < $bestDelta) {
+                            $bestDelta = $delta;
+
+                            $bestOffset = $j;
+                        }
+                    }
+
+                    if (isset($bestOffset)) {
+                        $medoidSet->remove($offset);
+                        $medoidSet->add($bestOffset);
+
+                        [$argmins, $firsts, $seconds] = $this->nearestMedoidDistances($medoidSet->toArray(), $distances);
+
+                        $improved = true;
+                    }
+                }
+            } while ($improved);
+
+            $medoids = array_map(fn ($offset) => $subset->sample($offset), $medoidSet->toArray());
+
+            $sum = 0.0;
+
+            foreach ($dataset->samples() as $sample) {
+                $min = INF;
+
+                foreach ($medoids as $medoid) {
+                    $distance = $this->kernel->compute($sample, $medoid);
+
+                    if ($distance < $min) {
+                        $min = $distance;
+                    }
+                }
+
+                $sum += $min;
+            }
+
+            $loss = $sum / $dataset->numSamples();
+
+            $this->losses[$round] = $loss;
+
+            if ($this->logger) {
+                $message = "Round: $round, Inertia: $loss";
+
+                $this->logger->info($message);
+            }
+
+            if (is_nan($loss)) {
+                if ($this->logger) {
+                    $this->logger->warning('Numerical instability detected');
+                }
+
+                break;
+            }
+
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+
+                $bestMedoids = $medoids;
+            }
+        }
+
+        if ($bestMedoids === null) {
+            throw new RuntimeException('No candidates were proposed during training.');
+        }
+
+        $this->medoids = $bestMedoids;
+
+        if ($this->logger) {
+            $this->logger->info('Training complete');
+        }
+    }
+
+    /**
+     * Cluster the dataset by assigning a label to each sample.
+     *
+     * @param Dataset $dataset
+     * @throws RuntimeException
+     * @return list<int>
+     */
+    public function predict(Dataset $dataset) : array
+    {
+        if (!$this->medoids) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, count(current($this->medoids)))->check();
+
+        return array_map([$this, 'predictSample'], $dataset->samples());
+    }
+
+    /**
+     * Label a given sample based on its distance from each cluster medoid.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return int
+     */
+    public function predictSample(array $sample) : int
+    {
+        return argmin($this->medoidDistances($sample));
+    }
+
+    /**
+     * Estimate the joint probabilities for each possible outcome.
+     *
+     * @param Dataset $dataset
+     * @throws RuntimeException
+     * @return list<float[]>
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        if (!$this->medoids) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetHasDimensionality::with($dataset, count(current($this->medoids)))->check();
+
+        return array_map([$this, 'probaSample'], $dataset->samples());
+    }
+
+    /**
+     * Return the membership of a sample to each of the k cluster medoids.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return float[]
+     */
+    public function probaSample(array $sample) : array
+    {
+        $distances = $proba = [];
+
+        foreach ($this->medoids as $medoid) {
+            $distances[] = $this->kernel->compute($sample, $medoid) ?: EPSILON;
+        }
+
+        foreach ($distances as $distanceA) {
+            $sigma = 0.0;
+
+            foreach ($distances as $distanceB) {
+                $sigma += $distanceA / $distanceB;
+            }
+
+            $proba[] = 1.0 / $sigma;
+        }
+
+        return $proba;
+    }
+
+    /**
+     * Compute the distance from a sample to each cluster medoid.
+     *
+     * @internal
+     *
+     * @param list<string|int|float> $sample
+     * @return list<float>
+     */
+    protected function medoidDistances(array $sample) : array
+    {
+        $distances = [];
+
+        foreach ($this->medoids as $medoid) {
+            $distances[] = $this->kernel->compute($sample, $medoid);
+        }
+
+        return $distances;
+    }
+
+    /**
+     * Compute the distance to the nearest and second nearest medoid as well as
+     * the offset of the nearest medoid for each sample of the distance matrix.
+     *
+     * @param list<int> $medoids
+     * @param list<list<float>> $distances
+     * @return array{0: list<int>, 1: list<float>, 2: list<float>}
+     */
+    protected function nearestMedoidDistances(array $medoids, array $distances) : array
+    {
+        $argmins = $firsts = $seconds = [];
+
+        foreach ($distances as $row) {
+            $min = $nextMin = INF;
+            $argmin = null;
+
+            foreach ($medoids as $medoid) {
+                $distance = $row[$medoid];
+
+                if ($distance < $min) {
+                    $nextMin = $min;
+                    $min = $distance;
+                    $argmin = $medoid;
+                } elseif ($distance < $nextMin) {
+                    $nextMin = $distance;
+                }
+            }
+
+            $argmins[] = $argmin;
+            $firsts[] = $min;
+            $seconds[] = $nextMin;
+        }
+
+        return [$argmins, $firsts, $seconds];
+    }
+
+    /**
+     * Compute the distance matrix of the samples i.e. the pairwise distance between
+     * every pair of samples in the data set.
+     *
+     * @param Dataset $dataset
+     * @return list<list<float>>
+     */
+    protected function pairwiseDistances(Dataset $dataset) : array
+    {
+        $n = $dataset->numSamples();
+
+        $distances = array_fill(0, $n, array_fill(0, $n, 0.0));
+
+        for ($i = 0; $i < $n; ++$i) {
+            for ($j = $i + 1; $j < $n; ++$j) {
+                $distance = $this->kernel->compute($dataset->sample($i), $dataset->sample($j));
+
+                $distances[$i][$j] = $distance;
+                $distances[$j][$i] = $distance;
+            }
+        }
+
+        return $distances;
+    }
+
+    /**
+     * Return an associative array containing the data used to serialize the object.
+     *
+     * @return mixed[]
+     */
+    public function __serialize() : array
+    {
+        $properties = get_object_vars($this);
+
+        unset($properties['losses'], $properties['logger']);
+
+        return $properties;
+    }
+
+    /**
+     * Restore the object from an associative array of serialized properties.
+     *
+     * @param mixed[] $properties
+     */
+    public function __unserialize(array $properties) : void
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @internal
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return 'K Medoids (' . Params::stringify($this->params()) . ')';
+    }
+}
