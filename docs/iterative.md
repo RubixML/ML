@@ -12,7 +12,7 @@ Return an iterable progress table from the last training session:
 public progress() : iterable
 ```
 
-Each entry in the table is an associative array with `epoch` as one of its keys. The other keys present may vary by estimator; every entry includes the epoch number and the training loss, and most also include the validation score (when a holdout set was used) and the gradient norm (for estimators trained with the neural network subsystem).
+Each entry in the table is an associative array with `Epoch` as one of its keys. The other keys present may vary by estimator; every entry includes the epoch number and the training loss keyed by its name (such as `Exponential Loss` or `Inertia`), and most also include the validation score keyed by the metric name (when a holdout set was used) and the gradient norm (for estimators trained with the neural network subsystem).
 
 ```php
 use Rubix\ML\Extractors\CSV;
@@ -27,7 +27,7 @@ $extractor->export($estimator->progress());
 The resulting file contains one row per recorded epoch. Values that were not recorded at a given epoch are left blank, such as the validation score on epochs that fall between evaluation intervals.
 
 ```csv
-epoch,loss,norm,score
+Epoch,Exponential Loss,Gradient Norm,F Beta (beta: 1)
 1,0.6931,1.2007,
 2,0.4034,0.8631,
 3,0.2588,0.6102,0.7889
@@ -39,11 +39,11 @@ You can also iterate over it manually to extract or transform individual epochs:
 
 ```php
 foreach ($estimator->progress() as $record) {
-    if (isset($record['score']) and $record['loss'] < 0.3) {
-        printf("Loss dropped below 0.3 at epoch %d with a score of %.4F.", $record['epoch'], $record['score']);
+    if (isset($record['F Beta (beta: 1)']) and $record['Exponential Loss'] < 0.3) {
+        printf("Loss dropped below 0.3 at epoch %d with a score of %.4F.", $record['Epoch'], $record['F Beta (beta: 1)']);
     }
 }
 ```
 
 !!! note
-    A learner must be trained before `progress()` returns any epochs. The `norm` and `score` keys are only present for epochs where the corresponding value was actually recorded during training.
+    A learner must be trained before `progress()` returns any epochs. The `Gradient Norm` and metric keys are only present for epochs where the corresponding value was actually recorded during training.

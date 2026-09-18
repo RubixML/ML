@@ -384,10 +384,10 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
-                'norm' => $this->norms[$epoch] ?? null,
-                'score' => $this->scores[$epoch] ?? null,
+                'Epoch' => $epoch,
+                "{$this->costFn}" => $loss,
+                'Gradient Norm' => $this->norms[$epoch] ?? null,
+                "{$this->metric}" => $this->scores[$epoch] ?? null,
             ];
         }
     }

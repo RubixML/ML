@@ -267,8 +267,8 @@ class GaussianMixture implements Estimator, Learner, Iterative, Probabilistic, V
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
+                'Epoch' => $epoch,
+                'Loss' => $loss,
             ];
         }
     }
