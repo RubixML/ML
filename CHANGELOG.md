@@ -1,5 +1,8 @@
 # Changelog
 
+- 2.6.0
+    - PCA, SVD, and LDA now work without Tensor extension
+
 - 2.5.15
     - Optimize random weighted subset with replacement
     - Optimize Prior guessing strategy

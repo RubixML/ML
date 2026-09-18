@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group Transformers
- * @requires extension tensor
  * @covers \Rubix\ML\Transformers\TruncatedSVD
  */
 class TruncatedSVDTest extends TestCase
