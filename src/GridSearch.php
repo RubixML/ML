@@ -16,7 +16,6 @@ use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
@@ -24,6 +23,18 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use ReflectionClass;
+use Generator;
+
+use function in_array;
+use function class_exists;
+use function array_unique;
+use function array_keys;
+use function array_pop;
+use function array_multisort;
+use function array_key_exists;
+use function array_is_list;
+use function is_array;
 
 /**
  * Grid Search
@@ -43,6 +54,11 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persistable
 {
     use AutotrackRevisions, Multiprocessing, LoggerAware;
+
+    /**
+     * The threshold for the number of search parameter combinations considered to be huge.
+     */
+    protected const int HUGE_SEARCH_THRESHOLD = 1000;
 
     /**
      * The class name of the base estimator.
@@ -87,8 +103,93 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     protected ?array $scores = null;
 
     /**
+     * Return a Grid Search instance from a set of hyper-parameters keyed by the
+     * name of the base learner's constructor parameter.
+     *
      * @param class-string $class
-     * @param array<mixed[]> $params
+     * @param array<string, list<mixed>> $params
+     * @param Metric|null $metric
+     * @param Validator|null $validator
+     * @throws InvalidArgumentException
+     * @return self
+     */
+    public static function fromNamedParams(
+        string $class,
+        array $params,
+        ?Metric $metric = null,
+        ?Validator $validator = null
+    ) : self {
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException("Class $class does not exist.");
+        }
+
+        $reflector = new ReflectionClass($class);
+
+        $parameters = $reflector->getConstructor()?->getParameters() ?? [];
+
+        $names = [];
+
+        foreach ($parameters as $parameter) {
+            $names[] = $parameter->getName();
+        }
+
+        foreach (array_keys($params) as $name) {
+            if (!in_array($name, $names, true)) {
+                throw new InvalidArgumentException("$name is not a constructor"
+                    . " parameter of $class.");
+            }
+        }
+
+        $ordered = [];
+
+        foreach ($parameters as $parameter) {
+            $name = $parameter->getName();
+
+            if (array_key_exists($name, $params)) {
+                $ordered[] = $params[$name];
+
+                continue;
+            }
+
+            if ($parameter->isDefaultValueAvailable()) {
+                $ordered[] = [$parameter->getDefaultValue()];
+
+                continue;
+            }
+
+            throw new InvalidArgumentException("$name is a required constructor"
+                . " parameter of $class.");
+        }
+
+        return new self($class, $ordered, $metric, $validator);
+    }
+
+    /**
+     * Return the names of a class' constructor parameters.
+     *
+     * @param class-string $class
+     * @return list<string>
+     */
+    protected static function constructorParamNames(string $class) : array
+    {
+        $reflector = new ReflectionClass($class);
+
+        $constructor = $reflector->getConstructor();
+
+        $names = [];
+
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $parameter) {
+                $names[] = $parameter->getName();
+            }
+        }
+
+        return $names;
+    }
+
+    /**
+     * @param class-string $class
+     * @param array<mixed> $params
      * @param Metric|null $metric
      * @param Validator|null $validator
      * @throws InvalidArgumentException
@@ -103,15 +204,38 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             throw new InvalidArgumentException("Class $class does not exist.");
         }
 
+        if (!array_is_list($params)) {
+            throw new InvalidArgumentException('Hyper-parameters must be'
+                . ' supplied in the order they are given to the constructor.');
+        }
+
+        $reflector = new ReflectionClass($class);
+
+        $parameters = $reflector->getConstructor()?->getParameters() ?? [];
+
+        foreach ($params as $index => &$tuple) {
+            if (!is_array($tuple)) {
+                throw new InvalidArgumentException('Each param value must be an array.');
+            }
+
+            if (empty($tuple)) {
+                $tuple = [null];
+
+                $parameter = $parameters[$index] ?? null;
+
+                if ($parameter and $parameter->isDefaultValueAvailable()) {
+                    $tuple = [$parameter->getDefaultValue()];
+                }
+            } else {
+                $tuple = array_unique($tuple, SORT_REGULAR);
+            }
+        }
+
         $proxy = new $class(...array_map('current', $params));
 
         if (!$proxy instanceof Learner) {
             throw new InvalidArgumentException('Base class must'
                 . ' implement the Learner Interface.');
-        }
-
-        foreach ($params as &$tuple) {
-            $tuple = empty($tuple) ? [null] : array_unique($tuple, SORT_REGULAR);
         }
 
         if ($metric) {
@@ -137,16 +261,13 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
                     $metric = new FBeta();
 
                     break;
-
-                default:
-                    $metric = new Accuracy();
             }
         }
 
         $this->class = $class;
         $this->params = $params;
         $this->metric = $metric;
-        $this->validator = $validator ?? new KFold(3);
+        $this->validator = $validator ?? new KFold(5);
         $this->base = $proxy;
     }
 
@@ -237,6 +358,57 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
     }
 
     /**
+     * Return a table of the validation score obtained from each parameter
+     * combination from the last search.
+     *
+     * @return Generator<mixed[]>
+     */
+    public function results() : Generator
+    {
+        if (!$this->scores) {
+            return;
+        }
+
+        $combinations = $this->combinations();
+        $scores = $this->scores;
+
+        array_multisort($scores, SORT_DESC, $combinations);
+
+        $names = self::constructorParamNames($this->class);
+
+        foreach ($scores as $i => $score) {
+            $row = [];
+
+            foreach ($combinations[$i] as $j => $param) {
+                $row[$names[$j] ?? 'param ' . ($j + 1)] = Params::toString($param);
+            }
+
+            $row["{$this->metric}"] = Params::toString($score);
+
+            yield $row;
+        }
+    }
+
+    /**
+     * Return the best combination of parameters found during the last search along
+     * with their validation score in a 2-tuple.
+     *
+     * @return array{0: array<mixed>|null, 1: float|null}
+     */
+    public function best() : array
+    {
+        if (!$this->scores) {
+            return [null, null];
+        }
+
+        $params = iterator_first($this->results());
+
+        $score = array_pop($params);
+
+        return [$params, $score];
+    }
+
+    /**
      * Return a list of all possible combinations of parameters i.e their Cartesian product.
      *
      * @return list<list<mixed>>
@@ -277,11 +449,19 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        $combinations = $this->combinations();
+
         if ($this->logger) {
             $this->logger->info("Training $this");
+
+            $numCombinations = number_format(count($combinations));
+
+            $this->logger->info("Total parameter combinations is {$numCombinations}");
         }
 
-        $combinations = $this->combinations();
+        if (count($combinations) > self::HUGE_SEARCH_THRESHOLD) {
+            warn('Huge search space detected, consider reducing the number of search parameters.');
+        }
 
         $this->backend()->flush();
 
@@ -308,14 +488,16 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
 
         $scores = $this->backend()->process();
 
+        $this->scores = $scores;
+
         array_multisort($scores, SORT_DESC, $combinations);
 
-        $best = reset($combinations) ?: [];
+        $best = $combinations[array_key_first($combinations)];
 
         $estimator = new $this->base(...$best);
 
         if ($this->logger) {
-            $this->logger->info('Now training with best hyper-parameters'
+            $this->logger->info('Training with best hyper-parameters'
                 . Params::stringify($best) . ' on full dataset.');
         }
 
@@ -326,7 +508,6 @@ class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persis
         }
 
         $this->base = $estimator;
-        $this->scores = $scores;
     }
 
     /**

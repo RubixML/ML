@@ -330,9 +330,9 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
-                'score' => $this->scores[$epoch] ?? null,
+                'Epoch' => $epoch,
+                'L2 Loss' => $loss,
+                "{$this->metric}" => $this->scores[$epoch] ?? null,
             ];
         }
     }

@@ -57,7 +57,14 @@
     - Added Iterative interface with progress() method
     - Iterative Learners renamed steps() method to progress()
     - Changed default gradient-based `minChange` from 1e-4 to 1e-5
+    - `Prior` is now default `Strategy` of `Missing Data Imputer`
+    - `DBSCAN` is now a `Learner`, `Probabilistic` and `Persistable`
+    - `Grid Search` now has a fromNamedParams() factory method
+    - `Grid Search` now generates a results() table
     
+- 2.6.0
+    - PCA, SVD, and LDA now work without Tensor extension
+
 - 2.5.15
     - Optimize random weighted subset with replacement
     - Optimize Prior guessing strategy

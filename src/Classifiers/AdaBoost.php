@@ -331,9 +331,9 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
 
         foreach ($this->losses as $epoch => $loss) {
             yield [
-                'epoch' => $epoch,
-                'loss' => $loss,
-                'score' => $this->scores[$epoch] ?? null,
+                'Epoch' => $epoch,
+                'Exponential Loss' => $loss,
+                "{$this->metric}" => $this->scores[$epoch] ?? null,
             ];
         }
     }
