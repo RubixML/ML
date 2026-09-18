@@ -953,6 +953,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../iterative.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Iterative
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../learner.html" class="md-nav__link">
         
   
@@ -8124,7 +8147,7 @@
 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Clusterers/KMeans.php">[source]</a></span></p>
 <h1 id="k-means">K Means<a class="headerlink" href="#k-means" title="Permanent link">#</a></h1>
 <p>A fast online centroid-based hard clustering algorithm capable of grouping linearly separable data points given some prior knowledge of the target number of clusters (defined by <em>k</em>). K Means is trained using adaptive Mini Batch Gradient Descent and minimizes the inertia cost function at each epoch. Inertia is defined as the average sum of distances between each sample and its nearest cluster centroid.</p>
-<p><strong>Interfaces:</strong> <a href="../estimator.html">Estimator</a>, <a href="../learner.html">Learner</a>, <a href="../online.html">Online</a>, <a href="../probabilistic.html">Probabilistic</a>, <a href="../persistable.html">Persistable</a>, <a href="../verbose.html">Verbose</a></p>
+<p><strong>Interfaces:</strong> <a href="../estimator.html">Estimator</a>, <a href="../learner.html">Learner</a>, <a href="../iterative.html">Iterative</a>, <a href="../online.html">Online</a>, <a href="../probabilistic.html">Probabilistic</a>, <a href="../persistable.html">Persistable</a>, <a href="../verbose.html">Verbose</a></p>
 <p><strong>Data Type Compatibility:</strong> Continuous</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
@@ -8196,15 +8219,6 @@
 <p>Return the number of training samples that each centroid is responsible for.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">sizes</span><span class="p">()</span> <span class="o">:</span> <span class="nx">int</span><span class="p">[]</span>
 </code></pre></div>
-<p>Return an iterable progress table with the steps from the last training session.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">steps</span><span class="p">()</span> <span class="o">:</span> <span class="nx">iterable</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
-
-<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;progress.csv&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
-
-<span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">steps</span><span class="p">());</span>
-</code></pre></div>
 <p>Return the loss for each epoch from the last training session.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">losses</span><span class="p">()</span> <span class="o">:</span> <span class="nx">float</span><span class="p">[]</span><span class="o">|</span><span class="k">null</span>
 </code></pre></div>
@@ -8239,7 +8253,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 14, 2026 18:40:41">September 14, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 16, 2026 20:03:08">September 16, 2026</span>
   </span>
 
     

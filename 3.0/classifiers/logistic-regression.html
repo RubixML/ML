@@ -953,6 +953,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../iterative.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Iterative
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../learner.html" class="md-nav__link">
         
   
@@ -8110,7 +8133,7 @@
 <p class="admonition-title">Note</p>
 <p>If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.</p>
 </div>
-<p><strong>Interfaces:</strong> <a href="../estimator.html">Estimator</a>, <a href="../learner.html">Learner</a>, <a href="../online.html">Online</a>, <a href="../probabilistic.html">Probabilistic</a>, <a href="../ranks-features.html">Ranks Features</a>, <a href="../verbose.html">Verbose</a>, <a href="../persistable.html">Persistable</a></p>
+<p><strong>Interfaces:</strong> <a href="../estimator.html">Estimator</a>, <a href="../learner.html">Learner</a>, <a href="../iterative.html">Iterative</a>, <a href="../online.html">Online</a>, <a href="../probabilistic.html">Probabilistic</a>, <a href="../ranks-features.html">Ranks Features</a>, <a href="../verbose.html">Verbose</a>, <a href="../persistable.html">Persistable</a></p>
 <p><strong>Data Type Compatibility:</strong> Continuous</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
@@ -8162,23 +8185,23 @@
 <tr>
 <td>6</td>
 <td>minChange</td>
-<td>1e-4</td>
+<td>1e-5</td>
 <td>float</td>
 <td>The minimum change in the training loss necessary to continue training.</td>
 </tr>
 <tr>
 <td>7</td>
 <td>evalInterval</td>
-<td>3</td>
+<td>1</td>
 <td>int</td>
 <td>The number of epochs to train before evaluating the model using the holdout set.</td>
 </tr>
 <tr>
 <td>8</td>
 <td>window</td>
-<td>5</td>
+<td>10</td>
 <td>int</td>
-<td>The number of epochs without improvement in the validation score to wait before considering an early stop.</td>
+<td>The number of evaluations without improvement in the validation score to wait before considering an early stop.</td>
 </tr>
 <tr>
 <td>9</td>
@@ -8216,27 +8239,15 @@
     <span class="nx">l1Penalty</span><span class="o">:</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="nx">l2Penalty</span><span class="o">:</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="nx">epochs</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="nx">minChange</span><span class="o">:</span> <span class="mf">1e-4</span><span class="p">,</span>
-    <span class="nx">evalInterval</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="nx">window</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nx">minChange</span><span class="o">:</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="nx">evalInterval</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nx">window</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nx">holdOut</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span>
     <span class="nx">costFn</span><span class="o">:</span> <span class="k">new</span> <span class="nx">BinaryCrossEntropy</span><span class="p">(),</span>
     <span class="nx">metric</span><span class="o">:</span> <span class="k">new</span> <span class="nx">MCC</span><span class="p">()</span>
 <span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
-<p>Clean up any leftover state after training. Only do this if you plan to use the model for inference.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">cleanup</span><span class="p">()</span> <span class="o">:</span> <span class="nx">void</span>
-</code></pre></div>
-<p>Return an iterable progress table with the steps from the last training session.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">steps</span><span class="p">()</span> <span class="o">:</span> <span class="nx">iterable</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
-
-<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;progress.csv&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
-
-<span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">steps</span><span class="p">());</span>
-</code></pre></div>
 <p>Return the loss for each epoch from the last training session.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">losses</span><span class="p">()</span> <span class="o">:</span> <span class="nx">float</span><span class="p">[]</span><span class="o">|</span><span class="k">null</span>
 </code></pre></div>
@@ -8248,6 +8259,9 @@
 </code></pre></div>
 <p>Set the path of the temporary snapshot file used to store network parameters during training.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">setSnapshotPath</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$path</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
+</code></pre></div>
+<p>Clean up any leftover state after training. Only do this if you plan to use the model for inference.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">cleanup</span><span class="p">()</span> <span class="o">:</span> <span class="nx">void</span>
 </code></pre></div>
 
 
@@ -8271,7 +8285,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 15, 2026 16:44:21">September 15, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 16, 2026 20:03:08">September 16, 2026</span>
   </span>
 
     
