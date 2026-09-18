@@ -7828,7 +7828,7 @@
         <li class="md-nav__item">
   <a href="#im-getting-out-of-memory-errors" class="md-nav__link">
     <span class="md-ellipsis">
-      I'm getting out of memory errors.
+      I'm getting out of memory errors
     </span>
   </a>
   
@@ -7837,7 +7837,7 @@
         <li class="md-nav__item">
   <a href="#training-is-slower-than-usual" class="md-nav__link">
     <span class="md-ellipsis">
-      Training is slower than usual.
+      Training is slower than usual
     </span>
   </a>
   
@@ -7961,7 +7961,7 @@
         <li class="md-nav__item">
   <a href="#im-getting-out-of-memory-errors" class="md-nav__link">
     <span class="md-ellipsis">
-      I'm getting out of memory errors.
+      I'm getting out of memory errors
     </span>
   </a>
   
@@ -7970,7 +7970,7 @@
         <li class="md-nav__item">
   <a href="#training-is-slower-than-usual" class="md-nav__link">
     <span class="md-ellipsis">
-      Training is slower than usual.
+      Training is slower than usual
     </span>
   </a>
   
@@ -8058,14 +8058,14 @@
 <h2 id="what-environment-sapi-should-i-run-rubix-ml-in">What environment (SAPI) should I run Rubix ML in?<a class="headerlink" href="#what-environment-sapi-should-i-run-rubix-ml-in" title="Permanent link">#</a></h2>
 <p>All Rubix ML projects are designed to run from the PHP command line interface (<a href="http://php.net/manual/en/features.commandline.php">CLI</a>). The reason almost always boils down to performance and memory consumption.</p>
 <p>If you would like to serve your models in production, the preferred method is to use the <a href="https://github.com/RubixML/Server">Server</a> library to spin up a high-performance standalone model server from the command line. If you plan to implement your own model server, we recommend using an asynchronous event loop such as <a href="https://reactphp.org/">React PHP</a> or <a href="https://www.swoole.co.uk/">Swoole</a> to prevent the model from having to be loaded into memory on each request.</p>
-<p>To run a PHP script using the command line interface (CLI), open a terminal window and enter:
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>php<span class="w"> </span>example.php
-</code></pre></div></p>
+<p>To run a PHP script using the command line interface (CLI), open a terminal window and enter:</p>
+<div class="highlight"><pre><span></span><code>php<span class="w"> </span>example.php
+</code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The PHP interpreter must be installed and in your default PATH for the above syntax to work correctly.</p>
 </div>
-<h2 id="im-getting-out-of-memory-errors">I'm getting out of memory errors.<a class="headerlink" href="#im-getting-out-of-memory-errors" title="Permanent link">#</a></h2>
+<h2 id="im-getting-out-of-memory-errors">I'm getting out of memory errors<a class="headerlink" href="#im-getting-out-of-memory-errors" title="Permanent link">#</a></h2>
 <p>Try adjusting the <code>memory_limit</code> option in your php.ini file to something more reasonable. We recommend setting this to <code>-1</code> (no limit) or slightly below your device's memory supply for best results.</p>
 <p>You can temporarily set the <code>memory_limit</code> in your script by using the <code>ini_set()</code> function.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">ini_set</span><span class="p">(</span><span class="s1">&#39;memory_limit&#39;</span><span class="p">,</span> <span class="s1">&#39;-1&#39;</span><span class="p">);</span>
@@ -8074,7 +8074,7 @@
 <p class="admonition-title">Note</p>
 <p>Training can require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the Online Learning section of the <a href="training.html">Training</a> docs for more information.</p>
 </div>
-<h2 id="training-is-slower-than-usual">Training is slower than usual.<a class="headerlink" href="#training-is-slower-than-usual" title="Permanent link">#</a></h2>
+<h2 id="training-is-slower-than-usual">Training is slower than usual<a class="headerlink" href="#training-is-slower-than-usual" title="Permanent link">#</a></h2>
 <p>Training time depends on a number of factors including size of the dataset and complexity of the model. If you believe that training is taking unusually long then check the following factors.</p>
 <ul>
 <li><a href="https://xdebug.org/">Xdebug</a> or other debuggers are not enabled.</li>
@@ -8091,7 +8091,7 @@
 <h2 id="how-can-i-contribute-to-the-project">How can I contribute to the project?<a class="headerlink" href="#how-can-i-contribute-to-the-project" title="Permanent link">#</a></h2>
 <p>Anyone is welcome to contribute to Rubix ML. See the <a href="https://github.com/RubixML/ML/blob/master/CONTRIBUTING.md">CONTRIBUTING</a> guide in the project root for more info.</p>
 <h2 id="how-can-i-become-a-sponsor">How can I become a sponsor?<a class="headerlink" href="#how-can-i-become-a-sponsor" title="Permanent link">#</a></h2>
-<p>Check out our funding sources <a href="index.html#funding">here</a> and consider donating to the cause.</p>
+<p>Check out our <a href="index.html#funding">funding sources</a> and consider donating to the cause.</p>
 
 
 
@@ -8114,7 +8114,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 25, 2025 19:30:16">July 25, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2026 01:02:37">August 30, 2026</span>
   </span>
 
     
@@ -8124,7 +8124,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2019 23:40:06">June 25, 2019</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2024 17:37:43">August 30, 2024</span>
   </span>
 
     

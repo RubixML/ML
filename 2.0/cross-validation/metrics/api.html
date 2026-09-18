@@ -7924,7 +7924,7 @@
 <p class="admonition-title">Note</p>
 <p>Some regression metrics output the negative of their value to maintain the convention that scores get better as they <em>increase</em>.</p>
 </div>
-<h3 id="scoring-predictions">Scoring Predictions<a class="headerlink" href="#scoring-predictions" title="Permanent link">#</a></h3>
+<h2 id="scoring-predictions">Scoring Predictions<a class="headerlink" href="#scoring-predictions" title="Permanent link">#</a></h2>
 <p>To compute a validation score, pass in the predictions from an estimator along with their expected labels.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">score</span><span class="p">(</span><span class="k">array</span> <span class="nv">$predictions</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$labels</span><span class="p">)</span> <span class="o">:</span> <span class="nx">float</span>
 </code></pre></div>
@@ -7940,7 +7940,7 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>0.88
 </code></pre></div>
-<h3 id="scoring-probabilities">Scoring Probabilities<a class="headerlink" href="#scoring-probabilities" title="Permanent link">#</a></h3>
+<h2 id="scoring-probabilities">Scoring Probabilities<a class="headerlink" href="#scoring-probabilities" title="Permanent link">#</a></h2>
 <p>Metrics that implement the ProbabilisticMetric interface calculate a validation score derived from the estimated probabilities of a <a href="../../probabilistic.html">Probabilistic</a> estimator and their corresponding ground-truth labels.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">score</span><span class="p">(</span><span class="k">array</span> <span class="nv">$probabilities</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$labels</span><span class="p">)</span> <span class="o">:</span> <span class="nx">float</span>
 </code></pre></div>
@@ -7956,7 +7956,7 @@
 
 <span class="nv">$score</span> <span class="o">=</span> <span class="nv">$metric</span><span class="o">-&gt;</span><span class="na">score</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">,</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
 </code></pre></div>
-<h3 id="score-range">Score Range<a class="headerlink" href="#score-range" title="Permanent link">#</a></h3>
+<h2 id="score-range">Score Range<a class="headerlink" href="#score-range" title="Permanent link">#</a></h2>
 <p>Output the minimum and maximum value the validation score can take in a <a href="../../faq.html#what-is-a-tuple">2-tuple</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nb">range</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Rubix\ML\Tuple</span><span class="p">{</span><span class="nx">float</span><span class="p">,</span> <span class="nx">float</span><span class="p">}</span>
 </code></pre></div>
@@ -7988,7 +7988,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 18, 2022 03:16:06">May 18, 2022</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2026 01:02:37">August 30, 2026</span>
   </span>
 
     
@@ -7998,7 +7998,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2019 23:40:06">June 25, 2019</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2024 17:37:43">August 30, 2024</span>
   </span>
 
     

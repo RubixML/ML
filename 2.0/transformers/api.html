@@ -7996,26 +7996,26 @@
 
 <h1 id="transformer">Transformer<a class="headerlink" href="#transformer" title="Permanent link">#</a></h1>
 <p>Transformers take Dataset objects and modify the features contained within. They are often used as part of a transformer <a href="../pipeline.html">Pipeline</a> or they can be used on their own.</p>
-<h3 id="transform-a-dataset">Transform a Dataset<a class="headerlink" href="#transform-a-dataset" title="Permanent link">#</a></h3>
+<h2 id="transform-a-dataset">Transform a Dataset<a class="headerlink" href="#transform-a-dataset" title="Permanent link">#</a></h2>
 <p>To transform a dataset, pass a transformer object to the <code>apply()</code> method on a <a href="../datasets/api.html">Dataset</a> object like in the example below.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\MinMaxNormalizer</span><span class="p">;</span>
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">MinMaxNormalizer</span><span class="p">());</span>
 </code></pre></div>
-<p>The transformer can directly transform the samples in place via the <code>transform()</code> method given a samples array:
+<p>The transformer can directly transform the samples in place via the <code>transform()</code> method given a samples array:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">transform</span><span class="p">(</span><span class="k">array</span> <span class="o">&amp;</span><span class="nv">$samples</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-</code></pre></div></p>
+</code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">transform</span><span class="p">(</span><span class="nv">$samples</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="stateful">Stateful<a class="headerlink" href="#stateful" title="Permanent link">#</a></h2>
 <p>Stateful transformers are those that require <em>fitting</em> before they can transform. The <code>fit()</code> method takes a dataset as input and pre-computes any necessary information in order to carry out future transformations. You can think of <em>fitting</em> a transformer like <em>training</em> a learner.</p>
 <h3 id="fit-a-dataset">Fit a Dataset<a class="headerlink" href="#fit-a-dataset" title="Permanent link">#</a></h3>
-<p>To fit the transformer to a training set:
+<p>To fit the transformer to a training set:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">fit</span><span class="p">(</span><span class="nx">Dataset</span> <span class="nv">$dataset</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-</code></pre></div></p>
-<p>Check if the transformer has been fitted:
+</code></pre></div>
+<p>Check if the transformer has been fitted:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">fitted</span><span class="p">()</span> <span class="o">:</span> <span class="nx">bool</span>
-</code></pre></div></p>
+</code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
 
 <span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">();</span>
@@ -8080,7 +8080,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 4, 2021 03:01:02">July 4, 2021</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2026 01:02:37">August 30, 2026</span>
   </span>
 
     
@@ -8090,7 +8090,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2019 23:40:06">June 25, 2019</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2024 17:37:43">August 30, 2024</span>
   </span>
 
     
