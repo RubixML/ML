@@ -131,13 +131,13 @@ class AdaBoostTest extends TestCase
         $this->assertCount(count($losses), $rows);
 
         foreach ($rows as $row) {
-            $this->assertIsInt($row['epoch']);
-            $this->assertIsFloat($row['loss']);
-            $this->assertArrayHasKey('score', $row);
+            $this->assertIsInt($row['Epoch']);
+            $this->assertIsFloat($row['Exponential Loss']);
+            $this->assertArrayHasKey('F Beta (beta: 1)', $row);
         }
 
-        $this->assertSame(array_values($losses), array_column($rows, 'loss'));
-        $this->assertSame(array_keys($losses), array_column($rows, 'epoch'));
+        $this->assertSame(array_values($losses), array_column($rows, 'Exponential Loss'));
+        $this->assertSame(array_keys($losses), array_column($rows, 'Epoch'));
     }
 
     #[Test]

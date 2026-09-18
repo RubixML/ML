@@ -6,8 +6,8 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Strategies\Mean;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Strategies\Prior;
 use Rubix\ML\Strategies\Strategy;
-use Rubix\ML\Strategies\KMostFrequent;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -86,7 +86,7 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
         }
 
         $this->continuous = $continuous ?? new Mean();
-        $this->categorical = $categorical ?? new KMostFrequent(1);
+        $this->categorical = $categorical ?? new Prior();
         $this->categoricalPlaceholder = $categoricalPlaceholder;
     }
 
