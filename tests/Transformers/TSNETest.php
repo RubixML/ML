@@ -54,7 +54,7 @@ class TSNETest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, new Euclidean());
+        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, 50, 5, new Euclidean());
 
         $this->embedder->setLogger(new BlackHole());
 
@@ -75,7 +75,7 @@ class TSNETest extends TestCase
 
         srand(self::RANDOM_SEED);
 
-        $embedder = new TSNE(1, 10.0, 10, 12.0, 5, 1e-7, new Euclidean());
+        $embedder = new TSNE(1, 10.0, 10, 12.0, 5, 1e-7, 1, 5, new Euclidean());
 
         $embedder->setLogger(new BlackHole());
 
@@ -107,6 +107,56 @@ class TSNETest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new TSNE(0);
+    }
+
+    #[Test]
+    public function badEvalInterval() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(evalInterval: 0);
+    }
+
+    #[Test]
+    public function badWindow() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new TSNE(window: -1);
+    }
+
+    #[Test]
+    public function earlyStop() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TEST_SIZE);
+
+        $embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-15, 1, 2, new Euclidean());
+
+        $embedder->setLogger(new BlackHole());
+
+        $dataset->apply($embedder);
+
+        $this->assertIsArray($embedder->losses());
+        $this->assertNotEmpty($embedder->losses());
+        $this->assertLessThan(500, count($embedder->losses()));
+    }
+
+    #[Test]
+    public function windowDisabled() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TEST_SIZE);
+
+        $embedder = new TSNE(1, 10.0, 10, 12.0, 10, 1e-15, 1, 0, new Euclidean());
+
+        $embedder->setLogger(new BlackHole());
+
+        $dataset->apply($embedder);
+
+        $this->assertSame(10, count($embedder->losses()));
     }
 
     #[Test]
@@ -158,7 +208,7 @@ class TSNETest extends TestCase
     #[Test]
     public function gradientWeight() : void
     {
-        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, new Euclidean());
+        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 50, 5, new Euclidean());
 
         $p = Matrix::quick([
             [0.0, 0.3, 0.2],
@@ -256,7 +306,7 @@ class TSNETest extends TestCase
     #[Test]
     public function affinities() : void
     {
-        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, new Euclidean());
+        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 50, 5, new Euclidean());
 
         $distances = [
             [0.0, 1.0, 2.0, 3.0],
