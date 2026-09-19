@@ -30,7 +30,16 @@
 ```php
 use Rubix\ML\Transformers\TSNE;
 
-$transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
+$transformer = new TSNE(
+    dimensions: 3,
+    rate: 10.0,
+    perplexiy: 30,
+    exaggeration: 12.0,
+    epochs: 1000,
+    minGradient: 1e-7,
+    evalInterval: 50,
+    window: 6,
+);
 ```
 
 ## Additional Methods
