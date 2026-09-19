@@ -21,6 +21,9 @@
 | 4 | exaggeration | 12.0 | float | The factor to exaggerate the distances between samples during the early stage of embedding. |
 | 5 | epochs | 1000 | int | The maximum number of times to iterate over the embedding. |
 | 6 | minGradient | 1e-7 | float | The minimum norm of the gradient necessary to continue embedding. |
+| 7 | evalInterval | 50 | int | The number of epochs to wait between evaluations of the KL Divergence cost. |
+| 8 | window | 5 | int | The number of consecutive cost evaluations without improving on the best cost observed before early stopping. Set to 0 to disable early stopping. |
+| 9 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
 ## Example
 
