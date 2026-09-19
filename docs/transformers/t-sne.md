@@ -38,6 +38,12 @@ $transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
 Return the magnitudes of the gradient at each epoch from the last embedding.
 
 ```php
+public norms() : float[]|null
+```
+
+Return the KL Divergence cost at each evaluation epoch from the last embedding.
+
+```php
 public losses() : float[]|null
 ```
 

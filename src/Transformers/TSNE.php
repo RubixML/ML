@@ -382,8 +382,8 @@ class TSNE implements Transformer, Iterative, Verbose
 
         $this->norms = $this->losses = [];
 
-        $bestCost = INF;
-        $numWorseEpochs = 0;
+        $bestLoss = INF;
+        $numWorseEvals = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $squared = $this->pairwiseDistances($y->asArray())->square();
@@ -407,7 +407,7 @@ class TSNE implements Transformer, Iterative, Verbose
 
             $norm = $gradient->l2Norm();
 
-            $this->norms[] = $norm;
+            $this->norms[$epoch] = $norm;
 
             if ($this->logger) {
                 $this->logger->info("Epoch: $epoch, Gradient: $norm");
@@ -421,26 +421,32 @@ class TSNE implements Transformer, Iterative, Verbose
                 break;
             }
 
-            if ($norm < $this->minGradient) {
-                break;
-            }
-
             $evalThisEpoch = $epoch % $this->evalInterval === 0;
 
-            if ($this->window > 0 and $evalThisEpoch) {
+            if ($evalThisEpoch) {
                 $loss = $this->klDivergence($p, $squared);
 
-                if ($loss < $bestCost) {
-                    $bestCost = $loss;
+                $this->losses[$epoch] = $loss;
 
-                    $numWorseEpochs = 0;
-                } elseif (++$numWorseEpochs >= $this->window) {
+                if ($loss < $bestLoss) {
+                    $bestLoss = $loss;
+
+                    $numWorseEvals = 0;
+                } else {
+                    ++$numWorseEvals;
+                }
+
+                if ($this->window > 0 and $numWorseEvals >= $this->window) {
                     if ($this->logger) {
                         $this->logger->info('Early stopping');
                     }
 
                     break;
                 }
+            }
+
+            if ($norm < $this->minGradient) {
+                break;
             }
 
             if ($epoch === $maxEarlyEpochs) {
@@ -610,22 +616,11 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         $q = $this->q($distances);
 
-        $p = $p->asArray();
-        $q = $q->asArray();
+        $safeP = $p->add($p->equalScalar(0.0)->multiplyScalar(EPSILON));
 
-        $n = count($p);
+        $ratio = $safeP->divide($q->add(EPSILON));
 
-        $loss = 0.0;
-
-        for ($i = 0; $i < $n; ++$i) {
-            for ($j = 0; $j < $n; ++$j) {
-                if ($i !== $j && $p[$i][$j] > 0.0) {
-                    $loss += $p[$i][$j] * log($p[$i][$j] / max($q[$i][$j], EPSILON));
-                }
-            }
-        }
-
-        return $loss;
+        return $p->multiply($ratio->log())->sum()->sum();
     }
 
     /**

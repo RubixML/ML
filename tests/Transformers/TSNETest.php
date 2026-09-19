@@ -75,7 +75,7 @@ class TSNETest extends TestCase
 
         srand(self::RANDOM_SEED);
 
-        $embedder = new TSNE(1, 10.0, 10, 12.0, 5, 1e-7, 50, 5, new Euclidean());
+        $embedder = new TSNE(1, 10.0, 10, 12.0, 5, 1e-7, 1, 5, new Euclidean());
 
         $embedder->setLogger(new BlackHole());
 
