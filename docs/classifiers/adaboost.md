@@ -24,7 +24,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 | 4 | epochs | 100 | int | The maximum number of training epochs. i.e. the number of times to iterate before terminating. |
 | 5 | minChange | 1e-5 | float | The minimum change in the training loss necessary to continue training. |
 | 6 | evalInterval | 3 | int | The number of epochs to train before evaluating the model using the holdout set. |
-| 7 | window | 5 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. |
+| 7 | window | 5 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. Set to 0 to disable early stopping. |
 | 8 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
 | 9 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
 

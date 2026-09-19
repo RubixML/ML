@@ -129,7 +129,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     /**
      * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
-     * @var positive-int
+     * @var int<0,max>
      */
     protected int $window;
 
@@ -235,7 +235,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                 . " greater than 0, $evalInterval given.");
         }
 
-        if ($window < 1) {
+        if ($window < 0) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
         }
@@ -417,7 +417,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
         $this->boosters = $this->scores = $this->losses = [];
 
         $bestScore = $minScore;
-        $bestEpoch = $numWorseEpochs = 0;
+        $bestEpoch = $numWorseEvals = 0;
         $score = null;
         $prevLoss = INF;
 
@@ -465,6 +465,11 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
             if ($evalThisStep) {
                 if ($score >= $maxScore) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, maximum '
+                            . "{$this->metric} score reached");
+                    }
+
                     break;
                 }
 
@@ -472,17 +477,27 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                     $bestScore = $score;
                     $bestEpoch = $epoch;
 
-                    $numWorseEpochs = 0;
+                    $numWorseEvals = 0;
                 } else {
-                    ++$numWorseEpochs;
+                    ++$numWorseEvals;
                 }
 
-                if ($numWorseEpochs >= $this->window) {
+                if ($this->window and $numWorseEvals >= $this->window) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
+                    }
+
                     break;
                 }
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 

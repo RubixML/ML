@@ -428,7 +428,7 @@ class TSNE implements Transformer, Iterative, Verbose
                     ++$numWorseEvals;
                 }
 
-                if ($this->window > 0 and $numWorseEvals >= $this->window) {
+                if ($this->window and $numWorseEvals >= $this->window) {
                     if ($this->logger) {
                         $this->logger->info('Early stopping, no improvement in '
                             . "the last {$this->window} evaluations");

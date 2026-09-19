@@ -416,6 +416,11 @@ class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Ve
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 

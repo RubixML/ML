@@ -120,7 +120,7 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
     /**
      * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
-     * @var positive-int
+     * @var int<0,max>
      */
     protected int $window;
 
@@ -231,7 +231,7 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
                 . " greater than 0, $evalInterval given.");
         }
 
-        if ($window < 1) {
+        if ($window < 0) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
         }
@@ -447,7 +447,7 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
         [$minScore, $maxScore] = $this->metric->range()->list();
 
         $bestScore = $minScore;
-        $bestEpoch = $numWorseEpochs = 0;
+        $bestEpoch = $numWorseEvals = 0;
         $score = $snapshot = null;
         $prevLoss = $averageLoss = INF;
 
@@ -534,6 +534,11 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
 
             if ($evalThisStep) {
                 if ($score >= $maxScore) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, maximum '
+                            . "{$this->metric} score reached");
+                    }
+
                     break;
                 }
 
@@ -547,17 +552,27 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
 
                     $snapshot = Snapshot::take($this->network, $snapshotPath);
 
-                    $numWorseEpochs = 0;
+                    $numWorseEvals = 0;
                 } else {
-                    ++$numWorseEpochs;
+                    ++$numWorseEvals;
                 }
 
-                if ($numWorseEpochs >= $this->window) {
+                if ($this->window and $numWorseEvals >= $this->window) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
+                    }
+
                     break;
                 }
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 

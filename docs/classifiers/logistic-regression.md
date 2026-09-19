@@ -22,7 +22,7 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 6 | minChange | 1e-5 | float | The minimum change in the training loss necessary to continue training. |
 | 7 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the holdout set. |
-| 8 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. |
+| 8 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. Set to 0 to disable early stopping. |
 | 9 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
 | 10 | costFn | BinaryCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 11 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |

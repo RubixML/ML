@@ -96,6 +96,40 @@ class AdaBoostTest extends TestCase
     }
 
     #[Test]
+    public function badWindow() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new AdaBoost(window: -1);
+    }
+
+    #[Test]
+    public function windowDisabled() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new AdaBoost(
+            base: new ClassificationTree(1),
+            rate: 1.0,
+            ratio: 0.5,
+            epochs: 10,
+            minChange: 1e-12,
+            evalInterval: 1,
+            window: 0,
+            holdOut: 0.1,
+            metric: new FBeta()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TEST_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+    }
+
+    #[Test]
     public function progressContract() : void
     {
         $this->assertSame([], iterator_to_array($this->estimator->progress(), false));

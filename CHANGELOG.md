@@ -61,6 +61,7 @@
     - `DBSCAN` is now a `Learner`, `Probabilistic` and `Persistable`
     - `Grid Search` now has a fromNamedParams() factory method
     - `Grid Search` now generates a results() table
+    - Can now disable windowed early-stopping completely with window = 0
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension

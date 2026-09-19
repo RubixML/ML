@@ -414,6 +414,11 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
             }
 
             if ($loss < $this->minShift) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, shift below '
+                        . "minimum of {$this->minShift}");
+                }
+
                 break;
             }
 

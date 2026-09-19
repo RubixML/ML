@@ -124,7 +124,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     /**
      * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
-     * @var positive-int
+     * @var int<0,max>
      */
     protected int $window;
 
@@ -237,7 +237,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
                 . " greater than 0, $evalInterval given.");
         }
 
-        if ($window < 1) {
+        if ($window < 0) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
         }
@@ -404,7 +404,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
         }
 
         $bestScore = $minScore;
-        $bestEpoch = $numWorseEpochs = 0;
+        $bestEpoch = $numWorseEvals = 0;
         $bestEnsembleSize = 0;
         $score = null;
         $prevLoss = INF;
@@ -459,10 +459,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
             $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
 
             if ($evalThisStep) {
-                $score = $this->metric->score(
-                    $this->predict($testing),
-                    $testing->labels()
-                );
+                $score = $this->metric->score($this->predict($testing), $testing->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -479,6 +476,11 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
 
             if ($evalThisStep) {
                 if ($score >= $maxScore) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, maximum '
+                            . "{$this->metric} score reached");
+                    }
+
                     break;
                 }
 
@@ -487,17 +489,27 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
                     $bestEpoch = $epoch;
                     $bestEnsembleSize = count($this->ensemble);
 
-                    $numWorseEpochs = 0;
+                    $numWorseEvals = 0;
                 } else {
-                    ++$numWorseEpochs;
+                    ++$numWorseEvals;
                 }
 
-                if ($numWorseEpochs >= $this->window) {
+                if ($this->window and $numWorseEvals >= $this->window) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
+                    }
+
                     break;
                 }
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 
