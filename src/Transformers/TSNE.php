@@ -126,13 +126,6 @@ class TSNE implements Transformer, Iterative, Verbose
     protected int $dofs;
 
     /**
-     * The precomputed c factor of the gradient computation.
-     *
-     * @var float
-     */
-    protected float $c;
-
-    /**
      * The learning rate that controls the global step size.
      *
      * @var float
@@ -282,7 +275,6 @@ class TSNE implements Transformer, Iterative, Verbose
 
         $this->dimensions = $dimensions;
         $this->dofs = $dofs;
-        $this->c = 2.0 * (1.0 + $dofs) / $dofs;
         $this->rate = $rate;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
@@ -438,7 +430,8 @@ class TSNE implements Transformer, Iterative, Verbose
 
                 if ($this->window > 0 and $numWorseEvals >= $this->window) {
                     if ($this->logger) {
-                        $this->logger->info('Early stopping');
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
                     }
 
                     break;
@@ -446,6 +439,11 @@ class TSNE implements Transformer, Iterative, Verbose
             }
 
             if ($norm < $this->minGradient) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, gradient below '
+                        . "minimum of {$this->minGradient}");
+                }
+
                 break;
             }
 
@@ -600,9 +598,11 @@ class TSNE implements Transformer, Iterative, Verbose
 
         $pqd = $p->subtract($q)->multiply($weights);
 
+        $c = 2.0 * (1.0 + $this->dofs) / $this->dofs;
+
         return $y->multiplyColumnVector($pqd->sum())
             ->subtract($pqd->matmul($y))
-            ->multiplyScalar($this->c);
+            ->multiplyScalar($c);
     }
 
     /**
