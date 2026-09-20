@@ -33,7 +33,7 @@ jobs:
           chmod +x /usr/local/bin/pie
 
       - name: Install Extensions
-        run: pie install
+        run: pie install rubix/tensor_ext
 
       - name: Validate composer.json
         run: composer validate
