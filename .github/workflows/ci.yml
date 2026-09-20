@@ -26,12 +26,6 @@ jobs:
           extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
 
-      - name: Validate composer.json
-        run: composer validate
-
-      - name: Install Dependencies
-        run: composer install
-
       - name: Install PIE
         run: |
           curl -fL --output /tmp/pie.phar https://github.com/php/pie/releases/latest/download/pie.phar
@@ -40,6 +34,12 @@ jobs:
 
       - name: Install Extensions
         run: pie install
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Install Dependencies
+        run: composer install
 
       - name: Static Analysis
         run: composer analyze
