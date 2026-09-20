@@ -17,6 +17,8 @@ use function is_finite;
 use function abs;
 use function log;
 use function exp;
+use function expm1;
+use function log1p;
 use function array_values;
 use function array_filter;
 
@@ -88,11 +90,11 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
     protected static function yeoJohnson(float $value, float $lambda) : float
     {
         if ($value >= 0.0) {
-if (abs($lambda) > EPSILON) {
-                return \expm1($lambda * \log1p($value)) / $lambda;
+            if (abs($lambda) > EPSILON) {
+                return expm1($lambda * log1p($value)) / $lambda;
             }
 
-            return \log1p($value);
+            return log1p($value);
         }
 
         $gamma = 2.0 - $lambda;
