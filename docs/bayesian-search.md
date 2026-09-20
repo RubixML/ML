@@ -63,7 +63,7 @@ $estimator = BayesianSearch::fromNamedParams(
 Return the base learner instance.
 
 ```php
-public base() : ?\Rubix\ML\Learner
+public base() : \Rubix\ML\Estimator
 ```
 
 Return an iterable table of every hyper-parameter combination tested along with its validation score from the last search, sorted by score descending.
