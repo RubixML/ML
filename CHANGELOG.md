@@ -62,6 +62,7 @@
     - `Grid Search` now has a fromNamedParams() factory method
     - `Grid Search` now generates a results() table
     - Can now disable windowed early-stopping completely with window = 0
+    - TSNE now has KL Divergence loss evaluation and early stopping
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
