@@ -28,8 +28,8 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          apt-get update -q
-          apt-get install -qy gfortran liblapack-dev libopenblas-dev liblapacke-dev unzip
+          sudo apt-get update -qq
+          sudo apt-get install -qq -y gfortran liblapack-dev libopenblas-dev liblapacke-dev unzip build-essential
 
       - name: Install PIE
         run: |
