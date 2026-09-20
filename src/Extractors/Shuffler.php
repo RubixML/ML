@@ -46,6 +46,11 @@ class Shuffler implements Extractor
      */
     public function __construct(iterable $iterator, int $bufferSize = 256)
     {
+        if ($bufferSize < 1) {
+            throw new \Rubix\ML\Exceptions\InvalidArgumentException('Buffer size must be'
+                . " greater than 0, $bufferSize given.");
+        }
+
         $this->iterator = $iterator;
         $this->bufferSize = $bufferSize;
     }
