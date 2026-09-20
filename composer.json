@@ -34,6 +34,7 @@
         "php": ">=8.3",
         "ext-json": "*",
         "ext-tensor_ext": "^3.0",
+        "ext-swoole": "^6.0",
         "amphp/parallel": "^2.0",
         "andrewdalpino/okbloomer": "^1.0",
         "psr/log": "^1.1|^2.0|^3.0",
