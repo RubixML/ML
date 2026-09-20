@@ -614,8 +614,13 @@ class BayesianSearch implements EstimatorWrapper, Learner, Verbose, Persistable
             }
         }
 
+        foreach ($this->combinations() as $candidate) {
+            if (!isset($evaluated[serialize($candidate)])) {
+                return $candidate;
+            }
+        }
+
         return $this->bestParams($history);
-    }
 
     /**
      * Sample a random combination of hyper-parameters uniformly from the search space.
