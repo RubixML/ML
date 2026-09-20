@@ -26,6 +26,11 @@ jobs:
           extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
 
+      - name: Install system dependencies
+        run: |
+          apt-get update -q
+          apt-get install -qy gfortran liblapack-dev libopenblas-dev liblapacke-dev unzip
+
       - name: Install PIE
         run: |
           curl -fL --output /tmp/pie.phar https://github.com/php/pie/releases/latest/download/pie.phar
