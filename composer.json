@@ -34,7 +34,6 @@
         "php": ">=8.3",
         "ext-json": "*",
         "ext-tensor_ext": "^3.0",
-        "ext-swoole": "^6.0",
         "amphp/parallel": "^2.0",
         "andrewdalpino/okbloomer": "^1.0",
         "psr/log": "^1.1|^2.0|^3.0",
@@ -51,7 +50,6 @@
         "swoole/ide-helper": "^5.1"
     },
     "suggest": {
-        "ext-tensor": "For fast Matrix/Vector computing.",
         "ext-gd": "For image support.",
         "ext-mbstring": "For fast multibyte string manipulation.",
         "ext-svm": "For support Vector Machine engine (libsvm).",
