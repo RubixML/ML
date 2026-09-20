@@ -423,7 +423,7 @@ class TSNE implements Transformer, Iterative, Verbose
                 $message = "Epoch: $epoch, Gradient: $norm";
 
                 if ($evalThisEpoch) {
-                    $message .= ", Loss: {$this->losses[$epoch]}";
+                    $message .= ", KL Divergence: {$this->losses[$epoch]}";
                 }
 
                 $this->logger->info($message);
