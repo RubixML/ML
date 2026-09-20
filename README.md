@@ -9,6 +9,23 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **Support** for ETL, preprocessing, and cross-validation.
 - **Open source** and free to use commercially.
 
+## Requirements
+
+- [PHP](https://php.net/manual/en/install.php) 8.3 or above.
+
+### Recommended
+
+- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
+- [Swoole extension](https://openswoole.com/) for fast multiprocessing support.
+
+### Optional
+
+- [GD extension](https://php.net/manual/en/book.image.php) for image support.
+- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
+- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).
+- [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support.
+- [GraphViz](https://graphviz.org/) for graph visualization.
+
 ## Installation
 
 Install Rubix ML into your project using [Composer](https://getcomposer.org/):
@@ -17,22 +34,11 @@ Install Rubix ML into your project using [Composer](https://getcomposer.org/):
 composer require rubix/ml
 ```
 
-### Requirements
+Install the recommended extensions using [PIE](https://github.com/php/pie):
 
-- [PHP](https://php.net/manual/en/install.php) 8.3 or above.
-
-#### Recommended
-
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
-- [Swoole extension](https://openswoole.com/) for multiprocessing support.
-
-#### Optional
-
-- [GD extension](https://php.net/manual/en/book.image.php) for image support.
-- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
-- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).
-- [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support.
-- [GraphViz](https://graphviz.org/) for graph visualization.
+```sh
+pie install rubix/tensor_ext swoole/swoole
+```
 
 ## Documentation
 
