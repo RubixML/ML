@@ -347,14 +347,16 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         SamplesAreCompatibleWithTransformer::with(new Unlabeled($samples), $this)->check();
 
-        if ($this->logger) {
-            $this->logger->info('Computing high-dimensional affinities');
-        }
-
         $m = count($samples);
 
         if ($m === 0) {
             return;
+        }
+
+        if ($this->logger) {
+            $this->logger->info("Embedding {$this}");
+
+            $this->logger->info('Computing high-dimensional affinities');
         }
 
         $distances = $this->pairwiseDistances($samples)->square();
