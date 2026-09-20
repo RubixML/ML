@@ -518,19 +518,7 @@ class BayesianSearch implements EstimatorWrapper, Learner, Verbose, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $spaceSize = 1;
-
-        foreach ($this->params as $tuple) {
-            $count = count($tuple);
-
-            if ($spaceSize > (int) (PHP_INT_MAX / $count)) {
-                $spaceSize = PHP_INT_MAX;
-
-                break;
-            }
-
-            $spaceSize *= $count;
-        }
+        $spaceSize = count($this->combinations());
 
         $maxTrials = min($this->maxTrials, $spaceSize);
 
@@ -633,6 +621,7 @@ class BayesianSearch implements EstimatorWrapper, Learner, Verbose, Persistable
         }
 
         return $this->bestParams($history);
+    }
 
     /**
      * Sample a random combination of hyper-parameters uniformly from the search space.
