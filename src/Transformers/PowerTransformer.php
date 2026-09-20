@@ -88,11 +88,11 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
     protected static function yeoJohnson(float $value, float $lambda) : float
     {
         if ($value >= 0.0) {
-            if (abs($lambda) > EPSILON) {
-                return ((($value + 1.0) ** $lambda) - 1.0) / $lambda;
+if (abs($lambda) > EPSILON) {
+                return \expm1($lambda * \log1p($value)) / $lambda;
             }
 
-            return log($value + 1.0);
+            return \log1p($value);
         }
 
         $gamma = 2.0 - $lambda;
