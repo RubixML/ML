@@ -112,7 +112,8 @@ $params = [
 ```php
 use Rubix\ML\BayesianSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Manhattan;
 $params = [
     [1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()]
 ];
