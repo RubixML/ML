@@ -1,10 +1,6 @@
 # Installation
 
-Install Rubix ML into your project using [Composer](https://getcomposer.org/):
-
-```sh
-composer require rubix/ml
-```
+Rubix ML installs into your project using [Composer](https://getcomposer.org/) and has optional extensions that can be installed via [PIE](https://github.com/php/pie).
 
 ## Requirements
 
@@ -13,13 +9,26 @@ composer require rubix/ml
 ### Recommended
 
 - [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
-- [Swoole extension](https://openswoole.com/) for multiprocessing support.
+- [Swoole extension](https://openswoole.com/) for fast multiprocessing support.
 
-#### Optional
+### Optional
 
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
 - [GD extension](https://php.net/manual/en/book.image.php) for image support.
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).
 - [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support.
 - [GraphViz](https://graphviz.org/) for graph visualization.
+
+## Example
+
+Install Rubix ML into your project using [Composer](https://getcomposer.org/):
+
+```sh
+composer require rubix/ml
+```
+
+Install the recommended extensions using [PIE](https://github.com/php/pie):
+
+```sh
+pie install rubix/tensor_ext swoole/swoole
+```
