@@ -403,10 +403,6 @@ class TSNE implements Transformer, Iterative, Verbose
 
             $this->norms[$epoch] = $norm;
 
-            if ($this->logger) {
-                $this->logger->info("Epoch: $epoch, Gradient: $norm");
-            }
-
             if (is_nan($norm)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
@@ -421,7 +417,19 @@ class TSNE implements Transformer, Iterative, Verbose
                 $loss = $this->klDivergence($p, $squared);
 
                 $this->losses[$epoch] = $loss;
+            }
 
+            if ($this->logger) {
+                $message = "Epoch: $epoch, Gradient: $norm";
+
+                if ($evalThisEpoch) {
+                    $message .= ", Loss: {$this->losses[$epoch]}";
+                }
+
+                $this->logger->info($message);
+            }
+
+            if ($evalThisEpoch) {
                 if ($loss < $bestLoss) {
                     $bestLoss = $loss;
 
