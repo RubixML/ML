@@ -108,6 +108,7 @@ nav:
       - One Class SVM: anomaly-detectors/one-class-svm.md
       - Robust Z-Score: anomaly-detectors/robust-z-score.md
     - Meta Estimators:
+      - Bayesian Search: bayesian-search.md
       - Bootstrap Aggregator: bootstrap-aggregator.md
       - Committee Machine: committee-machine.md
       - Grid Search: grid-search.md
