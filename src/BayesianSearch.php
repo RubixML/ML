@@ -518,7 +518,19 @@ class BayesianSearch implements EstimatorWrapper, Learner, Verbose, Persistable
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        $spaceSize = count($this->combinations());
+        $spaceSize = 1;
+
+        foreach ($this->params as $tuple) {
+            $count = count($tuple);
+
+            if ($spaceSize > (int) (PHP_INT_MAX / $count)) {
+                $spaceSize = PHP_INT_MAX;
+
+                break;
+            }
+
+            $spaceSize *= $count;
+        }
 
         $maxTrials = min($this->maxTrials, $spaceSize);
 
