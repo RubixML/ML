@@ -52,7 +52,7 @@ class AdaMax extends Adam
             $c[] = (float) max($valueA, $bHat[$i]);
         }
 
-        return Vector::quick($c);
+        return Vector::fromArray($c, false);
     }
 
     /**

@@ -161,7 +161,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
         $biases = Matrix::ones($dataset->numSamples(), 1);
 
         $x = Matrix::fromArray($dataset->samples())->augmentLeft($biases);
-        $y = Vector::build($dataset->labels());
+        $y = Vector::fromArray($dataset->labels());
 
         /** @var int<0,max> $nHat */
         $nHat = $x->n() - 1;
@@ -181,7 +181,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             ->asArray();
 
         $this->bias = (float) array_shift($coefficients);
-        $this->coefficients = Vector::quick($coefficients);
+        $this->coefficients = Vector::fromArray($coefficients, false);
     }
 
     /**

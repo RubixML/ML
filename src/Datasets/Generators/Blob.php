@@ -94,7 +94,7 @@ class Blob implements Generator
                 }
             }
 
-            $stdDev = Vector::quick($stdDev);
+            $stdDev = Vector::fromArray($stdDev, false);
         } else {
             if ($stdDev < 0) {
                 throw new InvalidArgumentException('Standard deviation'
@@ -102,7 +102,7 @@ class Blob implements Generator
             }
         }
 
-        $this->center = Vector::quick($center);
+        $this->center = Vector::fromArray($center, false);
         $this->stdDev = $stdDev;
     }
 

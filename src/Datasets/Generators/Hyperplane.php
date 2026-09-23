@@ -64,7 +64,7 @@ class Hyperplane implements Generator
                 . " greater than 0, $noise given.");
         }
 
-        $this->coefficients = Vector::quick($coefficients);
+        $this->coefficients = Vector::fromArray($coefficients, false);
         $this->intercept = $intercept;
         $this->noise = $noise;
     }

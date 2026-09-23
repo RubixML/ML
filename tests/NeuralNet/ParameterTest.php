@@ -132,9 +132,9 @@ class ParameterTest extends TestCase
     #[Test]
     public function gradientNormOfColumnVector() : void
     {
-        $param = new Parameter(ColumnVector::quick([1.0, -2.0, 3.0, 4.0]));
+        $param = new Parameter(ColumnVector::fromArray([1.0, -2.0, 3.0, 4.0], false));
 
-        $param->accumulateGradient(ColumnVector::quick([2.0, 0.0, -4.0, 0.0]));
+        $param->accumulateGradient(ColumnVector::fromArray([2.0, 0.0, -4.0, 0.0], false));
 
         $this->assertEqualsWithDelta(sqrt(20.0), $param->gradientNorm(), 1e-8);
     }

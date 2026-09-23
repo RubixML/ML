@@ -533,7 +533,7 @@ class TSNE implements Transformer, Iterative, Verbose
                 break;
             }
 
-            $candidate = $distances->multiplyColumnVector(ColumnVector::quick($betas))
+            $candidate = $distances->multiplyColumnVector(ColumnVector::fromArray($betas, false))
                 ->negate()
                 ->exp()
                 ->multiply($mask);
@@ -544,7 +544,7 @@ class TSNE implements Transformer, Iterative, Verbose
 
             $candidate = $candidate->divideColumnVector($sigma);
 
-            $dcb = $distances->multiply($candidate)->sum()->multiply(ColumnVector::quick($betas));
+            $dcb = $distances->multiply($candidate)->sum()->multiply(ColumnVector::fromArray($betas, false));
 
             $diff = $sigma->log()
                 ->add($dcb)

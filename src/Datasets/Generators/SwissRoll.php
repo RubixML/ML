@@ -88,7 +88,7 @@ class SwissRoll implements Generator
                 . " than 0, $noise given.");
         }
 
-        $this->center = Vector::quick([$x, $y, $z]);
+        $this->center = Vector::fromArray([$x, $y, $z], false);
         $this->scale = $scale;
         $this->depth = $depth;
         $this->noise = $noise;

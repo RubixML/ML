@@ -79,7 +79,7 @@ class HalfMoon implements Generator
                 . " greater than 0, $noise given.");
         }
 
-        $this->center = Vector::quick([$x, $y]);
+        $this->center = Vector::fromArray([$x, $y], false);
         $this->scale = $scale;
         $this->rotation = $rotation;
         $this->noise = $noise;
