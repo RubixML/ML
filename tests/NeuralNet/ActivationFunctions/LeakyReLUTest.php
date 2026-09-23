@@ -27,20 +27,20 @@ class LeakyReLUTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
+            ], false),
             [
                 [1.0, -0.005, 0.0, 20.0, -0.1],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
-            ]),
+            ], false),
             [
                 [-0.0012, 0.31, -0.0049],
                 [0.99, 0.08, -0.0003],
@@ -55,28 +55,28 @@ class LeakyReLUTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, -0.005, 0.0, 20.0, -0.1],
-            ]),
+            ], false),
             [
                 [1.0, 0.01, 0.01, 1.0, 0.01],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [-0.0012, 0.31, -0.0049],
                 [0.99, 0.08, -0.0003],
                 [0.05, -0.005200000000000001, 0.54],
-            ]),
+            ], false),
             [
                 [0.01, 1.0, 0.01],
                 [1.0, 1.0, 0.01],

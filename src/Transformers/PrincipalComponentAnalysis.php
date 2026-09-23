@@ -124,7 +124,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $xT = Matrix::quick($dataset->samples())->transpose();
+        $xT = Matrix::fromArray($dataset->samples(), false)->transpose();
 
         $eig = $xT->covariance()->eig(true);
 
@@ -138,7 +138,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
+        $eigenvectors = Matrix::fromArray($eigenvectors, false)->transpose();
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
@@ -161,7 +161,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
+        $samples = Matrix::fromArray($samples)
             ->subtract($this->mean)
             ->matmul($this->eigenvectors)
             ->asArray();

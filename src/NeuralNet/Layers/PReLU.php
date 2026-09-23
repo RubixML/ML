@@ -236,7 +236,7 @@ class PReLU implements Hidden, Parametric
             $computed[] = $activations;
         }
 
-        return Matrix::quick($computed);
+        return Matrix::fromArray($computed, false);
     }
 
     /**
@@ -268,7 +268,7 @@ class PReLU implements Hidden, Parametric
             $gradient[] = $derivative;
         }
 
-        return Matrix::quick($gradient);
+        return Matrix::fromArray($gradient, false);
     }
 
     /**

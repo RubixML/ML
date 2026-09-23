@@ -392,7 +392,7 @@ class TSNE implements Transformer, Iterative, Verbose
 
             unset($row);
 
-            $gradient = $gradient->multiply(Matrix::quick($gains));
+            $gradient = $gradient->multiply(Matrix::fromArray($gains, false));
 
             $velocity = $velocity->multiply($momentum)
                 ->subtract($gradient->multiply($this->rate));
@@ -496,7 +496,7 @@ class TSNE implements Transformer, Iterative, Verbose
             }
         }
 
-        return Matrix::quick($distances);
+        return Matrix::fromArray($distances, false);
     }
 
     /**
@@ -512,7 +512,7 @@ class TSNE implements Transformer, Iterative, Verbose
         $m = $distances->m();
 
         if ($m === 0) {
-            return Matrix::quick([]);
+            return Matrix::fromArray([], false);
         }
 
         $mask = Matrix::ones($m, $m)

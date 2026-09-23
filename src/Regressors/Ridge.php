@@ -160,7 +160,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         $biases = Matrix::ones($dataset->numSamples(), 1);
 
-        $x = Matrix::build($dataset->samples())->augmentLeft($biases);
+        $x = Matrix::fromArray($dataset->samples())->augmentLeft($biases);
         $y = Vector::build($dataset->labels());
 
         /** @var int<0,max> $nHat */
@@ -199,7 +199,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
 
-        return Matrix::build($dataset->samples())
+        return Matrix::fromArray($dataset->samples())
             ->dot($this->coefficients)
             ->add($this->bias)
             ->asArray();

@@ -130,14 +130,14 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
         foreach ($dataset->stratifyByLabel() as $stratum) {
             $prior = $stratum->numSamples() / $m;
 
-            $sW = Matrix::quick($stratum->samples())
+            $sW = Matrix::fromArray($stratum->samples(), false)
                 ->transpose()
                 ->covariance()
                 ->multiply($prior)
                 ->add($sW);
         }
 
-        $eig = Matrix::quick($dataset->samples())
+        $eig = Matrix::fromArray($dataset->samples(), false)
             ->transpose()
             ->covariance()
             ->subtract($sW)
@@ -153,7 +153,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
+        $eigenvectors = Matrix::fromArray($eigenvectors, false)->transpose();
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
@@ -174,7 +174,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
+        $samples = Matrix::fromArray($samples)
             ->matmul($this->eigenvectors)
             ->asArray();
     }

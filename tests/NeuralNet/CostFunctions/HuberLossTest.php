@@ -27,40 +27,40 @@ class HuberLossTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             4.9998750062396624E-5,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1000.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             998.0005005003751,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [33.98],
                 [20.0],
                 [4.6],
                 [44.2],
                 [38.5],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [36.0],
                 [22.0],
                 [18.0],
                 [41.5],
                 [38.0],
-            ]),
+            ], false),
             3.384914773928223,
         ];
     }
@@ -71,44 +71,44 @@ class HuberLossTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             [
                 [-0.009999500037496884],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1000.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             [
                 [0.999999498998874],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [33.98],
                 [20.0],
                 [4.6],
                 [44.2],
                 [38.5],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [36.0],
                 [22.0],
                 [18.0],
                 [41.5],
                 [38.0],
-            ]),
+            ], false),
             [
                 [-0.8961947919452747],
                 [-0.8944271909999159],
@@ -164,15 +164,15 @@ class HuberLossTest extends TestCase
     {
         $costFn = new HuberLoss(0.5);
 
-        $output = Matrix::quick([
+        $output = Matrix::fromArray([
             [0.1, 0.5, 1.0],
             [2.0, 5.0, 10.0],
-        ]);
+        ], false);
 
-        $target = Matrix::quick([
+        $target = Matrix::fromArray([
             [1.0, 1.0, 1.0],
             [1.0, 1.0, 1.0],
-        ]);
+        ], false);
 
         $epsilon = 1e-6;
 

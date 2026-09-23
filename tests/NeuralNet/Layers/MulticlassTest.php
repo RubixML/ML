@@ -37,11 +37,11 @@ class MulticlassTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->x = Matrix::quick([
+        $this->x = Matrix::fromArray([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
-        ]);
+        ], false);
 
         $this->expected = [
             [1, 0, 0],
@@ -80,7 +80,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back(Matrix::quick($this->expected));
+        [$computation, $loss] = $this->layer->back(Matrix::fromArray($this->expected, false));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
@@ -127,7 +127,7 @@ class MulticlassTest extends TestCase
             [0.1, 0.3, 0.7],
         ];
 
-        $gradient = $layer->gradient($forward, Matrix::quick($expected));
+        $gradient = $layer->gradient($forward, Matrix::fromArray($expected, false));
 
         $expected = [
             [-0.012226206614022184, 0.27465602763572997, -0.0527011251844229],

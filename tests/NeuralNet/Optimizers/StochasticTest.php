@@ -32,16 +32,16 @@ class StochasticTest extends TestCase
     public static function updateProvider() : Generator
     {
         yield [
-            new Parameter(Matrix::quick([
+            new Parameter(Matrix::fromArray([
                 [0.1, 0.6, -0.4],
                 [0.5, 0.6, -0.4],
                 [0.1, 0.1, -0.7],
-            ])),
-            Matrix::quick([
+            ], false)),
+            Matrix::fromArray([
                 [0.01, 0.05, -0.02],
                 [-0.01, 0.02, 0.03],
                 [0.04, -0.01, -0.5],
-            ]),
+            ], false),
             [
                 [1e-5, 5e-5, -2e-5],
                 [-1e-5, 2e-5, 3e-5],
@@ -110,15 +110,15 @@ class StochasticTest extends TestCase
 
         $this->optimizer->update($param);
 
-        $this->assertEquals($before->subtract(Matrix::quick($expected))->asArray(), $param->param()->asArray());
+        $this->assertEquals($before->subtract(Matrix::fromArray($expected, false))->asArray(), $param->param()->asArray());
     }
 
     #[Test]
     public function flush() : void
     {
-        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+        $param = new Parameter(Matrix::fromArray([[0.1, 0.2]], false));
 
-        $gradient = Matrix::quick([[0.01, -0.03]]);
+        $gradient = Matrix::fromArray([[0.01, -0.03]], false);
 
         $this->optimizer->warm($param);
 
@@ -130,7 +130,7 @@ class StochasticTest extends TestCase
 
         $this->optimizer->flush();
 
-        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+        $param = new Parameter(Matrix::fromArray([[0.1, 0.2]], false));
 
         $this->optimizer->warm($param);
 

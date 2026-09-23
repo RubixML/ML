@@ -41,7 +41,7 @@ class AdaMax extends Adam
                 $c[] = static::maximum($valueA, $b[$i])->asArray();
             }
 
-            return Matrix::quick($c);
+            return Matrix::fromArray($c, false);
         }
 
         $bHat = $b->asArray();

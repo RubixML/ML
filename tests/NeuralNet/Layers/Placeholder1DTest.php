@@ -27,11 +27,11 @@ class Placeholder1DTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->x = Matrix::quick([
+        $this->x = Matrix::fromArray([
             [1.0, 2.5],
             [0.1, 0.0],
             [0.002, -6.0],
-        ]);
+        ], false);
 
         $this->layer = new Placeholder1D(3);
     }
