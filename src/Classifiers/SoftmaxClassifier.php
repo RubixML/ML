@@ -493,7 +493,7 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $x = Matrix::quick($batch->samples())->transpose();
+                $x = Matrix::fromArray($batch->samples(), false)->transpose();
                 $y = $this->oneHot($batch->labels());
 
                 $this->network->feed($x);
@@ -655,7 +655,7 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
         $activations = $this->network->infer($x);
 
@@ -684,7 +684,7 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
             $y[$index][$column] = 1.0;
         }
 
-        return Matrix::quick($y);
+        return Matrix::fromArray($y, false);
     }
 
     /**

@@ -251,7 +251,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             $this->r = $this->r->multiply($mask);
         }
 
-        $projections = Matrix::quick($dataset->samples())
+        $projections = Matrix::fromArray($dataset->samples(), false)
             ->matmul($this->r)
             ->transpose()
             ->asArray();
@@ -299,7 +299,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             new DatasetHasDimensionality($dataset, $this->r->m()),
         ])->check();
 
-        $projections = Matrix::quick($dataset->samples())
+        $projections = Matrix::fromArray($dataset->samples(), false)
             ->matmul($this->r)
             ->transpose()
             ->asArray();
@@ -355,7 +355,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->r->m())->check();
 
-        $projections = Matrix::quick($dataset->samples())
+        $projections = Matrix::fromArray($dataset->samples(), false)
             ->matmul($this->r)
             ->transpose()
             ->asArray();

@@ -536,8 +536,8 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $x = Matrix::quick($batch->samples())->transpose();
-                $y = Matrix::quick([$batch->labels()]);
+                $x = Matrix::fromArray($batch->samples(), false)->transpose();
+                $y = Matrix::fromArray([$batch->labels()], false);
 
                 $this->network->feed($x);
 
@@ -716,7 +716,7 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
         $activations = $this->network->infer($x);
 

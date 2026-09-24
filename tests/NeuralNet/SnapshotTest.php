@@ -120,11 +120,11 @@ class SnapshotTest extends TestCase
             [0, 1, 0]
         );
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
         $network->feed($x);
 
-        $network->backpropagate(Matrix::quick([$dataset->labels()]));
+        $network->backpropagate(Matrix::fromArray([$dataset->labels()], false));
 
         $optimizer = new Stochastic(new Constant());
 

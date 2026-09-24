@@ -494,8 +494,8 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $x = Matrix::quick($batch->samples())->transpose();
-                $y = Matrix::quick([array_map('floatval', $batch->labels())]);
+                $x = Matrix::fromArray($batch->samples(), false)->transpose();
+                $y = Matrix::fromArray([array_map('floatval', $batch->labels())], false);
 
                 $this->network->feed($x);
 
@@ -658,7 +658,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
 
         [$classA, $classB] = $this->classes;
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples())->transpose();
 
         $activations = $this->network->infer($x);
 

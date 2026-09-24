@@ -470,8 +470,8 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $x = Matrix::quick($batch->samples())->transpose();
-                $y = Matrix::quick([$batch->labels()]);
+                $x = Matrix::fromArray($batch->samples(), false)->transpose();
+                $y = Matrix::fromArray([$batch->labels()], false);
 
                 $this->network->feed($x);
 
@@ -621,7 +621,7 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
         $activations = $this->network->infer($x);
 

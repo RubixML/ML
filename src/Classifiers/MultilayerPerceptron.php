@@ -567,7 +567,7 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $x = Matrix::quick($batch->samples())->transpose();
+                $x = Matrix::fromArray($batch->samples(), false)->transpose();
                 $y = $this->oneHot($batch->labels());
 
                 $this->network->feed($x);
@@ -757,7 +757,7 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
         $activations = $this->network->infer($x);
 
@@ -786,7 +786,7 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
             $y[$index][$column] = 1.0;
         }
 
-        return Matrix::quick($y);
+        return Matrix::fromArray($y, false);
     }
 
     /**

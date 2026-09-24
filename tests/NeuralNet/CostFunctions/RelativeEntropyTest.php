@@ -27,46 +27,46 @@ class RelativeEntropyTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99, 0.01, 0.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             0.003350065899465309,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.4, 0.4],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 1.0, 0.0],
-            ]),
+            ], false),
             0.3054301295726089,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.0, 0.1, 0.9],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             6.140226799872736,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.1, 0.7],
                 [0.0, 0.9, 0.1],
                 [0.1, 0.3, 0.6],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 0.0, 1.0],
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
-            ]),
+            ], false),
             0.10809558439335247,
         ];
     }
@@ -77,52 +77,52 @@ class RelativeEntropyTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99, 0.01, 0.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             [
                 [-1.0101010101010102, -1.0e-6, -1.0],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.4, 0.4],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 1.0, 0.0],
-            ]),
+            ], false),
             [
                 [-5.0e-8, -2.5, -2.5e-8],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.0, 0.1, 0.9],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             [
                 [-100000000.0, -1.0e-7, -1.1111111111111112e-8],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.1, 0.7],
                 [0.0, 0.9, 0.1],
                 [0.1, 0.3, 0.6],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 0.0, 1.0],
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
-            ]),
+            ], false),
             [
                 [-5.0e-8, -1.0e-7, -1.4285714285714286],
                 [-1.0, -1.1111111111111112, -1.0e-7],

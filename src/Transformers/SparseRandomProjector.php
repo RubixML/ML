@@ -111,7 +111,7 @@ class SparseRandomProjector extends GaussianRandomProjector
             $r[] = $row;
         }
 
-        $this->r = Matrix::quick($r);
+        $this->r = Matrix::fromArray($r, false);
     }
 
     /**

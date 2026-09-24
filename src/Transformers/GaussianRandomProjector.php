@@ -135,7 +135,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::quick($samples)
+        $samples = Matrix::fromArray($samples, false)
             ->matmul($this->r)
             ->asArray();
     }

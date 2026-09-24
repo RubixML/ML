@@ -172,23 +172,23 @@ class TSNETest extends TestCase
     #[Test]
     public function gradient() : void
     {
-        $p = Matrix::quick([
+        $p = Matrix::fromArray([
             [0.0, 0.3, 0.2],
             [0.3, 0.0, 0.3],
             [0.2, 0.3, 0.0],
-        ]);
+        ], false);
 
-        $y = Matrix::quick([
+        $y = Matrix::fromArray([
             [1.0],
             [2.0],
             [3.0],
-        ]);
+        ], false);
 
-        $distances = Matrix::quick([
+        $distances = Matrix::fromArray([
             [0.0, 1.0, 2.0],
             [1.0, 0.0, 1.0],
             [2.0, 1.0, 0.0],
-        ]);
+        ], false);
 
         $gradient = $this->invokeGradient($this->embedder, $p, $y, $distances->square());
 
@@ -210,23 +210,23 @@ class TSNETest extends TestCase
     {
         $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 50, 5, new Euclidean());
 
-        $p = Matrix::quick([
+        $p = Matrix::fromArray([
             [0.0, 0.3, 0.2],
             [0.3, 0.0, 0.3],
             [0.2, 0.3, 0.0],
-        ]);
+        ], false);
 
-        $y = Matrix::quick([
+        $y = Matrix::fromArray([
             [0.0, 0.0, 0.0],
             [1.0, 0.0, 0.0],
             [3.0, 0.0, 0.0],
-        ]);
+        ], false);
 
-        $distances = Matrix::quick([
+        $distances = Matrix::fromArray([
             [0.0, 1.0, 3.0],
             [1.0, 0.0, 2.0],
             [3.0, 2.0, 0.0],
-        ]);
+        ], false);
 
         $gradient = $this->invokeGradient($embedder, $p, $y, $distances->square());
 
@@ -246,23 +246,23 @@ class TSNETest extends TestCase
     #[Test]
     public function gradientCorrectness() : void
     {
-        $p = Matrix::quick([
+        $p = Matrix::fromArray([
             [0.0, 0.4, 0.3, 0.3],
             [0.4, 0.0, 0.3, 0.3],
             [0.3, 0.3, 0.0, 0.4],
             [0.3, 0.3, 0.4, 0.0],
-        ]);
+        ], false);
 
         $pTotal = $p->sum()->sum();
 
         $p = $p->divide($pTotal);
 
-        $y = Matrix::quick([
+        $y = Matrix::fromArray([
             [1.0, 0.0],
             [0.0, 1.0],
             [-1.0, 0.0],
             [0.0, -1.0],
-        ]);
+        ], false);
 
         $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
 
@@ -280,10 +280,10 @@ class TSNETest extends TestCase
                 $yArray = $y->asArray();
 
                 $yArray[$i][$d] += $eps;
-                $yPlus = Matrix::build($yArray);
+                $yPlus = Matrix::fromArray($yArray);
 
                 $yArray[$i][$d] -= 2.0 * $eps;
-                $yMinus = Matrix::build($yArray);
+                $yMinus = Matrix::fromArray($yArray);
 
                 $costPlus = $this->klCost($p, $yPlus);
                 $costMinus = $this->klCost($p, $yMinus);
@@ -294,7 +294,7 @@ class TSNETest extends TestCase
             $numericalGradient[] = $row;
         }
 
-        $numerical = Matrix::build($numericalGradient);
+        $numerical = Matrix::fromArray($numericalGradient);
 
         $codeNorm = $codeGradient->l2Norm();
         $diff = $codeGradient->subtract($numerical)->l2Norm();
@@ -315,7 +315,7 @@ class TSNETest extends TestCase
             [3.0, 2.0, 1.0, 0.0],
         ];
 
-        $affinities = $this->invokeAffinities($embedder, Matrix::quick($distances)->square())->asArray();
+        $affinities = $this->invokeAffinities($embedder, Matrix::fromArray($distances, false)->square())->asArray();
 
         $this->assertCount(4, $affinities);
 

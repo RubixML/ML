@@ -113,7 +113,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $svd = Matrix::build($dataset->samples())->svd();
+        $svd = Matrix::fromArray($dataset->samples())->svd();
 
         $singularValues = $svd->singularValues();
         $components = $svd->vT()->asArray();
@@ -123,7 +123,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
         $singularValues = array_slice($singularValues, 0, $this->dimensions);
         $components = array_slice($components, 0, $this->dimensions);
 
-        $components = Matrix::quick($components)->transpose();
+        $components = Matrix::fromArray($components, false)->transpose();
 
         $noiseStdDev = $totalStdDev - array_sum($singularValues);
         $lossiness = $noiseStdDev / ($totalStdDev ?: EPSILON);
@@ -144,7 +144,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
+        $samples = Matrix::fromArray($samples)
             ->matmul($this->components)
             ->asArray();
     }
