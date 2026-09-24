@@ -38,7 +38,7 @@ jobs:
           sudo chmod +x /usr/local/bin/pie
 
       - name: Install Extensions
-        run: sudo pie install rubix/tensor_ext
+        run: sudo pie install rubix/tensor_ext:4.0.0-rc1
 
       - name: Validate composer.json
         run: composer validate
