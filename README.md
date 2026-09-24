@@ -15,7 +15,7 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 
 ### Recommended
 
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
+- [Tensor Ext 4.0+](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
 - [Swoole extension](https://openswoole.com/) for fast multiprocessing support.
 
 ### Optional
