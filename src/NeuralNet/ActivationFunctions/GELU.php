@@ -4,9 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
-use function tanh;
-use function cosh;
-
 /**
  * GELU
  *
@@ -37,25 +34,6 @@ class GELU implements ActivationFunction
     protected const BETA = 0.044715;
 
     /**
-     * Calculate the squared hyperbolic secant of a number.
-     *
-     * @param float $value
-     * @return float
-     */
-    protected static function sech2(float $value) : float
-    {
-        $cosh = cosh($value);
-
-        if ($cosh === 0.0) {
-            return 0.0;
-        }
-
-        $sech = 1.0 / $cosh;
-
-        return $sech ** 2;
-    }
-
-    /**
      * Compute the output value.
      *
      * @param Matrix $x
@@ -63,7 +41,11 @@ class GELU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, 'compute']);
+        $inner = $x->add($x->pow(3.0)->multiply(self::BETA))
+            ->multiply(self::ALPHA);
+
+        return $x->multiply($this->tanh($inner)->add(1.0))
+            ->multiply(0.5);
     }
 
     /**
@@ -77,32 +59,35 @@ class GELU implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->map([$this, '_differentiate']);
+        $xHat = $x->pow(3.0);
+
+        $alpha = $xHat->multiply(0.0356774)->add($x->multiply(self::ALPHA));
+        $beta = $xHat->multiply(0.0535161)->add($x->multiply(0.398942));
+
+        $tanhA = $this->tanh($alpha);
+        $sech2A = $tanhA->pow(2.0)->negate()->add(1.0);
+
+        return $tanhA->multiply(0.5)
+            ->add($beta->multiply($sech2A))
+            ->add(0.5);
     }
 
     /**
-     * @param float $x
-     * @return float
-     */
-    public function compute(float $x) : float
-    {
-        return 0.5 * $x * (1.0 + tanh(self::ALPHA * ($x + self::BETA * $x ** 3)));
-    }
-
-    /**
+     * Compute the elementwise hyperbolic tangent.
+     *
      * @internal
      *
-     * @param float $x
-     * @return float
+     * @param Matrix $x
+     * @return Matrix
      */
-    public function _differentiate(float $x) : float
+    protected function tanh(Matrix $x) : Matrix
     {
-        $xHat = $x ** 3;
-
-        $alpha = 0.0356774 * $xHat + self::ALPHA * $x;
-        $beta = 0.0535161 * $xHat + 0.398942 * $x;
-
-        return 0.5 * tanh($alpha) + $beta * self::sech2($alpha) + 0.5;
+        return $x->multiply(2.0)
+            ->exp()
+            ->add(1.0)
+            ->reciprocal()
+            ->multiply(-2.0)
+            ->add(1.0);
     }
 
     /**

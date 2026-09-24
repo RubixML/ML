@@ -52,7 +52,7 @@ class ThresholdedReLU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, '_activate']);
+        return $x->greater($this->threshold)->multiply($x);
     }
 
     /**
@@ -67,17 +67,6 @@ class ThresholdedReLU implements ActivationFunction
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
         return $x->greater($this->threshold);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _activate(float $x) : float
-    {
-        return $x > $this->threshold ? $x : 0.0;
     }
 
     /**

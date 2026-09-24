@@ -30,7 +30,7 @@ class Softsign implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, '_activate']);
+        return $x->divide($x->abs()->add(1.0));
     }
 
     /**
@@ -44,29 +44,7 @@ class Softsign implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->map([$this, '_differentiate']);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _activate(float $x) : float
-    {
-        return $x / (1.0 + abs($x));
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _differentiate(float $x) : float
-    {
-        return 1.0 / (1.0 + abs($x)) ** 2;
+        return $x->abs()->add(1.0)->pow(2.0)->reciprocal();
     }
 
     /**

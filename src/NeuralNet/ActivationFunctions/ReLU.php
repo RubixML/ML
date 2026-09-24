@@ -30,7 +30,7 @@ class ReLU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, '_activate']);
+        return $x->clipLower(0.0);
     }
 
     /**
@@ -45,17 +45,6 @@ class ReLU implements ActivationFunction
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
         return $x->greater(0.0);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _activate(float $x) : float
-    {
-        return $x > 0.0 ? $x : 0.0;
     }
 
     /**

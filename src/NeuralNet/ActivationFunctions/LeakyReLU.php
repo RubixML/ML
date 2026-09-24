@@ -53,7 +53,9 @@ class LeakyReLU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, '_activate']);
+        $xHat = $x->lessEqual(0.0)->multiply($x)->multiplyScalar($this->leakage);
+
+        return $x->greater(0.0)->multiply($x)->add($xHat);
     }
 
     /**
@@ -67,33 +69,9 @@ class LeakyReLU implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->map([$this, '_differentiate']);
-    }
+        $xHat = $x->lessEqual(0.0)->multiplyScalar($this->leakage);
 
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _activate(float $x) : float
-    {
-        return $x > 0.0
-            ? $x
-            : $this->leakage * $x;
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _differentiate(float $x) : float
-    {
-        return $x > 0.0
-            ? 1.0
-            : $this->leakage;
+        return $x->greater(0.0)->add($xHat);
     }
 
     /**

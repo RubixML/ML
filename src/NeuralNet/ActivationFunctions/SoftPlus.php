@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 
-use function exp;
-
 /**
  * Soft Plus
  *
@@ -31,7 +29,10 @@ class SoftPlus implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map('Rubix\ML\softplus');
+        return $x->greater(0.0)
+            ->multiply($x->add($x->negate()->exp()->log1p()))
+            ->add($x->lessEqual(0.0)
+            ->multiply($x->exp()->log1p()));
     }
 
     /**
@@ -45,18 +46,7 @@ class SoftPlus implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->map([$this, '_differentiate']);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _differentiate(float $x) : float
-    {
-        return 1.0 / (1.0 + exp(-$x));
+        return $x->negate()->exp()->add(1.0)->reciprocal();
     }
 
     /**
