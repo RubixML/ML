@@ -133,8 +133,6 @@ class ImageVectorizer implements Transformer, Stateful
 
                 unset($sample[$column]);
 
-                imagedestroy($value);
-
                 $vectors[] = $vector;
             }
 

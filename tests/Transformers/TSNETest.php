@@ -363,8 +363,6 @@ class TSNETest extends TestCase
     {
         $method = new ReflectionMethod(TSNE::class, 'gradient');
 
-        $method->setAccessible(true);
-
         return $method->invokeArgs($embedder, [$p, $y, $distances]);
     }
 
@@ -376,8 +374,6 @@ class TSNETest extends TestCase
     private function invokeAffinities(TSNE $embedder, Matrix $distances) : Matrix
     {
         $method = new ReflectionMethod(TSNE::class, 'affinities');
-
-        $method->setAccessible(true);
 
         return $method->invokeArgs($embedder, [$distances]);
     }
@@ -393,13 +389,9 @@ class TSNETest extends TestCase
     {
         $prop = new ReflectionProperty(TSNE::class, 'dofs');
 
-        $prop->setAccessible(true);
-
         $dofs = (int) $prop->getValue($this->embedder);
 
         $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
-
-        $pwMethod->setAccessible(true);
 
         $distances = $pwMethod->invokeArgs($this->embedder, [$y->asArray()]);
 
