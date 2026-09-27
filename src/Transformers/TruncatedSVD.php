@@ -118,9 +118,9 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
         $singularValues = $svd->singularValues();
         $components = $svd->vT()->asArray();
 
-        $totalStdDev = array_sum($singularValues);
+        $totalStdDev = $singularValues->sum();
 
-        $singularValues = array_slice($singularValues, 0, $this->dimensions);
+        $singularValues = array_slice($singularValues->asArray(), 0, $this->dimensions);
         $components = array_slice($components, 0, $this->dimensions);
 
         $components = Matrix::fromArray($components, false)->transpose();

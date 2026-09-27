@@ -131,8 +131,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = $eig->eigenvalues();
         $eigenvectors = $eig->eigenvectors()->asArray();
 
-        $totalVariance = array_sum($eigenvalues);
+        $totalVariance = $eigenvalues->sum();
 
+        $eigenvalues = $eigenvalues->asArray();
         array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
 
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);

@@ -17,7 +17,10 @@ class CPUTest extends TestCase
     #[Test]
     public function cores() : void
     {
-        $this->assertGreaterThan(0, CPU::cores());
+        $cores = CPU::cores();
+
+        $this->assertNotNull($cores);
+        $this->assertGreaterThan(0, $cores);
     }
 
     #[Test]
