@@ -27,7 +27,7 @@ class Sigmoid implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->negate()->exp()->add(1.0)->reciprocal();
+        return $x->sigmoid();
     }
 
     /**

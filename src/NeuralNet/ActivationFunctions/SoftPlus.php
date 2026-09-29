@@ -46,7 +46,7 @@ class SoftPlus implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->negate()->exp()->add(1.0)->reciprocal();
+        return $x->sigmoid();
     }
 
     /**

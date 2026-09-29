@@ -44,7 +44,7 @@ class GELU implements ActivationFunction
         $inner = $x->add($x->pow(3.0)->multiply(self::BETA))
             ->multiply(self::ALPHA);
 
-        return $x->multiply($this->tanh($inner)->add(1.0))
+        return $x->multiply($inner->tanh()->add(1.0))
             ->multiply(0.5);
     }
 
@@ -64,30 +64,12 @@ class GELU implements ActivationFunction
         $alpha = $xHat->multiply(0.0356774)->add($x->multiply(self::ALPHA));
         $beta = $xHat->multiply(0.0535161)->add($x->multiply(0.398942));
 
-        $tanhA = $this->tanh($alpha);
+        $tanhA = $alpha->tanh();
         $sech2A = $tanhA->pow(2.0)->negate()->add(1.0);
 
         return $tanhA->multiply(0.5)
             ->add($beta->multiply($sech2A))
             ->add(0.5);
-    }
-
-    /**
-     * Compute the elementwise hyperbolic tangent.
-     *
-     * @internal
-     *
-     * @param Matrix $x
-     * @return Matrix
-     */
-    protected function tanh(Matrix $x) : Matrix
-    {
-        return $x->multiply(2.0)
-            ->exp()
-            ->add(1.0)
-            ->reciprocal()
-            ->multiply(-2.0)
-            ->add(1.0);
     }
 
     /**

@@ -26,7 +26,7 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $this->tanh($x);
+        return $x->tanh();
     }
 
     /**
@@ -41,24 +41,6 @@ class HyperbolicTangent implements ActivationFunction
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
         return $z->pow(2.0)->negate()->add(1.0);
-    }
-
-    /**
-     * Compute the elementwise hyperbolic tangent.
-     *
-     * @internal
-     *
-     * @param Matrix $x
-     * @return Matrix
-     */
-    protected function tanh(Matrix $x) : Matrix
-    {
-        return $x->multiply(2.0)
-            ->exp()
-            ->add(1.0)
-            ->reciprocal()
-            ->multiply(-2.0)
-            ->add(1.0);
     }
 
     /**

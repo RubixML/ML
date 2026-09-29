@@ -10,8 +10,6 @@ use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 
-use const Rubix\ML\EPSILON;
-
 /**
  * Multiclass
  *
@@ -55,13 +53,7 @@ class Multiclass implements Output
      */
     protected static function softmax(Matrix $x) : Matrix
     {
-        $z = $x->transpose();
-
-        $z = $z->subtractColumnVector($z->max())->exp();
-
-        $total = $z->sum()->clipLower(EPSILON);
-
-        return $z->divide($total)->transpose();
+        return $x->transpose()->softmax()->transpose();
     }
 
     /**

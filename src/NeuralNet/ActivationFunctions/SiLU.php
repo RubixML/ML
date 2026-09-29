@@ -30,7 +30,7 @@ class SiLU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->divide($x->negate()->exp()->add(1.0));
+        return $x->multiply($x->sigmoid());
     }
 
     /**
@@ -44,7 +44,7 @@ class SiLU implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        $sigmoid = $x->negate()->exp()->add(1.0)->reciprocal();
+        $sigmoid = $x->sigmoid();
 
         $xHat = $x->multiply($sigmoid)->multiply($sigmoid->negate()->add(1.0));
 
