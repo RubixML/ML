@@ -224,25 +224,8 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->param()->asArray();
-
-        $computed = [];
-
-        foreach ($x as $i => $row) {
-            $alpha = $alphas[$i];
-
-            $activations = [];
-
-            foreach ($row as $value) {
-                $activations[] = $value > 0.0
-                    ? $value
-                    : $alpha * $value;
-            }
-
-            $computed[] = $activations;
-        }
-
-        return Matrix::fromArray($computed, false);
+        return $x->clipLower(0.0)
+            ->add($x->clipUpper(0.0)->multiply($this->alpha->param()));
     }
 
     /**
@@ -258,23 +241,8 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->param()->asArray();
-
-        $gradient = [];
-
-        foreach ($x as $i => $row) {
-            $alpha = $alphas[$i];
-
-            $derivative = [];
-
-            foreach ($row as $value) {
-                $derivative[] = $value > 0.0 ? 1.0 : $alpha;
-            }
-
-            $gradient[] = $derivative;
-        }
-
-        return Matrix::fromArray($gradient, false);
+        return $x->greater(0.0)
+            ->add($x->lessEqual(0.0)->multiply($this->alpha->param()));
     }
 
     /**

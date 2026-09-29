@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\Exceptions\RuntimeException;
-use Tensor\Vector;
-use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
@@ -36,25 +34,7 @@ class AdaMax extends Adam
      */
     protected static function maximum(Tensor $a, Tensor $b) : Tensor
     {
-        if ($a instanceof Matrix and $b instanceof Matrix) {
-            $c = [];
-
-            foreach ($a as $i => $valueA) {
-                $c[] = static::maximum($valueA, $b[$i])->asArray();
-            }
-
-            return Matrix::fromArray($c, false);
-        }
-
-        $bHat = $b->asArray();
-
-        $c = [];
-
-        foreach ($a as $i => $valueA) {
-            $c[] = (float) max($valueA, $bHat[$i]);
-        }
-
-        return Vector::fromArray($c, false);
+        return $a->add($b->subtract($a)->clipLower(0.0));
     }
 
     /**
