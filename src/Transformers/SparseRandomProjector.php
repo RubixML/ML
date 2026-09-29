@@ -7,6 +7,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function count;
 use function is_null;
@@ -51,6 +53,10 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function __construct(int $dimensions, ?float $sparsity = self::TWO_THIRDS)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($sparsity < 0.0 or $sparsity >= 1.0) {
             throw new InvalidArgumentException('Sparsity must be'
                 . " between 0 (inclusive) and 1 (exclusive), $sparsity given.");

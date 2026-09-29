@@ -7,6 +7,8 @@ use Tensor\Vector;
 use Tensor\ColumnVector;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function is_dir;
 use function dirname;
@@ -125,6 +127,10 @@ class Snapshot
      */
     public function __construct(array $layers, string $file)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->layers = $layers;
         $this->file = $file;
     }

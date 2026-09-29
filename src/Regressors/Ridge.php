@@ -21,6 +21,8 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function is_null;
 
@@ -66,6 +68,10 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function __construct(float $l2Penalty = 1.0)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($l2Penalty < 0.0) {
             throw new InvalidArgumentException('L2 Penalty must be'
                 . " greater than 0, $l2Penalty given.");

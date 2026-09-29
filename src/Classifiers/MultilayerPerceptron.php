@@ -42,6 +42,8 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function Rubix\ML\enumerate;
 use function is_nan;
@@ -236,6 +238,10 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null,
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
                 . ' must be specified.');

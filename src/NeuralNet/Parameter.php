@@ -6,6 +6,8 @@ use Tensor\Tensor;
 use Tensor\Vector;
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Parameter
@@ -58,6 +60,10 @@ class Parameter
      */
     public function __construct(Tensor $param)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->id = self::$counter++;
         $this->param = $param;
         $this->gradient = null;

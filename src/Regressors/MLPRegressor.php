@@ -40,6 +40,8 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function Rubix\ML\enumerate;
 use function count;
@@ -224,6 +226,10 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
         ?RegressionLoss $costFn = null,
         ?Metric $metric = null
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
                 . ' must be specified.');

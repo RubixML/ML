@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Noise
@@ -44,6 +46,10 @@ class Noise implements Hidden
      */
     public function __construct(float $stdDev)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($stdDev < 0.0) {
             throw new InvalidArgumentException('Standard deviation must'
                 . " be 0 or greater, $stdDev given.");

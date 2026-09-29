@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Huber Loss
@@ -41,6 +43,10 @@ class HuberLoss implements RegressionLoss
      */
     public function __construct(float $alpha = 0.9)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($alpha <= 0.0) {
             throw new InvalidArgumentException('Alpha must be greater than'
                 . " 0, $alpha given.");

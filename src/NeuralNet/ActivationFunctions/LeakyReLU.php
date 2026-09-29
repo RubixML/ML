@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Leaky ReLU
@@ -35,6 +37,10 @@ class LeakyReLU implements ActivationFunction
      */
     public function __construct(float $leakage = 0.1)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($leakage <= 0.0 or $leakage >= 1.0) {
             throw new InvalidArgumentException('Leakage must be between'
                 . " 0 and 1, $leakage given.");

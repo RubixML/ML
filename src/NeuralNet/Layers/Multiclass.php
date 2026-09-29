@@ -9,6 +9,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Multiclass
@@ -63,6 +65,10 @@ class Multiclass implements Output
      */
     public function __construct(int $numClasses, ClassificationLoss $costFn)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($numClasses < 2) {
             throw new InvalidArgumentException('Number of classes'
                 . " must be greater than 1, $numClasses given.");

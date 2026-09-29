@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function Rubix\ML\array_transpose;
 
@@ -64,6 +66,10 @@ class HalfMoon implements Generator
         float $rotation = 90.0,
         float $noise = 0.1
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($scale < 0.0) {
             throw new InvalidArgumentException('Scale must be'
                 . " greater than 0, $scale given.");
