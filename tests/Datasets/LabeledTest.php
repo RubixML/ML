@@ -6,10 +6,12 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Transformers\FloatTypeConverter;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
+use Generator;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -21,7 +23,10 @@ use PHPUnit\Framework\TestCase;
 
 use function array_merge;
 use function array_sum;
+use function array_intersect;
+use function array_count_values;
 use function count;
+use function floor;
 use function min;
 use function max;
 use function sort;
@@ -78,6 +83,33 @@ class LabeledTest extends TestCase
     protected FloatTypeConverter $transformer;
 
     protected string $originalPrecision;
+
+    public static function stratifiedSplitExactProvider() : Generator
+    {
+        $cases = [
+            [[13, 4, 3], 0.8],
+            [[13, 4, 3], 0.5],
+            [[13, 4, 3], 0.25],
+            [[97, 1, 1, 1], 0.8],
+            [[97, 1, 1, 1], 0.5],
+            [[9, 9, 1], 0.75],
+            [[50, 1], 0.9],
+            [[7, 3, 2], 0.6],
+        ];
+
+        foreach ($cases as $case) {
+            yield $case;
+        }
+    }
+
+    public static function binnedSplitExactProvider() : Generator
+    {
+        foreach ([20, 30, 40, 44, 45, 46, 51, 60, 100] as $n) {
+            foreach ([0.2, 0.3, 0.5, 0.8] as $ratio) {
+                yield [$n, $ratio];
+            }
+        }
+    }
 
     protected function setUp() : void
     {
@@ -449,21 +481,28 @@ class LabeledTest extends TestCase
     {
         $dataset = $this->continuousDataset();
 
-        [$left, $right] = $dataset->randomize()->binnedSplit(0.5, 4);
+        $means = $variances = [];
 
-        foreach ([$left, $right] as $subset) {
-            $this->assertEqualsWithDelta(
-                Stats::mean($dataset->labels()),
-                Stats::mean($subset->labels()),
-                0.25
-            );
+        for ($trial = 0; $trial < 100; ++$trial) {
+            [$left, $right] = $dataset->randomize()->binnedSplit(0.5, 4);
 
-            $this->assertEqualsWithDelta(
-                Stats::variance($dataset->labels()),
-                Stats::variance($subset->labels()),
-                1.0
-            );
+            foreach ([$left, $right] as $subset) {
+                $means[] = Stats::mean($subset->labels());
+                $variances[] = Stats::variance($subset->labels());
+            }
         }
+
+        $this->assertEqualsWithDelta(
+            Stats::mean($dataset->labels()),
+            Stats::mean($means),
+            0.15
+        );
+
+        $this->assertEqualsWithDelta(
+            Stats::variance($dataset->labels()),
+            Stats::mean($variances),
+            0.15
+        );
     }
 
     #[Test]
@@ -480,6 +519,118 @@ class LabeledTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->dataset->binnedSplit(0.5);
+    }
+
+    /**
+     * @param list<int> $sizes
+     */
+    #[DataProvider('stratifiedSplitExactProvider')]
+    #[Test]
+    public function stratifiedSplitIsExact(array $sizes, float $ratio) : void
+    {
+        $dataset = $this->imbalancedDataset($sizes);
+
+        [$left, $right] = $dataset->stratifiedSplit($ratio);
+
+        $this->assertEquals(
+            (int) floor($ratio * $dataset->numSamples()),
+            $left->numSamples()
+        );
+
+        $this->assertEquals(
+            $dataset->numSamples(),
+            $left->numSamples() + $right->numSamples()
+        );
+    }
+
+    #[Test]
+    public function stratifiedSplitKeepsClassProportions() : void
+    {
+        $dataset = $this->imbalancedDataset([13, 4, 3]);
+
+        [$left] = $dataset->stratifiedSplit(0.8);
+
+        $counts = array_count_values($left->labels());
+
+        foreach ($dataset->stratifyByClassLabels() as $class => $stratum) {
+            $actual = $counts[$class] ?? 0;
+
+            $this->assertLessThanOrEqual(
+                1,
+                abs($actual - (0.8 * $stratum->numSamples())),
+                "Class $class is not represented proportionally."
+            );
+        }
+    }
+
+    #[DataProvider('binnedSplitExactProvider')]
+    #[Test]
+    public function binnedSplitIsExact(int $n, float $ratio) : void
+    {
+        $dataset = $this->spreadDataset($n);
+
+        [$left, $right] = $dataset->randomize()->binnedSplit($ratio);
+
+        $this->assertEquals((int) floor($ratio * $n), $left->numSamples());
+
+        $this->assertEquals($n, $left->numSamples() + $right->numSamples());
+    }
+
+    #[Test]
+    public function binnedSplitNeverEmptyWhenTargetIsNonZero() : void
+    {
+        foreach (self::binnedSplitExactProvider() as [$n, $ratio]) {
+            if ((int) floor($ratio * $n) < 1) {
+                continue;
+            }
+
+            [$left, $right] = $this->spreadDataset($n)->randomize()->binnedSplit($ratio);
+
+            $this->assertGreaterThan(0, $left->numSamples());
+            $this->assertGreaterThan(0, $right->numSamples());
+        }
+    }
+
+    #[Test]
+    public function binnedSplitEveryBinContributes() : void
+    {
+        $dataset = $this->spreadDataset(20);
+
+        [$left, $right] = $dataset->randomize()->binnedSplit(0.2);
+
+        $this->assertCount(4, $dataset->stratifyByLabelBins(4));
+
+        foreach ($dataset->stratifyByLabelBins(4) as $stratum) {
+            $this->assertNotEmpty(
+                array_intersect($left->labels(), $stratum->labels()),
+                'Left subset does not represent every bin.'
+            );
+
+            $this->assertNotEmpty(
+                array_intersect($right->labels(), $stratum->labels()),
+                'Right subset does not represent every bin.'
+            );
+        }
+    }
+
+    #[Test]
+    public function binnedSplitIsUnbiasedUnderTies() : void
+    {
+        $dataset = $this->spreadDataset(20);
+
+        $means = [];
+
+        for ($trial = 0; $trial < 200; ++$trial) {
+            [$left] = $dataset->randomize()->binnedSplit(0.8);
+
+            $means[] = Stats::mean($left->labels());
+        }
+
+        $this->assertEqualsWithDelta(
+            Stats::mean($dataset->labels()),
+            Stats::mean($means),
+            0.1
+        );
     }
 
     #[Test]
@@ -1186,5 +1337,42 @@ class LabeledTest extends TestCase
     protected function continuousDataset() : Labeled
     {
         return Labeled::build(self::CONTINUOUS_SAMPLES, self::CONTINUOUS_LABELS);
+    }
+
+    /**
+     * Build a continuous dataset with n evenly spread target values.
+     * @param int $n
+     */
+    protected function spreadDataset(int $n) : Labeled
+    {
+        $samples = $labels = [];
+
+        for ($i = 0; $i < $n; ++$i) {
+            $samples[] = [(float) $i];
+            $labels[] = ($i * 0.37) + 0.25;
+        }
+
+        return Labeled::build($samples, $labels);
+    }
+
+    /**
+     * Build a categorical dataset with one class per given size.
+     *
+     * @param list<int> $sizes
+     */
+    protected function imbalancedDataset(array $sizes) : Labeled
+    {
+        $samples = $labels = [];
+
+        foreach ($sizes as $i => $size) {
+            $label = "class $i";
+
+            for ($j = 0; $j < $size; ++$j) {
+                $samples[] = [(float) $i, (float) $j];
+                $labels[] = $label;
+            }
+        }
+
+        return Labeled::build($samples, $labels);
     }
 }

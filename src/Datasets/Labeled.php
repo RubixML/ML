@@ -594,6 +594,9 @@ class Labeled extends Dataset
 
     /**
      * Split the dataset into two stratified subsets with a given ratio of samples.
+     * The left subset always contains exactly floor($ratio * numSamples()) samples,
+     * with any remainder awarded to the strata holding the largest fractional
+     * shares. Ties are broken by class name so the split stays deterministic.
      *
      * @param float $ratio
      * @throws InvalidArgumentException
@@ -606,24 +609,58 @@ class Labeled extends Dataset
                 . " between 0 and 1, $ratio given.");
         }
 
-        $leftStrata = $rightStrata = [];
+        $strata = $this->stratifyByClassLabels();
 
-        foreach ($this->stratifyByClassLabels() as $stratum) {
-            [$left, $right] = $stratum->split($ratio);
+        $total = (int) floor($ratio * $this->numSamples());
 
-            $leftStrata[] = $left;
-            $rightStrata[] = $right;
+        $quota = $remainder = [];
+        $allocated = 0;
+
+        foreach ($strata as $i => $stratum) {
+            $base = (int) floor($ratio * $stratum->numSamples());
+
+            $allocated += $base;
+            $quota[$i] = $base;
+            $remainder[$i] = ($ratio * $stratum->numSamples()) - $base;
         }
 
-        $left = self::stack($leftStrata);
-        $right = self::stack($rightStrata);
+        $deficit = $total - $allocated;
 
-        return [$left, $right];
+        arsort($remainder);
+
+        foreach ($remainder as $i => $share) {
+            if ($deficit <= 0) {
+                break;
+            }
+
+            ++$quota[$i];
+            --$deficit;
+        }
+
+        $leftStrata = $rightStrata = [];
+
+        foreach ($quota as $i => $count) {
+            $stratum = $strata[$i];
+
+            $leftStrata[] = $stratum->slice(0, $count);
+            $rightStrata[] = $stratum->slice($count, $stratum->numSamples() - $count);
+        }
+
+        return [
+            self::stack($leftStrata),
+            self::stack($rightStrata),
+        ];
     }
 
     /**
      * Split the dataset into two subsets with a given ratio of samples such that
-     * the distribution of the continuous label is preserved in both subsets.
+     * the distribution of the continuous label is preserved in both subsets. The
+     * left subset always contains exactly floor($ratio * numSamples()) samples.
+     *
+     * The number of bins is capped so that the smaller subset can draw at least one
+     * sample from every bin. Since bins are ordered by target value, strata are
+     * shuffled before the remainder is awarded to prevent ties from consistently
+     * favouring the lowest valued bins.
      *
      * @param float $ratio
      * @param int $bins
@@ -646,15 +683,47 @@ class Labeled extends Dataset
             return [self::quick(), self::quick()];
         }
 
-        $bins = max(1, min($bins, intdiv($this->numSamples(), 2)));
+        $n = $this->numSamples();
+
+        $cap = $ratio > 0.0 ? (int) ceil(1 / $ratio) : $n;
+
+        $strata = $this->stratifyByLabelBins(max(1, min($bins, intdiv($n, $cap))));
+
+        shuffle($strata);
+
+        $total = (int) floor($ratio * $n);
+
+        $quota = $remainder = [];
+        $allocated = 0;
+
+        foreach ($strata as $i => $stratum) {
+            $base = (int) floor($ratio * $stratum->numSamples());
+
+            $allocated += $base;
+            $quota[$i] = $base;
+            $remainder[$i] = ($ratio * $stratum->numSamples()) - $base;
+        }
+
+        $deficit = $total - $allocated;
+
+        arsort($remainder);
+
+        foreach ($remainder as $i => $share) {
+            if ($deficit <= 0) {
+                break;
+            }
+
+            ++$quota[$i];
+            --$deficit;
+        }
 
         $leftStrata = $rightStrata = [];
 
-        foreach ($this->stratifyByLabelBins($bins) as $stratum) {
-            [$left, $right] = $stratum->split($ratio);
+        foreach ($quota as $i => $count) {
+            $stratum = $strata[$i];
 
-            $leftStrata[] = $left;
-            $rightStrata[] = $right;
+            $leftStrata[] = $stratum->slice(0, $count);
+            $rightStrata[] = $stratum->slice($count, $stratum->numSamples() - $count);
         }
 
         return [
