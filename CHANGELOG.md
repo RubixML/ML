@@ -1,9 +1,6 @@
 # Changelog
 
 - 3.0.0
-    - Added `binnedSplit()`, `binnedFold()`, and `stratifyByLabelBins()` for continuous labels
-    - `stratifiedSplit()` and `stratifiedFold()` now throw on continuous labels instead of silently returning an empty subset
-    - Validators and regressors now stratify continuous labels by quantile bin
     - Integers are now considered a categorical data type
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
     - `Isolation Forest` training and inference is now parallelized
@@ -66,6 +63,9 @@
     - `Grid Search` now generates a results() table
     - Can now disable windowed early-stopping completely with window = 0
     - TSNE now has KL Divergence loss evaluation and early stopping
+    - Added `binnedSplit()`, `binnedFold()`, and `stratifyByLabelBins()`
+    - `stratifiedSplit()` and `stratifiedFold()` now throw on continuous labels
+    - Validators and regressors now stratify continuous labels by quantile bin
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
