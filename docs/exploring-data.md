@@ -56,6 +56,14 @@ You can also describe the dataset in terms of the classes each sample belongs to
 $report = $dataset->describeByClassLabels();
 ```
 
+When the label is continuous there is no notion of an exact class to group by. Call `describeByLabelBins()` instead to describe the features broken down by equal frequency bin of the target, which is useful for seeing how each feature's distribution changes across the range of the target.
+
+```php
+$report = $dataset->describeByLabelBins(5);
+```
+
+The report is a list keyed by bin ordinal in ascending order of target value, so the first entry describes the lowest valued samples in the dataset.
+
 ## Visualization
 
 Another technique used in data analysis is plotting one or more of its dimensions in a chart such as a scatterplot or histogram. Visualizing the data gives us an understanding as to the shape of the data and can aid in discovering outliers or for choosing features to train our model with. Since the library works with common data formats, you are free to use your favorite 3rd party plotting software to visualize the data copied from Rubix ML. If you are looking for a place to start, the free Plotly online [Chart Studio](https://plotly.com/chart-studio/) or a modern spreadsheet application should work well for most visualization tasks.

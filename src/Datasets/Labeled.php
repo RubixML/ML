@@ -1145,6 +1145,26 @@ class Labeled extends Dataset
     }
 
     /**
+     * Describe the features of the dataset broken down by label bin. Bins are
+     * equal frequency bins derived from the quantiles of the continuous label
+     * and the report is keyed by bin ordinal in ascending order of target value.
+     *
+     * @param int $bins
+     * @throws InvalidArgumentException
+     * @return Report
+     */
+    public function describeByLabelBins(int $bins = 10) : Report
+    {
+        $stats = [];
+
+        foreach ($this->stratifyByLabelBins($bins) as $stratum) {
+            $stats[] = $stratum->describe()->toArray();
+        }
+
+        return new Report($stats);
+    }
+
+    /**
      * Return a row from the dataset at the given offset.
      *
      * @param int $offset

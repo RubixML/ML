@@ -235,3 +235,87 @@ echo $dataset->describeByClassLabels();
     ]
 }
 ```
+
+#### Binned Description
+
+`describeByClassLabels()` groups samples by *exact* label equality, which is only meaningful for categorical labels. When the label is continuous, use `describeByLabelBins()` to describe the features of the dataset broken down by equal frequency bin of the target. Bin edges are derived from the quantiles of the label in the same way as [Binned Stratification](#binned-stratification), so each bin's statistics describe a narrow horizontal slice of the target distribution.
+
+```php
+public describeByLabelBins($bins = 10) : Report
+```
+
+```php
+echo $dataset->describeByLabelBins(2);
+```
+
+```json
+[
+    [
+        {
+            "offset": 0,
+            "type": "continuous",
+            "mean": 2.5,
+            "variance": 1.25,
+            "standard deviation": 1.118033988749895,
+            "skewness": 0,
+            "kurtosis": -1.36,
+            "min": 1,
+            "25%": 1.75,
+            "median": 2.5,
+            "75%": 3.25,
+            "max": 4,
+            "range": 3
+        },
+        {
+            "offset": 2,
+            "type": "continuous",
+            "mean": -1.5,
+            "variance": 3.25,
+            "standard deviation": 1.8027756377319946,
+            "skewness": 0,
+            "kurtosis": -1.1479289940828403,
+            "min": -4,
+            "25%": -2.5,
+            "median": -1.5,
+            "75%": -0.5,
+            "max": 1,
+            "range": 5
+        }
+    ],
+    [
+        {
+            "offset": 0,
+            "type": "continuous",
+            "mean": 6.5,
+            "variance": 1.25,
+            "standard deviation": 1.118033988749895,
+            "skewness": 0,
+            "kurtosis": -1.36,
+            "min": 5,
+            "25%": 5.75,
+            "median": 6.5,
+            "75%": 7.25,
+            "max": 8,
+            "range": 3
+        },
+        {
+            "offset": 2,
+            "type": "continuous",
+            "mean": 7.5,
+            "variance": 28.75,
+            "standard deviation": 5.361902647381804,
+            "skewness": 0.6568077344996993,
+            "kurtosis": -1.0989792060491494,
+            "min": 2,
+            "25%": 3.5,
+            "median": 6,
+            "75%": 10,
+            "max": 16,
+            "range": 14
+        }
+    ]
+]
+```
+
+!!! note
+    Unlike `describeByClassLabels()`, which is keyed by class name, the report returned by `describeByLabelBins()` is a list keyed by bin ordinal in ascending order of target value. Bin 0 holds the lowest valued samples and the last key holds the highest. As with `describe()`, the label itself is included as the last column of every bin.

@@ -789,3 +789,22 @@ The subset *sizes* are unchanged — the hold-out and fold partitions are still 
 
 !!! warning
     Because the hold-out membership differs from 2.0, models fit with the default `holdOut` setting may differ from 2.0 even with identical hyper-parameters. This compounds the early-stopping change in [item 18](#18-gradient-learners-now-hold-out-validation-data-for-early-stopping), since the score that drives early stopping is now measured against a differently-distributed hold-out set. Fit with `holdOut: 0.0` to remove both effects.
+
+### 51. Binned description for continuous labels
+
+[Labeled](datasets/labeled.md) gained `describeByLabelBins($bins = 10)`, the continuous-label counterpart to the `describeByClassLabels()` introduced in [item 17](#17-stratification-methods-were-renamed-and-now-require-categorical-labels). It reuses the equal frequency bins from [item 49](#49-binned-stratification-for-continuous-labels) to produce a [Report](cross-validation/reports/api.md#report-objects) describing the features of the dataset broken down by bin of the target:
+
+```php
+use Rubix\ML\Datasets\Labeled;
+
+$dataset = Labeled::build($samples, [1.5, 2.75, 3.1, 4.9]);
+
+$report = $dataset->describeByLabelBins(5);
+```
+
+In 2.0 there was no way to break a dataset down by a continuous target — `describeByLabel()` grouped samples by exact label equality, so a float target produced one stratum per distinct value. Comparing feature distributions across the range of a regression target now takes one call instead of a hand-rolled loop over `stratifyByLabel()`.
+
+There is one difference from `describeByClassLabels()` worth knowing about: the report is a **list keyed by bin ordinal**, not a map keyed by name, because a bin has no intrinsic name. Bin 0 holds the lowest valued samples and the last key holds the highest. Empty bins are dropped, the bin count is reduced to at most `numSamples()`, a categorical label throws an `InvalidArgumentException`, and as with `describe()`, the label itself is included as the last column of every bin.
+
+!!! note
+    See [Describe by Label](datasets/labeled.md#describe-by-label) for the full method reference.

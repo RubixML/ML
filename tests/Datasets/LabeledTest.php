@@ -76,6 +76,15 @@ class LabeledTest extends TestCase
         1.8, 2.9, 3.7, 4.4, 5.1,
     ];
 
+    protected const array REPORT_SAMPLES = [
+        [1.0, 10.0], [2.0, 20.0], [3.0, 30.0], [4.0, 40.0],
+        [5.0, 50.0], [6.0, 60.0], [7.0, 70.0], [8.0, 80.0],
+    ];
+
+    protected const array REPORT_LABELS = [
+        -4.0, -2.0, -1.0, 1.0, 2.0, 4.0, 8.0, 16.0,
+    ];
+
     protected const int RANDOM_SEED = 1;
 
     protected Labeled $dataset;
@@ -1351,6 +1360,279 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
+    public function describeByLabelBins() : void
+    {
+        $expected = [
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 1.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 1.0,
+                    '25%' => 1.25,
+                    'median' => 1.5,
+                    '75%' => 1.75,
+                    'max' => 2.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 15.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 10.0,
+                    '25%' => 12.5,
+                    'median' => 15.0,
+                    '75%' => 17.5,
+                    'max' => 20.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => -3.0,
+                    'variance' => 1.0,
+                    'standard deviation' => 1.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => -4.0,
+                    '25%' => -3.5,
+                    'median' => -3.0,
+                    '75%' => -2.5,
+                    'max' => -2.0,
+                    'range' => 2.0,
+                ],
+            ],
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 3.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 3.0,
+                    '25%' => 3.25,
+                    'median' => 3.5,
+                    '75%' => 3.75,
+                    'max' => 4.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 35.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 30.0,
+                    '25%' => 32.5,
+                    'median' => 35.0,
+                    '75%' => 37.5,
+                    'max' => 40.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => 0.0,
+                    'variance' => 1.0,
+                    'standard deviation' => 1.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => -1.0,
+                    '25%' => -0.5,
+                    'median' => 0.0,
+                    '75%' => 0.5,
+                    'max' => 1.0,
+                    'range' => 2.0,
+                ],
+            ],
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 5.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 5.0,
+                    '25%' => 5.25,
+                    'median' => 5.5,
+                    '75%' => 5.75,
+                    'max' => 6.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 55.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 50.0,
+                    '25%' => 52.5,
+                    'median' => 55.0,
+                    '75%' => 57.5,
+                    'max' => 60.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => 3.0,
+                    'variance' => 1.0,
+                    'standard deviation' => 1.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 2.0,
+                    '25%' => 2.5,
+                    'median' => 3.0,
+                    '75%' => 3.5,
+                    'max' => 4.0,
+                    'range' => 2.0,
+                ],
+            ],
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 7.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 7.0,
+                    '25%' => 7.25,
+                    'median' => 7.5,
+                    '75%' => 7.75,
+                    'max' => 8.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 75.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 70.0,
+                    '25%' => 72.5,
+                    'median' => 75.0,
+                    '75%' => 77.5,
+                    'max' => 80.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => 12.0,
+                    'variance' => 16.0,
+                    'standard deviation' => 4.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 8.0,
+                    '25%' => 10.0,
+                    'median' => 12.0,
+                    '75%' => 14.0,
+                    'max' => 16.0,
+                    'range' => 8.0,
+                ],
+            ],
+        ];
+
+        $results = $this->reportDataset()->describeByLabelBins(4);
+
+        $this->assertInstanceOf(Report::class, $results);
+        $this->assertEquals($expected, $results->toArray());
+    }
+
+    #[Test]
+    public function describeByLabelBinsIsKeyedByBinOrdinal() : void
+    {
+        $results = $this->continuousDataset()->describeByLabelBins(4);
+
+        $this->assertCount(4, $results);
+        $this->assertEquals([0, 1, 2, 3], array_keys($results->toArray()));
+    }
+
+    #[Test]
+    public function describeByLabelBinsDefaultBinCount() : void
+    {
+        $this->assertCount(10, $this->continuousDataset()->describeByLabelBins());
+    }
+
+    #[Test]
+    public function describeByLabelBinsAreOrderedByTarget() : void
+    {
+        $max = null;
+
+        foreach ($this->reportDataset()->describeByLabelBins(4) as $bin) {
+            $label = $bin[count($bin) - 1];
+
+            $this->assertGreaterThan($max ?? -INF, $label['min']);
+
+            $max = $label['max'];
+        }
+    }
+
+    #[Test]
+    public function describeByLabelBinsDropsEmptyBins() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 9.0]
+        );
+
+        $results = $dataset->describeByLabelBins(5);
+
+        $this->assertCount(2, $results);
+        $this->assertEquals([0, 1], array_keys($results->toArray()));
+    }
+
+    #[Test]
+    public function describeByLabelBinsClampedToSampleCount() : void
+    {
+        $this->assertCount(8, $this->reportDataset()->describeByLabelBins(100));
+    }
+
+    #[Test]
+    public function describeByLabelBinsTooFewBins() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->describeByLabelBins(0);
+    }
+
+    #[Test]
+    public function describeByLabelBinsWithCategoricalLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->describeByLabelBins(4);
+    }
+
+    #[Test]
+    public function describeByLabelBinsEmptyDataset() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        Labeled::build()->describeByLabelBins(4);
+    }
+
+    #[Test]
     public function deduplicate() : void
     {
         $samples = [
@@ -1423,6 +1705,16 @@ class LabeledTest extends TestCase
         }
 
         return Labeled::build($samples, $labels);
+    }
+
+    /**
+     * Build a report test dataset with known structure.
+     *
+     * @return Labeled
+     */
+    protected function reportDataset() : Labeled
+    {
+        return Labeled::build(self::REPORT_SAMPLES, self::REPORT_LABELS);
     }
 
     /**
