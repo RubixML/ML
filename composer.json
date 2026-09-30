@@ -48,7 +48,7 @@
         "swoole/ide-helper": "^5.1"
     },
     "suggest": {
-        "ext-tensor_ext": "For fast Matrix/Vector computing.",
+        "ext-tensor": "For fast Matrix/Vector computing.",
         "ext-gd": "For image support.",
         "ext-mbstring": "For fast multibyte string manipulation.",
         "ext-svm": "For support Vector Machine engine (libsvm).",
