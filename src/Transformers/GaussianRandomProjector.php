@@ -10,7 +10,10 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function sqrt;
 
 /**
@@ -77,6 +80,15 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
      */
     public function __construct(int $dimensions)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
                 . " greater than 0, $dimensions given.");
@@ -135,7 +147,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::quick($samples)
+        $samples = Matrix::fromArray($samples, false)
             ->matmul($this->r)
             ->asArray();
     }

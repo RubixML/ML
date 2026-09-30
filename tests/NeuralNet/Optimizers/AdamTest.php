@@ -32,16 +32,16 @@ class AdamTest extends TestCase
     public static function updateProvider() : Generator
     {
         yield [
-            new Parameter(Matrix::quick([
+            new Parameter(Matrix::fromArray([
                 [0.1, 0.6, -0.4],
                 [0.5, 0.6, -0.4],
                 [0.1, 0.1, -0.7],
-            ])),
-            Matrix::quick([
+            ], false)),
+            Matrix::fromArray([
                 [0.01, 0.05, -0.02],
                 [-0.01, 0.02, 0.03],
                 [0.04, -0.01, -0.5],
-            ]),
+            ], false),
             [
                 [0.003162277660168379, 0.00316227766016838, -0.003162277660168379],
                 [-0.003162277660168379, 0.003162277660168379, 0.0031622776601683794],
@@ -119,15 +119,15 @@ class AdamTest extends TestCase
 
         $this->optimizer->update($param);
 
-        $this->assertEqualsWithDelta($before->subtract(Matrix::quick($expected))->asArray(), $param->param()->asArray(), 1e-8);
+        $this->assertEqualsWithDelta($before->subtract(Matrix::fromArray($expected, false))->asArray(), $param->param()->asArray(), 1e-8);
     }
 
     #[Test]
     public function flush() : void
     {
-        $param = new Parameter(Matrix::quick([[0.1, 0.2]]));
+        $param = new Parameter(Matrix::fromArray([[0.1, 0.2]], false));
 
-        $gradient = Matrix::quick([[0.01, -0.03]]);
+        $gradient = Matrix::fromArray([[0.01, -0.03]], false);
 
         $this->optimizer->warm($param);
 

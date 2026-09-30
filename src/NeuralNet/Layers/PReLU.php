@@ -9,6 +9,8 @@ use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * PReLU
@@ -59,6 +61,10 @@ class PReLU implements Hidden, Parametric
      */
     public function __construct(?Initializer $initializer = null)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->initializer = $initializer ?? new Constant(0.25);
     }
 
@@ -218,25 +224,8 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->param()->asArray();
-
-        $computed = [];
-
-        foreach ($x as $i => $row) {
-            $alpha = $alphas[$i];
-
-            $activations = [];
-
-            foreach ($row as $value) {
-                $activations[] = $value > 0.0
-                    ? $value
-                    : $alpha * $value;
-            }
-
-            $computed[] = $activations;
-        }
-
-        return Matrix::quick($computed);
+        return $x->clipLower(0.0)
+            ->add($x->clipUpper(0.0)->multiply($this->alpha->param()));
     }
 
     /**
@@ -252,23 +241,8 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->param()->asArray();
-
-        $gradient = [];
-
-        foreach ($x as $i => $row) {
-            $alpha = $alphas[$i];
-
-            $derivative = [];
-
-            foreach ($row as $value) {
-                $derivative[] = $value > 0.0 ? 1.0 : $alpha;
-            }
-
-            $gradient[] = $derivative;
-        }
-
-        return Matrix::quick($gradient);
+        return $x->greater(0.0)
+            ->add($x->lessEqual(0.0)->multiply($this->alpha->param()));
     }
 
     /**

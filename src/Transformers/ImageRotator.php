@@ -134,12 +134,8 @@ class ImageRotator implements Transformer
                         );
 
                         if (!$success) {
-                            imagedestroy($resized);
-
                             throw new RuntimeException('Failed to resize image back to its original size.');
                         }
-
-                        imagedestroy($rotated);
 
                         $rotated = $resized;
                     }

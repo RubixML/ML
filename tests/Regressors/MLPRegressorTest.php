@@ -101,6 +101,38 @@ class MLPRegressorTest extends TestCase
     }
 
     #[Test]
+    public function windowDisabled() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MLPRegressor(
+            hiddenLayers: [
+                new Dense(16),
+                new Activation(new SELU()),
+                new Dense(8),
+                new Activation(new SiLU()),
+            ],
+            batchSize: 16,
+            optimizer: new Adam(new Constant(0.01)),
+            epochs: 10,
+            minChange: 1e-12,
+            evalInterval: 1,
+            window: 0,
+            holdOut: 0.1,
+            costFn: new LeastSquares(),
+            metric: new RMSE()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TEST_SIZE);
+
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+    }
+
+    #[Test]
     #[TestDox('Assert the iterative progress contract')]
     public function progressContract() : void
     {
