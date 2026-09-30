@@ -151,7 +151,7 @@ $folds = $dataset->binnedFold(5);
 ```
 
 !!! note
-    Unlike the categorical methods, `binnedSplit()` and `binnedFold()` take a bin count. More bins means a tighter match to the target distribution at the cost of larger subsets.
+    Unlike the categorical methods, `binnedSplit()` and `binnedFold()` take a bin count. More bins can provide a tighter match to the target distribution, but require enough samples in each split or fold to represent every bin.
 
 ### Transform Labels
 
