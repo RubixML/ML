@@ -375,7 +375,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
             $this->logger->info("Training $this");
         }
 
-        [$testing, $training] = $dataset->randomize()->split($this->holdOut);
+        [$testing, $training] = $dataset->randomize()->binnedSplit($this->holdOut);
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 

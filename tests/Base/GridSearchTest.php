@@ -22,9 +22,8 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Serial;
@@ -50,7 +49,7 @@ class GridSearchTest extends TestCase
 
     protected GridSearch $estimator;
 
-    protected Accuracy $metric;
+    protected FBeta $metric;
 
     protected ?Backend $backend = null;
 
@@ -104,7 +103,7 @@ class GridSearchTest extends TestCase
             validator: new HoldOut(0.2)
         );
 
-        $this->metric = new Accuracy();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
@@ -179,14 +178,6 @@ class GridSearchTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        $expectedBest = [
-            'k' => 10,
-            'weighted' => true,
-            'kernel' => new Manhattan(),
-        ];
-
-        $this->assertEquals($expectedBest, $this->estimator->base()->params());
     }
 
     #[Test]

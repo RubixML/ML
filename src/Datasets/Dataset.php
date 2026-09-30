@@ -605,7 +605,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
     abstract public function split(float $ratio = 0.5) : array;
 
     /**
-     * Fold the dataset k - 1 times to form k equal size datasets.
+     * Fold the dataset into k datasets of as equal size as possible.
      *
      * @param int $k
      * @return list<self>
