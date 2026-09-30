@@ -758,6 +758,11 @@ class Labeled extends Dataset
                 . " 2 folds, $k given.");
         }
 
+        if ($bins < 1) {
+            throw new InvalidArgumentException('Bins must be'
+                . " greater than 0, $bins given.");
+        }
+
         if ($this->empty()) {
             return [];
         }
