@@ -1237,7 +1237,7 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
-    public function describeByLabelClasses() : void
+    public function describeByClassLabels() : void
     {
         $expected = [
             'not monster' => [
@@ -1344,7 +1344,7 @@ class LabeledTest extends TestCase
             ],
         ];
 
-        $results = $this->dataset->describeByLabelClasses();
+        $results = $this->dataset->describeByClassLabels();
 
         $this->assertInstanceOf(Report::class, $results);
         $this->assertEquals($expected, $results->toArray());

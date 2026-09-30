@@ -50,10 +50,10 @@ $report->toJSON()->saveTo(new Filesystem('report.json'));
 
 ### Describe by Label
 
-You can also describe the dataset in terms of the classes each sample belongs to by calling the `describeByLabelClasses()` method on a Labeled dataset object with categorical labels.
+You can also describe the dataset in terms of the classes each sample belongs to by calling the `describeByClassLabels()` method on a Labeled dataset object with categorical labels.
 
 ```php
-$report = $dataset->describeByLabelClasses();
+$report = $dataset->describeByClassLabels();
 ```
 
 ## Visualization

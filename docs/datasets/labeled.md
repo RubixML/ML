@@ -179,11 +179,11 @@ $dataset->transformLabels(function ($label) {
 Describe the features of the dataset broken down by categorical label.
 
 ```php
-public describeByLabelClasses() : Report
+public describeByClassLabels() : Report
 ```
 
 ```php
-echo $dataset->describeByLabelClasses();
+echo $dataset->describeByClassLabels();
 ```
 
 ```json

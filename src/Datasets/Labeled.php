@@ -1133,7 +1133,7 @@ class Labeled extends Dataset
      *
      * @return Report
      */
-    public function describeByLabelClasses() : Report
+    public function describeByClassLabels() : Report
     {
         $stats = [];
 
