@@ -13,6 +13,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function array_slice;
 use function array_multisort;
 use function array_sum;
@@ -76,6 +77,11 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
             ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
         }
 
         if ($dimensions < 1) {

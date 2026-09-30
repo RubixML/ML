@@ -24,6 +24,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function is_null;
 
 /**
@@ -70,6 +71,11 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
             ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
         }
 
         if ($l2Penalty < 0.0) {

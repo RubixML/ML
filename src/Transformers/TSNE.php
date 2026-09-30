@@ -19,6 +19,7 @@ use Generator;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function count;
 
 use const Rubix\ML\EPSILON;
@@ -231,6 +232,11 @@ class TSNE implements Transformer, Iterative, Verbose
     ) {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
             ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
         }
 
         if ($dimensions < 1) {

@@ -26,6 +26,7 @@ use function Rubix\ML\minmax;
 use function count;
 use function is_null;
 use function array_fill;
+use function Rubix\ML\warn;
 use function round;
 use function max;
 use function log;
@@ -155,6 +156,11 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
             ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
         }
 
         if ($contamination < 0.0 or $contamination > 0.5) {
