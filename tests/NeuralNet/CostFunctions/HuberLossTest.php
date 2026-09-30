@@ -169,10 +169,7 @@ class HuberLossTest extends TestCase
             [2.0, 5.0, 10.0],
         ], false);
 
-        $target = Matrix::fromArray([
-            [1.0, 1.0, 1.0],
-            [1.0, 1.0, 1.0],
-        ], false);
+        $target = Matrix::ones(2, 3);
 
         $epsilon = 1e-6;
 
@@ -180,8 +177,10 @@ class HuberLossTest extends TestCase
 
         foreach ($output->asArray() as $i => $row) {
             foreach ($row as $j => $v) {
-                $plus = $costFn->_compute($target[$i][$j] - ($v + $epsilon));
-                $minus = $costFn->_compute($target[$i][$j] - ($v - $epsilon));
+                $cell = Matrix::fromArray([[$target[$i][$j]]], false);
+
+                $plus = $costFn->compute(Matrix::fromArray([[$v + $epsilon]], false), $cell);
+                $minus = $costFn->compute(Matrix::fromArray([[$v - $epsilon]], false), $cell);
 
                 $numeric[$i][$j] = ($plus - $minus) / (2.0 * $epsilon);
             }

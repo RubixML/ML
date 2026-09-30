@@ -67,7 +67,15 @@ class HuberLoss implements RegressionLoss
      */
     public function compute(Matrix $z, Matrix $y) : float
     {
-        return $y->subtract($z)->map([$this, '_compute'])->mean()->mean();
+        return $y->subtract($z)
+            ->divideScalar($this->alpha)
+            ->square()
+            ->addScalar(1.0)
+            ->sqrt()
+            ->subtractScalar(1.0)
+            ->multiplyScalar($this->alpha2)
+            ->mean()
+            ->mean();
     }
 
     /**
@@ -88,15 +96,6 @@ class HuberLoss implements RegressionLoss
             ->pow(-0.5)
             ->multiply($beta)
             ->multiply($this->alpha);
-    }
-
-    /**
-     * @param float $z
-     * @return float
-     */
-    public function _compute(float $z) : float
-    {
-        return $this->alpha2 * (sqrt(1.0 + ($z / $this->alpha) ** 2) - 1.0);
     }
 
     /**
