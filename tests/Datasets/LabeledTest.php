@@ -845,7 +845,7 @@ class LabeledTest extends TestCase
     public function binnedFoldEmptyDataset() : void
     {
         $this->expectException(RuntimeException::class);
-        
+
         Labeled::build()->binnedFold(5);
     }
 
