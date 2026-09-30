@@ -678,7 +678,8 @@ class Labeled extends Dataset
 
         $n = $this->numSamples();
 
-        $cap = $ratio > 0.0 ? (int) ceil(1 / $ratio) : $n;
+        $smallerRatio = min($ratio, 1.0 - $ratio);
+        $cap = $smallerRatio > 0.0 ? (int) ceil(1 / $smallerRatio) : max(1, $n);
 
         $strata = $this->stratifyByLabelBins(max(1, min($bins, intdiv($n, $cap))));
 
