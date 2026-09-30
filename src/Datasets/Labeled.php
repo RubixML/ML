@@ -594,9 +594,6 @@ class Labeled extends Dataset
 
     /**
      * Split the dataset into two stratified subsets with a given ratio of samples.
-     * The left subset always contains exactly floor($ratio * numSamples()) samples,
-     * with any remainder awarded to the strata holding the largest fractional
-     * shares. Ties are broken by class name so the split stays deterministic.
      *
      * @param float $ratio
      * @throws InvalidArgumentException
