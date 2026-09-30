@@ -58,8 +58,6 @@ class HoldOut implements Validator
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
-        $dataset = $dataset->randomize();
-
         [$testing, $training] = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedSplit($this->ratio)
             : $dataset->binnedSplit($this->ratio);

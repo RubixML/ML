@@ -528,7 +528,7 @@ class Labeled extends Dataset
 
         $offsets = array_fill(0, $bins, []);
 
-        foreach ($values as $i => $value) {
+        foreach ($values as $offset => $value) {
             $ordinal = $numEdges;
 
             foreach ($edges as $j => $edge) {
@@ -539,7 +539,7 @@ class Labeled extends Dataset
                 }
             }
 
-            $offsets[$ordinal][] = $i;
+            $offsets[$ordinal][] = $offset;
         }
 
         $strata = [];
@@ -679,10 +679,6 @@ class Labeled extends Dataset
                 . " greater than 0, $bins given.");
         }
 
-        if ($this->empty()) {
-            return [self::quick(), self::quick()];
-        }
-
         $n = $this->numSamples();
 
         $cap = $ratio > 0.0 ? (int) ceil(1 / $ratio) : $n;
@@ -811,19 +807,19 @@ class Labeled extends Dataset
             $m = $stratum->numSamples();
 
             $n = intdiv($m, $k);
-            $r = $m % $k;
+            $remainder = $m % $k;
 
             $offset = 0;
 
             for ($j = 0; $j < $k; ++$j) {
-                $count = $n + ((($j - $cursor + $k) % $k) < $r ? 1 : 0);
+                $count = $n + ((($j - $cursor + $k) % $k) < $remainder ? 1 : 0);
 
                 $folds[$j][] = $stratum->slice($offset, $count);
 
                 $offset += $count;
             }
 
-            $cursor = ($cursor + $r) % $k;
+            $cursor = ($cursor + $remainder) % $k;
         }
 
         foreach ($folds as &$fold) {
@@ -860,10 +856,6 @@ class Labeled extends Dataset
                 . " greater than 0, $bins given.");
         }
 
-        if ($this->empty()) {
-            return [];
-        }
-
         $bins = max(1, min($bins, intdiv($this->numSamples(), $k)));
 
         $strata = $this->stratifyByLabelBins($bins);
@@ -884,19 +876,19 @@ class Labeled extends Dataset
             $m = $stratum->numSamples();
 
             $n = intdiv($m, $k);
-            $r = $m % $k;
+            $remainder = $m % $k;
 
             $offset = 0;
 
             for ($j = 0; $j < $k; ++$j) {
-                $count = $n + ((($j - $cursor + $k) % $k) < $r ? 1 : 0);
+                $count = $n + ((($j - $cursor + $k) % $k) < $remainder ? 1 : 0);
 
                 $folds[$j][] = $stratum->slice($offset, $count);
 
                 $offset += $count;
             }
 
-            $cursor = ($cursor + $r) % $k;
+            $cursor = ($cursor + $remainder) % $k;
         }
 
         foreach ($folds as &$fold) {

@@ -316,7 +316,7 @@ class GridSearchTest extends TestCase
         $expectedBest = [
             'k' => 10,
             'weighted' => true,
-            'kernel' => new Euclidean(),
+            'kernel' => new Manhattan(),
         ];
 
         $this->assertEquals($expectedBest, $estimator->base()->params());
@@ -326,7 +326,7 @@ class GridSearchTest extends TestCase
         $expectedFirst = [
             'k' => '10',
             'weighted' => 'true',
-            'kernel' => 'Euclidean',
+            'kernel' => 'Manhattan',
         ];
 
         foreach ($expectedFirst as $key => $value) {

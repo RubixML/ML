@@ -65,7 +65,7 @@
     - TSNE now has KL Divergence loss evaluation and early stopping
     - Added `binnedSplit()`, `binnedFold()`, and `stratifyByLabelBins()`
     - `stratifiedSplit()` and `stratifiedFold()` now throw on continuous labels
-    - Validators and regressors now stratify continuous labels by quantile bin
+    - Validators and regressors now stratify continuous labels by bin
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension

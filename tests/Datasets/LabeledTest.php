@@ -650,10 +650,9 @@ class LabeledTest extends TestCase
     #[Test]
     public function binnedSplitEmptyDataset() : void
     {
-        [$left, $right] = Labeled::build()->binnedSplit();
+        $this->expectException(RuntimeException::class);
 
-        $this->assertTrue($left->empty());
-        $this->assertTrue($right->empty());
+        [$left, $right] = Labeled::build()->binnedSplit();
     }
 
     #[Test]
@@ -845,7 +844,9 @@ class LabeledTest extends TestCase
     #[Test]
     public function binnedFoldEmptyDataset() : void
     {
-        $this->assertEmpty(Labeled::build()->binnedFold(5));
+        $this->expectException(RuntimeException::class);
+        
+        Labeled::build()->binnedFold(5);
     }
 
     #[Test]
