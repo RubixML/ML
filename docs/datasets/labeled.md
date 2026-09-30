@@ -153,18 +153,6 @@ $folds = $dataset->binnedFold(5);
 !!! note
     Unlike the categorical methods, `binnedSplit()` and `binnedFold()` take a bin count. More bins means a tighter match to the target distribution at the cost of larger subsets.
 
-!!! note
-    Bins that contain no samples are dropped from `stratifyByLabelBins()`, so the number of returned datasets may be less than *bins*.
-
-!!! note
-    *bins* is clamped internally so that every bin can be split - never more than half the number of samples for `binnedSplit()`, and never more than the number of samples divided by *k* for `binnedFold()`.
-
-!!! note
-    Randomize the dataset before splitting or folding when it is not already in a random order. Since both methods preserve the order within each bin, an unshuffled dataset can still yield subsets that are biased by position.
-
-!!! warning
-    `stratifiedSplit()` and `stratifiedFold()` throw an `InvalidArgumentException` when the label is continuous. Use `binnedSplit()` and `binnedFold()` instead.
-
 ### Transform Labels
 
 Transform the labels in the dataset using a callback function and return self for method chaining.

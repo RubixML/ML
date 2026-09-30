@@ -721,7 +721,7 @@ class LabeledTest extends TestCase
     public function stratifyByLabelBinsEmptyDataset() : void
     {
         $this->expectException(RuntimeException::class);
-        
+
         Labeled::build()->stratifyByLabelBins(4);
     }
 
