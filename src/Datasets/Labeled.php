@@ -4,6 +4,7 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -23,6 +24,8 @@ use function array_rand;
 use function round;
 use function getrandmax;
 use function rand;
+
+use function Rubix\ML\linspace;
 
 /**
  * Labeled
@@ -466,8 +469,13 @@ class Labeled extends Dataset
      *
      * @return self[]
      */
-    public function stratifyByLabel() : array
+    public function stratifyByClassLabels() : array
     {
+        if (!$this->labelType()->isCategorical()) {
+            throw new InvalidArgumentException('Label type must be categorical, '
+                . $this->labelType() . ' given.');
+        }
+
         $strata = [];
 
         foreach ($this->labels as $i => $label) {
@@ -478,6 +486,77 @@ class Labeled extends Dataset
             $labels = array_fill(0, count($stratum), $label);
 
             $stratum = self::quick($stratum, $labels);
+        }
+
+        /** @var self[] $strata */
+        return $strata;
+    }
+
+    /**
+     * Group samples into equal frequency bins by their continuous label and return
+     * an array of binned datasets. Bin edges are derived from the quantiles of the
+     * label such that each bin holds a roughly equal number of samples. Bins that
+     * contain no samples are dropped from the result.
+     *
+     * @param int $bins
+     * @throws InvalidArgumentException
+     * @return self[]
+     */
+    public function stratifyByLabelBins(int $bins = 10) : array
+    {
+        if (!$this->labelType()->isContinuous()) {
+            throw new InvalidArgumentException('Label type must be continuous, '
+                . $this->labelType() . ' given.');
+        }
+
+        if ($bins < 1) {
+            throw new InvalidArgumentException('The number of bins must be'
+                . " greater than 0, $bins given.");
+        }
+
+        $bins = min($bins, $this->numSamples());
+
+        /** @var list<float> $values */
+        $values = $this->labels;
+
+        $edges = Stats::quantiles(
+            $values,
+            array_slice(linspace(0.0, 1.0, $bins + 1), 1, -1)
+        );
+
+        $numEdges = count($edges);
+
+        $offsets = array_fill(0, $bins, []);
+
+        foreach ($values as $i => $value) {
+            $ordinal = $numEdges;
+
+            foreach ($edges as $j => $edge) {
+                if ($value <= $edge) {
+                    $ordinal = $j;
+
+                    break;
+                }
+            }
+
+            $offsets[$ordinal][] = $i;
+        }
+
+        $strata = [];
+
+        foreach ($offsets as $bucket) {
+            if (empty($bucket)) {
+                continue;
+            }
+
+            $samples = $labels = [];
+
+            foreach ($bucket as $offset) {
+                $samples[] = $this->samples[$offset];
+                $labels[] = $this->labels[$offset];
+            }
+
+            $strata[] = self::quick($samples, $labels);
         }
 
         /** @var self[] $strata */
@@ -529,7 +608,7 @@ class Labeled extends Dataset
 
         $leftStrata = $rightStrata = [];
 
-        foreach ($this->stratifyByLabel() as $stratum) {
+        foreach ($this->stratifyByClassLabels() as $stratum) {
             [$left, $right] = $stratum->split($ratio);
 
             $leftStrata[] = $left;
@@ -540,6 +619,48 @@ class Labeled extends Dataset
         $right = self::stack($rightStrata);
 
         return [$left, $right];
+    }
+
+    /**
+     * Split the dataset into two subsets with a given ratio of samples such that
+     * the distribution of the continuous label is preserved in both subsets.
+     *
+     * @param float $ratio
+     * @param int $bins
+     * @throws InvalidArgumentException
+     * @return array{self,self}
+     */
+    public function binnedSplit(float $ratio = 0.5, int $bins = 10) : array
+    {
+        if ($ratio < 0.0 or $ratio > 1.0) {
+            throw new InvalidArgumentException('Ratio must be'
+                . " between 0 and 1, $ratio given.");
+        }
+
+        if ($bins < 1) {
+            throw new InvalidArgumentException('Bins must be'
+                . " greater than 0, $bins given.");
+        }
+
+        if ($this->empty()) {
+            return [self::quick(), self::quick()];
+        }
+
+        $bins = max(1, min($bins, intdiv($this->numSamples(), 2)));
+
+        $leftStrata = $rightStrata = [];
+
+        foreach ($this->stratifyByLabelBins($bins) as $stratum) {
+            [$left, $right] = $stratum->split($ratio);
+
+            $leftStrata[] = $left;
+            $rightStrata[] = $right;
+        }
+
+        return [
+            self::stack($leftStrata),
+            self::stack($rightStrata),
+        ];
     }
 
     /**
@@ -595,9 +716,9 @@ class Labeled extends Dataset
                 . " 2 folds, $k given.");
         }
 
-        $strata = $this->stratifyByLabel();
+        $strata = $this->stratifyByClassLabels();
 
-        foreach ($strata as $label => $stratum) {
+        foreach ($strata as $stratum) {
             if ($stratum->numSamples() < $k) {
                 throw new InvalidArgumentException('K must be less than or '
                     . 'equal to the number of samples in the smallest '
@@ -616,6 +737,56 @@ class Labeled extends Dataset
         foreach ($folds as &$fold) {
             $fold = self::stack($fold);
         }
+
+        /** @var list<self> $folds */
+        return $folds;
+    }
+
+    /**
+     * Fold the dataset into k equal sized datasets such that the distribution of
+     * the continuous label is preserved in every fold.
+     *
+     * @param int $k
+     * @param int $bins
+     * @throws InvalidArgumentException
+     * @return list<self>
+     */
+    public function binnedFold(int $k = 10, int $bins = 10) : array
+    {
+        if ($k < 2) {
+            throw new InvalidArgumentException('Cannot create less than'
+                . " 2 folds, $k given.");
+        }
+
+        if ($this->empty()) {
+            return [];
+        }
+
+        $bins = max(1, min($bins, intdiv($this->numSamples(), $k)));
+
+        $strata = $this->stratifyByLabelBins($bins);
+
+        foreach ($strata as $stratum) {
+            if ($stratum->numSamples() < $k) {
+                throw new InvalidArgumentException('K must be less than or '
+                    . 'equal to the number of samples in the smallest '
+                    . 'bin.');
+            }
+        }
+
+        $folds = [];
+
+        foreach ($strata as $stratum) {
+            foreach ($stratum->fold($k) as $j => $fold) {
+                $folds[$j][] = $fold;
+            }
+        }
+
+        foreach ($folds as &$fold) {
+            $fold = self::stack($fold);
+        }
+
+        unset($fold);
 
         /** @var list<self> $folds */
         return $folds;
@@ -853,11 +1024,11 @@ class Labeled extends Dataset
      *
      * @return Report
      */
-    public function describeByLabel() : Report
+    public function describeByLabelClasses() : Report
     {
         $stats = [];
 
-        foreach ($this->stratifyByLabel() as $label => $stratum) {
+        foreach ($this->stratifyByClassLabels() as $label => $stratum) {
             $stats[$label] = $stratum->describe()->toArray();
         }
 

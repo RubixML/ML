@@ -86,11 +86,11 @@ continuous
 Group samples by their class label and return them in their own dataset.
 
 ```php
-public stratifyByLabel() : array
+public stratifyByClassLabels() : array
 ```
 
 ```php
-$strata = $dataset->stratifyByLabel();
+$strata = $dataset->stratifyByClassLabels();
 ```
 
 Split the dataset into left and right subsets such that the proportions of class labels remain intact.
@@ -115,6 +115,55 @@ public stratifiedFold($k = 10) : array
 ```php
 $folds = $dataset->stratifiedFold(3);
 ```
+
+#### Binned Stratification
+
+The methods above group samples by *exact* label equality, which is only meaningful for categorical labels. When the label is continuous, use the binned variants instead. They derive a set of equal frequency bins from the quantiles of the label and then stratify over those bins, which preserves the shape of the target distribution in every subset.
+
+Group samples into equal frequency bins by their continuous label and return them in their own dataset.
+
+```php
+public stratifyByLabelBins($bins = 10) : array
+```
+
+```php
+$strata = $dataset->stratifyByLabelBins(5);
+```
+
+Split the dataset into left and right subsets such that the distribution of the continuous label remains intact.
+
+```php
+public binnedSplit($ratio = 0.5, $bins = 10) : array
+```
+
+```php
+[$training, $testing] = $dataset->binnedSplit(0.8);
+```
+
+Return *k* equal size subsets of the dataset such that the label distribution remains intact.
+
+```php
+public binnedFold($k = 10, $bins = 10) : array
+```
+
+```php
+$folds = $dataset->binnedFold(5);
+```
+
+!!! note
+    Unlike the categorical methods, `binnedSplit()` and `binnedFold()` take a bin count. More bins means a tighter match to the target distribution at the cost of larger subsets.
+
+!!! note
+    Bins that contain no samples are dropped from `stratifyByLabelBins()`, so the number of returned datasets may be less than *bins*.
+
+!!! note
+    *bins* is clamped internally so that every bin can be split - never more than half the number of samples for `binnedSplit()`, and never more than the number of samples divided by *k* for `binnedFold()`.
+
+!!! note
+    Randomize the dataset before splitting or folding when it is not already in a random order. Since both methods preserve the order within each bin, an unshuffled dataset can still yield subsets that are biased by position.
+
+!!! warning
+    `stratifiedSplit()` and `stratifiedFold()` throw an `InvalidArgumentException` when the label is continuous. Use `binnedSplit()` and `binnedFold()` instead.
 
 ### Transform Labels
 
@@ -142,11 +191,11 @@ $dataset->transformLabels(function ($label) {
 Describe the features of the dataset broken down by categorical label.
 
 ```php
-public describeByLabel() : Report
+public describeByLabelClasses() : Report
 ```
 
 ```php
-echo $dataset->describeByLabel();
+echo $dataset->describeByLabelClasses();
 ```
 
 ```json

@@ -71,7 +71,7 @@ class KFold implements Validator, Parallel
 
         $folds = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedFold($this->k)
-            : $dataset->fold($this->k);
+            : $dataset->binnedFold($this->k);
 
         $this->backend->flush();
 

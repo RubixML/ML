@@ -10,12 +10,21 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
+
+use function array_merge;
+use function array_sum;
+use function count;
+use function min;
+use function max;
+use function sort;
 
 use function Rubix\ML\array_transpose;
 
@@ -46,6 +55,20 @@ class LabeledTest extends TestCase
 
     protected const array WEIGHTS = [
         1, 1, 2, 1, 2, 3,
+    ];
+
+    protected const array CONTINUOUS_SAMPLES = [
+        [-4.9], [-3.0], [-1.2], [-0.4], [0.6],
+        [1.1], [2.3], [3.4], [4.0], [4.9],
+        [-3.7], [-2.1], [-0.9], [0.1], [0.9],
+        [1.8], [2.9], [3.7], [4.4], [5.1],
+    ];
+
+    protected const array CONTINUOUS_LABELS = [
+        -4.9, -3.0, -1.2, -0.4, 0.6,
+        1.1, 2.3, 3.4, 4.0, 4.9,
+        -3.7, -2.1, -0.9, 0.1, 0.9,
+        1.8, 2.9, 3.7, 4.4, 5.1,
     ];
 
     protected const int RANDOM_SEED = 1;
@@ -402,6 +425,87 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
+    public function stratifiedSplitWithContinuousLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->stratifiedSplit(0.5);
+    }
+
+    #[Test]
+    public function binnedSplit() : void
+    {
+        [$left, $right] = $this->continuousDataset()->binnedSplit(0.8, 4);
+
+        $this->assertInstanceOf(Labeled::class, $left);
+        $this->assertInstanceOf(Labeled::class, $right);
+
+        $this->assertCount(16, $left);
+        $this->assertCount(4, $right);
+    }
+
+    #[Test]
+    public function binnedSplitPreservesDistribution() : void
+    {
+        $dataset = $this->continuousDataset();
+
+        [$left, $right] = $dataset->randomize()->binnedSplit(0.5, 4);
+
+        foreach ([$left, $right] as $subset) {
+            $this->assertEqualsWithDelta(
+                Stats::mean($dataset->labels()),
+                Stats::mean($subset->labels()),
+                0.25
+            );
+
+            $this->assertEqualsWithDelta(
+                Stats::variance($dataset->labels()),
+                Stats::variance($subset->labels()),
+                1.0
+            );
+        }
+    }
+
+    #[Test]
+    public function binnedSplitWithInvalidRatio() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->binnedSplit(1.5);
+    }
+
+    #[Test]
+    public function binnedSplitWithCategoricalLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->binnedSplit(0.5);
+    }
+
+    #[Test]
+    public function binnedSplitWithConstantLabels() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0]],
+            [7.5, 7.5, 7.5, 7.5]
+        );
+
+        [$left, $right] = $dataset->binnedSplit(0.5);
+
+        $this->assertCount(2, $left);
+        $this->assertCount(2, $right);
+    }
+
+    #[Test]
+    public function binnedSplitEmptyDataset() : void
+    {
+        [$left, $right] = Labeled::build()->binnedSplit();
+
+        $this->assertTrue($left->empty());
+        $this->assertTrue($right->empty());
+    }
+
+    #[Test]
     public function fold() : void
     {
         $folds = $this->dataset->fold(2);
@@ -457,12 +561,168 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
-    public function stratifyByLabel() : void
+    public function stratifiedFoldWithContinuousLabels() : void
     {
-        $strata = $this->dataset->stratifyByLabel();
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->stratifiedFold(2);
+    }
+
+    #[Test]
+    public function binnedFold() : void
+    {
+        $folds = $this->continuousDataset()->binnedFold(5, 4);
+
+        $this->assertCount(5, $folds);
+
+        foreach ($folds as $fold) {
+            $this->assertInstanceOf(Labeled::class, $fold);
+            $this->assertCount(4, $fold);
+        }
+
+        $this->assertSame(
+            $this->continuousDataset()->numSamples(),
+            array_sum(array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds))
+        );
+    }
+
+    #[Test]
+    public function binnedFoldCoversEveryBin() : void
+    {
+        $dataset = $this->continuousDataset()->randomize();
+
+        $folds = $dataset->binnedFold(5, 4);
+
+        foreach ($folds as $fold) {
+            // bin 0 spans [-4.9, -1.2] and bin 3 spans [3.7, 5.1] so a fold
+            // holding one sample per bin must reach both extremes
+            $this->assertLessThanOrEqual(-1.2, min($fold->labels()));
+            $this->assertGreaterThanOrEqual(3.7, max($fold->labels()));
+        }
+    }
+
+    #[Test]
+    public function binnedFoldTooFewFolds() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->binnedFold(1);
+    }
+
+    #[Test]
+    public function binnedFoldTooManyFoldsForSmallestBin() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0]],
+            [0.0, 0.0, 0.0, 5.0]
+        );
+
+        $dataset->binnedFold(2, 4);
+    }
+
+    #[Test]
+    public function binnedFoldEmptyDataset() : void
+    {
+        $this->assertEmpty(Labeled::build()->binnedFold(5));
+    }
+
+    #[Test]
+    public function stratifyByClassLabels() : void
+    {
+        $strata = $this->dataset->stratifyByClassLabels();
 
         $this->assertCount(2, $strata['monster']);
         $this->assertCount(4, $strata['not monster']);
+    }
+
+    #[Test]
+    public function stratifyByLabelBins() : void
+    {
+        $strata = $this->continuousDataset()->stratifyByLabelBins(4);
+
+        $this->assertCount(4, $strata);
+
+        $labels = [];
+
+        foreach ($strata as $stratum) {
+            $this->assertInstanceOf(Labeled::class, $stratum);
+            $this->assertCount(5, $stratum);
+
+            $labels = array_merge($labels, $stratum->labels());
+        }
+
+        $expected = self::CONTINUOUS_LABELS;
+
+        sort($expected);
+        sort($labels);
+
+        $this->assertEquals($expected, $labels);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsAreContiguous() : void
+    {
+        $max = null;
+
+        foreach ($this->continuousDataset()->stratifyByLabelBins(4) as $stratum) {
+            $min = min($stratum->labels());
+
+            $this->assertGreaterThan($max ?? -INF, $min);
+
+            $max = max($stratum->labels());
+        }
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsDropsEmptyBins() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 9.0]
+        );
+
+        $strata = $dataset->stratifyByLabelBins(5);
+
+        $this->assertCount(2, $strata);
+        $this->assertCount(5, $strata[0]);
+        $this->assertCount(1, $strata[1]);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsClampedToSampleCount() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0]],
+            [1.5, 2.5, 3.5]
+        );
+
+        $this->assertCount(3, $dataset->stratifyByLabelBins(100));
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsTooFewBins() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->stratifyByLabelBins(0);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsWithCategoricalLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->stratifyByLabelBins(4);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsEmptyDataset() : void
+    {
+        $this->expectException(RuntimeException::class);
+        
+        Labeled::build()->stratifyByLabelBins(4);
     }
 
     #[Test]
@@ -756,7 +1016,7 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
-    public function describeByLabel() : void
+    public function describeByLabelClasses() : void
     {
         $expected = [
             'not monster' => [
@@ -863,7 +1123,7 @@ class LabeledTest extends TestCase
             ],
         ];
 
-        $results = $this->dataset->describeByLabel();
+        $results = $this->dataset->describeByLabelClasses();
 
         $this->assertInstanceOf(Report::class, $results);
         $this->assertEquals($expected, $results->toArray());
@@ -921,5 +1181,10 @@ class LabeledTest extends TestCase
         ];
 
         $this->assertEquals($expected, iterator_to_array($this->dataset));
+    }
+
+    protected function continuousDataset() : Labeled
+    {
+        return Labeled::build(self::CONTINUOUS_SAMPLES, self::CONTINUOUS_LABELS);
     }
 }

@@ -1,6 +1,9 @@
 # Changelog
 
 - 3.0.0
+    - Added `binnedSplit()`, `binnedFold()`, and `stratifyByLabelBins()` for continuous labels
+    - `stratifiedSplit()` and `stratifiedFold()` now throw on continuous labels instead of silently returning an empty subset
+    - Validators and regressors now stratify continuous labels by quantile bin
     - Integers are now considered a categorical data type
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
     - `Isolation Forest` training and inference is now parallelized
