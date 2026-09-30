@@ -363,9 +363,11 @@ The [V-measure](cross-validation/metrics/v-measure.md), [Completeness](cross-val
 
 The [Dataset](datasets/api.md) `sort()` method is no longer stable. Equal elements are not guaranteed to retain their relative order. If your comparisons can produce ties and you rely on the previous order, break ties explicitly in your callback.
 
-### 21. Dataset fold() returns excess samples in the last fold
+### 21. Dataset fold() distributes the remainder across all folds
 
-The `fold()` method of both [Unlabeled](datasets/unlabeled.md) and [Labeled](datasets/labeled.md) datasets now places any samples that do not divide evenly into the *last* fold (previously the behavior was undefined). If `n` samples are folded `k` ways, the first `k - 1` folds contain `floor(n / k)` samples and the last fold receives all of the remainder.
+The `fold()` method of both [Unlabeled](datasets/unlabeled.md) and [Labeled](datasets/labeled.md) datasets forms folds that are as equal size as possible. If `n` samples are folded `k` ways, the first `n % k` folds contain `ceil(n / k)` samples and the remaining folds contain `floor(n / k)`. Previously the last fold received the entire remainder, which could leave it holding many times the samples of its siblings.
+
+The [Labeled](datasets/labeled.md) `stratifiedFold()` and `binnedFold()` methods no longer call `fold()` on each stratum independently. Doing so sent the remainder of *every* stratum to the final fold, so a dataset whose strata did not divide evenly produced a single oversized fold — 143 samples across 10 bins folded 10 ways gave sizes of `[10, ..., 10, 53]` instead of `[14, ..., 15]`. Each stratum now awards its remainder to a rotating window of folds whose cursor carries over between strata, which keeps the aggregate fold sizes within a single sample of one another and keeps the proportions of every stratum intact.
 
 Both `fold()` methods now throw an `InvalidArgumentException` when `k` is greater than the number of samples, preventing empty folds (previously this silently produced `k - 1` empty folds with all samples lumped into the last). The [Labeled](datasets/labeled.md) `stratifiedFold()` method additionally throws when `k` is greater than the number of samples in the *smallest* stratum, since every fold must contain at least one sample of every class.
 

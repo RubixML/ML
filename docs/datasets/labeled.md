@@ -153,8 +153,6 @@ $folds = $dataset->binnedFold(5);
 !!! note
     Unlike the categorical methods, `binnedSplit()` and `binnedFold()` take a bin count. More bins can provide a tighter match to the target distribution, but require enough samples in each split or fold to represent every bin. To guarantee this, `binnedSplit()` automatically reduces the bin count to `floor(numSamples() / ceil(1 / $ratio))` so the smaller subset can still draw at least one sample from every bin.
 
-Both split methods return a left subset containing exactly `floor($ratio * numSamples())` samples. Because the quota per stratum rarely divides evenly, the leftover samples are awarded to the strata holding the largest fractional shares rather than being discarded. `binnedSplit()` shuffles its bins before doing this so that exact ties do not consistently favour the lowest valued bins, whereas `stratifiedSplit()` breaks ties by class name and remains fully deterministic. Note that `stratifiedSplit()` may therefore return a different sized split than in previous versions when the classes are imbalanced.
-
 ### Transform Labels
 
 Transform the labels in the dataset using a callback function and return self for method chaining.

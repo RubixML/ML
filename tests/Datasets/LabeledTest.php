@@ -672,17 +672,36 @@ class LabeledTest extends TestCase
         $total = $this->dataset->numSamples();
         $k = 4;
         $n = (int) floor($total / $k);
+        $r = $total % $k;
         $folds = $this->dataset->fold($k);
 
         $this->assertCount($k, $folds);
-        $this->assertSame($n, $folds[0]->numSamples());
-        $this->assertSame($n, $folds[1]->numSamples());
-        $this->assertSame($n, $folds[2]->numSamples());
-        $this->assertSame($total - 3 * $n, $folds[3]->numSamples());
+
+        // the remainder is spread one per fold from the front rather than
+        // being dumped into the last fold
+        for ($i = 0; $i < $k; ++$i) {
+            $this->assertSame($n + ($i < $r ? 1 : 0), $folds[$i]->numSamples());
+        }
+
         $this->assertSame(
             $total,
             array_sum(array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds))
         );
+    }
+
+    #[Test]
+    public function foldSizesDifferByAtMostOne() : void
+    {
+        $k = 10;
+        $n = $this->spreadDataset(143)->numSamples();
+
+        $sizes = [];
+
+        foreach ($this->spreadDataset($n)->fold($k) as $fold) {
+            $sizes[] = $fold->numSamples();
+        }
+
+        $this->assertSame([15, 15, 15, 14, 14, 14, 14, 14, 14, 14], $sizes);
     }
 
     #[Test]
@@ -720,6 +739,27 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
+    public function stratifiedFoldBalancesFolds() : void
+    {
+        // 13 strata of 11 folded 10 ways used to send the remainder of every
+        // stratum to the last fold, yielding sizes of [13, ..., 13, 26]
+        $dataset = $this->imbalancedDataset(array_fill(0, 13, 11));
+
+        $folds = $dataset->stratifiedFold(10);
+
+        $sizes = array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds);
+
+        $this->assertSame([15, 15, 15, 14, 14, 14, 14, 14, 14, 14], $sizes);
+        $this->assertSame(143, array_sum($sizes));
+
+        // the extra sample must rotate across strata so every fold still
+        // holds one sample of every class
+        foreach ($folds as $fold) {
+            $this->assertCount(13, array_count_values($fold->labels()));
+        }
+    }
+
+    #[Test]
     public function binnedFold() : void
     {
         $folds = $this->continuousDataset()->binnedFold(5, 4);
@@ -749,6 +789,35 @@ class LabeledTest extends TestCase
             // holding one sample per bin must reach both extremes
             $this->assertLessThanOrEqual(-1.2, min($fold->labels()));
             $this->assertGreaterThanOrEqual(3.7, max($fold->labels()));
+        }
+    }
+
+    #[Test]
+    public function binnedFoldBalancesFolds() : void
+    {
+        // 143 samples in 10 bins of 14 or 15 folded 10 ways used to send the
+        // remainder of every bin to the last fold, yielding [10, ..., 10, 53]
+        $dataset = $this->spreadDataset(143);
+
+        $folds = $dataset->binnedFold(10, 10);
+
+        $sizes = array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds);
+
+        $this->assertSame([15, 15, 15, 14, 14, 14, 14, 14, 14, 14], $sizes);
+        $this->assertSame(143, array_sum($sizes));
+
+        $labels = $dataset->labels();
+
+        sort($labels);
+
+        $bottomEdge = $labels[(int) floor(0.1 * count($labels))];
+        $topEdge = $labels[(int) ceil(0.9 * count($labels)) - 1];
+
+        // rotating the remainder must not cost any fold its share of the
+        // lowest and highest bins
+        foreach ($folds as $fold) {
+            $this->assertLessThanOrEqual($bottomEdge, min($fold->labels()));
+            $this->assertGreaterThanOrEqual($topEdge, max($fold->labels()));
         }
     }
 

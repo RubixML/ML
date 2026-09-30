@@ -39,7 +39,7 @@
     - `Filesystem` Persister now does atomic writes
     - Added cleanup() method to remove neural network residual state
     - Murmur3 new default Token Hashing Vectorizer hash function
-    - Dataset fold() now returns excess samples in last fold
+    - Dataset fold() now distributes excess samples over all folds
     - Increase default Decision Tree max leaf node size from 3 to 5
     - Canonicalized `He` initializer
     - `Xavier 2` now extends `He` as a deprecated alias

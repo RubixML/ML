@@ -734,7 +734,9 @@ class Labeled extends Dataset
 
     /**
      * Fold the dataset k - 1 times to form k datasets of as equal size as
-     * possible. Any remaining samples are added to the last fold.
+     * possible. Any remaining samples are distributed one per fold starting
+     * from the first fold, so no two folds ever differ in size by more than
+     * a single sample.
      *
      * @param int $k
      * @throws InvalidArgumentException
@@ -752,27 +754,33 @@ class Labeled extends Dataset
                 . 'to the number of samples.');
         }
 
-        $n = (int) floor($this->numSamples() / $k);
+        $n = intdiv($this->numSamples(), $k);
+
+        $remainder = $this->numSamples() % $k;
 
         $samples = $this->samples;
         $labels = $this->labels;
 
         $folds = [];
 
-        while (count($folds) < $k - 1) {
+        for ($j = 0; $j < $k; ++$j) {
+            $count = $n + ($j < $remainder ? 1 : 0);
+
             $folds[] = self::quick(
-                array_splice($samples, 0, $n),
-                array_splice($labels, 0, $n)
+                array_splice($samples, 0, $count),
+                array_splice($labels, 0, $count)
             );
         }
-
-        $folds[] = self::quick($samples, $labels);
 
         return $folds;
     }
 
     /**
-     * Fold the dataset into k equal sized stratified datasets.
+     * Fold the dataset into k equal sized stratified datasets. The leftover
+     * samples of every stratum are awarded one per fold starting from a cursor
+     * that carries over between strata, which keeps the aggregate fold sizes
+     * within a single sample of one another instead of piling every remainder
+     * into the last fold.
      *
      * @param int $k
      * @throws InvalidArgumentException
@@ -795,17 +803,34 @@ class Labeled extends Dataset
             }
         }
 
-        $folds = [];
+        $folds = array_fill(0, $k, []);
+
+        $cursor = 0;
 
         foreach ($strata as $stratum) {
-            foreach ($stratum->fold($k) as $j => $fold) {
-                $folds[$j][] = $fold;
+            $m = $stratum->numSamples();
+
+            $n = intdiv($m, $k);
+            $r = $m % $k;
+
+            $offset = 0;
+
+            for ($j = 0; $j < $k; ++$j) {
+                $count = $n + ((($j - $cursor + $k) % $k) < $r ? 1 : 0);
+
+                $folds[$j][] = $stratum->slice($offset, $count);
+
+                $offset += $count;
             }
+
+            $cursor = ($cursor + $r) % $k;
         }
 
         foreach ($folds as &$fold) {
             $fold = self::stack($fold);
         }
+
+        unset($fold);
 
         /** @var list<self> $folds */
         return $folds;
@@ -813,7 +838,10 @@ class Labeled extends Dataset
 
     /**
      * Fold the dataset into k equal sized datasets such that the distribution of
-     * the continuous label is preserved in every fold.
+     * the continuous label is preserved in every fold. The leftover samples of
+     * every bin are awarded one per fold starting from a cursor that carries over
+     * between bins, which keeps the aggregate fold sizes within a single sample
+     * of one another instead of piling every remainder into the last fold.
      *
      * @param int $k
      * @param int $bins
@@ -848,12 +876,27 @@ class Labeled extends Dataset
             }
         }
 
-        $folds = [];
+        $folds = array_fill(0, $k, []);
+
+        $cursor = 0;
 
         foreach ($strata as $stratum) {
-            foreach ($stratum->fold($k) as $j => $fold) {
-                $folds[$j][] = $fold;
+            $m = $stratum->numSamples();
+
+            $n = intdiv($m, $k);
+            $r = $m % $k;
+
+            $offset = 0;
+
+            for ($j = 0; $j < $k; ++$j) {
+                $count = $n + ((($j - $cursor + $k) % $k) < $r ? 1 : 0);
+
+                $folds[$j][] = $stratum->slice($offset, $count);
+
+                $offset += $count;
             }
+
+            $cursor = ($cursor + $r) % $k;
         }
 
         foreach ($folds as &$fold) {
