@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Thresholded ReLU
@@ -34,6 +36,10 @@ class ThresholdedReLU implements ActivationFunction
      */
     public function __construct(float $threshold = 1.0)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($threshold < 0.0) {
             throw new InvalidArgumentException('Threshold must be'
                 . " positive, $threshold given.");
@@ -52,7 +58,7 @@ class ThresholdedReLU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, '_activate']);
+        return $x->greater($this->threshold)->multiply($x);
     }
 
     /**
@@ -67,17 +73,6 @@ class ThresholdedReLU implements ActivationFunction
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
         return $x->greater($this->threshold);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _activate(float $x) : float
-    {
-        return $x > $this->threshold ? $x : 0.0;
     }
 
     /**

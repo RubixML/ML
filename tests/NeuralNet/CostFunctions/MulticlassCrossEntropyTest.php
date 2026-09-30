@@ -24,46 +24,46 @@ class MulticlassCrossEntropyTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99, 0.01, 0.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             0.0033501,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.4, 0.4],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 1.0, 0.0],
-            ]),
+            ], false),
             0.3054302,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.0, 0.1, 0.9],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             6.1402269,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.1, 0.7],
                 [0.0, 0.9, 0.1],
                 [0.1, 0.3, 0.6],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 0.0, 1.0],
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
-            ]),
+            ], false),
             0.1080956,
         ];
     }
@@ -71,52 +71,52 @@ class MulticlassCrossEntropyTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99, 0.01, 0.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             [
                 [-1.0101010, 0.0, 0.0],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.4, 0.4],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 1.0, 0.0],
-            ]),
+            ], false),
             [
                 [0.0, -2.5, 0.0],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.0, 0.1, 0.9],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, 0.0, 0.0],
-            ]),
+            ], false),
             [
                 [-100000000.0, 0.0, 0.0],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.2, 0.1, 0.7],
                 [0.0, 0.9, 0.1],
                 [0.1, 0.3, 0.6],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.0, 0.0, 1.0],
                 [0.0, 1.0, 0.0],
                 [0.0, 0.0, 1.0],
-            ]),
+            ], false),
             [
                 [0.0, 0.0, -1.4285714],
                 [0.0, -1.1111111, 0.0],
@@ -143,8 +143,8 @@ class MulticlassCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
-        $target = Matrix::quick([[1.0, 2.0]]);
+        $output = Matrix::fromArray([[1.0, 2.0, 3.0]], false);
+        $target = Matrix::fromArray([[1.0, 2.0]], false);
 
         $this->costFn->compute($output, $target);
     }
@@ -156,8 +156,8 @@ class MulticlassCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
-        $target = Matrix::quick([[1.0, 2.0]]);
+        $output = Matrix::fromArray([[1.0, 2.0, 3.0]], false);
+        $target = Matrix::fromArray([[1.0, 2.0]], false);
 
         $this->costFn->differentiate($output, $target);
     }

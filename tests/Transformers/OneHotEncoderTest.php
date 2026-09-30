@@ -46,10 +46,10 @@ class OneHotEncoderTest extends TestCase
         $dataset->apply($this->transformer);
 
         $expected = [
-            [1, 0, 1, 0, 1, 0],
-            [0, 1, 1, 0, 0, 1],
-            [1, 0, 0, 1, 1, 0],
-            [0, 1, 0, 1, 1, 0],
+            [1.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+            [0.0, 1.0, 1.0, 0.0, 0.0, 1.0],
+            [1.0, 0.0, 0.0, 1.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 1.0, 1.0, 0.0],
         ];
 
         $this->assertEquals($expected, $dataset->samples());
@@ -92,10 +92,10 @@ class OneHotEncoderTest extends TestCase
         $dataset->apply($this->transformer);
 
         $expected = [
-            [1, 0, 0, 1, 0],
-            [0, 1, 0, 0, 1],
-            [1, 0, 1, 1, 0],
-            [0, 1, 1, 1, 0],
+            [1.0, 0.0, 0.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0, 1.0],
+            [1.0, 0.0, 1.0, 1.0, 0.0],
+            [0.0, 1.0, 1.0, 1.0, 0.0],
         ];
 
         $this->assertEquals($expected, $dataset->samples());

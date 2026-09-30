@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Tensor\ColumnVector;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function count;
 
@@ -33,6 +35,10 @@ class Constant implements Initializer
      */
     public function __construct(float $value = 0.0)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if (is_nan($value)) {
             throw new InvalidArgumentException('Cannot initialize'
                 . ' weight values to NaN.');

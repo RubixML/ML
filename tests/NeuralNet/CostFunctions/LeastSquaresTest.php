@@ -27,40 +27,40 @@ class LeastSquaresTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             0.00010000000000000018,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1000.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             998001.0,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [33.98],
                 [20.0],
                 [4.6],
                 [44.2],
                 [38.5],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [36.0],
                 [22.0],
                 [18.0],
                 [41.5],
                 [38.0],
-            ]),
+            ], false),
             39.036080000000005,
         ];
     }
@@ -71,44 +71,44 @@ class LeastSquaresTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             [
                 [-0.010000000000000009],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1000.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             [
                 [999.0],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [33.98],
                 [20.0],
                 [4.6],
                 [44.2],
                 [38.5],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [36.0],
                 [22.0],
                 [18.0],
                 [41.5],
                 [38.0],
-            ]),
+            ], false),
             [
                 [-2.020000000000003],
                 [-2.0],

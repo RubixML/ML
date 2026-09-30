@@ -6,6 +6,8 @@ use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function get_class;
 
@@ -49,6 +51,10 @@ class AdaGrad implements Optimizer
      */
     public function __construct(Scheduler $scheduler)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->scheduler = $scheduler;
     }
 

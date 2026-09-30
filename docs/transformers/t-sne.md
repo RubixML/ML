@@ -21,18 +21,36 @@
 | 4 | exaggeration | 12.0 | float | The factor to exaggerate the distances between samples during the early stage of embedding. |
 | 5 | epochs | 1000 | int | The maximum number of times to iterate over the embedding. |
 | 6 | minGradient | 1e-7 | float | The minimum norm of the gradient necessary to continue embedding. |
+| 7 | evalInterval | 50 | int | The number of epochs to wait between evaluations of the KL Divergence cost. |
+| 8 | window | 5 | int | The number of consecutive cost evaluations without improving on the best cost observed before early stopping. Set to 0 to disable early stopping. |
+| 9 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 
 ## Example
 
 ```php
 use Rubix\ML\Transformers\TSNE;
 
-$transformer = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
+$transformer = new TSNE(
+    dimensions: 3,
+    rate: 10.0,
+    perplexity: 30,
+    exaggeration: 12.0,
+    epochs: 1000,
+    minGradient: 1e-7,
+    evalInterval: 50,
+    window: 6,
+);
 ```
 
 ## Additional Methods
 
 Return the magnitudes of the gradient at each epoch from the last embedding.
+
+```php
+public norms() : float[]|null
+```
+
+Return the KL Divergence cost at each evaluation epoch from the last embedding.
 
 ```php
 public losses() : float[]|null

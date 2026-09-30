@@ -74,7 +74,7 @@ class RandIndex implements Metric
     {
         $table = (new ContingencyTable())->generate($labels, $predictions);
 
-        $table = Matrix::build($table->toArray());
+        $table = Matrix::fromArray($table->toArray());
 
         $sigma = $table->map([self::class, 'comb2'])->sum()->sum();
 

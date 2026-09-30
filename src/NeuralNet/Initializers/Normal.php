@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Tensor\ColumnVector;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function count;
 
@@ -34,6 +36,10 @@ class Normal implements Initializer
      */
     public function __construct(float $stdDev = 0.05)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($stdDev <= 0.0) {
             throw new InvalidArgumentException('Standard deviation must'
                 . " be greater than 0, $stdDev given.");
