@@ -39,7 +39,7 @@ composer require rubix/ml
 Make sure you have all the necessary build tools installed such as a C compiler and make tools. For example, on an Ubuntu linux system you can enter the following on the command line to install the necessary dependencies.
 
 ```sh
-$ sudo apt-get install make gcc gfortran php-dev libopenblas-dev liblapacke-dev re2c build-essential
+sudo apt-get install make gcc gfortran php-dev libopenblas-dev liblapacke-dev re2c build-essential
 ```
 
 Compile and install the recommended extensions using [PIE](https://github.com/php/pie):
