@@ -108,7 +108,7 @@ class ImageFlipper implements Transformer
      *
      * @internal
      *
-     * @param list<mixed> $sample
+     * @param array<int, mixed> $sample
      * @param int $index
      * @param list<int> $columns
      * @throws RuntimeException
