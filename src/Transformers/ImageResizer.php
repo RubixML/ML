@@ -7,6 +7,13 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\iterator_first;
+use function array_map;
+use function array_filter;
+use function array_keys;
+use function array_walk;
+use function ceil;
+
 /**
  * Image Resizer
  *
@@ -79,57 +86,71 @@ class ImageResizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        array_walk($samples, [$this, 'resize']);
+        if (empty($samples)) {
+            return;
+        }
+
+        $types = array_map([DataType::class, 'detect'], iterator_first($samples));
+
+        $types = array_filter($types, fn ($type) => $type->isImage());
+
+        $columns = array_keys($types);
+
+        if (empty($columns)) {
+            return;
+        }
+
+        array_walk($samples, [$this, 'resize'], $columns);
     }
 
     /**
      * resize the images in a sample.
      *
-     * @param list<mixed> $sample
+     * @param array<mixed> $sample
+     * @param int $index
+     * @param list<int> $columns
      * @throws RuntimeException
      */
-    public function resize(array &$sample) : void
+    public function resize(array &$sample, int $index, array $columns) : void
     {
-        foreach ($sample as &$value) {
-            if (DataType::detect($value)->isImage()) {
-                $width = imagesx($value);
-                $height = imagesy($value);
+        foreach ($columns as $column) {
+            $image = $sample[$column];
 
-                if ($width === $this->width and $height === $this->height) {
-                    continue;
-                }
+            $width = imagesx($image);
+            $height = imagesy($image);
 
-                if ($width / $height < $this->ratio) {
-                    $w = $width;
-                    $h = (int) ceil(($width * $this->height) / $this->width);
-
-                    $x = 0;
-                    $y = (int) ceil(0.5 * ($height - $h));
-                } else {
-                    $w = (int) ceil(($height * $this->width) / $this->height);
-                    $h = $height;
-
-                    $x = (int) ceil(0.5 * ($width - $w));
-                    $y = 0;
-                }
-
-                $resized = imagecreatetruecolor($this->width, $this->height);
-
-                if (!$resized) {
-                    throw new RuntimeException('Could not create placeholder image.');
-                }
-
-                $success = imagecopyresampled($resized, $value, 0, 0, $x, $y, $this->width, $this->height, $w, $h);
-
-                if (!$success) {
-                    throw new RuntimeException('Failed to resize image.');
-                }
-
-                $value = $resized;
+            if ($width === $this->width and $height === $this->height) {
+                continue;
             }
-        }
 
-        unset($value);
+            if ($width / $height < $this->ratio) {
+                $w = $width;
+                $h = (int) ceil(($width * $this->height) / $this->width);
+
+                $x = 0;
+                $y = (int) ceil(0.5 * ($height - $h));
+            } else {
+                $w = (int) ceil(($height * $this->width) / $this->height);
+                $h = $height;
+
+                $x = (int) ceil(0.5 * ($width - $w));
+                $y = 0;
+            }
+
+            $resized = imagecreatetruecolor($this->width, $this->height);
+
+            if (!$resized) {
+                throw new RuntimeException('Could not create placeholder image.');
+            }
+
+            $success = imagecopyresampled($resized, $image, 0, 0, $x, $y, $this->width, $this->height, $w, $h);
+
+            if (!$success) {
+                throw new RuntimeException('Failed to resize image.');
+            }
+
+            $sample[$column] = $resized;
+        }
     }
 
     /**

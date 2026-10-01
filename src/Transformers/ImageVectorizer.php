@@ -114,13 +114,13 @@ class ImageVectorizer implements Transformer, Stateful
             $vectors = [];
 
             foreach ($this->sizes as $column => [$width, $height]) {
-                $value = $sample[$column];
+                $image = $sample[$column];
 
                 $vector = [];
 
                 for ($x = 0; $x < $width; ++$x) {
                     for ($y = 0; $y < $height; ++$y) {
-                        $pixel = imagecolorat($value, $x, $y);
+                        $pixel = imagecolorat($image, $x, $y);
 
                         $vector[] = $pixel & 0xFF;
 
