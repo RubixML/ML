@@ -7,16 +7,22 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\iterator_first;
 use function rand;
+use function array_keys;
 use function array_walk;
+use function array_filter;
+use function array_map;
 use function getrandmax;
 
 /**
  * Randomized Image Rotator
  *
- * Randomly rotates the image between 0 and a given number of max degrees.
+ * Rotates an image by a given offset angle and random jitter. The rotated image is then resized
+ * back to its original dimensions. Permutations such as these are useful for training computer
+ * vision models that are robust to rotation and small variations in orientation.
  *
- * > **Note**: The GD extension is required to use this transformer.
+ * > **Note:** The GD extension is required to use this transformer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -32,14 +38,14 @@ class ImageRotator implements Transformer
     protected const FILL_COLOR = 0;
 
     /**
-     * The number of degrees to rotate the image.
+     * The offset angle in degrees to rotate before applying random jitter.
      *
      * @var float
      */
     protected float $offset;
 
     /**
-     * The amount of random jitter to add to the rotation.
+     * The amount of random jitter to add to the rotation in either direction.
      *
      * @var float
      */
@@ -50,7 +56,7 @@ class ImageRotator implements Transformer
      * @param float $jitter
      * @throws InvalidArgumentException
      */
-    public function __construct(float $offset, float $jitter = 0.0)
+    public function __construct(float $offset = 0.0, float $jitter = 0.2)
     {
         ExtensionIsLoaded::with('gd')->check();
 
@@ -87,7 +93,21 @@ class ImageRotator implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        array_walk($samples, [$this, 'rotateAndCrop']);
+        if (empty($samples)) {
+            return;
+        }
+
+        $types = array_map([DataType::class, 'detect'], iterator_first($samples));
+
+        $types = array_filter($types, fn ($type) => $type->isImage());
+
+        $columns = array_keys($types);
+
+        if (empty($columns)) {
+            return;
+        }
+
+        array_walk($samples, [$this, 'rotateAndCrop'], $columns);
     }
 
     /**
@@ -95,57 +115,57 @@ class ImageRotator implements Transformer
      *
      * @internal
      *
-     * @param list<mixed> $sample
+     * @param array<mixed> $sample
+     * @param int $index
+     * @param list<int> $columns
      * @throws RuntimeException
      */
-    protected function rotateAndCrop(array &$sample) : void
+    protected function rotateAndCrop(array &$sample, int $index, array $columns) : void
     {
-        foreach ($sample as &$value) {
-            if (DataType::detect($value)->isImage()) {
-                $degrees = $this->rotationAngle();
+        foreach ($columns as $column) {
+            $image = $sample[$column];
 
-                $originalWidth = imagesx($value);
-                $originalHeight = imagesy($value);
+            $degrees = $this->rotationAngle();
 
-                $rotated = imagerotate($value, $degrees, self::FILL_COLOR);
+            $originalWidth = imagesx($image);
+            $originalHeight = imagesy($image);
 
-                if ($rotated) {
-                    $newHeight = imagesy($rotated);
-                    $newWidth = imagesx($rotated);
+            $rotated = imagerotate($image, $degrees, self::FILL_COLOR);
 
-                    if ($originalHeight !== $newHeight or $originalWidth !== $newWidth) {
-                        $resized = imagecreatetruecolor($originalWidth, $originalHeight);
+            if ($rotated) {
+                $newHeight = imagesy($rotated);
+                $newWidth = imagesx($rotated);
 
-                        if (!$resized) {
-                            throw new RuntimeException('Could not create placeholder image.');
-                        }
+                if ($originalHeight !== $newHeight or $originalWidth !== $newWidth) {
+                    $resized = imagecreatetruecolor($originalWidth, $originalHeight);
 
-                        $success = imagecopyresampled(
-                            $resized,
-                            $rotated,
-                            0,
-                            0,
-                            0,
-                            0,
-                            $originalWidth,
-                            $originalHeight,
-                            $newWidth,
-                            $newHeight
-                        );
-
-                        if (!$success) {
-                            throw new RuntimeException('Failed to resize image back to its original size.');
-                        }
-
-                        $rotated = $resized;
+                    if (!$resized) {
+                        throw new RuntimeException('Could not create placeholder image.');
                     }
 
-                    $value = $rotated;
+                    $success = imagecopyresampled(
+                        $resized,
+                        $rotated,
+                        0,
+                        0,
+                        0,
+                        0,
+                        $originalWidth,
+                        $originalHeight,
+                        $newWidth,
+                        $newHeight
+                    );
+
+                    if (!$success) {
+                        throw new RuntimeException('Failed to resize image back to its original size.');
+                    }
+
+                    $rotated = $resized;
                 }
+
+                $sample[$column] = $rotated;
             }
         }
-
-        unset($value);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 # Image Rotator
 
-Image Rotator permutes an image feature by rotating it and adding optional randomized jitter. The image is then cropped to fit the original width and height maintaining the dimensionality. Permutations such as these are useful for training computer vision models that are robust to
+Image Rotator permutes an image feature by rotating it by a given offset angle and adding optional randomized jitter. The rotated image is then resized back to the original width and height, maintaining the dimensionality. Permutations such as these are useful for training computer vision models that are robust to rotation and small variations in orientation.
 
 !!! note
     The [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
@@ -15,8 +15,8 @@ Image Rotator permutes an image feature by rotating it and adding optional rando
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | offset | | float | The angle of the rotation in degrees. |
-| 2 | jitter | 0.0 | float | The amount of random jitter to apply to the rotation. |
+| 1 | offset | 0.0 | float | The angle of the rotation in degrees. |
+| 2 | jitter | 0.2 | float | The proportion of a half-turn (180 degrees) of random jitter to apply to the rotation in either direction. |
 
 ## Example
 
