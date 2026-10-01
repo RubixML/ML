@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Huber Loss
@@ -41,6 +43,10 @@ class HuberLoss implements RegressionLoss
      */
     public function __construct(float $alpha = 0.9)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($alpha <= 0.0) {
             throw new InvalidArgumentException('Alpha must be greater than'
                 . " 0, $alpha given.");
@@ -61,7 +67,15 @@ class HuberLoss implements RegressionLoss
      */
     public function compute(Matrix $z, Matrix $y) : float
     {
-        return $y->subtract($z)->map([$this, '_compute'])->mean()->mean();
+        return $y->subtract($z)
+            ->divideScalar($this->alpha)
+            ->square()
+            ->addScalar(1.0)
+            ->sqrt()
+            ->subtractScalar(1.0)
+            ->multiplyScalar($this->alpha2)
+            ->mean()
+            ->mean();
     }
 
     /**
@@ -82,15 +96,6 @@ class HuberLoss implements RegressionLoss
             ->pow(-0.5)
             ->multiply($beta)
             ->multiply($this->alpha);
-    }
-
-    /**
-     * @param float $z
-     * @return float
-     */
-    public function _compute(float $z) : float
-    {
-        return $this->alpha2 * (sqrt(1.0 + ($z / $this->alpha) ** 2) - 1.0);
     }
 
     /**

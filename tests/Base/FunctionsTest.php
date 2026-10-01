@@ -597,6 +597,56 @@ class FunctionsTest extends TestCase
     }
 
     #[Test]
+    public function warnIsDeduplicatedPerMessage() : void
+    {
+        $count = 0;
+
+        set_error_handler(function (int $errno, string $errstr) use (&$count) : bool {
+            ++$count;
+
+            return true;
+        });
+
+        try {
+            $message = 'A deduplicate-me warning message.';
+
+            warn($message);
+            warn($message);
+
+            warn('A distinct warning message.');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(2, $count);
+    }
+
+    #[Test]
+    public function warnDeprecatedIsDeduplicatedPerMessage() : void
+    {
+        $count = 0;
+
+        set_error_handler(function (int $errno, string $errstr) use (&$count) : bool {
+            ++$count;
+
+            return true;
+        });
+
+        try {
+            $message = 'A deduplicate-me deprecation message.';
+
+            warn_deprecated($message);
+            warn_deprecated($message);
+
+            warn_deprecated('A distinct deprecation message.');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(2, $count);
+    }
+
+    #[Test]
     public function logsumexpWithInfinity() : void
     {
         $this->assertSame(INF, logsumexp([INF, 1.0]));

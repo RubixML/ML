@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Activation
@@ -52,6 +54,10 @@ class Activation implements Hidden
      */
     public function __construct(ActivationFunction $activationFn)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->activationFn = $activationFn;
     }
 

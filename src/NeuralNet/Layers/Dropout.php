@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Rubix\ML\Deferred;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Dropout
@@ -59,6 +61,10 @@ class Dropout implements Hidden
      */
     public function __construct(float $ratio = 0.5)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Ratio must be'
                 . " between 0 and 1, $ratio given.");

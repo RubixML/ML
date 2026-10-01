@@ -41,7 +41,10 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function is_nan;
 use function is_dir;
 use function count;
@@ -120,7 +123,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
     /**
      * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
-     * @var positive-int
+     * @var int<0,max>
      */
     protected int $window;
 
@@ -207,6 +210,15 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null,
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size must be'
                 . " greater than 0, $batchSize given.");
@@ -237,7 +249,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
                 . " greater than 0, $evalInterval given.");
         }
 
-        if ($window < 1) {
+        if ($window < 0) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
         }
@@ -464,7 +476,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
         [$minScore, $maxScore] = $this->metric->range()->list();
 
         $bestScore = $minScore;
-        $bestEpoch = $numWorseEpochs = 0;
+        $bestEpoch = $numWorseEvals = 0;
         $score = $snapshot = null;
         $prevLoss = $averageLoss = INF;
 
@@ -494,8 +506,8 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             $totalLoss = 0.0;
 
             foreach ($batches as $batch) {
-                $x = Matrix::quick($batch->samples())->transpose();
-                $y = Matrix::quick([array_map('floatval', $batch->labels())]);
+                $x = Matrix::fromArray($batch->samples(), false)->transpose();
+                $y = Matrix::fromArray([array_map('floatval', $batch->labels())], false);
 
                 $this->network->feed($x);
 
@@ -558,6 +570,11 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
 
             if ($evalThisStep) {
                 if ($score >= $maxScore) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, maximum '
+                            . "{$this->metric} score reached");
+                    }
+
                     break;
                 }
 
@@ -571,17 +588,27 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
 
                     $snapshot = Snapshot::take($this->network, $snapshotPath);
 
-                    $numWorseEpochs = 0;
+                    $numWorseEvals = 0;
                 } else {
-                    ++$numWorseEpochs;
+                    ++$numWorseEvals;
                 }
 
-                if ($numWorseEpochs >= $this->window) {
+                if ($this->window and $numWorseEvals >= $this->window) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
+                    }
+
                     break;
                 }
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 
@@ -643,7 +670,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
 
         [$classA, $classB] = $this->classes;
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples())->transpose();
 
         $activations = $this->network->infer($x);
 

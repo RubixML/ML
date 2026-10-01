@@ -7,6 +7,8 @@ use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function get_class;
 
@@ -69,6 +71,10 @@ class Adam implements Optimizer
      */
     public function __construct(Scheduler $scheduler, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($momentumDecay <= 0.0 or $momentumDecay >= 1.0) {
             throw new InvalidArgumentException('Momentum decay must be'
                 . " between 0 and 1, $momentumDecay given.");
@@ -131,12 +137,12 @@ class Adam implements Optimizer
         [$velocity, $norm] = $this->cache[$param->id()];
 
         $vHat = $param->gradient()->subtract($velocity)
-            ->multiply($this->momentumDecay);
+            ->multiplyScalar($this->momentumDecay);
 
         $velocity = $velocity->add($vHat);
 
         $nHat = $param->gradient()->square()->subtract($norm)
-            ->multiply($this->normDecay);
+            ->multiplyScalar($this->normDecay);
 
         $norm = $norm->add($nHat);
 

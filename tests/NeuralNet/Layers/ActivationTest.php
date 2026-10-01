@@ -49,18 +49,18 @@ class ActivationTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->x = Matrix::quick([
+        $this->x = Matrix::fromArray([
             [1.0, 2.5, -0.1],
             [0.1, 0.0, 3.0],
             [0.002, -6.0, -0.5],
-        ]);
+        ], false);
 
         $this->prevGrad = new Deferred(function () {
-            return Matrix::quick([
+            return Matrix::fromArray([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
-            ]);
+            ], false);
         });
 
         $this->optimizer = new Stochastic(new Constant(0.001));

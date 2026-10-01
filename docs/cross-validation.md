@@ -28,6 +28,15 @@ If we have a [Labeled](datasets/labeled.md) dataset containing class labels, we 
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
 
+Datasets with a *continuous* label use the `binnedSplit()` method instead, which preserves the *shape* of the target distribution by stratifying over equal frequency bins of the label.
+
+```php
+[$training, $testing] = $dataset->binnedSplit(0.8);
+```
+
+!!! note
+    `stratifiedSplit()` will throw an `InvalidArgumentException` when the label is continuous. See [Binned Stratification](datasets/labeled.md#binned-stratification) in the [Labeled](datasets/labeled.md) dataset documentation for more.
+
 ## Metrics
 
 Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an [Estimator](estimator.md) with respect to their known ground-truth labels. There are different metrics for different types of problems. To return a validation score from a Metric pass the predictions and labels to the `score()` method like in the example below.

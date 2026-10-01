@@ -53,18 +53,18 @@ class SwishTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->x = Matrix::quick([
+        $this->x = Matrix::fromArray([
             [1.0, 2.5, -0.1],
             [0.1, 0.1, 3.0],
             [0.002, -6.0, -0.5],
-        ]);
+        ], false);
 
         $this->prevGrad = new Deferred(function () {
-            return Matrix::quick([
+            return Matrix::fromArray([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
-            ]);
+            ], false);
         });
 
         $this->optimizer = new Stochastic(new Schedule(0.001));
@@ -139,18 +139,18 @@ class SwishTest extends TestCase
 
         $layer->initialize(3);
 
-        $x = Matrix::quick([
+        $x = Matrix::fromArray([
             [1.5, 0.0, -2.0],
             [0.75, -0.25, 4.0],
             [0.0, -7.5, 0.001],
-        ]);
+        ], false);
 
         $prevGrad = new Deferred(function () {
-            return Matrix::quick([
+            return Matrix::fromArray([
                 [0.9, 0.33, 0.05],
                 [0.61, 0.44, 0.02],
                 [0.77, 0.08, 0.95],
-            ]);
+            ], false);
         });
 
         $forward = $layer->forward($x);

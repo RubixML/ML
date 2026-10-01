@@ -253,7 +253,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
-        foreach ($dataset->stratifyByLabel() as $class => $stratum) {
+        foreach ($dataset->stratifyByClassLabels() as $class => $stratum) {
             if (isset($this->means[$class])) {
                 $oldMeans = $this->means[$class];
                 $oldVariances = $this->variances[$class];

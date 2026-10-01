@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Placeholder 1D
@@ -32,6 +34,10 @@ class Placeholder1D implements Input
      */
     public function __construct(int $inputs)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($inputs < 1) {
             throw new InvalidArgumentException('Number of input nodes'
             . " must be greater than 0, $inputs given.");
