@@ -1,0 +1,19 @@
+% A small ARFF fixture used by the test suite.
+
+@RELATION monsters
+
+@ATTRIBUTE attitude {nice,mean}
+@ATTRIBUTE texture string
+@ATTRIBUTE rating numeric
+@ATTRIBUTE visits integer
+@ATTRIBUTE score real
+@ATTRIBUTE born date
+@ATTRIBUTE 'class label' {not monster,monster}
+
+@DATA
+
+nice,furry,4,10,0.5,2016-01-01T12:00:00,'not monster'
+mean,furry,-1.5,?,0.9,2015-06-15,monster
+nice,rough,2.6,20,1e-3,2016-02-28,'not monster'
+mean,rough,-1,30,2.5,2014-12-31T23:59:59,monster
+nice,rough,2.9,40,?,2016-03-01,'not monster' % trailing comment

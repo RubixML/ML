@@ -60,6 +60,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 - PSR-2 with extended rules (enforced by PHP-CS-Fixer, see `.php-cs-fixer.dist.php`)
 - DocBlock on every class, property, method, constant, and function
 - No anonymous classes or functions (breaks serialization/persistence)
+- Prefer protected over private members of classes to encourage extension
 - Objects are *generally* immutable — state mutation only through a well-defined public API
 - Domain-driven naming — names reflect the ML domain
 - No inline comments — use expressive syntax and abstractions instead
@@ -72,7 +73,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 - Class members annotated `internal` are not part of the public API
 - Verify changes by running tests, static analysis, and code style fixer
 
-## Workflows
+## Example Workflows
 
 ### Adding a New Estimator
 
