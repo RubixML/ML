@@ -7,7 +7,11 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\iterator_first;
 use function rand;
+use function array_filter;
+use function array_keys;
+use function array_map;
 use function array_walk;
 use function getrandmax;
 
@@ -82,7 +86,21 @@ class ImageFlipper implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        array_walk($samples, [$this, 'flip']);
+        if (empty($samples)) {
+            return;
+        }
+
+        $types = array_map([DataType::class, 'detect'], iterator_first($samples));
+
+        $types = array_filter($types, fn ($type) => $type->isImage());
+
+        $columns = array_keys($types);
+
+        if (empty($columns)) {
+            return;
+        }
+
+        array_walk($samples, [$this, 'flip'], $columns);
     }
 
     /**
@@ -91,23 +109,33 @@ class ImageFlipper implements Transformer
      * @internal
      *
      * @param list<mixed> $sample
+     * @param int $index
+     * @param list<int> $columns
      * @throws RuntimeException
      */
-    protected function flip(array &$sample) : void
+    protected function flip(array &$sample, int $index, array $columns) : void
     {
-        foreach ($sample as &$value) {
-            if (DataType::detect($value)->isImage()) {
-                if ($this->shouldFlip($this->horizontal) and !imageflip($value, IMG_FLIP_HORIZONTAL)) {
+        foreach ($columns as $column) {
+            $image = $sample[$column];
+
+            if ($this->shouldFlip($this->horizontal)) {
+                $success = imageflip($image, IMG_FLIP_HORIZONTAL);
+
+                if (!$success) {
                     throw new RuntimeException('Failed to flip image horizontally.');
                 }
+            }
 
-                if ($this->shouldFlip($this->vertical) and !imageflip($value, IMG_FLIP_VERTICAL)) {
+            if ($this->shouldFlip($this->vertical)) {
+                $success = imageflip($image, IMG_FLIP_VERTICAL);
+
+                if (!$success) {
                     throw new RuntimeException('Failed to flip image vertically.');
                 }
             }
-        }
 
-        unset($value);
+            $sample[$column] = $image;
+        }
     }
 
     /**
@@ -116,19 +144,22 @@ class ImageFlipper implements Transformer
      * @internal
      *
      * @param float $probability
+     * @param float $p
      * @return bool
      */
-    protected function shouldFlip(float $probability) : bool
+    protected function shouldFlip(float $p) : bool
     {
-        if ($probability <= 0.0) {
+        if ($p <= 0.0) {
             return false;
         }
 
-        if ($probability >= 1.0) {
+        if ($p >= 1.0) {
             return true;
         }
 
-        return rand() / getrandmax() < $probability;
+        $r = rand() / getrandmax();
+
+        return $r < $p;
     }
 
     /**
