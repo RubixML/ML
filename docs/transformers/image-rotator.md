@@ -15,9 +15,9 @@ Image Rotator permutes an image feature by rotating it by a given offset angle a
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | offset | 0.0 | float | The angle of the rotation in degrees. |
-| 2 | jitter | 0.2 | float | The proportion of a half-turn (180 degrees) of random jitter to apply to the rotation in either direction. |
-| 3 | fillColor | #000000 | ?string | The hex color used to fill the area exposed by rotation, such as `'#ffffff'`. Null uses black. |
+| 1 | offset | 0.0 | float | The offset angle in degrees to rotate before applying random jitter. |
+| 2 | jitter | 0.2 | float | The maximum amount of random rotation in either direction. |
+| 3 | fillColor | #000000 | string | The color used to fill the area exposed by rotation, such as `'#ffffff'`. |
 
 ## Example
 
@@ -30,11 +30,6 @@ $transformer = new ImageRotator(0.0, 0.5); // Add random jitter about the origin
 
 $transformer = new ImageRotator(0.0, 0.2, '#ffffff'); // Fill exposed area with white.
 ```
-
-!!! note
-    GD reads the background argument to `imagerotate()` as a palette index for palette images
-    (such as GIF and PNG-8) and as an RGB value for truecolor images. This transformer resolves
-    the color correctly for both, so the same hex value works regardless of image type.
 
 ## Additional Methods
 
