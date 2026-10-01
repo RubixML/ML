@@ -428,9 +428,9 @@ class ImageRotatorTest extends TestCase
      * Build a rotator with a fixed rotation angle. The real constructor must run so that the
      * offset, jitter, and fill color properties are initialized.
      * @param float $degrees
-     * @param ?string $fillColor
+     * @param string $fillColor
      */
-    protected function mockRotator(float $degrees = 45.0, ?string $fillColor = null) : ImageRotator
+    protected function mockRotator(float $degrees = 45.0, string $fillColor = '#000000') : ImageRotator
     {
         $mock = $this->getMockBuilder(ImageRotator::class)
             ->setConstructorArgs([0.0, 0.2, $fillColor])

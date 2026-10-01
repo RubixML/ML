@@ -17,6 +17,8 @@ use function array_walk;
 use function array_filter;
 use function array_map;
 use function getrandmax;
+use function preg_match;
+use function hexdec;
 
 /**
  * Randomized Image Rotator
@@ -38,7 +40,7 @@ class ImageRotator implements Transformer
      *
      * @var string
      */
-    protected const FILL_COLOR = '#000000';
+    protected const DEFAULT_FILL_COLOR = '#000000';
 
     /**
      * The offset angle in degrees to rotate before applying random jitter.
@@ -64,10 +66,10 @@ class ImageRotator implements Transformer
     /**
      * @param float $offset
      * @param float $jitter
-     * @param ?string $fillColor
+     * @param string $fillColor
      * @throws InvalidArgumentException
      */
-    public function __construct(float $offset = 0.0, float $jitter = 0.2, ?string $fillColor = null)
+    public function __construct(float $offset = 0.0, float $jitter = 0.2, string $fillColor = self::DEFAULT_FILL_COLOR)
     {
         ExtensionIsLoaded::with('gd')->check();
 
@@ -81,9 +83,11 @@ class ImageRotator implements Transformer
                 . " greater than 0, and less than 1 and $jitter given.");
         }
 
+        $fillColor = $this->parseColor($fillColor);
+
         $this->offset = $offset;
         $this->jitter = $jitter;
-        $this->fillColor = $this->parseColor($fillColor ?? self::FILL_COLOR);
+        $this->fillColor = $fillColor;
     }
 
     /**
@@ -194,7 +198,9 @@ class ImageRotator implements Transformer
             $originalWidth = imagesx($image);
             $originalHeight = imagesy($image);
 
-            $rotated = imagerotate($image, $degrees, $this->fillColorFor($image));
+            $fillColor = $this->fillColorFor($image);
+
+            $rotated = imagerotate($image, $degrees, $fillColor);
 
             if ($rotated) {
                 $newHeight = imagesy($rotated);
