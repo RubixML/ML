@@ -328,13 +328,17 @@ class UnlabeledTest extends TestCase
         $total = $this->dataset->numSamples();
         $k = 4;
         $n = (int) floor($total / $k);
+        $r = $total % $k;
         $folds = $this->dataset->fold($k);
 
         $this->assertCount($k, $folds);
-        $this->assertSame($n, $folds[0]->numSamples());
-        $this->assertSame($n, $folds[1]->numSamples());
-        $this->assertSame($n, $folds[2]->numSamples());
-        $this->assertSame($total - 3 * $n, $folds[3]->numSamples());
+
+        // the remainder is spread one per fold from the front rather than
+        // being dumped into the last fold
+        for ($i = 0; $i < $k; ++$i) {
+            $this->assertSame($n + ($i < $r ? 1 : 0), $folds[$i]->numSamples());
+        }
+
         $this->assertSame(
             $total,
             array_sum(array_map(static fn (Unlabeled $fold) => $fold->numSamples(), $folds))

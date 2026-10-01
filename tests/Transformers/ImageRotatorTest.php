@@ -72,12 +72,6 @@ class ImageRotatorTest extends TestCase
             $this->assertSame(80, imagesx($sample[0]));
             $this->assertSame(40, imagesy($sample[0]));
             $this->assertSame('whatever', $sample[1]);
-
-            if ($sample[0] !== $source) {
-                imagedestroy($sample[0]);
-            }
-
-            imagedestroy($source);
         }
     }
 
@@ -99,8 +93,6 @@ class ImageRotatorTest extends TestCase
             $this->assertSame(20, imagesx($sample[0]));
             $this->assertSame(100, imagesy($sample[0]));
             $this->assertSame('whatever', $sample[1]);
-
-            imagedestroy($sample[0]);
         }
     }
 

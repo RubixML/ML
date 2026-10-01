@@ -28,20 +28,20 @@ class ELUTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
+            ], false),
             [
                 [1.0, -0.3934693402873666, 0.0, 20.0, -0.9999546000702375],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
-            ]),
+            ], false),
             [
                 [-0.11307956328284252, 0.31, -0.3873736058155839],
                 [0.99, 0.08, -0.029554466451491845],
@@ -56,28 +56,28 @@ class ELUTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0, -0.3934693402873666, 0.0, 20.0, -0.9999546000702375],
-            ]),
+            ], false),
             [
                 [1.0, 0.6065306597126334, 1.0, 1.0, 4.539992976249074E-5],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [-0.12, 0.31, -0.49],
                 [0.99, 0.08, -0.03],
                 [0.05, -0.52, 0.54],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [-0.11307956328284252, 0.31, -0.3873736058155839],
                 [0.99, 0.08, -0.029554466451491845],
                 [0.05, -0.4054794520298056, 0.54],
-            ]),
+            ], false),
             [
                 [0.8869204367171575, 1.0, 0.6126263941844161],
                 [1.0, 1.0, 0.9704455335485082],

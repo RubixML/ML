@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Hyperplane
@@ -54,6 +56,10 @@ class Hyperplane implements Generator
         float $intercept = 0.0,
         float $noise = 0.1
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if (empty($coefficients)) {
             throw new InvalidArgumentException('Cannot generate samples'
                 . ' with dimensionality less than 1.');
@@ -64,7 +70,7 @@ class Hyperplane implements Generator
                 . " greater than 0, $noise given.");
         }
 
-        $this->coefficients = Vector::quick($coefficients);
+        $this->coefficients = Vector::fromArray($coefficients, false);
         $this->intercept = $intercept;
         $this->noise = $noise;
     }

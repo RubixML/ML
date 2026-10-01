@@ -71,7 +71,7 @@ class Swoole implements Backend
 
         $cores = CPU::cores();
 
-        if (isset($workers) and $workers > $cores) {
+        if (isset($workers, $cores) and $workers > $cores) {
             warn("Number of workers ($workers) exceeds the number of detected physical CPU cores ($cores).");
         }
 
@@ -79,7 +79,7 @@ class Swoole implements Backend
 
         $hasIgbinary = ExtensionIsLoaded::with('igbinary')->passes();
 
-        $this->workers = $workers ?? $cores;
+        $this->workers = $workers ?? $cores ?? 1;
         $this->serialize = $hasIgbinary ? 'igbinary_serialize' : 'serialize';
         $this->unserialize = $hasIgbinary ? 'igbinary_unserialize' : 'unserialize';
     }

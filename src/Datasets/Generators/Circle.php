@@ -6,6 +6,8 @@ use Tensor\Matrix;
 use Tensor\Vector;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function Rubix\ML\array_transpose;
 
@@ -56,6 +58,10 @@ class Circle implements Generator
         float $scale = 1.0,
         float $noise = 0.1
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($scale < 0.0) {
             throw new InvalidArgumentException('Scale must be'
                 . " greater than 0, $scale given.");
@@ -66,7 +72,7 @@ class Circle implements Generator
                 . " greater than 0, $noise given.");
         }
 
-        $this->center = Vector::quick([$x, $y]);
+        $this->center = Vector::fromArray([$x, $y], false);
         $this->scale = $scale;
         $this->noise = $noise;
     }
@@ -101,7 +107,7 @@ class Circle implements Generator
         $noise = Matrix::gaussian($n, 2)
             ->multiply($this->noise);
 
-        $samples = Matrix::quick($coordinates)
+        $samples = Matrix::fromArray($coordinates, false)
             ->multiply($this->scale)
             ->add($this->center)
             ->add($noise)

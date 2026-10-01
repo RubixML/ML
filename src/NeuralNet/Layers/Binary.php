@@ -10,6 +10,8 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Binary
@@ -59,6 +61,10 @@ class Binary implements Output
      */
     public function __construct(ClassificationLoss $costFn)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($costFn instanceof MulticlassCrossEntropy) {
             throw new InvalidArgumentException('Not compatible with multiclass cross entropy.');
         }

@@ -9,8 +9,8 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
-
-use const Rubix\ML\EPSILON;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Multiclass
@@ -55,13 +55,7 @@ class Multiclass implements Output
      */
     protected static function softmax(Matrix $x) : Matrix
     {
-        $z = $x->transpose();
-
-        $z = $z->subtractColumnVector($z->max())->exp();
-
-        $total = $z->sum()->clipLower(EPSILON);
-
-        return $z->divide($total)->transpose();
+        return $x->transpose()->softmax()->transpose();
     }
 
     /**
@@ -71,6 +65,10 @@ class Multiclass implements Output
      */
     public function __construct(int $numClasses, ClassificationLoss $costFn)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($numClasses < 2) {
             throw new InvalidArgumentException('Number of classes'
                 . " must be greater than 1, $numClasses given.");

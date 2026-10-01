@@ -31,10 +31,10 @@ class ParameterTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->param = new Parameter(Matrix::quick([
+        $this->param = new Parameter(Matrix::fromArray([
             [5, 4],
             [-2, 6],
-        ]));
+        ], false));
 
         $this->optimizer = new Stochastic(new Constant());
     }
@@ -54,10 +54,10 @@ class ParameterTest extends TestCase
     #[Test]
     public function accumulateGradient() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = Matrix::fromArray([
             [2, 1],
             [1, -2],
-        ]);
+        ], false);
 
         $this->assertNull($this->param->gradient());
 
@@ -79,10 +79,10 @@ class ParameterTest extends TestCase
     #[Test]
     public function resetGradient() : void
     {
-        $this->param->accumulateGradient(Matrix::quick([
+        $this->param->accumulateGradient(Matrix::fromArray([
             [2, 1],
             [1, -2],
-        ]));
+        ], false));
 
         $this->param->resetGradient();
 
@@ -92,10 +92,10 @@ class ParameterTest extends TestCase
     #[Test]
     public function scaleGradient() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = Matrix::fromArray([
             [2, 1],
             [1, -2],
-        ]);
+        ], false);
 
         $this->param->accumulateGradient($gradient);
         $this->param->accumulateGradient($gradient);
@@ -119,10 +119,10 @@ class ParameterTest extends TestCase
     #[Test]
     public function gradientNorm() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = Matrix::fromArray([
             [2, 1],
             [1, -2],
-        ]);
+        ], false);
 
         $this->param->accumulateGradient($gradient);
 
@@ -132,9 +132,9 @@ class ParameterTest extends TestCase
     #[Test]
     public function gradientNormOfColumnVector() : void
     {
-        $param = new Parameter(ColumnVector::quick([1.0, -2.0, 3.0, 4.0]));
+        $param = new Parameter(ColumnVector::fromArray([1.0, -2.0, 3.0, 4.0], false));
 
-        $param->accumulateGradient(ColumnVector::quick([2.0, 0.0, -4.0, 0.0]));
+        $param->accumulateGradient(ColumnVector::fromArray([2.0, 0.0, -4.0, 0.0], false));
 
         $this->assertEqualsWithDelta(sqrt(20.0), $param->gradientNorm(), 1e-8);
     }
@@ -150,10 +150,10 @@ class ParameterTest extends TestCase
     #[Test]
     public function update() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = Matrix::fromArray([
             [2, 1],
             [1, -2],
-        ]);
+        ], false);
 
         $expected = [
             [4.98, 3.99],
@@ -184,10 +184,10 @@ class ParameterTest extends TestCase
     #[Test]
     public function frozenParameterDoesNotAccumulateGradient() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = Matrix::fromArray([
             [2, 1],
             [1, -2],
-        ]);
+        ], false);
 
         $this->param->freeze();
 
@@ -200,10 +200,10 @@ class ParameterTest extends TestCase
     #[Test]
     public function frozenParameterDoesNotUpdate() : void
     {
-        $gradient = Matrix::quick([
+        $gradient = Matrix::fromArray([
             [2, 1],
             [1, -2],
-        ]);
+        ], false);
 
         $this->param->accumulateGradient($gradient);
 

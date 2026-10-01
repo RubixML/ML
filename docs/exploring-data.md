@@ -50,11 +50,19 @@ $report->toJSON()->saveTo(new Filesystem('report.json'));
 
 ### Describe by Label
 
-You can also describe the dataset in terms of the classes each sample belongs to by calling the `describeByLabel()` method on a Labeled dataset object with categorical labels.
+You can also describe the dataset in terms of the classes each sample belongs to by calling the `describeByClassLabels()` method on a Labeled dataset object with categorical labels.
 
 ```php
-$report = $dataset->describeByLabel();
+$report = $dataset->describeByClassLabels();
 ```
+
+When the label is continuous there is no notion of an exact class to group by. Call `describeByLabelBins()` instead to describe the features broken down by equal frequency bin of the target, which is useful for seeing how each feature's distribution changes across the range of the target.
+
+```php
+$report = $dataset->describeByLabelBins(5);
+```
+
+The report is a list keyed by bin ordinal in ascending order of target value, so the first entry describes the lowest valued samples in the dataset.
 
 ## Visualization
 

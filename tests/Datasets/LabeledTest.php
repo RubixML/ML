@@ -6,16 +6,30 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Transformers\FloatTypeConverter;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Report;
 use Rubix\ML\DataType;
+use Generator;
+use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
+
+use function array_merge;
+use function array_sum;
+use function array_intersect;
+use function array_count_values;
+use function count;
+use function floor;
+use function min;
+use function max;
+use function sort;
 
 use function Rubix\ML\array_transpose;
 
@@ -48,6 +62,29 @@ class LabeledTest extends TestCase
         1, 1, 2, 1, 2, 3,
     ];
 
+    protected const array CONTINUOUS_SAMPLES = [
+        [-4.9], [-3.0], [-1.2], [-0.4], [0.6],
+        [1.1], [2.3], [3.4], [4.0], [4.9],
+        [-3.7], [-2.1], [-0.9], [0.1], [0.9],
+        [1.8], [2.9], [3.7], [4.4], [5.1],
+    ];
+
+    protected const array CONTINUOUS_LABELS = [
+        -4.9, -3.0, -1.2, -0.4, 0.6,
+        1.1, 2.3, 3.4, 4.0, 4.9,
+        -3.7, -2.1, -0.9, 0.1, 0.9,
+        1.8, 2.9, 3.7, 4.4, 5.1,
+    ];
+
+    protected const array REPORT_SAMPLES = [
+        [1.0, 10.0], [2.0, 20.0], [3.0, 30.0], [4.0, 40.0],
+        [5.0, 50.0], [6.0, 60.0], [7.0, 70.0], [8.0, 80.0],
+    ];
+
+    protected const array REPORT_LABELS = [
+        -4.0, -2.0, -1.0, 1.0, 2.0, 4.0, 8.0, 16.0,
+    ];
+
     protected const int RANDOM_SEED = 1;
 
     protected Labeled $dataset;
@@ -55,6 +92,33 @@ class LabeledTest extends TestCase
     protected FloatTypeConverter $transformer;
 
     protected string $originalPrecision;
+
+    public static function stratifiedSplitExactProvider() : Generator
+    {
+        $cases = [
+            [[13, 4, 3], 0.8],
+            [[13, 4, 3], 0.5],
+            [[13, 4, 3], 0.25],
+            [[97, 1, 1, 1], 0.8],
+            [[97, 1, 1, 1], 0.5],
+            [[9, 9, 1], 0.75],
+            [[50, 1], 0.9],
+            [[7, 3, 2], 0.6],
+        ];
+
+        foreach ($cases as $case) {
+            yield $case;
+        }
+    }
+
+    public static function binnedSplitExactProvider() : Generator
+    {
+        foreach ([20, 30, 40, 44, 45, 46, 51, 60, 100] as $n) {
+            foreach ([0.2, 0.3, 0.5, 0.8] as $ratio) {
+                yield [$n, $ratio];
+            }
+        }
+    }
 
     protected function setUp() : void
     {
@@ -402,6 +466,205 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
+    public function stratifiedSplitWithContinuousLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->stratifiedSplit(0.5);
+    }
+
+    #[Test]
+    public function binnedSplit() : void
+    {
+        [$left, $right] = $this->continuousDataset()->binnedSplit(0.8, 4);
+
+        $this->assertInstanceOf(Labeled::class, $left);
+        $this->assertInstanceOf(Labeled::class, $right);
+
+        $this->assertCount(16, $left);
+        $this->assertCount(4, $right);
+    }
+
+    #[Test]
+    public function binnedSplitPreservesDistribution() : void
+    {
+        $dataset = $this->continuousDataset();
+
+        $means = $variances = [];
+
+        for ($trial = 0; $trial < 100; ++$trial) {
+            [$left, $right] = $dataset->randomize()->binnedSplit(0.5, 4);
+
+            foreach ([$left, $right] as $subset) {
+                $means[] = Stats::mean($subset->labels());
+                $variances[] = Stats::variance($subset->labels());
+            }
+        }
+
+        $this->assertEqualsWithDelta(
+            Stats::mean($dataset->labels()),
+            Stats::mean($means),
+            0.15
+        );
+
+        $this->assertEqualsWithDelta(
+            Stats::variance($dataset->labels()),
+            Stats::mean($variances),
+            0.15
+        );
+    }
+
+    #[Test]
+    public function binnedSplitWithInvalidRatio() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->binnedSplit(1.5);
+    }
+
+    #[Test]
+    public function binnedSplitWithCategoricalLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->binnedSplit(0.5);
+    }
+
+    /**
+     * @param list<int> $sizes
+     */
+    #[DataProvider('stratifiedSplitExactProvider')]
+    #[Test]
+    public function stratifiedSplitIsExact(array $sizes, float $ratio) : void
+    {
+        $dataset = $this->imbalancedDataset($sizes);
+
+        [$left, $right] = $dataset->stratifiedSplit($ratio);
+
+        $this->assertEquals(
+            (int) floor($ratio * $dataset->numSamples()),
+            $left->numSamples()
+        );
+
+        $this->assertEquals(
+            $dataset->numSamples(),
+            $left->numSamples() + $right->numSamples()
+        );
+    }
+
+    #[Test]
+    public function stratifiedSplitKeepsClassProportions() : void
+    {
+        $dataset = $this->imbalancedDataset([13, 4, 3]);
+
+        [$left] = $dataset->stratifiedSplit(0.8);
+
+        $counts = array_count_values($left->labels());
+
+        foreach ($dataset->stratifyByClassLabels() as $class => $stratum) {
+            $actual = $counts[$class] ?? 0;
+
+            $this->assertLessThanOrEqual(
+                1,
+                abs($actual - (0.8 * $stratum->numSamples())),
+                "Class $class is not represented proportionally."
+            );
+        }
+    }
+
+    #[DataProvider('binnedSplitExactProvider')]
+    #[Test]
+    public function binnedSplitIsExact(int $n, float $ratio) : void
+    {
+        $dataset = $this->spreadDataset($n);
+
+        [$left, $right] = $dataset->randomize()->binnedSplit($ratio);
+
+        $this->assertEquals((int) floor($ratio * $n), $left->numSamples());
+
+        $this->assertEquals($n, $left->numSamples() + $right->numSamples());
+    }
+
+    #[Test]
+    public function binnedSplitNeverEmptyWhenTargetIsNonZero() : void
+    {
+        foreach (self::binnedSplitExactProvider() as [$n, $ratio]) {
+            if ((int) floor($ratio * $n) < 1) {
+                continue;
+            }
+
+            [$left, $right] = $this->spreadDataset($n)->randomize()->binnedSplit($ratio);
+
+            $this->assertGreaterThan(0, $left->numSamples());
+            $this->assertGreaterThan(0, $right->numSamples());
+        }
+    }
+
+    #[Test]
+    public function binnedSplitEveryBinContributes() : void
+    {
+        $dataset = $this->spreadDataset(20);
+
+        [$left, $right] = $dataset->randomize()->binnedSplit(0.2);
+
+        $this->assertCount(4, $dataset->stratifyByLabelBins(4));
+
+        foreach ($dataset->stratifyByLabelBins(4) as $stratum) {
+            $this->assertNotEmpty(
+                array_intersect($left->labels(), $stratum->labels()),
+                'Left subset does not represent every bin.'
+            );
+
+            $this->assertNotEmpty(
+                array_intersect($right->labels(), $stratum->labels()),
+                'Right subset does not represent every bin.'
+            );
+        }
+    }
+
+    #[Test]
+    public function binnedSplitIsUnbiasedUnderTies() : void
+    {
+        $dataset = $this->spreadDataset(20);
+
+        $means = [];
+
+        for ($trial = 0; $trial < 200; ++$trial) {
+            [$left] = $dataset->randomize()->binnedSplit(0.8);
+
+            $means[] = Stats::mean($left->labels());
+        }
+
+        $this->assertEqualsWithDelta(
+            Stats::mean($dataset->labels()),
+            Stats::mean($means),
+            0.1
+        );
+    }
+
+    #[Test]
+    public function binnedSplitWithConstantLabels() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0]],
+            [7.5, 7.5, 7.5, 7.5]
+        );
+
+        [$left, $right] = $dataset->binnedSplit(0.5);
+
+        $this->assertCount(2, $left);
+        $this->assertCount(2, $right);
+    }
+
+    #[Test]
+    public function binnedSplitEmptyDataset() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        [$left, $right] = Labeled::build()->binnedSplit();
+    }
+
+    #[Test]
     public function fold() : void
     {
         $folds = $this->dataset->fold(2);
@@ -417,17 +680,36 @@ class LabeledTest extends TestCase
         $total = $this->dataset->numSamples();
         $k = 4;
         $n = (int) floor($total / $k);
+        $r = $total % $k;
         $folds = $this->dataset->fold($k);
 
         $this->assertCount($k, $folds);
-        $this->assertSame($n, $folds[0]->numSamples());
-        $this->assertSame($n, $folds[1]->numSamples());
-        $this->assertSame($n, $folds[2]->numSamples());
-        $this->assertSame($total - 3 * $n, $folds[3]->numSamples());
+
+        // the remainder is spread one per fold from the front rather than
+        // being dumped into the last fold
+        for ($i = 0; $i < $k; ++$i) {
+            $this->assertSame($n + ($i < $r ? 1 : 0), $folds[$i]->numSamples());
+        }
+
         $this->assertSame(
             $total,
             array_sum(array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds))
         );
+    }
+
+    #[Test]
+    public function foldSizesDifferByAtMostOne() : void
+    {
+        $k = 10;
+        $n = $this->spreadDataset(143)->numSamples();
+
+        $sizes = [];
+
+        foreach ($this->spreadDataset($n)->fold($k) as $fold) {
+            $sizes[] = $fold->numSamples();
+        }
+
+        $this->assertSame([15, 15, 15, 14, 14, 14, 14, 14, 14, 14], $sizes);
     }
 
     #[Test]
@@ -457,12 +739,220 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
-    public function stratifyByLabel() : void
+    public function stratifiedFoldWithContinuousLabels() : void
     {
-        $strata = $this->dataset->stratifyByLabel();
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->stratifiedFold(2);
+    }
+
+    #[Test]
+    public function stratifiedFoldBalancesFolds() : void
+    {
+        // 13 strata of 11 folded 10 ways used to send the remainder of every
+        // stratum to the last fold, yielding sizes of [13, ..., 13, 26]
+        $dataset = $this->imbalancedDataset(array_fill(0, 13, 11));
+
+        $folds = $dataset->stratifiedFold(10);
+
+        $sizes = array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds);
+
+        $this->assertSame([15, 15, 15, 14, 14, 14, 14, 14, 14, 14], $sizes);
+        $this->assertSame(143, array_sum($sizes));
+
+        // the extra sample must rotate across strata so every fold still
+        // holds one sample of every class
+        foreach ($folds as $fold) {
+            $this->assertCount(13, array_count_values($fold->labels()));
+        }
+    }
+
+    #[Test]
+    public function binnedFold() : void
+    {
+        $folds = $this->continuousDataset()->binnedFold(5, 4);
+
+        $this->assertCount(5, $folds);
+
+        foreach ($folds as $fold) {
+            $this->assertInstanceOf(Labeled::class, $fold);
+            $this->assertCount(4, $fold);
+        }
+
+        $this->assertSame(
+            $this->continuousDataset()->numSamples(),
+            array_sum(array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds))
+        );
+    }
+
+    #[Test]
+    public function binnedFoldCoversEveryBin() : void
+    {
+        $dataset = $this->continuousDataset()->randomize();
+
+        $folds = $dataset->binnedFold(5, 4);
+
+        foreach ($folds as $fold) {
+            // bin 0 spans [-4.9, -1.2] and bin 3 spans [3.7, 5.1] so a fold
+            // holding one sample per bin must reach both extremes
+            $this->assertLessThanOrEqual(-1.2, min($fold->labels()));
+            $this->assertGreaterThanOrEqual(3.7, max($fold->labels()));
+        }
+    }
+
+    #[Test]
+    public function binnedFoldBalancesFolds() : void
+    {
+        // 143 samples in 10 bins of 14 or 15 folded 10 ways used to send the
+        // remainder of every bin to the last fold, yielding [10, ..., 10, 53]
+        $dataset = $this->spreadDataset(143);
+
+        $folds = $dataset->binnedFold(10, 10);
+
+        $sizes = array_map(static fn (Labeled $fold) => $fold->numSamples(), $folds);
+
+        $this->assertSame([15, 15, 15, 14, 14, 14, 14, 14, 14, 14], $sizes);
+        $this->assertSame(143, array_sum($sizes));
+
+        $labels = $dataset->labels();
+
+        sort($labels);
+
+        $bottomEdge = $labels[(int) floor(0.1 * count($labels))];
+        $topEdge = $labels[(int) ceil(0.9 * count($labels)) - 1];
+
+        // rotating the remainder must not cost any fold its share of the
+        // lowest and highest bins
+        foreach ($folds as $fold) {
+            $this->assertLessThanOrEqual($bottomEdge, min($fold->labels()));
+            $this->assertGreaterThanOrEqual($topEdge, max($fold->labels()));
+        }
+    }
+
+    #[Test]
+    public function binnedFoldTooFewFolds() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->binnedFold(1);
+    }
+
+    #[Test]
+    public function binnedFoldTooManyFoldsForSmallestBin() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0]],
+            [0.0, 0.0, 0.0, 5.0]
+        );
+
+        $dataset->binnedFold(2, 4);
+    }
+
+    #[Test]
+    public function binnedFoldEmptyDataset() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        Labeled::build()->binnedFold(5);
+    }
+
+    #[Test]
+    public function stratifyByClassLabels() : void
+    {
+        $strata = $this->dataset->stratifyByClassLabels();
 
         $this->assertCount(2, $strata['monster']);
         $this->assertCount(4, $strata['not monster']);
+    }
+
+    #[Test]
+    public function stratifyByLabelBins() : void
+    {
+        $strata = $this->continuousDataset()->stratifyByLabelBins(4);
+
+        $this->assertCount(4, $strata);
+
+        $labels = [];
+
+        foreach ($strata as $stratum) {
+            $this->assertInstanceOf(Labeled::class, $stratum);
+            $this->assertCount(5, $stratum);
+
+            $labels = array_merge($labels, $stratum->labels());
+        }
+
+        $expected = self::CONTINUOUS_LABELS;
+
+        sort($expected);
+        sort($labels);
+
+        $this->assertEquals($expected, $labels);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsAreContiguous() : void
+    {
+        $max = null;
+
+        foreach ($this->continuousDataset()->stratifyByLabelBins(4) as $stratum) {
+            $min = min($stratum->labels());
+
+            $this->assertGreaterThan($max ?? -INF, $min);
+
+            $max = max($stratum->labels());
+        }
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsDropsEmptyBins() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 9.0]
+        );
+
+        $strata = $dataset->stratifyByLabelBins(5);
+
+        $this->assertCount(2, $strata);
+        $this->assertCount(5, $strata[0]);
+        $this->assertCount(1, $strata[1]);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsClampedToSampleCount() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0]],
+            [1.5, 2.5, 3.5]
+        );
+
+        $this->assertCount(3, $dataset->stratifyByLabelBins(100));
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsTooFewBins() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->stratifyByLabelBins(0);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsWithCategoricalLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->stratifyByLabelBins(4);
+    }
+
+    #[Test]
+    public function stratifyByLabelBinsEmptyDataset() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        Labeled::build()->stratifyByLabelBins(4);
     }
 
     #[Test]
@@ -756,7 +1246,7 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
-    public function describeByLabel() : void
+    public function describeByClassLabels() : void
     {
         $expected = [
             'not monster' => [
@@ -863,10 +1353,283 @@ class LabeledTest extends TestCase
             ],
         ];
 
-        $results = $this->dataset->describeByLabel();
+        $results = $this->dataset->describeByClassLabels();
 
         $this->assertInstanceOf(Report::class, $results);
         $this->assertEquals($expected, $results->toArray());
+    }
+
+    #[Test]
+    public function describeByLabelBins() : void
+    {
+        $expected = [
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 1.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 1.0,
+                    '25%' => 1.25,
+                    'median' => 1.5,
+                    '75%' => 1.75,
+                    'max' => 2.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 15.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 10.0,
+                    '25%' => 12.5,
+                    'median' => 15.0,
+                    '75%' => 17.5,
+                    'max' => 20.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => -3.0,
+                    'variance' => 1.0,
+                    'standard deviation' => 1.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => -4.0,
+                    '25%' => -3.5,
+                    'median' => -3.0,
+                    '75%' => -2.5,
+                    'max' => -2.0,
+                    'range' => 2.0,
+                ],
+            ],
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 3.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 3.0,
+                    '25%' => 3.25,
+                    'median' => 3.5,
+                    '75%' => 3.75,
+                    'max' => 4.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 35.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 30.0,
+                    '25%' => 32.5,
+                    'median' => 35.0,
+                    '75%' => 37.5,
+                    'max' => 40.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => 0.0,
+                    'variance' => 1.0,
+                    'standard deviation' => 1.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => -1.0,
+                    '25%' => -0.5,
+                    'median' => 0.0,
+                    '75%' => 0.5,
+                    'max' => 1.0,
+                    'range' => 2.0,
+                ],
+            ],
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 5.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 5.0,
+                    '25%' => 5.25,
+                    'median' => 5.5,
+                    '75%' => 5.75,
+                    'max' => 6.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 55.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 50.0,
+                    '25%' => 52.5,
+                    'median' => 55.0,
+                    '75%' => 57.5,
+                    'max' => 60.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => 3.0,
+                    'variance' => 1.0,
+                    'standard deviation' => 1.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 2.0,
+                    '25%' => 2.5,
+                    'median' => 3.0,
+                    '75%' => 3.5,
+                    'max' => 4.0,
+                    'range' => 2.0,
+                ],
+            ],
+            [
+                [
+                    'offset' => 0,
+                    'type' => 'continuous',
+                    'mean' => 7.5,
+                    'variance' => 0.25,
+                    'standard deviation' => 0.5,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 7.0,
+                    '25%' => 7.25,
+                    'median' => 7.5,
+                    '75%' => 7.75,
+                    'max' => 8.0,
+                    'range' => 1.0,
+                ],
+                [
+                    'offset' => 1,
+                    'type' => 'continuous',
+                    'mean' => 75.0,
+                    'variance' => 25.0,
+                    'standard deviation' => 5.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 70.0,
+                    '25%' => 72.5,
+                    'median' => 75.0,
+                    '75%' => 77.5,
+                    'max' => 80.0,
+                    'range' => 10.0,
+                ],
+                [
+                    'offset' => 2,
+                    'type' => 'continuous',
+                    'mean' => 12.0,
+                    'variance' => 16.0,
+                    'standard deviation' => 4.0,
+                    'skewness' => 0.0,
+                    'kurtosis' => -2.0,
+                    'min' => 8.0,
+                    '25%' => 10.0,
+                    'median' => 12.0,
+                    '75%' => 14.0,
+                    'max' => 16.0,
+                    'range' => 8.0,
+                ],
+            ],
+        ];
+
+        $results = $this->reportDataset()->describeByLabelBins(4);
+
+        $this->assertInstanceOf(Report::class, $results);
+        $this->assertEquals($expected, $results->toArray());
+    }
+
+    #[Test]
+    public function describeByLabelBinsIsKeyedByBinOrdinal() : void
+    {
+        $results = $this->continuousDataset()->describeByLabelBins(4);
+
+        $this->assertCount(4, $results);
+        $this->assertEquals([0, 1, 2, 3], array_keys($results->toArray()));
+    }
+
+    #[Test]
+    public function describeByLabelBinsDefaultBinCount() : void
+    {
+        $this->assertCount(10, $this->continuousDataset()->describeByLabelBins());
+    }
+
+    #[Test]
+    public function describeByLabelBinsAreOrderedByTarget() : void
+    {
+        $max = null;
+
+        foreach ($this->reportDataset()->describeByLabelBins(4) as $bin) {
+            $label = $bin[count($bin) - 1];
+
+            $this->assertGreaterThan($max ?? -INF, $label['min']);
+
+            $max = $label['max'];
+        }
+    }
+
+    #[Test]
+    public function describeByLabelBinsDropsEmptyBins() : void
+    {
+        $dataset = Labeled::build(
+            [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 9.0]
+        );
+
+        $results = $dataset->describeByLabelBins(5);
+
+        $this->assertCount(2, $results);
+        $this->assertEquals([0, 1], array_keys($results->toArray()));
+    }
+
+    #[Test]
+    public function describeByLabelBinsClampedToSampleCount() : void
+    {
+        $this->assertCount(8, $this->reportDataset()->describeByLabelBins(100));
+    }
+
+    #[Test]
+    public function describeByLabelBinsTooFewBins() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->continuousDataset()->describeByLabelBins(0);
+    }
+
+    #[Test]
+    public function describeByLabelBinsWithCategoricalLabels() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->dataset->describeByLabelBins(4);
+    }
+
+    #[Test]
+    public function describeByLabelBinsEmptyDataset() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        Labeled::build()->describeByLabelBins(4);
     }
 
     #[Test]
@@ -921,5 +1684,57 @@ class LabeledTest extends TestCase
         ];
 
         $this->assertEquals($expected, iterator_to_array($this->dataset));
+    }
+
+    protected function continuousDataset() : Labeled
+    {
+        return Labeled::build(self::CONTINUOUS_SAMPLES, self::CONTINUOUS_LABELS);
+    }
+
+    /**
+     * Build a continuous dataset with n evenly spread target values.
+     * @param int $n
+     */
+    protected function spreadDataset(int $n) : Labeled
+    {
+        $samples = $labels = [];
+
+        for ($i = 0; $i < $n; ++$i) {
+            $samples[] = [(float) $i];
+            $labels[] = ($i * 0.37) + 0.25;
+        }
+
+        return Labeled::build($samples, $labels);
+    }
+
+    /**
+     * Build a report test dataset with known structure.
+     *
+     * @return Labeled
+     */
+    protected function reportDataset() : Labeled
+    {
+        return Labeled::build(self::REPORT_SAMPLES, self::REPORT_LABELS);
+    }
+
+    /**
+     * Build a categorical dataset with one class per given size.
+     *
+     * @param list<int> $sizes
+     */
+    protected function imbalancedDataset(array $sizes) : Labeled
+    {
+        $samples = $labels = [];
+
+        foreach ($sizes as $i => $size) {
+            $label = "class $i";
+
+            for ($j = 0; $j < $size; ++$j) {
+                $samples[] = [(float) $i, (float) $j];
+                $labels[] = $label;
+            }
+        }
+
+        return Labeled::build($samples, $labels);
     }
 }

@@ -26,7 +26,7 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map('tanh');
+        return $x->tanh();
     }
 
     /**
@@ -40,18 +40,7 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $z->map([$this, '_differentiate']);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $z
-     * @return float
-     */
-    public function _differentiate(float $z) : float
-    {
-        return 1.0 - ($z ** 2);
+        return $z->pow(2.0)->negate()->add(1.0);
     }
 
     /**
