@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Leaky ReLU
@@ -35,6 +37,10 @@ class LeakyReLU implements ActivationFunction
      */
     public function __construct(float $leakage = 0.1)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($leakage <= 0.0 or $leakage >= 1.0) {
             throw new InvalidArgumentException('Leakage must be between'
                 . " 0 and 1, $leakage given.");
@@ -53,7 +59,9 @@ class LeakyReLU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map([$this, '_activate']);
+        $xHat = $x->lessEqual(0.0)->multiply($x)->multiplyScalar($this->leakage);
+
+        return $x->greater(0.0)->multiply($x)->add($xHat);
     }
 
     /**
@@ -67,33 +75,9 @@ class LeakyReLU implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->map([$this, '_differentiate']);
-    }
+        $xHat = $x->lessEqual(0.0)->multiplyScalar($this->leakage);
 
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _activate(float $x) : float
-    {
-        return $x > 0.0
-            ? $x
-            : $this->leakage * $x;
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _differentiate(float $x) : float
-    {
-        return $x > 0.0
-            ? 1.0
-            : $this->leakage;
+        return $x->greater(0.0)->add($xHat);
     }
 
     /**

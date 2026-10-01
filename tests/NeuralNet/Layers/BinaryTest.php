@@ -36,9 +36,9 @@ class BinaryTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->x = Matrix::quick([
+        $this->x = Matrix::fromArray([
             [1.0, 2.5, -0.1],
-        ]);
+        ], false);
 
         $this->indices = [[0, 1, 0]];
 
@@ -71,7 +71,7 @@ class BinaryTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back(Matrix::quick($this->indices));
+        [$computation, $loss] = $this->layer->back(Matrix::fromArray($this->indices, false));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);

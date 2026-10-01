@@ -300,7 +300,9 @@ class Unlabeled extends Dataset
 
     /**
      * Fold the dataset k - 1 times to form k datasets of as equal size as
-     * possible. Any remaining samples are added to the last fold.
+     * possible. Any remaining samples are distributed one per fold starting
+     * from the first fold, so no two folds ever differ in size by more than
+     * a single sample.
      *
      * @param int $k
      * @throws InvalidArgumentException
@@ -320,15 +322,16 @@ class Unlabeled extends Dataset
                 . 'to the number of samples.');
         }
 
-        $n = (int) floor($this->numSamples() / $k);
+        $n = intdiv($this->numSamples(), $k);
+        $r = $this->numSamples() % $k;
 
         $folds = [];
 
-        while (count($folds) < $k - 1) {
-            $folds[] = self::quick(array_splice($samples, 0, $n));
-        }
+        for ($j = 0; $j < $k; ++$j) {
+            $count = $n + ($j < $r ? 1 : 0);
 
-        $folds[] = self::quick($samples);
+            $folds[] = self::quick(array_splice($samples, 0, $count));
+        }
 
         return $folds;
     }

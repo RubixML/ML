@@ -404,6 +404,11 @@ class GaussianMixture implements Estimator, Learner, Iterative, Probabilistic, V
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 

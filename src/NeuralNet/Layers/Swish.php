@@ -11,6 +11,8 @@ use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Swish
@@ -75,6 +77,10 @@ class Swish implements Hidden, Parametric
      */
     public function __construct(?Initializer $initializer = null)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->initializer = $initializer ?? new Constant(1.0);
         $this->sigmoid = new Sigmoid();
     }

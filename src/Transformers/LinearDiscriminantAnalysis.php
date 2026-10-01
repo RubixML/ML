@@ -11,7 +11,10 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function array_slice;
 use function array_multisort;
 use function array_sum;
@@ -61,6 +64,15 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
      */
     public function __construct(int $dimensions)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
                 . " greater than 0, $dimensions given.");
@@ -127,17 +139,17 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
 
         $sW = Matrix::zeros($n, $n);
 
-        foreach ($dataset->stratifyByLabel() as $stratum) {
+        foreach ($dataset->stratifyByClassLabels() as $stratum) {
             $prior = $stratum->numSamples() / $m;
 
-            $sW = Matrix::quick($stratum->samples())
+            $sW = Matrix::fromArray($stratum->samples(), false)
                 ->transpose()
                 ->covariance()
                 ->multiply($prior)
                 ->add($sW);
         }
 
-        $eig = Matrix::quick($dataset->samples())
+        $eig = Matrix::fromArray($dataset->samples(), false)
             ->transpose()
             ->covariance()
             ->subtract($sW)
@@ -146,14 +158,15 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
         $eigenvalues = $eig->eigenvalues();
         $eigenvectors = $eig->eigenvectors()->asArray();
 
-        $totalVariance = array_sum($eigenvalues);
+        $totalVariance = $eigenvalues->sum();
 
+        $eigenvalues = $eigenvalues->asArray();
         array_multisort($eigenvalues, SORT_DESC, $eigenvectors);
 
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
+        $eigenvectors = Matrix::fromArray($eigenvectors, false)->transpose();
 
         $noiseVariance = $totalVariance - array_sum($eigenvalues);
         $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
@@ -174,7 +187,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
+        $samples = Matrix::fromArray($samples)
             ->matmul($this->eigenvectors)
             ->asArray();
     }

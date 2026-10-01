@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Helpers;
 
-use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Set;
 
 /**
@@ -22,6 +21,13 @@ class CPU
      * @var literal-string
      */
     protected const WIN_CORES = 'wmic cpu get NumberOfCores';
+
+    /**
+     * The command to return the number of processor cores on macOS and BSD.
+     *
+     * @var literal-string
+     */
+    protected const SYSCTL_CORES = 'sysctl -n hw.physicalcpu';
 
     /**
      * The command to return the number of processor cores on Linux.
@@ -45,28 +51,21 @@ class CPU
     protected static ?float $epsilon = null;
 
     /**
-     * Return the number of physical cpu cores or 0 if unable to detect.
+     * Return the number of physical cpu cores or null if unable to detect.
      *
-     * @throws RuntimeException
-     * @return int
+     * @return int|null
      */
-    public static function cores() : int
+    public static function cores() : ?int
     {
-        switch (true) {
-            case stripos(strtolower(PHP_OS), 'win') === 0:
-                $results = explode("\n", shell_exec(self::WIN_CORES) ?: '');
-
-                return (int) preg_replace('/[^0-9]/', '', $results[1]);
-
-            case is_readable(self::CPU_INFO):
-                $cpuinfo = file_get_contents(self::CPU_INFO) ?: '';
-
-                return self::extractPhysicalCoreCount($cpuinfo);
-
-            default:
-                throw new RuntimeException('Could not detect number'
-                    . ' of processor cores.');
+        if (str_starts_with(strtolower(PHP_OS), 'win')) {
+            return self::windowsCores();
         }
+
+        if (is_readable(self::CPU_INFO)) {
+            return self::extractPhysicalCoreCount(file_get_contents(self::CPU_INFO) ?: '') ?: null;
+        }
+
+        return self::sysctlCores();
     }
 
     /**
@@ -89,6 +88,44 @@ class CPU
         }
 
         return self::$epsilon;
+    }
+
+    /**
+     * Return the number of physical cpu cores reported by the Windows
+     * management instrumentation command or null if unable to detect.
+     *
+     * @return int|null
+     */
+    protected static function windowsCores() : ?int
+    {
+        $results = explode("\n", shell_exec(self::WIN_CORES) ?: '');
+
+        return self::parseCount($results[1] ?? '');
+    }
+
+    /**
+     * Return the number of physical cpu cores reported by the system control
+     * command or null if unable to detect.
+     *
+     * @return int|null
+     */
+    protected static function sysctlCores() : ?int
+    {
+        return self::parseCount(shell_exec(self::SYSCTL_CORES) ?: '');
+    }
+
+    /**
+     * Parse the core count from the output of a shell command or null if the
+     * output does not contain one.
+     *
+     * @param string $output
+     * @return int|null
+     */
+    protected static function parseCount(string $output) : ?int
+    {
+        $count = (int) preg_replace('/[^0-9]/', '', $output);
+
+        return $count > 0 ? $count : null;
     }
 
     /**

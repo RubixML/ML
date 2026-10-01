@@ -367,7 +367,7 @@ class FeedForwardTest extends TestCase
     {
         $this->network->initialize();
 
-        $x = Matrix::quick($this->dataset->samples())->transpose();
+        $x = Matrix::fromArray($this->dataset->samples(), false)->transpose();
 
         $output = $this->network->infer($x);
 
@@ -395,7 +395,7 @@ class FeedForwardTest extends TestCase
 
         $network->initialize();
 
-        $x = Matrix::quick($this->dataset->samples())->transpose();
+        $x = Matrix::fromArray($this->dataset->samples(), false)->transpose();
 
         $forward = $network->feed($x);
 
@@ -483,9 +483,9 @@ class FeedForwardTest extends TestCase
             $expected[$label][$column] = 1.0;
         }
 
-        $network->feed(Matrix::quick($dataset->samples())->transpose());
+        $network->feed(Matrix::fromArray($dataset->samples(), false)->transpose());
 
-        return $network->backpropagate(Matrix::quick($expected));
+        return $network->backpropagate(Matrix::fromArray($expected, false));
     }
 
     /**

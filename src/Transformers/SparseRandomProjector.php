@@ -7,7 +7,10 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function count;
 use function is_null;
 
@@ -51,6 +54,15 @@ class SparseRandomProjector extends GaussianRandomProjector
      */
     public function __construct(int $dimensions, ?float $sparsity = self::TWO_THIRDS)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($sparsity < 0.0 or $sparsity >= 1.0) {
             throw new InvalidArgumentException('Sparsity must be'
                 . " between 0 (inclusive) and 1 (exclusive), $sparsity given.");
@@ -111,7 +123,7 @@ class SparseRandomProjector extends GaussianRandomProjector
             $r[] = $row;
         }
 
-        $this->r = Matrix::quick($r);
+        $this->r = Matrix::fromArray($r, false);
     }
 
     /**

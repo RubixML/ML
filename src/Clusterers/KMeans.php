@@ -348,7 +348,6 @@ class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Ve
 
             foreach ($batches as $i => &$batch) {
                 $samples = $batch->samples();
-
                 $labels = $batch->labels();
 
                 foreach ($samples as $j => $sample) {
@@ -378,7 +377,7 @@ class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Ve
 
                 $batch = Labeled::quick($samples, $labels);
 
-                foreach ($batch->stratifyByLabel() as $cluster => $stratum) {
+                foreach ($batch->stratifyByClassLabels() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
 
                     $means = array_map([Stats::class, 'mean'], $stratum->features());
@@ -416,6 +415,11 @@ class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Ve
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 
