@@ -1,5 +1,10 @@
 # Changelog
 
+- 3.1.0
+    - Added K-medoids clusterer
+    - Added `ARFF` and `Shuffler` extractors
+    - Added `Ramp` and `Cosine` learning rate Schedulers
+
 - 3.0.0
     - Integers are now considered a categorical data type
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
