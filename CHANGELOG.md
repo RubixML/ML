@@ -66,7 +66,8 @@
     - Added `binnedSplit()`, `binnedFold()`, and `stratifyByLabelBins()`
     - `stratifiedSplit()` and `stratifiedFold()` now throw on continuous labels
     - Validators and regressors now stratify continuous labels by bin
-    - Image Rotator default jitter now 0.2
+    - Image Rotator `offset` is now optional and default `jitter` is 0.2
+    - Added `fillColor` parameter to Image Rotator
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
