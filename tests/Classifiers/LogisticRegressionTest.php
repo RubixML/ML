@@ -98,6 +98,33 @@ class LogisticRegressionTest extends TestCase
     }
 
     #[Test]
+    public function windowDisabled() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new LogisticRegression(
+            batchSize: 100,
+            optimizer: new Adam(new Constant(0.01)),
+            l2Penalty: 1e-4,
+            epochs: 10,
+            minChange: 1e-12,
+            evalInterval: 1,
+            window: 0,
+            holdOut: 0.1,
+            costFn: new BinaryCrossEntropy(),
+            metric: new FBeta()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TEST_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+    }
+
+    #[Test]
     public function progressContract() : void
     {
         $this->assertSame([], iterator_to_array($this->estimator->progress(), false));

@@ -86,11 +86,11 @@ continuous
 Group samples by their class label and return them in their own dataset.
 
 ```php
-public stratifyByLabel() : array
+public stratifyByClassLabels() : array
 ```
 
 ```php
-$strata = $dataset->stratifyByLabel();
+$strata = $dataset->stratifyByClassLabels();
 ```
 
 Split the dataset into left and right subsets such that the proportions of class labels remain intact.
@@ -115,6 +115,43 @@ public stratifiedFold($k = 10) : array
 ```php
 $folds = $dataset->stratifiedFold(3);
 ```
+
+#### Binned Stratification
+
+The methods above group samples by *exact* label equality, which is only meaningful for categorical labels. When the label is continuous, use the binned variants instead. They derive a set of equal frequency bins from the quantiles of the label and then stratify over those bins, which preserves the shape of the target distribution in every subset.
+
+Group samples into equal frequency bins by their continuous label and return them in their own dataset.
+
+```php
+public stratifyByLabelBins($bins = 10) : array
+```
+
+```php
+$strata = $dataset->stratifyByLabelBins(5);
+```
+
+Split the dataset into left and right subsets such that the distribution of the continuous label remains intact.
+
+```php
+public binnedSplit($ratio = 0.5, $bins = 10) : array
+```
+
+```php
+[$training, $testing] = $dataset->binnedSplit(0.8);
+```
+
+Return *k* equal size subsets of the dataset such that the label distribution remains intact.
+
+```php
+public binnedFold($k = 10, $bins = 10) : array
+```
+
+```php
+$folds = $dataset->binnedFold(5);
+```
+
+!!! note
+    Unlike the categorical methods, `binnedSplit()` and `binnedFold()` take a bin count. More bins can provide a tighter match to the target distribution, but require enough samples in each split or fold to represent every bin. To guarantee this, `binnedSplit()` automatically reduces the bin count to `floor(numSamples() / ceil(1 / $ratio))` so the smaller subset can still draw at least one sample from every bin.
 
 ### Transform Labels
 
@@ -142,11 +179,11 @@ $dataset->transformLabels(function ($label) {
 Describe the features of the dataset broken down by categorical label.
 
 ```php
-public describeByLabel() : Report
+public describeByClassLabels() : Report
 ```
 
 ```php
-echo $dataset->describeByLabel();
+echo $dataset->describeByClassLabels();
 ```
 
 ```json
@@ -198,3 +235,87 @@ echo $dataset->describeByLabel();
     ]
 }
 ```
+
+#### Binned Description
+
+`describeByClassLabels()` groups samples by *exact* label equality, which is only meaningful for categorical labels. When the label is continuous, use `describeByLabelBins()` to describe the features of the dataset broken down by equal frequency bin of the target. Bin edges are derived from the quantiles of the label in the same way as [Binned Stratification](#binned-stratification), so each bin's statistics describe a narrow horizontal slice of the target distribution.
+
+```php
+public describeByLabelBins($bins = 10) : Report
+```
+
+```php
+echo $dataset->describeByLabelBins(2);
+```
+
+```json
+[
+    [
+        {
+            "offset": 0,
+            "type": "continuous",
+            "mean": 2.5,
+            "variance": 1.25,
+            "standard deviation": 1.118033988749895,
+            "skewness": 0,
+            "kurtosis": -1.36,
+            "min": 1,
+            "25%": 1.75,
+            "median": 2.5,
+            "75%": 3.25,
+            "max": 4,
+            "range": 3
+        },
+        {
+            "offset": 2,
+            "type": "continuous",
+            "mean": -1.5,
+            "variance": 3.25,
+            "standard deviation": 1.8027756377319946,
+            "skewness": 0,
+            "kurtosis": -1.1479289940828403,
+            "min": -4,
+            "25%": -2.5,
+            "median": -1.5,
+            "75%": -0.5,
+            "max": 1,
+            "range": 5
+        }
+    ],
+    [
+        {
+            "offset": 0,
+            "type": "continuous",
+            "mean": 6.5,
+            "variance": 1.25,
+            "standard deviation": 1.118033988749895,
+            "skewness": 0,
+            "kurtosis": -1.36,
+            "min": 5,
+            "25%": 5.75,
+            "median": 6.5,
+            "75%": 7.25,
+            "max": 8,
+            "range": 3
+        },
+        {
+            "offset": 2,
+            "type": "continuous",
+            "mean": 7.5,
+            "variance": 28.75,
+            "standard deviation": 5.361902647381804,
+            "skewness": 0.6568077344996993,
+            "kurtosis": -1.0989792060491494,
+            "min": 2,
+            "25%": 3.5,
+            "median": 6,
+            "75%": 10,
+            "max": 16,
+            "range": 14
+        }
+    ]
+]
+```
+
+!!! note
+    Unlike `describeByClassLabels()`, which is keyed by class name, the report returned by `describeByLabelBins()` is a list keyed by bin ordinal in ascending order of target value. Bin 0 holds the lowest valued samples and the last key holds the highest. As with `describe()`, the label itself is included as the last column of every bin.

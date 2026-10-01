@@ -67,11 +67,9 @@ class KFold implements Validator, Parallel
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
-        $dataset->randomize();
-
         $folds = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedFold($this->k)
-            : $dataset->fold($this->k);
+            : $dataset->binnedFold($this->k);
 
         $this->backend->flush();
 

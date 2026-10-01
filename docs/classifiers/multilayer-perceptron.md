@@ -23,7 +23,7 @@ A multiclass feed-forward neural network classifier with user-defined hidden lay
 | 6 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 7 | minChange | 1e-5 | float | The minimum change in the training loss necessary to continue training. |
 | 8 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the holdout set. |
-| 9 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. |
+| 9 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. Set to 0 to disable early stopping. |
 | 10 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
 | 11 | costFn | MulticlassCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
 | 12 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |

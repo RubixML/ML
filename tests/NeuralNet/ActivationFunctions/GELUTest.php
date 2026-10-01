@@ -27,19 +27,19 @@ class GELUTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
+            ], false),
             [
                 [0.841191990607477, -0.15428599017516514, 0.0, 20.0, -0.0],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
                 [2.0, 0.5, 0.00001, -20.0, 1.0],
-            ]),
+            ], false),
             [
                 [0.841191990607477, -0.15428599017516514, 0.0, 20.0, -0.0],
                 [1.9545976940871754, 0.34571400982483486, 5.0000398942280396E-6, 0.0, 0.841191990607477],
@@ -53,12 +53,12 @@ class GELUTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [1.0, -0.5, 0.0, 20.0, -10.0],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [0.7310585786300049, -0.1887703343990727, 0.0, 19.999999958776925, -0.00045397868702434395],
-            ]),
+            ], false),
             [
                 [1.082963928002244, 0.13263021771495387, 0.5, 1.0, 0.0],
             ],
