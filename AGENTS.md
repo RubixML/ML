@@ -52,7 +52,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 
 - **Classifiers** (15): AdaBoost, RandomForest, SVC, LogisticRegression, MLP, KNN, NaiveBayes, etc.
 - **Regressors** (10): GradientBoost, Ridge, SVR, RegressionTree, Adaline, KNNRegressor, etc.
-- **Clusterers** (5): KMeans, DBSCAN, GaussianMixture, MeanShift, FuzzyCMeans
+- **Clusterers** (6): KMeans, KMedoids, DBSCAN, GaussianMixture, MeanShift, FuzzyCMeans
 - **Anomaly Detectors** (7): IsolationForest, LOF, OneClassSVM, GaussianMLE, Loda, RobustZScore
 
 ## Coding Conventions
