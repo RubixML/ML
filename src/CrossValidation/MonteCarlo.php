@@ -4,11 +4,9 @@ namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
-use Rubix\ML\Estimator;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Backends\Tasks\TrainAndValidate;
@@ -89,16 +87,16 @@ class MonteCarlo implements Validator, Parallel
                 . " hold out ratio of {$this->ratio}.");
         }
 
-        $stratify = $dataset->labelType()->isCategorical();
+        $isCategorical = $dataset->labelType()->isCategorical();
 
         $this->backend->flush();
 
         for ($i = 0; $i < $this->simulations; ++$i) {
             $dataset->randomize();
 
-            [$testing, $training] = $stratify
+            [$testing, $training] = $isCategorical
                 ? $dataset->stratifiedSplit($this->ratio)
-                : $dataset->split($this->ratio);
+                : $dataset->binnedSplit($this->ratio);
 
             $this->backend->enqueue(
                 new TrainAndValidate($estimator, $training, $testing, $metric)

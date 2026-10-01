@@ -19,6 +19,7 @@ namespace Rubix\ML
     use function log1p;
     use function max;
     use function trigger_error;
+    use function crc32;
 
     /**
      * Compute the argmin of the given values.
@@ -351,6 +352,16 @@ namespace Rubix\ML
      */
     function warn(string $message) : void
     {
+        static $emitted = [];
+
+        $hash = crc32($message);
+
+        if (isset($emitted[$hash])) {
+            return;
+        }
+
+        $emitted[$hash] = true;
+
         trigger_error($message, E_USER_WARNING);
     }
 
@@ -363,6 +374,16 @@ namespace Rubix\ML
      */
     function warn_deprecated(string $message) : void
     {
+        static $emitted = [];
+
+        $hash = crc32($message);
+
+        if (isset($emitted[$hash])) {
+            return;
+        }
+
+        $emitted[$hash] = true;
+
         trigger_error($message, E_USER_DEPRECATED);
     }
 }

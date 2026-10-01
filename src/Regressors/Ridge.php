@@ -21,7 +21,10 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function is_null;
 
 /**
@@ -66,6 +69,15 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
      */
     public function __construct(float $l2Penalty = 1.0)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($l2Penalty < 0.0) {
             throw new InvalidArgumentException('L2 Penalty must be'
                 . " greater than 0, $l2Penalty given.");
@@ -160,8 +172,8 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         $biases = Matrix::ones($dataset->numSamples(), 1);
 
-        $x = Matrix::build($dataset->samples())->augmentLeft($biases);
-        $y = Vector::build($dataset->labels());
+        $x = Matrix::fromArray($dataset->samples())->augmentLeft($biases);
+        $y = Vector::fromArray($dataset->labels());
 
         /** @var int<0,max> $nHat */
         $nHat = $x->n() - 1;
@@ -181,7 +193,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
             ->asArray();
 
         $this->bias = (float) array_shift($coefficients);
-        $this->coefficients = Vector::quick($coefficients);
+        $this->coefficients = Vector::fromArray($coefficients, false);
     }
 
     /**
@@ -199,7 +211,7 @@ class Ridge implements Estimator, Learner, RanksFeatures, Persistable
 
         DatasetHasDimensionality::with($dataset, count($this->coefficients))->check();
 
-        return Matrix::build($dataset->samples())
+        return Matrix::fromArray($dataset->samples())
             ->dot($this->coefficients)
             ->add($this->bias)
             ->asArray();

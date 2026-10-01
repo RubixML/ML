@@ -98,6 +98,32 @@ class GradientBoostTest extends TestCase
     }
 
     #[Test]
+    public function windowDisabled() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new GradientBoost(
+            booster: new RegressionTree(maxHeight: 3),
+            rate: 0.1,
+            ratio: 0.3,
+            epochs: 10,
+            minChange: 1e-12,
+            evalInterval: 1,
+            window: 0,
+            holdOut: 0.1,
+            metric: new RMSE()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TEST_SIZE);
+
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+    }
+
+    #[Test]
     #[TestDox('Throws when booster is incompatible')]
     public function incompatibleBooster() : void
     {

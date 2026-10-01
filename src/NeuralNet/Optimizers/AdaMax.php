@@ -4,10 +4,10 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\Exceptions\RuntimeException;
-use Tensor\Vector;
-use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use const Rubix\ML\EPSILON;
 
@@ -34,25 +34,7 @@ class AdaMax extends Adam
      */
     protected static function maximum(Tensor $a, Tensor $b) : Tensor
     {
-        if ($a instanceof Matrix and $b instanceof Matrix) {
-            $c = [];
-
-            foreach ($a as $i => $valueA) {
-                $c[] = static::maximum($valueA, $b[$i])->asArray();
-            }
-
-            return Matrix::quick($c);
-        }
-
-        $bHat = $b->asArray();
-
-        $c = [];
-
-        foreach ($a as $i => $valueA) {
-            $c[] = (float) max($valueA, $bHat[$i]);
-        }
-
-        return Vector::quick($c);
+        return $a->add($b->subtract($a)->clipLower(0.0));
     }
 
     /**
@@ -62,6 +44,10 @@ class AdaMax extends Adam
      */
     public function __construct(Scheduler $scheduler, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         parent::__construct($scheduler, $momentumDecay, $normDecay);
     }
 
@@ -81,7 +67,7 @@ class AdaMax extends Adam
         [$velocity, $norm] = $this->cache[$param->id()];
 
         $vHat = $param->gradient()->subtract($velocity)
-            ->multiply($this->momentumDecay);
+            ->multiplyScalar($this->momentumDecay);
 
         $velocity = $velocity->add($vHat);
 

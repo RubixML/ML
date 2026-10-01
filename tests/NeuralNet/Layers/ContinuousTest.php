@@ -36,9 +36,9 @@ class ContinuousTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->x = Matrix::quick([
+        $this->x = Matrix::fromArray([
             [2.5, 0.0, -6.0],
-        ]);
+        ], false);
 
         $this->labels = [[0.0, -2.5, 90]];
 
@@ -71,7 +71,7 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back(Matrix::quick($this->labels));
+        [$computation, $loss] = $this->layer->back(Matrix::fromArray($this->labels, false));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);

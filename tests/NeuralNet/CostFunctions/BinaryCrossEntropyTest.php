@@ -24,44 +24,44 @@ class BinaryCrossEntropyTest extends TestCase
     public static function computeProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             0.0100503,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.7],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             0.3566749,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.01],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             4.6051702,
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.9],
                 [0.1],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
                 [0.0],
-            ]),
+            ], false),
             0.1053605,
         ];
     }
@@ -69,50 +69,50 @@ class BinaryCrossEntropyTest extends TestCase
     public static function differentiateProvider() : Generator
     {
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.99],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             [
                 [-1.0101010],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.7],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             [
                 [-1.4285714],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.01],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
-            ]),
+            ], false),
             [
                 [-100.0],
             ],
         ];
 
         yield [
-            Matrix::quick([
+            Matrix::fromArray([
                 [0.9],
                 [0.1],
-            ]),
-            Matrix::quick([
+            ], false),
+            Matrix::fromArray([
                 [1.0],
                 [0.0],
-            ]),
+            ], false),
             [
                 [-1.1111111],
                 [1.1111111],
@@ -138,8 +138,8 @@ class BinaryCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
-        $target = Matrix::quick([[1.0, 2.0]]);
+        $output = Matrix::fromArray([[1.0, 2.0, 3.0]], false);
+        $target = Matrix::fromArray([[1.0, 2.0]], false);
 
         $this->costFn->compute($output, $target);
     }
@@ -151,8 +151,8 @@ class BinaryCrossEntropyTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Output and target must have the same shape.');
 
-        $output = Matrix::quick([[1.0, 2.0, 3.0]]);
-        $target = Matrix::quick([[1.0, 2.0]]);
+        $output = Matrix::fromArray([[1.0, 2.0, 3.0]], false);
+        $target = Matrix::fromArray([[1.0, 2.0]], false);
 
         $this->costFn->differentiate($output, $target);
     }

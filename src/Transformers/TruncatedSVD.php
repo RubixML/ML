@@ -10,7 +10,10 @@ use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function array_slice;
 use function array_sum;
 
@@ -61,6 +64,15 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
      */
     public function __construct(int $dimensions)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
                 . " greater than 0, $dimensions given.");
@@ -113,17 +125,17 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $svd = Matrix::build($dataset->samples())->svd();
+        $svd = Matrix::fromArray($dataset->samples())->svd();
 
         $singularValues = $svd->singularValues();
         $components = $svd->vT()->asArray();
 
-        $totalStdDev = array_sum($singularValues);
+        $totalStdDev = $singularValues->sum();
 
-        $singularValues = array_slice($singularValues, 0, $this->dimensions);
+        $singularValues = array_slice($singularValues->asArray(), 0, $this->dimensions);
         $components = array_slice($components, 0, $this->dimensions);
 
-        $components = Matrix::quick($components)->transpose();
+        $components = Matrix::fromArray($components, false)->transpose();
 
         $noiseStdDev = $totalStdDev - array_sum($singularValues);
         $lossiness = $noiseStdDev / ($totalStdDev ?: EPSILON);
@@ -144,7 +156,7 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
+        $samples = Matrix::fromArray($samples)
             ->matmul($this->components)
             ->asArray();
     }

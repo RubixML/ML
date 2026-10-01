@@ -51,11 +51,11 @@ class Amp implements Backend
 
         $cores = CPU::cores();
 
-        if (isset($workers) and $workers > $cores) {
+        if (isset($workers, $cores) and $workers > $cores) {
             warn("Number of workers ($workers) exceeds the number of detected physical CPU cores ($cores).");
         }
 
-        $this->pool = new ContextWorkerPool($workers ?? $cores);
+        $this->pool = new ContextWorkerPool($workers ?? $cores ?? 1);
     }
 
     /**
