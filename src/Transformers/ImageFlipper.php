@@ -143,7 +143,6 @@ class ImageFlipper implements Transformer
      *
      * @internal
      *
-     * @param float $probability
      * @param float $p
      * @return bool
      */
