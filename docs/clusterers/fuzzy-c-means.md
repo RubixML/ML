@@ -2,7 +2,7 @@
 
 # Fuzzy C Means
 
-A distance-based soft-clustering algorithm that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the fuzz hyper-parameter. Like [K Means](k-means.md), Fuzzy C Means minimizes the inertia cost function, however, unlike K Means, FCM uses a batch solver that requires the entire training set to compute the update to the cluster centroids at each step.
+A distance-based soft-clustering algorithm that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the fuzz hyper-parameter. Like [K Means](k-means.md), Fuzzy C Means minimizes the inertia cost function, however, unlike K Means, FCM uses a batch solver that requires the entire training set to compute the update to the cluster centroids at each step. Inertia is defined as the average of the fuzzy objective function Σᵢ Σₖ uᵢₖᵐ ‖xᵢ - cₖ‖² where uᵢₖ is the membership of sample i in cluster k and m is the fuzz factor.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -37,7 +37,7 @@ Return the *c* computed centroids of the training set.
 public centroids() : array[]
 ```
 
-Returns the inertia at each epoch from the last round of training.
+Returns the inertia at each epoch from the last round of training. The inertia decreases monotonically with each epoch until the algorithm converges.
 
 ```php
 public losses() : float[]|null
