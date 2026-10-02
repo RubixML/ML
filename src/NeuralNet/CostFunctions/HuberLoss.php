@@ -92,10 +92,11 @@ class HuberLoss implements RegressionLoss
         $beta = $z->subtract($y);
 
         return $beta->square()
-            ->add($this->alpha2)
-            ->pow(-0.5)
+            ->addScalar($this->alpha2)
+            ->sqrt()
+            ->reciprocal()
             ->multiply($beta)
-            ->multiply($this->alpha);
+            ->multiplyScalar($this->alpha);
     }
 
     /**

@@ -614,7 +614,7 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         $base = $distances->divide($this->dofs)->add(1.0);
 
-        $weights = $base->pow(-1.0);
+        $weights = $base->reciprocal();
 
         $q = $this->q($distances);
 

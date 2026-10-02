@@ -41,11 +41,13 @@ class GELU implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        $inner = $x->add($x->pow(3.0)->multiply(self::BETA))
-            ->multiply(self::ALPHA);
+        $x3 = $x->square()->multiply($x);
+
+        $inner = $x->add($x3->multiply(self::BETA))
+            ->multiplyScalar(self::ALPHA);
 
         return $x->multiply($inner->tanh()->add(1.0))
-            ->multiply(0.5);
+            ->multiplyScalar(0.5);
     }
 
     /**
@@ -59,17 +61,17 @@ class GELU implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        $xHat = $x->pow(3.0);
+        $x3 = $x->square()->multiply($x);
 
-        $alpha = $xHat->multiply(0.0356774)->add($x->multiply(self::ALPHA));
-        $beta = $xHat->multiply(0.0535161)->add($x->multiply(0.398942));
+        $alpha = $x3->multiply(0.0356774)->add($x->multiply(self::ALPHA));
+        $beta = $x3->multiply(0.0535161)->add($x->multiply(0.398942));
 
         $tanhA = $alpha->tanh();
-        $sech2A = $tanhA->pow(2.0)->negate()->add(1.0);
+        $sech2A = $tanhA->square()->negate()->add(1.0);
 
         return $tanhA->multiply(0.5)
             ->add($beta->multiply($sech2A))
-            ->add(0.5);
+            ->addScalar(0.5);
     }
 
     /**
