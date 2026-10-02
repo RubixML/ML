@@ -226,9 +226,9 @@ class GridSearchTest extends TestCase
         $metric = new FBeta();
 
         $expectedBest = [
-            'k' => '10',
+            'k' => '5',
             'weighted' => 'true',
-            'kernel' => 'Manhattan',
+            'kernel' => 'Euclidean',
         ];
 
         $first = $rows[0];
@@ -274,9 +274,9 @@ class GridSearchTest extends TestCase
         [$bestParams, $bestScore] = $this->estimator->best();
 
         $expectedParams = [
-            'k' => '10',
+            'k' => '5',
             'weighted' => 'true',
-            'kernel' => 'Manhattan',
+            'kernel' => 'Euclidean',
         ];
 
         $this->assertSame($expectedParams, $bestParams);
@@ -314,9 +314,9 @@ class GridSearchTest extends TestCase
         $this->assertTrue($estimator->trained());
 
         $expectedBest = [
-            'k' => 10,
+            'k' => 5,
             'weighted' => true,
-            'kernel' => new Manhattan(),
+            'kernel' => new Euclidean(),
         ];
 
         $this->assertEquals($expectedBest, $estimator->base()->params());
@@ -324,9 +324,9 @@ class GridSearchTest extends TestCase
         $rows = iterator_to_array($estimator->results());
 
         $expectedFirst = [
-            'k' => '10',
+            'k' => '5',
             'weighted' => 'true',
-            'kernel' => 'Manhattan',
+            'kernel' => 'Euclidean',
         ];
 
         foreach ($expectedFirst as $key => $value) {

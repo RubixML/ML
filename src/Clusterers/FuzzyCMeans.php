@@ -45,7 +45,9 @@ use const Rubix\ML\EPSILON;
  * clusters if they fall within a *fuzzy* region controlled by the fuzz parameter. Like
  * K Means, Fuzzy C Means minimizes the inertia cost function, however, unlike K Means,
  * FCM uses a batch solver that requires the entire dataset to compute the update to the
- * cluster centroids at each iteration.
+ * cluster centroids at each iteration. Inertia is defined as the average of the fuzzy
+ * objective function Σᵢ Σₖ uᵢₖᵐ ‖xᵢ - cₖ‖² where uᵢₖ is the membership of sample i in
+ * cluster k and m is the fuzz factor.
  *
  * References:
  * [1] J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
@@ -328,9 +330,9 @@ class FuzzyCMeans implements Estimator, Learner, Iterative, Probabilistic, Verbo
                 foreach ($weights as $cluster => $weight) {
                     $membership = $weight * $invSigma;
 
-                    $loss += $membership * $row[$cluster];
-
                     $membershipWeight = $membership ** $this->fuzz;
+
+                    $loss += $membershipWeight * ($row[$cluster] ** 2);
 
                     $totals[$cluster] += $membershipWeight;
 

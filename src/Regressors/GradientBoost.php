@@ -404,6 +404,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEvals = 0;
+        $bestSize = 0;
         $score = null;
         $prevLoss = INF;
 
@@ -456,6 +457,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestEpoch = $epoch;
+                    $bestSize = count($this->ensemble);
 
                     $numWorseEvals = 0;
                 } else {
@@ -510,7 +512,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
             $lastScore = $this->scores[array_key_last($this->scores)];
 
             if ($lastScore <= $bestScore) {
-                $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
+                $this->ensemble = array_slice($this->ensemble, 0, $bestSize);
 
                 if ($this->logger) {
                     $this->logger->info("Ensemble state restored to epoch $bestEpoch");

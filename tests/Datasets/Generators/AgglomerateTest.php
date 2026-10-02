@@ -55,4 +55,39 @@ class AgglomerateTest extends TestCase
         $this->assertCount(self::DATASET_SIZE, $dataset);
         $this->assertEquals(['one', 'two'], $dataset->possibleOutcomes());
     }
+
+    #[Test]
+    public function generateExactCountForOddSizes() : void
+    {
+        foreach ([3, 7, 10, 11, 13, 17, 19, 20, 50] as $n) {
+            $dataset = $this->generator->generate($n);
+
+            $this->assertSame($n, $dataset->numSamples(), "n = $n");
+            $this->assertEquals(['one', 'two'], $dataset->possibleOutcomes());
+        }
+    }
+
+    #[Test]
+    public function generateExactCountWithThreeGenerators() : void
+    {
+        $agglomerate = new Agglomerate(
+            generators: [
+                'one' => new Blob(center: [-5.0, 3.0], stdDev: 0.2),
+                'two' => new Blob(center: [5.0, -3.0], stdDev: 0.2),
+                'three' => new Blob(center: [0.0, 0.0], stdDev: 0.2),
+            ]
+        );
+
+        $validLabels = ['one', 'two', 'three'];
+
+        foreach ([1, 2, 4, 6, 7, 10, 11, 17] as $n) {
+            $dataset = $agglomerate->generate($n);
+
+            $this->assertSame($n, $dataset->numSamples(), "n = $n");
+
+            foreach ($dataset->possibleOutcomes() as $label) {
+                $this->assertContains($label, $validLabels, "n = $n");
+            }
+        }
+    }
 }

@@ -11,8 +11,10 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\Tuple;
 use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\DataType;
@@ -331,5 +333,74 @@ class GradientBoostTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
+    }
+
+    #[Test]
+    public function earlyStoppingRestoresBestScoringEnsembleState() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator = new GradientBoost(
+            booster: new RegressionTree(maxHeight: 3),
+            rate: 0.5,
+            ratio: 0.5,
+            epochs: 5,
+            minChange: 0.0,
+            evalInterval: 1,
+            window: 0,
+            holdOut: 0.1,
+            metric: new ScriptedMetric([0.5, 0.9, 0.7, 0.6, 0.55])
+        );
+
+        $estimator->train($training);
+
+        $scores = $estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertSame([1, 2, 3, 4, 5], array_keys($scores));
+
+        $bestEpoch = array_search(max($scores), $scores);
+
+        $this->assertSame(2, $bestEpoch);
+
+        $ensemble = $estimator->__serialize()['ensemble'];
+
+        $this->assertCount($bestEpoch - 1, $ensemble);
+    }
+}
+
+class ScriptedMetric implements Metric
+{
+    /**
+     * @var float[]
+     */
+    private array $scores;
+
+    /**
+     * @param float[] $scores
+     */
+    public function __construct(array $scores)
+    {
+        $this->scores = $scores;
+    }
+
+    public function range() : Tuple
+    {
+        return new Tuple(-INF, 1.0);
+    }
+
+    public function compatibility() : array
+    {
+        return [EstimatorType::regressor()];
+    }
+
+    public function score(array $predictions, array $labels) : float
+    {
+        return array_shift($this->scores) ?? 0.0;
+    }
+
+    public function __toString() : string
+    {
+        return 'Scripted Metric';
     }
 }

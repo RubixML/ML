@@ -213,6 +213,8 @@ class BM25Transformer implements Transformer, Stateful, Elastic
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
+        $numerator = 1.0 + $this->dampening;
+
         foreach ($samples as &$sample) {
             $delta = array_sum($sample) / $this->averageDocumentLength;
 
@@ -224,6 +226,7 @@ class BM25Transformer implements Transformer, Stateful, Elastic
                 if ($tf > 0) {
                     $tf /= $tf + $delta;
                     $tf *= $this->idfs[$column];
+                    $tf *= $numerator;
                 }
             }
         }

@@ -290,7 +290,7 @@ foreach ($estimator->steps() as $epoch) { /* ... */ }
 foreach ($estimator->progress() as $epoch) { /* ... */ }
 ```
 
-The returned table is now also described by the [Iterative](iterative.md) interface, which the `progress()` method implements. See [item 48](#48-grid-search-results-table) for the new results() table.
+The returned table is now also described by the [Iterative](iterative.md) interface, which the `progress()` method implements. See [item 49](#49-grid-search-results-table) for the new results() table.
 
 ### 16. DBSCAN is now a Learner, Probabilistic, and Persistable
 
@@ -338,7 +338,7 @@ $strata = $dataset->stratifyByClassLabels();
 $report = $dataset->describeByClassLabels();
 ```
 
-`stratifyByClassLabels()`, `stratifiedSplit()`, and `stratifiedFold()` all throw an `InvalidArgumentException` when the label is continuous. In 2.0 they grouped samples by *exact* label equality, which is meaningless for a float target — every distinct value became its own stratum, or the whole target collapsed into a single stratum when all values repeated. Rather than silently produce a meaningless "stratification", 3.0 refuses the call and directs you to the binned variants described in [item 49](#49-binned-stratification-for-continuous-labels):
+`stratifyByClassLabels()`, `stratifiedSplit()`, and `stratifiedFold()` all throw an `InvalidArgumentException` when the label is continuous. In 2.0 they grouped samples by *exact* label equality, which is meaningless for a float target — every distinct value became its own stratum, or the whole target collapsed into a single stratum when all values repeated. Rather than silently produce a meaningless "stratification", 3.0 refuses the call and directs you to the binned variants described in [item 50](#50-binned-stratification-for-continuous-labels):
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -352,7 +352,7 @@ $dataset->binnedSplit(0.8);       // 3.0 - stratify over equal frequency bins
 ```
 
 !!! note
-    Only datasets with a *continuous* target are affected — in practice, regression datasets. Classifiers, clusterers (whose cluster labels are integers, and therefore [categorical](representing-your-data.md) — see [item 1](#1-integers-are-now-a-categorical-data-type)), and any other learner with categorical labels are unaffected and continue to use `stratifiedSplit()` and `stratifiedFold()` as before. The [Validators](cross-validation.md) dispatch on the label type for you (see [item 50](#50-validators-and-regressors-now-stratify-continuous-labels-by-bin)).
+    Only datasets with a *continuous* target are affected — in practice, regression datasets. Classifiers, clusterers (whose cluster labels are integers, and therefore [categorical](representing-your-data.md) — see [item 1](#1-integers-are-now-a-categorical-data-type)), and any other learner with categorical labels are unaffected and continue to use `stratifiedSplit()` and `stratifiedFold()` as before. The [Validators](cross-validation.md) dispatch on the label type for you (see [item 51](#51-validators-and-regressors-now-stratify-continuous-labels-by-bin)).
 
 ## Behavioral Changes
 
@@ -381,7 +381,7 @@ $lr = new LogisticRegression(holdOut: 0.1, window: 5, evalInterval: 3);
 $lr = new LogisticRegression(holdOut: 0.0);
 ```
 
-These parameters are inserted into the constructors after `$minChange`, so calls that pass arguments positionally past that point must be updated (or converted to named arguments). The `$evalInterval` parameter itself is covered in more detail in [item 38](#38-validation-interval-for-hold-out-evaluation).
+These parameters are inserted into the constructors after `$minChange`, so calls that pass arguments positionally past that point must be updated (or converted to named arguments). The `$evalInterval` parameter itself is covered in more detail in [item 39](#39-validation-interval-for-hold-out-evaluation).
 
 !!! warning
     Because these learners now see only 90% of your training data by default and may stop early, models fit without explicit configuration may differ from 2.0. Fit with `holdOut: 0.0` or re-tune if results change unexpectedly.
@@ -408,7 +408,7 @@ The [Dataset](datasets/api.md) `sort()` method is no longer stable. Equal elemen
 
 The `fold()` method of both [Unlabeled](datasets/unlabeled.md) and [Labeled](datasets/labeled.md) datasets forms folds that are as equal size as possible. If `n` samples are folded `k` ways, the first `n % k` folds contain `ceil(n / k)` samples and the remaining folds contain `floor(n / k)`. Previously the last fold received the entire remainder, which could leave it holding many times the samples of its siblings.
 
-The [Labeled](datasets/labeled.md) `stratifiedFold()` and `binnedFold()` methods no longer call `fold()` on each stratum independently. Doing so sent the remainder of *every* stratum to the final fold, so a dataset whose strata did not divide evenly produced a single oversized fold — 143 samples across 10 bins folded 10 ways gave sizes of `[10, ..., 10, 53]` instead of `[14, ..., 15]`. Each stratum now awards its remainder to a rotating window of folds whose cursor carries over between strata, which keeps the aggregate fold sizes within a single sample of one another and keeps the proportions of every stratum intact. See [item 49](#49-binned-stratification-for-continuous-labels) for the binned variant.
+The [Labeled](datasets/labeled.md) `stratifiedFold()` and `binnedFold()` methods no longer call `fold()` on each stratum independently. Doing so sent the remainder of *every* stratum to the final fold, so a dataset whose strata did not divide evenly produced a single oversized fold — 143 samples across 10 bins folded 10 ways gave sizes of `[10, ..., 10, 53]` instead of `[14, ..., 15]`. Each stratum now awards its remainder to a rotating window of folds whose cursor carries over between strata, which keeps the aggregate fold sizes within a single sample of one another and keeps the proportions of every stratum intact. See [item 50](#50-binned-stratification-for-continuous-labels) for the binned variant.
 
 Both `fold()` methods now throw an `InvalidArgumentException` when `k` is greater than the number of samples, preventing empty folds (previously this silently produced `k - 1` empty folds with all samples lumped into the last). The [Labeled](datasets/labeled.md) `stratifiedFold()` method additionally throws when `k` is greater than the number of samples in the *smallest* stratum, since every fold must contain at least one sample of every class.
 
@@ -542,11 +542,36 @@ $imputer = new MissingDataImputer(categorical: new KMostFrequent(1));
 
 The default `Strategy` for *continuous* columns remains [Mean](strategies/mean.md).
 
+### 35. Image Rotator constructor defaults changed
+
+The [Image Rotator](transformers/image-rotator.md) constructor defaults have changed:
+
+- `$offset` is now optional and defaults to `0.0` (it was required in 2.0)
+- `$jitter` defaults to `0.2` (it was `0.0` in 2.0)
+
+Because `$jitter` is applied as a fraction of a half-turn (up to ±180°×`$jitter`), calling `new ImageRotator()` now adds random jitter of up to ±36° by default. To preserve 2.0 behavior, pass explicit values:
+
+```php
+use Rubix\ML\Transformers\ImageRotator;
+
+// 3.0 default - random jitter about the origin, up to ±36 degrees
+$transformer = new ImageRotator();
+
+// 3.0 - fixed rotation, still jittered
+$transformer = new ImageRotator(-90.0);
+
+// to recover the 2.0 behavior, which was a fixed rotation with no jitter
+$transformer = new ImageRotator(offset: -90.0, jitter: 0.0);
+```
+
+!!! warning
+    Models that relied on deterministic augmentation without jitter will now see randomized rotations unless you explicitly set `jitter: 0.0`.
+
 ## New Features
 
 The following changes are additive. They require no action to keep existing code working, but you can take advantage of them as part of your upgrade.
 
-### 35. Parallelized nearest neighbors and Isolation Forest
+### 36. Parallelized nearest neighbors and Isolation Forest
 
 [K Nearest Neighbors](classifiers/k-nearest-neighbors.md), the [KNN Regressor](regressors/knn-regressor.md), and [Isolation Forest](anomaly-detectors/isolation-forest.md) now implement the [Parallel](parallel.md) interface. K-nearest neighbors splits inference across worker processes, and Isolation Forest splits both training and inference — each tree grows and scores independently.
 
@@ -569,7 +594,7 @@ $estimator->setBackend(new Swoole(16));
 !!! note
     Number of workers now default to the number of *physical* CPU cores rather than logical cores — see the Backend changes in [item 9](#9-the-backend-interface-gained-a-workers-method).
 
-### 36. Disk-based neural network snapshots
+### 37. Disk-based neural network snapshots
 
 The neural network learners — [MLP](classifiers/multilayer-perceptron.md), [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), and [Softmax Classifier](classifiers/softmax-classifier.md) — now stream their parameters to a snapshot file on disk during training. This keeps a copy of the best-performing weights available without holding them in memory, and if training diverges into numerical instability the learner restores from the snapshot instead of the last (possibly unstable) epoch.
 
@@ -589,7 +614,7 @@ $mlp = new MultilayerPerceptron(hiddenLayers: [
 $mlp->setSnapshotPath('/var/tmp/mlp-snapshot.dat');
 ```
 
-### 37. Clearable adaptive optimizer state
+### 38. Clearable adaptive optimizer state
 
 Optimizers such as [Adam](neural-network/optimizers/adam.md), [RMS Prop](neural-network/optimizers/rms-prop.md), [AdaGrad](neural-network/optimizers/adagrad.md), and [Momentum](neural-network/optimizers/momentum.md) maintain per-parameter state (gradient caches, momentum velocities) that is only needed during training. The neural network learners now expose a `cleanup()` method that discards this residual state by calling `flush()` on the optimizer — useful before reusing an estimator in a long-running process or to free memory after training:
 
@@ -600,7 +625,7 @@ $mlp->train($dataset);
 $mlp->cleanup();
 ```
 
-### 38. Validation interval for hold-out evaluation
+### 39. Validation interval for hold-out evaluation
 
 The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Gradient Boost](regressors/gradient-boost.md), and [AdaBoost](classifiers/adaboost.md) — now accept a `$evalInterval` constructor parameter (default `3`). It controls how often the hold-out set is scored during training, working in tandem with the `window` parameter for early stopping:
 
@@ -608,11 +633,11 @@ The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-reg
 $mlp = new MultilayerPerceptron(hiddenLayers: [new Dense(neurons: 100)], epochs: 1000, evalInterval: 5, window: 10);
 ```
 
-### 39. Per-class and per-cluster variance smoothing
+### 40. Per-class and per-cluster variance smoothing
 
 [Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) and [Gaussian Mixture](clusterers/gaussian-mixture.md) now compute an independent variance epsilon for *each* class (or cluster) instead of a single global epsilon across all of them. This keeps fitting numerically stable even when classes or clusters have very different variance scales. There is no API change — the existing `$smoothing` parameter behaves as before, only the per-class application of it is new.
 
-### 40. One Hot Encoder category exclusion
+### 41. One Hot Encoder category exclusion
 
 The [One Hot Encoder](transformers/one-hot-encoder.md) now accepts a list of `$ignoredCategories` to exclude from encoding. Categories in the list are skipped when the encoder is fitted, so they produce no columns. Only string and integer categories can be ignored:
 
@@ -622,11 +647,11 @@ use Rubix\ML\Transformers\OneHotEncoder;
 $encoder = new OneHotEncoder(['unknown', -1]); // ignore these categories
 ```
 
-### 41. Class Purity and Cluster Purity metrics
+### 42. Class Purity and Cluster Purity metrics
 
 Two new ground-truth clustering metrics were added — [Class Purity](cross-validation/metrics/class-purity.md) and [Cluster Purity](cross-validation/metrics/cluster-purity.md). They measure the extent to which each class (or cluster) is dominated by a single cluster (or class), returning a score between 0.0 and 1.0 where higher is better. They are complementary to the entropy-based [V-measure](cross-validation/metrics/v-measure.md), [Completeness](cross-validation/metrics/completeness.md), and [Homogeneity](cross-validation/metrics/homogeneity.md) metrics, and are only compatible with clusterers.
 
-### 42. Float Type Converter
+### 43. Float Type Converter
 
 The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integer and numeric-string values to their floating point equivalents. It is the drop-in remedy for the integers-as-categorical change in [item 1](#1-integers-are-now-a-categorical-data-type) — apply it to a dataset directly or add it to a Pipeline so that numeric features are always presented to the estimator as continuous:
 
@@ -636,7 +661,7 @@ use Rubix\ML\Transformers\FloatTypeConverter;
 $dataset->apply(new FloatTypeConverter());
 ```
 
-### 43. Gradient accumulation and clipping for MLP learners
+### 44. Gradient accumulation and clipping for MLP learners
 
 The [MLP](classifiers/multilayer-perceptron.md) and [MLP Regressor](regressors/mlp-regressor.md) accept two new constructor parameters:
 
@@ -655,7 +680,7 @@ $mlp = new MultilayerPerceptron(
 );
 ```
 
-### 44. Layer freezing for fine-tuning
+### 45. Layer freezing for fine-tuning
 
 The neural network learners expose their underlying network via the `network()` method. Before continuing training with `partial()`, you can freeze the first `k` hidden layers so their parameters stay fixed while the remaining layers keep training — useful for fine-tuning a pretrained model on new data:
 
@@ -673,7 +698,7 @@ $mlp->partial($newData);
 $mlp->network()->unfreeze();
 ```
 
-### 45. Dataset chunked() factory for online training
+### 46. Dataset chunked() factory for online training
 
 A new static `chunked()` factory was added to the [Dataset](datasets/api.md) object API on both the [Labeled](datasets/labeled.md) and [Unlabeled](datasets/unlabeled.md) datasets. It lazily builds an iterable of fixed-size dataset chunks from a larger iterator, so online and [partial-training](online.md) learners can consume samples in bounded batches without loading the whole table into memory at once:
 
@@ -692,7 +717,7 @@ foreach (Labeled::chunked($extractor, 256) as $batch) {
 
 The second argument is the size of each chunk (default `1024`), and the last chunk may contain fewer samples. The third argument, `$verify` (default `true`), controls whether each chunk is validated as it is produced — pass `false` to skip per-chunk validation for maximum throughput.
 
-### 46. Iterative interface with progress() method
+### 47. Iterative interface with progress() method
 
 A new [Iterative](iterative.md) interface groups the learners, estimators, and transformers that record their progress epoch by epoch during training or transformation. It exposes a `progress()` method that returns an iterable table combining every recorded epoch — the loss, the validation score (when a hold-out set was used), and, for neural network learners, the gradient norm — into a single ordered sequence:
 
@@ -708,7 +733,7 @@ $extractor->export($estimator->progress());
 
 Most iterative learners — including [Adaline](regressors/adaline.md), [MLP](classifiers/multilayer-perceptron.md), [Logistic Regression](classifiers/logistic-regression.md), [K Means](clusterers/k-means.md), [t-SNE](transformers/t-sne.md), and the others listed in [item 15](#15-the-steps-method-was-renamed-to-progress) — now implement the interface. Because `progress()` returns a `Generator`, it can be streamed to an exporter or plotted without loading the whole table into memory. Learners that already exposed this table via `steps()` (renamed to `progress()` in [item 15](#15-the-steps-method-was-renamed-to-progress)) continue to work unchanged.
 
-### 47. Grid Search fromNamedParams() factory method
+### 48. Grid Search fromNamedParams() factory method
 
 A new static `fromNamedParams()` factory was added to [Grid Search](grid-search.md). It lets you specify the hyper-parameters by the *name* of the base learner's constructor parameter instead of by position, so the order no longer matters:
 
@@ -730,7 +755,7 @@ $estimator = GridSearch::fromNamedParams(
 
 Omitted hyper-parameters are filled in with their default from the base learner's constructor. Passing a name that is not a constructor parameter throws an `InvalidArgumentException`. This is purely additive — the existing `GridSearch` constructor is unchanged.
 
-### 48. Grid Search results() table
+### 49. Grid Search results() table
 
 [Grid Search](grid-search.md) now generates a `results()` table: an iterable of every parameter combination tested, each row paired with its validation score, sorted from best to worst. It is convenient for inspecting the entire search space at a glance or exporting it:
 
@@ -746,7 +771,7 @@ $extractor->export($estimator->results());
 
 The existing `best()` and `scores()` methods are unchanged and continue to return the best combination and the raw scores respectively.
 
-### 49. Binned stratification for continuous labels
+### 50. Binned stratification for continuous labels
 
 The [Labeled](datasets/labeled.md) dataset gained three methods that stratify a *continuous* label by **bin** rather than by exact label equality. Bin edges are derived from the quantiles of the label, so each bin holds roughly the same number of samples, and stratifying over them preserves the *shape* of the target distribution in every subset:
 
@@ -777,9 +802,9 @@ There are a few constraints worth knowing about, since the bin count is a new de
 !!! note
     Empty bins are dropped from the result rather than returned as empty datasets, and a dataset with a constant target yields a single stratum. Because bins are ordered by target value, `binnedSplit()` shuffles the bins before awarding the leftover samples, so ties don't consistently favor the lowest valued bins. See [Binned Stratification](datasets/labeled.md#binned-stratification) for the full method reference.
 
-### 50. Validators and regressors now stratify continuous labels by bin
+### 51. Validators and regressors now stratify continuous labels by bin
 
-The [Validators](cross-validation.md) and the windowed regressors now use the new binned stratification from [item 49](#49-binned-stratification-for-continuous-labels) whenever the label is continuous, instead of dividing the dataset at random. They dispatch on the label type, so categorical datasets are unaffected and keep using the existing categorical methods.
+The [Validators](cross-validation.md) and the windowed regressors now use the new binned stratification from [item 50](#50-binned-stratification-for-continuous-labels) whenever the label is continuous, instead of dividing the dataset at random. They dispatch on the label type, so categorical datasets are unaffected and keep using the existing categorical methods.
 
 - [Hold Out](cross-validation/hold-out.md) and [Monte Carlo](cross-validation/monte-carlo.md) call `binnedSplit()` on continuous labels (previously `randomize()->split()` and `split()`).
 - [K Fold](cross-validation/k-fold.md) calls `binnedFold()` on continuous labels (previously `fold()`).
@@ -790,9 +815,9 @@ The subset *sizes* are unchanged — the hold-out and fold partitions are still 
 !!! warning
     Because the hold-out membership differs from 2.0, models fit with the default `holdOut` setting may differ from 2.0 even with identical hyper-parameters. This compounds the early-stopping change in [item 18](#18-gradient-learners-now-hold-out-validation-data-for-early-stopping), since the score that drives early stopping is now measured against a differently-distributed hold-out set. Fit with `holdOut: 0.0` to remove both effects.
 
-### 51. Binned description for continuous labels
+### 52. Binned description for continuous labels
 
-[Labeled](datasets/labeled.md) gained `describeByLabelBins($bins = 10)`, the continuous-label counterpart to the `describeByClassLabels()` introduced in [item 17](#17-stratification-methods-were-renamed-and-now-require-categorical-labels). It reuses the equal frequency bins from [item 49](#49-binned-stratification-for-continuous-labels) to produce a [Report](cross-validation/reports/api.md#report-objects) describing the features of the dataset broken down by bin of the target:
+[Labeled](datasets/labeled.md) gained `describeByLabelBins($bins = 10)`, the continuous-label counterpart to the `describeByClassLabels()` introduced in [item 17](#17-stratification-methods-were-renamed-and-now-require-categorical-labels). It reuses the equal frequency bins from [item 50](#50-binned-stratification-for-continuous-labels) to produce a [Report](cross-validation/reports/api.md#report-objects) describing the features of the dataset broken down by bin of the target:
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -808,3 +833,19 @@ There is one difference from `describeByClassLabels()` worth knowing about: the 
 
 !!! note
     See [Describe by Label](datasets/labeled.md#describe-by-label) for the full method reference.
+
+### 53. Image Rotator fill color
+
+The [Image Rotator](transformers/image-rotator.md) gained a third constructor parameter, `$fillColor`, which controls the color used to fill the area exposed by rotation. In 2.0 the fill color was a hardcoded constant, so the exposed corners could not be controlled. The parameter accepts a 6-digit hex color string (with or without a leading `#`) and defaults to black (`'#000000'`):
+
+```php
+use Rubix\ML\Transformers\ImageRotator;
+
+// fill the exposed area with white
+$transformer = new ImageRotator(0.0, 0.2, '#ffffff');
+
+// restore the 2.0 default
+$transformer = new ImageRotator(0.0, 0.2); // fillColor = '#000000'
+```
+
+Any string that isn't a valid 6-digit hex color throws an `InvalidArgumentException` at construction. GD treats the background argument of `imagerotate()` as an RGB value for truecolor images but as a palette index for palette images, so the transformer allocates the color against the image when necessary — the same hex value works for both. This parameter is appended after `$jitter`, so existing calls that pass `$offset` and `$jitter` positionally are unaffected.

@@ -26,7 +26,10 @@ class MulticlassCrossEntropy implements ClassificationLoss
     /**
      * Compute the loss score.
      *
-     * L(y, ŷ) = -Σ(y * log(ŷ)) / n
+     * The loss is the mean cross entropy over all elements of the matrix, where m
+     * is the number of classes and n is the number of samples.
+     *
+     * L(y, ŷ) = -Σ(y * log(ŷ)) / (m * n)
      *
      * @param Matrix $z
      * @param Matrix $y
@@ -49,6 +52,9 @@ class MulticlassCrossEntropy implements ClassificationLoss
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
+     *
+     * The returned gradient is unnormalized. Scaling it by 1 / (m * n) yields the
+     * derivative of the loss score returned by compute().
      *
      * ∂L/∂ŷ = -y / ŷ
      *

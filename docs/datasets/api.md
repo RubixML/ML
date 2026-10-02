@@ -266,6 +266,8 @@ public randomWeightedSubsetWithReplacement(int $n, array $weights) : self
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 ```
 
+Each weight must be non-negative and the sum of the weights must be greater than zero. If *n* is less than 1, there are no samples in the dataset, the number of weights does not equal the number of samples, any weight is negative, or the sum of the weights is not greater than zero then an `InvalidArgumentException` is thrown.
+
 ## Applying Transformations
 
 You can apply a [Transformer](../transformers/api.md) to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object. If a [Stateful](../transformers/api.md#stateful) transformer has not been fitted beforehand, it will automatically be fitted before being applied to the samples.
