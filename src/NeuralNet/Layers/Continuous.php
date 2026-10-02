@@ -137,7 +137,7 @@ class Continuous implements Output
     public function gradient(Matrix $x, Matrix $y) : Matrix
     {
         return $this->costFn->differentiate($x, $y)
-            ->divide($x->n());
+            ->divideScalar($y->size());
     }
 
     /**

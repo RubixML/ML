@@ -207,6 +207,44 @@ class FuzzyCMeansTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Inertia is the fuzzy objective function and never increases between epochs')]
+    public function inertiaIsNonIncreasing() : void
+    {
+        $estimator = new FuzzyCMeans(
+            c: 3,
+            fuzz: 2.0,
+            epochs: 25,
+            minChange: 0.0,
+            kernel: new Euclidean(),
+            seeder: new Random()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $losses = $estimator->losses();
+
+        $this->assertIsArray($losses);
+
+        $previous = INF;
+
+        foreach ($losses as $epoch => $loss) {
+            $this->assertGreaterThan(0.0, $loss, "Inertia must be positive at epoch $epoch.");
+
+            $previousEpoch = $epoch - 1;
+
+            $this->assertLessThanOrEqual(
+                $previous + abs($previous) * 1e-9,
+                $loss,
+                "Inertia increased between epoch $previousEpoch and $epoch."
+            );
+
+            $previous = $loss;
+        }
+    }
+
+    #[Test]
     #[TestDox('Throws an exception when training with incompatible data')]
     public function trainIncompatible() : void
     {

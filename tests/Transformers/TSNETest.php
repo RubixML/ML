@@ -337,6 +337,33 @@ class TSNETest extends TestCase
     }
 
     #[Test]
+    public function studentTMatchesGenericPow() : void
+    {
+        $base = Matrix::fromArray([
+            [1.0, 2.0, 0.5, 3.0],
+            [0.25, 1.5, 4.0, 2.5],
+            [3.5, 0.75, 1.0, 2.0],
+            [1.25, 2.25, 0.5, 5.0],
+        ], false);
+
+        foreach ([2, 3, 4, 5] as $dimensions) {
+            $dofs = max($dimensions - 1, 1);
+
+            $embedder = new TSNE($dimensions, 10.0, 10, 12.0, 500, 1e-7, 50, 5, new Euclidean());
+
+            $expected = $base->pow((1.0 + $dofs) / -2.0)->asArray();
+
+            $studentT = $this->invokeStudentT($embedder, $base)->asArray();
+
+            foreach ($expected as $i => $row) {
+                foreach ($row as $j => $value) {
+                    $this->assertEqualsWithDelta($value, $studentT[$i][$j], 1e-12);
+                }
+            }
+        }
+    }
+
+    #[Test]
     public function transform() : void
     {
         $dataset = $this->generator->generate(self::TEST_SIZE);
@@ -350,6 +377,18 @@ class TSNETest extends TestCase
 
         $this->assertIsArray($losses);
         $this->assertContainsOnlyFloat($losses);
+    }
+
+    /**
+     * @param TSNE $embedder
+     * @param Matrix $base
+     * @return Matrix
+     */
+    private function invokeStudentT(TSNE $embedder, Matrix $base) : Matrix
+    {
+        $method = new ReflectionMethod(TSNE::class, 'studentT');
+
+        return $method->invokeArgs($embedder, [$base]);
     }
 
     /**

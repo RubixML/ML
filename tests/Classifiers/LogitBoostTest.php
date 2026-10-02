@@ -8,8 +8,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
+use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Regressors\RegressionTree;
@@ -277,5 +279,74 @@ class LogitBoostTest extends TestCase
         foreach ($probabilities as $probability) {
             $this->assertEqualsWithDelta(1.0, array_sum($probability), 1e-8);
         }
+    }
+
+    #[Test]
+    public function earlyStoppingRestoresBestScoringEnsembleState() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $estimator = new LogitBoost(
+            booster: new RegressionTree(3),
+            rate: 0.5,
+            ratio: 0.5,
+            epochs: 5,
+            minChange: 0.0,
+            evalInterval: 1,
+            window: 0,
+            holdOut: 0.1,
+            metric: new ScriptedMetric([0.5, 0.9, 0.7, 0.6, 0.55])
+        );
+
+        $estimator->train($training);
+
+        $scores = $estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertSame([1, 2, 3, 4, 5], array_keys($scores));
+
+        $bestEpoch = array_search(max($scores), $scores);
+
+        $this->assertSame(2, $bestEpoch);
+
+        $boosters = $estimator->__serialize()['boosters'];
+
+        $this->assertCount($bestEpoch - 1, $boosters);
+    }
+}
+
+class ScriptedMetric implements Metric
+{
+    /**
+     * @var float[]
+     */
+    private array $scores;
+
+    /**
+     * @param float[] $scores
+     */
+    public function __construct(array $scores)
+    {
+        $this->scores = $scores;
+    }
+
+    public function range() : Tuple
+    {
+        return new Tuple(0.0, 1.0);
+    }
+
+    public function compatibility() : array
+    {
+        return [EstimatorType::classifier()];
+    }
+
+    public function score(array $predictions, array $labels) : float
+    {
+        return array_shift($this->scores) ?? 0.0;
+    }
+
+    public function __toString() : string
+    {
+        return 'Scripted Metric';
     }
 }

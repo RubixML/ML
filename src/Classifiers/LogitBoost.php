@@ -418,6 +418,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEvals = 0;
+        $bestSize = 0;
         $score = null;
         $prevLoss = INF;
 
@@ -476,6 +477,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestEpoch = $epoch;
+                    $bestSize = count($this->boosters);
 
                     $numWorseEvals = 0;
                 } else {
@@ -530,8 +532,8 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
         if ($this->scores) {
             $lastScore = $this->scores[array_key_last($this->scores)];
 
-            if ($lastScore < $bestScore) {
-                $this->boosters = array_slice($this->boosters, 0, $bestEpoch);
+            if ($lastScore <= $bestScore) {
+                $this->boosters = array_slice($this->boosters, 0, $bestSize);
 
                 if ($this->logger) {
                     $this->logger->info("Ensemble state restored to epoch $bestEpoch");

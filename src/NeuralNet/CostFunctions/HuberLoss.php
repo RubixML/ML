@@ -59,6 +59,13 @@ class HuberLoss implements RegressionLoss
     /**
      * Compute the loss score.
      *
+     * The loss is the mean pseudo Huber loss over all elements of the matrix, where
+     * m is the number of output nodes, n is the number of samples, and e = ŷ - y.
+     * Unlike the piecewise Huber loss, this formulation is smooth everywhere and
+     * approximates L1 as e grows beyond alpha and L2 near the minimum.
+     *
+     * L(y, ŷ) = Σα²(√(1 + (e / α)²) - 1) / (m * n)
+     *
      * @internal
      *
      * @param Matrix $z
@@ -81,6 +88,11 @@ class HuberLoss implements RegressionLoss
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
+     * The returned gradient is unnormalized. Scaling it by 1 / (m * n) yields the
+     * derivative of the loss score returned by compute().
+     *
+     * ∂L/∂ŷ = α * (ŷ - y) / √(α² + (ŷ - y)²)
+     *
      * @internal
      *
      * @param Matrix $z
@@ -92,10 +104,11 @@ class HuberLoss implements RegressionLoss
         $beta = $z->subtract($y);
 
         return $beta->square()
-            ->add($this->alpha2)
-            ->pow(-0.5)
+            ->addScalar($this->alpha2)
+            ->sqrt()
+            ->reciprocal()
             ->multiply($beta)
-            ->multiply($this->alpha);
+            ->multiplyScalar($this->alpha);
     }
 
     /**

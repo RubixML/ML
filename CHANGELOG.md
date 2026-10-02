@@ -1,5 +1,10 @@
 # Changelog
 
+- 3.1.0
+    - Added K-medoids clusterer
+    - Added `ARFF` and `Shuffler` extractors
+    - Added `Ramp` and `Cosine` learning rate Schedulers
+
 - 3.0.0
     - Integers are now considered a categorical data type
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
@@ -54,7 +59,7 @@
     - Add Dataset chunked() factory for online training
     - Added L1 penalty to `Dense` layers
     - `Adaline`, `Logistic Regression`, `Softmax Classifier` now elastic net
-    - Added Iterative interface with progress() method
+    - Added `Iterative` interface with progress() method
     - Iterative Learners renamed steps() method to progress()
     - Changed default gradient-based `minChange` from 1e-4 to 1e-5
     - `Prior` is now default `Strategy` of `Missing Data Imputer`
@@ -66,7 +71,8 @@
     - Added `binnedSplit()`, `binnedFold()`, and `stratifyByLabelBins()`
     - `stratifiedSplit()` and `stratifiedFold()` now throw on continuous labels
     - Validators and regressors now stratify continuous labels by bin
-    - Image Rotator default jitter now 0.2
+    - Image Rotator `offset` is now optional and default `jitter` is 0.2
+    - Added `fillColor` parameter to Image Rotator
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension

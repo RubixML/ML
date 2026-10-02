@@ -6,14 +6,19 @@ use Rubix\ML\DataType;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use GdImage;
 
 use function Rubix\ML\iterator_first;
 use function rand;
+use function imageistruecolor;
+use function imagecolorallocate;
 use function array_keys;
 use function array_walk;
 use function array_filter;
 use function array_map;
 use function getrandmax;
+use function preg_match;
+use function hexdec;
 
 /**
  * Randomized Image Rotator
@@ -31,11 +36,11 @@ use function getrandmax;
 class ImageRotator implements Transformer
 {
     /**
-     * The color of the area of the image filled in after rotation.
+     * The default color used to fill the area exposed by rotation.
      *
-     * @var int
+     * @var string
      */
-    protected const FILL_COLOR = 0;
+    protected const DEFAULT_FILL_COLOR = '#000000';
 
     /**
      * The offset angle in degrees to rotate before applying random jitter.
@@ -52,11 +57,19 @@ class ImageRotator implements Transformer
     protected float $jitter;
 
     /**
+     * The color used to fill the area exposed by rotation as a 24-bit RGB integer.
+     *
+     * @var int
+     */
+    protected int $fillColor;
+
+    /**
      * @param float $offset
      * @param float $jitter
+     * @param string $fillColor
      * @throws InvalidArgumentException
      */
-    public function __construct(float $offset = 0.0, float $jitter = 0.2)
+    public function __construct(float $offset = 0.0, float $jitter = 0.2, string $fillColor = self::DEFAULT_FILL_COLOR)
     {
         ExtensionIsLoaded::with('gd')->check();
 
@@ -70,8 +83,11 @@ class ImageRotator implements Transformer
                 . " greater than 0, and less than 1 and $jitter given.");
         }
 
+        $fillColor = $this->parseColor($fillColor);
+
         $this->offset = $offset;
         $this->jitter = $jitter;
+        $this->fillColor = $fillColor;
     }
 
     /**
@@ -111,6 +127,58 @@ class ImageRotator implements Transformer
     }
 
     /**
+     * Convert a hex color string to a 24-bit RGB integer.
+     *
+     * @internal
+     *
+     * @param string $color
+     * @throws InvalidArgumentException
+     * @return int
+     */
+    protected function parseColor(string $color) : int
+    {
+        $matches = [];
+
+        if (preg_match('/^#?([0-9a-f]{6})$/i', $color, $matches) !== 1) {
+            throw new InvalidArgumentException('Fill color must be a'
+                . " 6-digit hex color such as '#ffffff', $color given.");
+        }
+
+        return (int) hexdec($matches[1]);
+    }
+
+    /**
+     * Resolve the fill color for a given image.
+     *
+     * GD interprets the background argument to imagerotate() as an RGB value for truecolor
+     * images, but as a palette index for palette images. Palette images therefore require the
+     * color to be allocated against the image in order to obtain a valid index.
+     *
+     * @internal
+     *
+     * @param GdImage $image
+     * @return int
+     */
+    protected function fillColorFor(GdImage $image) : int
+    {
+        if (imageistruecolor($image)) {
+            return $this->fillColor;
+        }
+
+        $red = ($this->fillColor >> 16) & 0xFF;
+        $green = ($this->fillColor >> 8) & 0xFF;
+        $blue = $this->fillColor & 0xFF;
+
+        $color = imagecolorallocate($image, $red, $green, $blue);
+
+        if ($color === false) {
+            throw new RuntimeException('Could not allocate fill color.');
+        }
+
+        return $color;
+    }
+
+    /**
      * Randomly rotates the images in a sample and resizes them back to their original size.
      *
      * @internal
@@ -130,7 +198,9 @@ class ImageRotator implements Transformer
             $originalWidth = imagesx($image);
             $originalHeight = imagesy($image);
 
-            $rotated = imagerotate($image, $degrees, self::FILL_COLOR);
+            $fillColor = $this->fillColorFor($image);
+
+            $rotated = imagerotate($image, $degrees, $fillColor);
 
             if ($rotated) {
                 $newHeight = imagesy($rotated);
@@ -209,6 +279,7 @@ class ImageRotator implements Transformer
      */
     public function __toString() : string
     {
-        return "Image Rotator (offset: {$this->offset}, jitter: {$this->jitter})";
+        return "Image Rotator (offset: {$this->offset}, jitter: {$this->jitter},"
+            . ' fillColor: ' . sprintf('#%06x', $this->fillColor) . ')';
     }
 }

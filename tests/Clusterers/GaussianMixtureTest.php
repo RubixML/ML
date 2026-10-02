@@ -13,6 +13,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Clusterers\Seeders\Preset;
 use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
@@ -277,6 +278,49 @@ class GaussianMixtureTest extends TestCase
         }
 
         $this->assertLessThan(0.05, $tightVariance);
+    }
+
+    #[Test]
+    public function trainEmptySeedComponent() : void
+    {
+        $training = Unlabeled::quick(samples: [[0.0], [0.1], [-0.1], [0.05]]);
+
+        $estimator = new GaussianMixture(
+            k: 2,
+            seeder: new Preset([[0.0], [10.0]])
+        );
+
+        $this->expectException(RuntimeException::class);
+
+        $estimator->train($training);
+    }
+
+    #[Test]
+    public function trainEmptySeedComponentLeavesModelUntrained() : void
+    {
+        $training = Unlabeled::quick(samples: [[0.0], [0.1], [-0.1], [0.05]]);
+
+        $estimator = new GaussianMixture(
+            k: 2,
+            seeder: new Preset([[0.0], [10.0]])
+        );
+
+        try {
+            $estimator->train($training);
+        } catch (RuntimeException) {
+            $this->assertFalse($estimator->trained());
+            $this->assertSame([], $estimator->means());
+            $this->assertSame([], $estimator->variances());
+            $this->assertSame([], $estimator->priors());
+
+            $restored = unserialize(serialize($estimator));
+
+            $this->assertFalse($restored->trained());
+
+            return;
+        }
+
+        $this->fail('Training should have failed with an empty seed component.');
     }
 
     #[Test]

@@ -237,6 +237,59 @@ class MeanShiftTest extends TestCase
     }
 
     #[Test]
+    public function lossesMatchCentroidDisplacement() : void
+    {
+        $samples = [];
+
+        for ($i = 0; $i < 20; ++$i) {
+            $samples[] = [(float) ($i * 5.0)];
+        }
+
+        $samples[5] = [26.0];
+        $samples[6] = [34.0];
+
+        $training = Unlabeled::quick($samples);
+
+        foreach ([6.0, 14.0, 22.0] as $radius) {
+            foreach ([2, 3, 4, 5, 6] as $epochs) {
+                $previous = new MeanShift(
+                    radius: $radius,
+                    ratio: 0.05,
+                    epochs: $epochs - 1,
+                    minShift: 0.0,
+                    tree: new BallTree(),
+                    seeder: new Preset($samples)
+                );
+
+                $previous->train($training);
+
+                $estimator = new MeanShift(
+                    radius: $radius,
+                    ratio: 0.05,
+                    epochs: $epochs,
+                    minShift: 0.0,
+                    tree: new BallTree(),
+                    seeder: new Preset($samples)
+                );
+
+                $estimator->train($training);
+
+                $expected = $this->displacement(
+                    current: $estimator->centroids(),
+                    previous: $previous->centroids()
+                ) / $training->numSamples();
+
+                $this->assertEqualsWithDelta(
+                    $expected,
+                    $estimator->losses()[$epochs],
+                    1e-12,
+                    "Radius $radius epoch $epochs"
+                );
+            }
+        }
+    }
+
+    #[Test]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -268,5 +321,25 @@ class MeanShiftTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
+    }
+
+    /**
+     * Compute the total per-column displacement between two sets of centroids.
+     *
+     * @param list<(int|float)[]> $current
+     * @param list<(int|float)[]> $previous
+     * @return float
+     */
+    protected function displacement(array $current, array $previous) : float
+    {
+        $displacement = 0.0;
+
+        foreach ($current as $cluster => $centroid) {
+            foreach ($centroid as $column => $mean) {
+                $displacement += abs($previous[$cluster][$column] - $mean);
+            }
+        }
+
+        return $displacement;
     }
 }
