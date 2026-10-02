@@ -1095,6 +1095,11 @@ class Labeled extends Dataset
             $cums[] = $total;
         }
 
+        if ($total <= 0.0) {
+            throw new InvalidArgumentException('The sum of the sample'
+                . ' weights must be greater than zero.');
+        }
+
         /** @var positive-int $numWeights */
         $numWeights = count($cums);
 

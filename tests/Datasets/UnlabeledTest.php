@@ -487,6 +487,15 @@ class UnlabeledTest extends TestCase
     }
 
     #[Test]
+    public function randomWeightedSubsetWithReplacementZeroWeights() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Unlabeled::quick([['nice', 4.7], ['not', 3.2]])
+            ->randomWeightedSubsetWithReplacement(3, [0.0, 0.0]);
+    }
+
+    #[Test]
     public function merge() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
