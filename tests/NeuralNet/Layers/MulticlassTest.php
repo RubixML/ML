@@ -138,4 +138,91 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
     }
+
+    /**
+     * The gradient handed back to the previous layer must be the derivative of the
+     * loss that back() reports. Rows are classes and columns are samples, so the
+     * Softmax normalizes each column and the loss is averaged over all elements.
+     */
+    #[Test]
+    public function gradientIsDerivativeOfReportedLoss() : void
+    {
+        $this->layer->initialize(3);
+
+        $this->layer->forward($this->x);
+
+        $y = Matrix::fromArray($this->expected, false);
+
+        [$computation, $loss] = $this->layer->back($y);
+
+        $gradient = $computation->compute()->asArray();
+
+        $this->assertIsFloat($loss);
+
+        $epsilon = 1e-6;
+
+        $logits = $this->x->asArray();
+
+        foreach ($logits as $i => $row) {
+            foreach ($row as $j => $_) {
+                $plus = $logits;
+                $minus = $logits;
+
+                $plus[$i][$j] += $epsilon;
+                $minus[$i][$j] -= $epsilon;
+
+                $numeric = ($this->lossOf($plus, $y) - $this->lossOf($minus, $y)) / (2 * $epsilon);
+
+                $this->assertEqualsWithDelta($numeric, $gradient[$i][$j], 1e-6);
+            }
+        }
+    }
+
+    /**
+     * Evaluate MulticlassCrossEntropy over a matrix of logits.
+     *
+     * @param array<list<float>> $logits
+     * @param Matrix $y
+     * @return float
+     */
+    private function lossOf(array $logits, Matrix $y) : float
+    {
+        $classes = count($logits);
+        $columns = count($logits[0]);
+
+        $normalized = [];
+
+        for ($j = 0; $j < $columns; ++$j) {
+            $column = [];
+
+            for ($i = 0; $i < $classes; ++$i) {
+                $column[] = $logits[$i][$j];
+            }
+
+            $maximum = max($column);
+
+            $exponentials = [];
+            $sum = 0.0;
+
+            foreach ($column as $logit) {
+                $exponential = exp($logit - $maximum);
+
+                $exponentials[] = $exponential;
+
+                $sum += $exponential;
+            }
+
+            foreach ($exponentials as $exponential) {
+                $normalized[] = $exponential / $sum;
+            }
+        }
+
+        $probabilities = array_fill(0, $classes, array_fill(0, $columns, 0.0));
+
+        foreach ($normalized as $index => $probability) {
+            $probabilities[$index % $classes][intdiv($index, $classes)] = $probability;
+        }
+
+        return (new MulticlassCrossEntropy())->compute(Matrix::fromArray($probabilities, false), $y);
+    }
 }
