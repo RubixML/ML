@@ -1135,6 +1135,15 @@ class LabeledTest extends TestCase
     }
 
     #[Test]
+    public function randomWeightedSubsetWithReplacementNegativeWeights() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Labeled::quick([['nice', 4.7], ['not', 3.2]], ['monster', 'monster'])
+            ->randomWeightedSubsetWithReplacement(3, [1.0, -0.5]);
+    }
+
+    #[Test]
     public function merge() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);

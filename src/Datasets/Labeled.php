@@ -1090,6 +1090,11 @@ class Labeled extends Dataset
         $cums = [];
 
         foreach ($weights as $weight) {
+            if ($weight < 0.0) {
+                throw new InvalidArgumentException('The sample weights'
+                    . ' must be non-negative, ' . $weight . ' given.');
+            }
+
             $total += $weight;
 
             $cums[] = $total;

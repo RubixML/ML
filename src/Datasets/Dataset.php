@@ -673,6 +673,7 @@ abstract class Dataset implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param int $n
      * @param (int|float)[] $weights
+     * @throws InvalidArgumentException
      * @return self
      */
     abstract public function randomWeightedSubsetWithReplacement(int $n, array $weights);
