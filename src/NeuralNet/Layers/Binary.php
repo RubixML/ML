@@ -166,11 +166,11 @@ class Binary implements Output
     {
         if ($this->costFn instanceof BinaryCrossEntropy) {
             return $z->subtract($y)
-                ->divide($z->n());
+                ->divideScalar($y->size());
         }
 
         $dLoss = $this->costFn->differentiate($z, $y)
-            ->divide($z->n());
+            ->divideScalar($y->size());
 
         return $this->sigmoid->differentiate($x, $z)
             ->multiply($dLoss);
