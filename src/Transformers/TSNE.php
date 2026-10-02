@@ -655,11 +655,11 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         $base = $distances->divide($this->dofs)->add(1.0);
 
-        $kernel = $base->pow((1.0 + $this->dofs) / -2.0);
+        $t = $this->studentT($base);
 
-        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
+        $norm = $t->sum()->sum() - $t->diagonalAsVector()->sum();
 
-        return $kernel->divide(max($norm, EPSILON));
+        return $t->divide(max($norm, EPSILON));
     }
 
     /**
@@ -676,6 +676,32 @@ class TSNE implements Transformer, Iterative, Verbose
             : $gain * self::GAIN_BRAKE;
 
         return max(self::MIN_GAIN, $value);
+    }
+
+    /**
+     * Compute the unnormalized Student t-distribution kernel raised to the
+     * power of the number of degrees of freedom. For low dimensional
+     * embeddings the exponent reduces to a reciprocal, which is far cheaper
+     * than the generic pow() method.
+     *
+     * @param Matrix $base
+     * @return Matrix
+     */
+    protected function studentT(Matrix $base) : Matrix
+    {
+        if ($this->dofs === 1) {
+            return $base->reciprocal();
+        }
+
+        if ($this->dofs === 2) {
+            return $base->multiply($base->sqrt())->reciprocal();
+        }
+
+        if ($this->dofs === 3) {
+            return $base->square()->reciprocal();
+        }
+
+        return $base->pow((1.0 + $this->dofs) / -2.0);
     }
 
     /**
