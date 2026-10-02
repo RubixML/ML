@@ -104,3 +104,25 @@ $params = [
     Params::ints(1, 10, 4), [true, false], // ...
 ];
 ```
+
+### Bayesian Search
+
+[Bayesian Search](bayesian-search.md) is a meta-estimator that, like Grid Search, wraps a base learner whose hyper-parameters we wish to optimize, but instead of exhaustively training one model for every combination it *optimizes* the search. Under the hood, Bayesian Search uses the Tree-structured Parzen Estimator (TPE) to propose the next set of hyper-parameters to evaluate based on the results of the trials before it. After a brief *startup* phase of random search, each subsequent trial is guided by the top performing trials seen so far, concentrating the search on the regions of the space most likely to yield an improvement. The number of models trained is bounded by the `maxTrials` parameter rather than the size of the search space, making Bayesian Search well-suited to large hyper-parameter spaces where exhaustive search is infeasible.
+
+```php
+use Rubix\ML\BayesianSearch;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Manhattan;
+$params = [
+    [1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()]
+];
+
+$estimator = new BayesianSearch(KNearestNeighbors::class, $params);
+
+$estimator->train($dataset);
+```
+
+### Grid Search vs. Bayesian Search
+
+Grid Search is exhaustive and deterministic, guaranteeing the best combination within the search space is found, but the number of models trained grows multiplicatively with the number of parameters. Bayesian Search samples the space sequentially and uses the results of previous trials to guide future proposals, so it can explore much larger spaces with a bounded number of trials, at the cost of not being able to guarantee the global optimum is found. As a rule of thumb, use Grid Search when the search space is small and the best combination is important, and Bayesian Search when the space is large or training is expensive.
