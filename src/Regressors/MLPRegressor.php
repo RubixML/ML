@@ -437,11 +437,10 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
     }
 
     /**
-     * Set the dataset used to score the model during training. The learner always
-     * trains on the entire dataset given to train(). While set, this dataset is
-     * scored every evalInterval epochs and drives early stopping once the score
-     * has failed to improve for window evaluations. Pass null to disable progress
-     * monitoring and early stopping. The dataset is excluded from serialization.
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
      *
      * @param Labeled|null $dataset
      * @throws EmptyDataset
@@ -532,13 +531,9 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
-        $validation = $this->validation;
-
-        if (isset($validation)) {
-            DatasetHasDimensionality::with($validation, $dataset->numFeatures())->check();
+        if (isset($this->validation)) {
+            DatasetHasDimensionality::with($this->validation, $dataset->numFeatures())->check();
         }
-
-        $training = $dataset;
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
@@ -556,7 +551,7 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
         $this->scores = $this->losses = $this->norms = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $batches = $training->randomize()->batch($this->batchSize);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
             $totalLoss = $norm = $totalNorm = 0.0;
 
@@ -624,12 +619,12 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($validation);
+                $predictions = $this->predict($this->validation);
 
-                $score = $this->metric->score($predictions, $validation->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }

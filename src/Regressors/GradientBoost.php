@@ -351,11 +351,10 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     }
 
     /**
-     * Set the dataset used to score the model during training. The learner always
-     * trains on the entire dataset given to train(). While set, this dataset is
-     * scored every evalInterval epochs and drives early stopping once the score
-     * has failed to improve for window evaluations. Pass null to disable progress
-     * monitoring and early stopping. The dataset is excluded from serialization.
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
      *
      * @param Labeled|null $dataset
      * @throws EmptyDataset
@@ -387,26 +386,22 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
             $this->logger->info("Training $this");
         }
 
-        $validation = $this->validation;
-
-        if (isset($validation)) {
-            DatasetHasDimensionality::with($validation, $dataset->numFeatures())->check();
+        if (isset($this->validation)) {
+            DatasetHasDimensionality::with($this->validation, $dataset->numFeatures())->check();
         }
-
-        $training = $dataset;
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
-        [$m, $n] = $training->shape();
+        [$m, $n] = $dataset->shape();
 
-        $targets = $training->labels();
+        $targets = $dataset->labels();
 
         $mu = Stats::mean($targets);
 
         $out = array_fill(0, $m, $mu);
 
-        if (isset($validation)) {
-            $outTest = array_fill(0, $validation->numSamples(), $mu);
+        if (isset($this->validation)) {
+            $outTest = array_fill(0, $this->validation->numSamples(), $mu);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -433,10 +428,10 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
 
             $this->losses[$epoch] = $loss;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep and isset($outTest)) {
-                $score = $this->metric->score($outTest, $validation->labels());
+                $score = $this->metric->score($outTest, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -498,9 +493,9 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
                 break;
             }
 
-            $training = Labeled::quick($training->samples(), $gradient);
+            $dataset = Labeled::quick($dataset->samples(), $gradient);
 
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
 
             $booster = clone $this->booster;
 
@@ -508,12 +503,12 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
 
             $this->ensemble[] = $booster;
 
-            $predictions = $booster->predict($training);
+            $predictions = $booster->predict($dataset);
 
             $out = array_map([$this, 'updateOut'], $predictions, $out);
 
             if (isset($outTest)) {
-                $predictions = $booster->predict($validation);
+                $predictions = $booster->predict($this->validation);
 
                 $outTest = array_map([$this, 'updateOut'], $predictions, $outTest);
             }

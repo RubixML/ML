@@ -346,11 +346,10 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     }
 
     /**
-     * Set the dataset used to score the model during training. The learner always
-     * trains on the entire dataset given to train(). While set, this dataset is
-     * scored every evalInterval epochs and drives early stopping once the score
-     * has failed to improve for window evaluations. Pass null to disable progress
-     * monitoring and early stopping. The dataset is excluded from serialization.
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
      *
      * @param Labeled|null $dataset
      * @throws EmptyDataset
@@ -396,14 +395,12 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
 
         $this->classes = array_fill_keys($classes, 0.0);
 
-        $validation = $this->validation;
-
-        if (isset($validation)) {
+        if (isset($this->validation)) {
             SpecificationChain::with([
-                new DatasetHasDimensionality($validation, $dataset->numFeatures()),
+                new DatasetHasDimensionality($this->validation, $dataset->numFeatures()),
             ])->check();
 
-            $unknown = array_diff($validation->possibleOutcomes(), array_keys($this->classes));
+            $unknown = array_diff($this->validation->possibleOutcomes(), array_keys($this->classes));
 
             if ($unknown) {
                 throw new InvalidArgumentException('Validation dataset contains labels'
@@ -412,13 +409,11 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
             }
         }
 
-        $training = $dataset;
-
         [$minScore, $maxScore] = $this->metric->range()->list();
 
-        [$m, $n] = $training->shape();
+        [$m, $n] = $dataset->shape();
 
-        $labels = $training->labels();
+        $labels = $dataset->labels();
 
         $k = count($classes);
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -441,11 +436,11 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $estimator = clone $this->base;
 
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
 
             $estimator->train($subset);
 
-            $predictions = $estimator->predict($training);
+            $predictions = $estimator->predict($dataset);
 
             $loss = 0.0;
 
@@ -484,10 +479,10 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
             $this->ensemble[] = $estimator;
             $this->influences[] = $influence;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep) {
-                $score = $this->metric->score($this->predict($validation), $validation->labels());
+                $score = $this->metric->score($this->predict($this->validation), $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }

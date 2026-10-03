@@ -589,13 +589,13 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
 
         $classMap = array_flip($this->classes);
 
-        $training = (clone $dataset)->transformLabels(
+        $dataset = (clone $dataset)->transformLabels(
             static fn ($label) => $classMap[$label]
                 ?? throw new RuntimeException("Unknown class $label encountered during training.")
         );
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $batches = $training->randomize()->batch($this->batchSize);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
             $totalLoss = $norm = $totalNorm = 0.0;
 

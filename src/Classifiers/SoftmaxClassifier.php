@@ -401,11 +401,10 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
     }
 
     /**
-     * Set the dataset used to score the model during training. The learner always
-     * trains on the entire dataset given to train(). While set, this dataset is
-     * scored every evalInterval epochs and drives early stopping once the score
-     * has failed to improve for window evaluations. Pass null to disable progress
-     * monitoring and early stopping. The dataset is excluded from serialization.
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
      *
      * @param Labeled|null $dataset
      * @throws EmptyDataset
@@ -485,14 +484,12 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
-        $validation = $this->validation;
-
-        if (isset($validation)) {
+        if (isset($this->validation)) {
             SpecificationChain::with([
-                new DatasetHasDimensionality($validation, $dataset->numFeatures()),
+                new DatasetHasDimensionality($this->validation, $dataset->numFeatures()),
             ])->check();
 
-            $unknown = array_diff($validation->possibleOutcomes(), $this->classes);
+            $unknown = array_diff($this->validation->possibleOutcomes(), $this->classes);
 
             if ($unknown) {
                 throw new InvalidArgumentException('Validation dataset contains labels'
@@ -500,8 +497,6 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
                     . implode(', ', $unknown) . '.');
             }
         }
-
-        $training = $dataset;
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
@@ -520,13 +515,13 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
 
         $classMap = array_flip($this->classes);
 
-        $training = (clone $training)->transformLabels(
+        $dataset = (clone $dataset)->transformLabels(
             static fn ($label) => $classMap[$label]
                 ?? throw new RuntimeException("Unknown class $label encountered during training.")
         );
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $batches = $training->randomize()->batch($this->batchSize);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
             $totalLoss = 0.0;
 
@@ -567,12 +562,12 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($validation);
+                $predictions = $this->predict($this->validation);
 
-                $score = $this->metric->score($predictions, $validation->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }

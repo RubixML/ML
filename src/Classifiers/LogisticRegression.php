@@ -486,14 +486,12 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
-        $validation = $this->validation;
-
-        if (isset($validation)) {
+        if (isset($this->validation)) {
             SpecificationChain::with([
-                new DatasetHasDimensionality($validation, $dataset->numFeatures()),
+                new DatasetHasDimensionality($this->validation, $dataset->numFeatures()),
             ])->check();
 
-            $unknown = array_diff($validation->possibleOutcomes(), $this->classes);
+            $unknown = array_diff($this->validation->possibleOutcomes(), $this->classes);
 
             if ($unknown) {
                 throw new InvalidArgumentException('Validation dataset contains labels'
@@ -501,8 +499,6 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
                     . implode(', ', $unknown) . '.');
             }
         }
-
-        $training = $dataset;
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
@@ -521,13 +517,13 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
 
         $classMap = array_flip($this->classes);
 
-        $training = (clone $training)->transformLabels(
+        $dataset = (clone $dataset)->transformLabels(
             static fn ($label) => $classMap[$label]
                 ?? throw new RuntimeException("Unknown class $label encountered during training.")
         );
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $batches = $training->randomize()->batch($this->batchSize);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
             $totalLoss = 0.0;
 
@@ -568,12 +564,12 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($validation);
+                $predictions = $this->predict($this->validation);
 
-                $score = $this->metric->score($predictions, $validation->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }

@@ -354,11 +354,10 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     }
 
     /**
-     * Set the dataset used to score the model during training. The learner always
-     * trains on the entire dataset given to train(). While set, this dataset is
-     * scored every evalInterval epochs and drives early stopping once the score
-     * has failed to improve for window evaluations. Pass null to disable progress
-     * monitoring and early stopping. The dataset is excluded from serialization.
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
      *
      * @param Labeled|null $dataset
      * @throws EmptyDataset
@@ -400,14 +399,12 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
         $this->classes = $classes;
 
-        $validation = $this->validation;
-
-        if (isset($validation)) {
+        if (isset($this->validation)) {
             SpecificationChain::with([
-                new DatasetHasDimensionality($validation, $dataset->numFeatures()),
+                new DatasetHasDimensionality($this->validation, $dataset->numFeatures()),
             ])->check();
 
-            $unknown = array_diff($validation->possibleOutcomes(), $this->classes);
+            $unknown = array_diff($this->validation->possibleOutcomes(), $this->classes);
 
             if ($unknown) {
                 throw new InvalidArgumentException('Validation dataset contains labels'
@@ -416,25 +413,23 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
             }
         }
 
-        $training = $dataset;
-
         [$minScore, $maxScore] = $this->metric->range()->list();
 
-        [$m, $n] = $training->shape();
+        [$m, $n] = $dataset->shape();
 
         $classMap = array_flip($classes);
 
         $targets = [];
 
-        foreach ($training->labels() as $label) {
+        foreach ($dataset->labels() as $label) {
             $targets[] = (float) $classMap[$label];
         }
 
         $z = array_fill(0, $m, 0.0);
         $out = array_fill(0, $m, 0.5);
 
-        if (isset($validation)) {
-            $zTest = array_fill(0, $validation->numSamples(), 0.0);
+        if (isset($this->validation)) {
+            $zTest = array_fill(0, $this->validation->numSamples(), 0.0);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -468,7 +463,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
             $this->losses[$epoch] = $loss;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep and isset($zTest)) {
                 $predictions = [];
@@ -477,7 +472,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                     $predictions[] = $value < 0.0 ? $classes[0] : $classes[1];
                 }
 
-                $score = $this->metric->score($predictions, $validation->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -531,9 +526,9 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                 break;
             }
 
-            $training = Labeled::quick($training->samples(), $gradient);
+            $dataset = Labeled::quick($dataset->samples(), $gradient);
 
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
 
             $booster = clone $this->booster;
 
@@ -541,13 +536,13 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
             $this->boosters[] = $booster;
 
-            $predictions = $booster->predict($training);
+            $predictions = $booster->predict($dataset);
 
             $z = array_map([$this, 'updateZ'], $predictions, $z);
             $out = array_map('Rubix\ML\sigmoid', $z);
 
             if (isset($zTest)) {
-                $predictions = $booster->predict($validation);
+                $predictions = $booster->predict($this->validation);
 
                 $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
             }
