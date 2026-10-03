@@ -734,7 +734,7 @@ class SoftmaxClassifier implements Estimator, Learner, Iterative, Online, Probab
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath'],
-            $properties['validationDataset']
+            $properties['validation']
         );
 
         return $properties;
