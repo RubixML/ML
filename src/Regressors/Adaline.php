@@ -688,7 +688,7 @@ class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, V
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath'],
-            $properties['validationDataset']
+            $properties['validation']
         );
 
         return $properties;
