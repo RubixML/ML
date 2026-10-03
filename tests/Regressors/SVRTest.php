@@ -22,6 +22,7 @@ use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
 #[Group('Regressors')]
+#[RequiresPhpExtension('svm')]
 #[CoversClass(SVR::class)]
 class SVRTest extends TestCase
 {
