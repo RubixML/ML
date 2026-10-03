@@ -34,7 +34,7 @@ use Rubix\ML\CrossValidation\Metrics\SMAPE;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 3, 10, 0.1, new SMAPE());
+$estimator = new GradientBoost(new RegressionTree(3), 0.1, 0.8, 1000, 1e-4, 3, 10, new SMAPE());
 ```
 
 ## Additional Methods

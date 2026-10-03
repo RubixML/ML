@@ -34,7 +34,7 @@ use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
-$estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 3, 5, 0.1, new MCC());
+$estimator = new AdaBoost(new ExtraTreeClassifier(3), 0.1, 0.5, 200, 1e-3, 3, 5, new MCC());
 ```
 
 ## Additional Methods
