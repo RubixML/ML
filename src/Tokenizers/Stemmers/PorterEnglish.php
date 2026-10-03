@@ -17,73 +17,22 @@ namespace Rubix\ML\Tokenizers\Stemmers;
 class PorterEnglish implements Stemmer
 {
     /**
-     * The word being stemmed.
-     *
-     * @var string
-     */
-    private string $word = '';
-
-    /**
-     * The offset of the last character of the word.
-     *
-     * @var int
-     */
-    private int $k = 0;
-
-    /**
-     * The offset of the first suffix character.
-     *
-     * @var int
-     */
-    private int $j = 0;
-
-    /**
-     * The offset of the first letter of the word.
-     *
-     * @var int
-     */
-    private int $k0 = 0;
-
-    /**
-     * Stem a word to its root form.
-     *
-     * @param string $word
-     * @return string
-     */
-    public function stem(string $word) : string
-    {
-        $this->word = $word;
-        $this->k0 = 0;
-        $this->k = strlen($word) - 1;
-
-        if ($this->k > $this->k0 + 1) {
-            $this->stepOne();
-            $this->stepTwo();
-            $this->stepThree();
-            $this->stepFour();
-            $this->stepFive();
-            $this->stepSix();
-        }
-
-        return substr($this->word, 0, $this->k + 1);
-    }
-
-    /**
      * Return true if the character at the given offset is a consonant.
      *
+     * @param string $word
      * @param int $i
      * @return bool
      */
-    private function cons(int $i) : bool
+    protected static function cons(string $word, int $i) : bool
     {
-        $ch = $this->word[$i];
+        $ch = $word[$i];
 
         if ($ch === 'a' || $ch === 'e' || $ch === 'i' || $ch === 'o' || $ch === 'u') {
             return false;
         }
 
         if ($ch === 'y') {
-            return $i === $this->k0 ? true : !$this->cons($i - 1);
+            return $i === 0 ? true : !self::cons($word, $i - 1);
         }
 
         return true;
@@ -93,19 +42,21 @@ class PorterEnglish implements Stemmer
      * Measure the number of consonant sequences between the start of the
      * word and the first suffix character.
      *
+     * @param string $word
+     * @param int $j
      * @return int
      */
-    private function measure() : int
+    protected static function measure(string $word, int $j) : int
     {
         $n = 0;
-        $i = $this->k0;
+        $i = 0;
 
         while (true) {
-            if ($i > $this->j) {
+            if ($i > $j) {
                 return $n;
             }
 
-            if (!$this->cons($i)) {
+            if (!self::cons($word, $i)) {
                 break;
             }
 
@@ -116,11 +67,11 @@ class PorterEnglish implements Stemmer
 
         while (true) {
             while (true) {
-                if ($i > $this->j) {
+                if ($i > $j) {
                     return $n;
                 }
 
-                if ($this->cons($i)) {
+                if (self::cons($word, $i)) {
                     break;
                 }
 
@@ -131,11 +82,11 @@ class PorterEnglish implements Stemmer
             ++$n;
 
             while (true) {
-                if ($i > $this->j) {
+                if ($i > $j) {
                     return $n;
                 }
 
-                if (!$this->cons($i)) {
+                if (!self::cons($word, $i)) {
                     break;
                 }
 
@@ -150,12 +101,14 @@ class PorterEnglish implements Stemmer
      * Return true if the region from the start of the word to the first
      * suffix character contains a vowel.
      *
+     * @param string $word
+     * @param int $j
      * @return bool
      */
-    private function vowelInStem() : bool
+    protected static function vowelInStem(string $word, int $j) : bool
     {
-        for ($i = $this->k0; $i <= $this->j; ++$i) {
-            if (!$this->cons($i)) {
+        for ($i = 0; $i <= $j; ++$i) {
+            if (!self::cons($word, $i)) {
                 return true;
             }
         }
@@ -167,20 +120,21 @@ class PorterEnglish implements Stemmer
      * Return true if the two characters immediately before the first suffix
      * character are identical consonants.
      *
-     * @param int $j
+     * @param string $word
+     * @param int $i
      * @return bool
      */
-    private function doubleConsonant(int $j) : bool
+    protected static function doubleConsonant(string $word, int $i) : bool
     {
-        if ($j < $this->k0 + 1) {
+        if ($i < 1) {
             return false;
         }
 
-        if ($this->word[$j] !== $this->word[$j - 1]) {
+        if ($word[$i] !== $word[$i - 1]) {
             return false;
         }
 
-        return $this->cons($j);
+        return self::cons($word, $i);
     }
 
     /**
@@ -188,17 +142,18 @@ class PorterEnglish implements Stemmer
      * character follow a consonant-vowel-consonant pattern that does not
      * end in w, x, or y.
      *
+     * @param string $word
      * @param int $i
      * @return bool
      */
-    private function cvc(int $i) : bool
+    protected static function cvc(string $word, int $i) : bool
     {
-        if ($i < $this->k0 + 2 || !$this->cons($i) || $this->cons($i - 1)
-            || !$this->cons($i - 2)) {
+        if ($i < 2 || !self::cons($word, $i) || self::cons($word, $i - 1)
+            || !self::cons($word, $i - 2)) {
             return false;
         }
 
-        $ch = $this->word[$i];
+        $ch = $word[$i];
 
         if ($ch === 'w' || $ch === 'x' || $ch === 'y') {
             return false;
@@ -211,25 +166,28 @@ class PorterEnglish implements Stemmer
      * Return true if the word ends in the given suffix, marking the first
      * suffix character.
      *
+     * @param string $word
+     * @param int $k
      * @param string $suffix
+     * @param int $j
      * @return bool
      */
-    private function ends(string $suffix) : bool
+    protected static function ends(string $word, int $k, string $suffix, int &$j) : bool
     {
         $len = strlen($suffix);
-        $offset = $this->k - $len + 1;
+        $offset = $k - $len + 1;
 
-        if ($offset < $this->k0) {
+        if ($offset < 0) {
             return false;
         }
 
         for ($i = 0; $i < $len; ++$i) {
-            if ($this->word[$offset + $i] !== $suffix[$i]) {
+            if ($word[$offset + $i] !== $suffix[$i]) {
                 return false;
             }
         }
 
-        $this->j = $this->k - $len;
+        $j = $k - $len;
 
         return true;
     }
@@ -238,101 +196,120 @@ class PorterEnglish implements Stemmer
      * Replace the suffix starting at the first suffix character with the
      * given string.
      *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      * @param string $suffix
      */
-    private function setTo(string $suffix) : void
+    protected static function setTo(string &$word, int &$k, int $j, string $suffix) : void
     {
         $len = strlen($suffix);
 
         for ($i = 0; $i < $len; ++$i) {
-            $this->word[$this->j + 1 + $i] = $suffix[$i];
+            $word[$j + 1 + $i] = $suffix[$i];
         }
 
-        $this->k = $this->j + $len;
+        $k = $j + $len;
     }
 
     /**
      * Replace the suffix starting at the first suffix character with the
      * given string only if the stem has a measure greater than zero.
      *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      * @param string $suffix
      */
-    private function r(string $suffix) : void
+    protected static function r(string &$word, int &$k, int $j, string $suffix) : void
     {
-        if ($this->measure() > 0) {
-            $this->setTo($suffix);
+        if (self::measure($word, $j) > 0) {
+            self::setTo($word, $k, $j, $suffix);
         }
     }
 
     /**
      * Strip plurals and the endings ed, ing, and eed.
+     *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      */
-    private function stepOne() : void
+    protected static function stepOne(string &$word, int &$k, int &$j) : void
     {
-        if ($this->word[$this->k] === 's') {
-            if ($this->ends('sses')) {
-                $this->k -= 2;
-            } elseif ($this->ends('ies')) {
-                $this->setTo('i');
-            } elseif ($this->word[$this->k - 1] !== 's') {
-                --$this->k;
+        if ($word[$k] === 's') {
+            if (self::ends($word, $k, 'sses', $j)) {
+                $k -= 2;
+            } elseif (self::ends($word, $k, 'ies', $j)) {
+                self::setTo($word, $k, $j, 'i');
+            } elseif ($word[$k - 1] !== 's') {
+                --$k;
             }
         }
 
-        if ($this->ends('eed')) {
-            if ($this->measure() > 0) {
-                --$this->k;
+        if (self::ends($word, $k, 'eed', $j)) {
+            if (self::measure($word, $j) > 0) {
+                --$k;
             }
-        } elseif (($this->ends('ed') || $this->ends('ing')) && $this->vowelInStem()) {
-            $this->k = $this->j;
+        } elseif ((self::ends($word, $k, 'ed', $j) || self::ends($word, $k, 'ing', $j))
+            && self::vowelInStem($word, $j)) {
+            $k = $j;
 
-            if ($this->ends('at')) {
-                $this->setTo('ate');
-            } elseif ($this->ends('bl')) {
-                $this->setTo('ble');
-            } elseif ($this->ends('iz')) {
-                $this->setTo('ize');
-            } elseif ($this->doubleConsonant($this->k)) {
-                $ch = $this->word[$this->k--];
+            if (self::ends($word, $k, 'at', $j)) {
+                self::setTo($word, $k, $j, 'ate');
+            } elseif (self::ends($word, $k, 'bl', $j)) {
+                self::setTo($word, $k, $j, 'ble');
+            } elseif (self::ends($word, $k, 'iz', $j)) {
+                self::setTo($word, $k, $j, 'ize');
+            } elseif (self::doubleConsonant($word, $k)) {
+                $ch = $word[$k--];
 
                 if ($ch === 'l' || $ch === 's' || $ch === 'z') {
-                    ++$this->k;
+                    ++$k;
                 }
-            } elseif ($this->measure() === 1 && $this->cvc($this->k)) {
-                $this->setTo('e');
+            } elseif (self::measure($word, $j) === 1 && self::cvc($word, $k)) {
+                self::setTo($word, $k, $j, 'e');
             }
         }
     }
 
     /**
      * Change a terminal y to i if there is another vowel in the stem.
+     *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      */
-    private function stepTwo() : void
+    protected static function stepTwo(string &$word, int $k, int &$j) : void
     {
-        if ($this->ends('y') && $this->vowelInStem()) {
-            $this->word[$this->k] = 'i';
+        if (self::ends($word, $k, 'y', $j) && self::vowelInStem($word, $j)) {
+            $word[$k] = 'i';
         }
     }
 
     /**
      * Map double suffixes to single ones, e.g. ization to ize.
+     *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      */
-    private function stepThree() : void
+    protected static function stepThree(string &$word, int &$k, int &$j) : void
     {
-        if ($this->k === $this->k0) {
+        if ($k === 0) {
             return;
         }
 
-        switch ($this->word[$this->k - 1]) {
+        switch ($word[$k - 1]) {
             case 'a':
-                if ($this->ends('ational')) {
-                    $this->r('ate');
+                if (self::ends($word, $k, 'ational', $j)) {
+                    self::r($word, $k, $j, 'ate');
 
                     break;
                 }
 
-                if ($this->ends('tional')) {
-                    $this->r('tion');
+                if (self::ends($word, $k, 'tional', $j)) {
+                    self::r($word, $k, $j, 'tion');
 
                     break;
                 }
@@ -340,14 +317,14 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 'c':
-                if ($this->ends('enci')) {
-                    $this->r('ence');
+                if (self::ends($word, $k, 'enci', $j)) {
+                    self::r($word, $k, $j, 'ence');
 
                     break;
                 }
 
-                if ($this->ends('anci')) {
-                    $this->r('ance');
+                if (self::ends($word, $k, 'anci', $j)) {
+                    self::r($word, $k, $j, 'ance');
 
                     break;
                 }
@@ -355,8 +332,8 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 'e':
-                if ($this->ends('izer')) {
-                    $this->r('ize');
+                if (self::ends($word, $k, 'izer', $j)) {
+                    self::r($word, $k, $j, 'ize');
 
                     break;
                 }
@@ -364,32 +341,32 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 'l':
-                if ($this->ends('bli')) {
-                    $this->r('ble');
+                if (self::ends($word, $k, 'bli', $j)) {
+                    self::r($word, $k, $j, 'ble');
 
                     break;
                 }
 
-                if ($this->ends('alli')) {
-                    $this->r('al');
+                if (self::ends($word, $k, 'alli', $j)) {
+                    self::r($word, $k, $j, 'al');
 
                     break;
                 }
 
-                if ($this->ends('entli')) {
-                    $this->r('ent');
+                if (self::ends($word, $k, 'entli', $j)) {
+                    self::r($word, $k, $j, 'ent');
 
                     break;
                 }
 
-                if ($this->ends('eli')) {
-                    $this->r('e');
+                if (self::ends($word, $k, 'eli', $j)) {
+                    self::r($word, $k, $j, 'e');
 
                     break;
                 }
 
-                if ($this->ends('ousli')) {
-                    $this->r('ous');
+                if (self::ends($word, $k, 'ousli', $j)) {
+                    self::r($word, $k, $j, 'ous');
 
                     break;
                 }
@@ -397,20 +374,20 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 'o':
-                if ($this->ends('ization')) {
-                    $this->r('ize');
+                if (self::ends($word, $k, 'ization', $j)) {
+                    self::r($word, $k, $j, 'ize');
 
                     break;
                 }
 
-                if ($this->ends('ation')) {
-                    $this->r('ate');
+                if (self::ends($word, $k, 'ation', $j)) {
+                    self::r($word, $k, $j, 'ate');
 
                     break;
                 }
 
-                if ($this->ends('ator')) {
-                    $this->r('ate');
+                if (self::ends($word, $k, 'ator', $j)) {
+                    self::r($word, $k, $j, 'ate');
 
                     break;
                 }
@@ -418,26 +395,26 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 's':
-                if ($this->ends('alism')) {
-                    $this->r('al');
+                if (self::ends($word, $k, 'alism', $j)) {
+                    self::r($word, $k, $j, 'al');
 
                     break;
                 }
 
-                if ($this->ends('iveness')) {
-                    $this->r('ive');
+                if (self::ends($word, $k, 'iveness', $j)) {
+                    self::r($word, $k, $j, 'ive');
 
                     break;
                 }
 
-                if ($this->ends('fulness')) {
-                    $this->r('ful');
+                if (self::ends($word, $k, 'fulness', $j)) {
+                    self::r($word, $k, $j, 'ful');
 
                     break;
                 }
 
-                if ($this->ends('ousness')) {
-                    $this->r('ous');
+                if (self::ends($word, $k, 'ousness', $j)) {
+                    self::r($word, $k, $j, 'ous');
 
                     break;
                 }
@@ -445,20 +422,20 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 't':
-                if ($this->ends('aliti')) {
-                    $this->r('al');
+                if (self::ends($word, $k, 'aliti', $j)) {
+                    self::r($word, $k, $j, 'al');
 
                     break;
                 }
 
-                if ($this->ends('iviti')) {
-                    $this->r('ive');
+                if (self::ends($word, $k, 'iviti', $j)) {
+                    self::r($word, $k, $j, 'ive');
 
                     break;
                 }
 
-                if ($this->ends('biliti')) {
-                    $this->r('ble');
+                if (self::ends($word, $k, 'biliti', $j)) {
+                    self::r($word, $k, $j, 'ble');
 
                     break;
                 }
@@ -466,8 +443,8 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 'g':
-                if ($this->ends('logi')) {
-                    $this->r('log');
+                if (self::ends($word, $k, 'logi', $j)) {
+                    self::r($word, $k, $j, 'log');
 
                     break;
                 }
@@ -478,25 +455,29 @@ class PorterEnglish implements Stemmer
 
     /**
      * Remove suffixes such as ic, ful, and ness.
+     *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      */
-    private function stepFour() : void
+    protected static function stepFour(string &$word, int &$k, int &$j) : void
     {
-        switch ($this->word[$this->k]) {
+        switch ($word[$k]) {
             case 'e':
-                if ($this->ends('icate')) {
-                    $this->r('ic');
+                if (self::ends($word, $k, 'icate', $j)) {
+                    self::r($word, $k, $j, 'ic');
 
                     break;
                 }
 
-                if ($this->ends('ative')) {
-                    $this->r('');
+                if (self::ends($word, $k, 'ative', $j)) {
+                    self::r($word, $k, $j, '');
 
                     break;
                 }
 
-                if ($this->ends('alize')) {
-                    $this->r('al');
+                if (self::ends($word, $k, 'alize', $j)) {
+                    self::r($word, $k, $j, 'al');
 
                     break;
                 }
@@ -504,8 +485,8 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 'i':
-                if ($this->ends('iciti')) {
-                    $this->r('ic');
+                if (self::ends($word, $k, 'iciti', $j)) {
+                    self::r($word, $k, $j, 'ic');
 
                     break;
                 }
@@ -513,14 +494,14 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 'l':
-                if ($this->ends('ical')) {
-                    $this->r('ic');
+                if (self::ends($word, $k, 'ical', $j)) {
+                    self::r($word, $k, $j, 'ic');
 
                     break;
                 }
 
-                if ($this->ends('ful')) {
-                    $this->r('');
+                if (self::ends($word, $k, 'ful', $j)) {
+                    self::r($word, $k, $j, '');
 
                     break;
                 }
@@ -528,8 +509,8 @@ class PorterEnglish implements Stemmer
                 break;
 
             case 's':
-                if ($this->ends('ness')) {
-                    $this->r('');
+                if (self::ends($word, $k, 'ness', $j)) {
+                    self::r($word, $k, $j, '');
 
                     break;
                 }
@@ -540,122 +521,126 @@ class PorterEnglish implements Stemmer
 
     /**
      * Remove a suffix in the context of a measure greater than one.
+     *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      */
-    private function stepFive() : void
+    protected static function stepFive(string &$word, int &$k, int &$j) : void
     {
-        if ($this->k === $this->k0) {
+        if ($k === 0) {
             return;
         }
 
-        switch ($this->word[$this->k - 1]) {
+        switch ($word[$k - 1]) {
             case 'a':
-                if ($this->ends('al')) {
+                if (self::ends($word, $k, 'al', $j)) {
                     break;
                 }
 
                 return;
 
             case 'c':
-                if ($this->ends('ance')) {
+                if (self::ends($word, $k, 'ance', $j)) {
                     break;
                 }
 
-                if ($this->ends('ence')) {
+                if (self::ends($word, $k, 'ence', $j)) {
                     break;
                 }
 
                 return;
 
             case 'e':
-                if ($this->ends('er')) {
+                if (self::ends($word, $k, 'er', $j)) {
                     break;
                 }
 
                 return;
 
             case 'i':
-                if ($this->ends('ic')) {
+                if (self::ends($word, $k, 'ic', $j)) {
                     break;
                 }
 
                 return;
 
             case 'l':
-                if ($this->ends('able')) {
+                if (self::ends($word, $k, 'able', $j)) {
                     break;
                 }
 
-                if ($this->ends('ible')) {
+                if (self::ends($word, $k, 'ible', $j)) {
                     break;
                 }
 
                 return;
 
             case 'n':
-                if ($this->ends('ant')) {
+                if (self::ends($word, $k, 'ant', $j)) {
                     break;
                 }
 
-                if ($this->ends('ement')) {
+                if (self::ends($word, $k, 'ement', $j)) {
                     break;
                 }
 
-                if ($this->ends('ment')) {
+                if (self::ends($word, $k, 'ment', $j)) {
                     break;
                 }
 
-                if ($this->ends('ent')) {
+                if (self::ends($word, $k, 'ent', $j)) {
                     break;
                 }
 
                 return;
 
             case 'o':
-                if ($this->ends('ion') && $this->j >= 0
-                    && ($this->word[$this->j] === 's' || $this->word[$this->j] === 't')) {
+                if (self::ends($word, $k, 'ion', $j) && $j >= 0
+                    && ($word[$j] === 's' || $word[$j] === 't')) {
                     break;
                 }
 
-                if ($this->ends('ou')) {
+                if (self::ends($word, $k, 'ou', $j)) {
                     break;
                 }
 
                 return;
 
             case 's':
-                if ($this->ends('ism')) {
+                if (self::ends($word, $k, 'ism', $j)) {
                     break;
                 }
 
                 return;
 
             case 't':
-                if ($this->ends('ate')) {
+                if (self::ends($word, $k, 'ate', $j)) {
                     break;
                 }
 
-                if ($this->ends('iti')) {
+                if (self::ends($word, $k, 'iti', $j)) {
                     break;
                 }
 
                 return;
 
             case 'u':
-                if ($this->ends('ous')) {
+                if (self::ends($word, $k, 'ous', $j)) {
                     break;
                 }
 
                 return;
 
             case 'v':
-                if ($this->ends('ive')) {
+                if (self::ends($word, $k, 'ive', $j)) {
                     break;
                 }
 
                 return;
 
             case 'z':
-                if ($this->ends('ize')) {
+                if (self::ends($word, $k, 'ize', $j)) {
                     break;
                 }
 
@@ -665,30 +650,58 @@ class PorterEnglish implements Stemmer
                 return;
         }
 
-        if ($this->measure() > 1) {
-            $this->k = $this->j;
+        if (self::measure($word, $j) > 1) {
+            $k = $j;
         }
     }
 
     /**
      * Remove a final e if the measure allows it and undouble a final l.
+     *
+     * @param string $word
+     * @param int $k
+     * @param int $j
      */
-    private function stepSix() : void
+    protected static function stepSix(string &$word, int &$k, int &$j) : void
     {
-        $this->j = $this->k;
+        $j = $k;
 
-        if ($this->word[$this->k] === 'e') {
-            $a = $this->measure();
+        if ($word[$k] === 'e') {
+            $a = self::measure($word, $j);
 
-            if ($a > 1 || ($a === 1 && !$this->cvc($this->k - 1))) {
-                --$this->k;
+            if ($a > 1 || ($a === 1 && !self::cvc($word, $k - 1))) {
+                --$k;
             }
         }
 
-        if ($this->word[$this->k] === 'l' && $this->doubleConsonant($this->k)
-            && $this->measure() > 1) {
-            --$this->k;
+        if ($word[$k] === 'l' && self::doubleConsonant($word, $k)
+            && self::measure($word, $j) > 1) {
+            --$k;
         }
+    }
+
+    /**
+     * Stem a word to its root form.
+     *
+     * @param string $word
+     * @return string
+     */
+    public function stem(string $word) : string
+    {
+        $k = strlen($word) - 1;
+
+        if ($k > 1) {
+            $j = 0;
+
+            self::stepOne($word, $k, $j);
+            self::stepTwo($word, $k, $j);
+            self::stepThree($word, $k, $j);
+            self::stepFour($word, $k, $j);
+            self::stepFive($word, $k, $j);
+            self::stepSix($word, $k, $j);
+        }
+
+        return substr($word, 0, $k + 1);
     }
 
     /**

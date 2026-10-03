@@ -82,6 +82,20 @@ class WordStemmerTest extends TestCase
     }
 
     #[Test]
+    public function tokenizeIsRepeatable() : void
+    {
+        $this->assertSame(
+            ['Major', 'vote', 'is', 'like', 'foolish'],
+            $this->tokenizer->tokenize('Majority voting is likely foolish'),
+        );
+
+        $this->assertSame(
+            ['Major', 'vote', 'is', 'like', 'foolish'],
+            $this->tokenizer->tokenize('Majority voting is likely foolish'),
+        );
+    }
+
+    #[Test]
     public function toStringReturnsTokenizer() : void
     {
         $this->assertSame('Word Stemmer (language: PorterEnglish)', (string) $this->tokenizer);
