@@ -637,7 +637,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['validationDataset']);
+        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['validation']);
 
         return $properties;
     }
