@@ -837,7 +837,7 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath'],
-            $properties['validationDataset']
+            $properties['validation']
         );
 
         return $properties;
