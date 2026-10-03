@@ -272,6 +272,10 @@ nav:
       - Sentence: tokenizers/sentence.md
       - Whitespace: tokenizers/whitespace.md
       - Word: tokenizers/word.md
+      - Word Stemmer: tokenizers/word-stemmer.md
+      - Stemmers:
+        - API Reference: tokenizers/stemmers/stemmer.md
+        - Porter English: tokenizers/stemmers/english-porter.md
     - Persisters:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md

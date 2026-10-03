@@ -198,18 +198,22 @@ In addition, backend state is no longer serialized — it is now transient per e
 
 Parallel backends also now default to the number of **physical** CPU cores rather than logical cores.
 
-### 10. The Word Stemmer tokenizer was removed
+### 10. The Word Stemmer tokenizer now uses a pluggable stemmer
 
-The `Rubix\ML\Tokenizers\WordStemmer` tokenizer was removed from the library. Use one of the remaining [tokenizers](tokenizers/word.md) such as `Word`, or perform stemming outside of the pipeline with a library of your choice.
+The `Rubix\ML\Tokenizers\WordStemmer` tokenizer no longer takes a language code. It now takes a [stemmer](tokenizers/stemmers/stemmer.md), defaulting to the [Porter English](tokenizers/stemmers/english-porter.md) stemmer.
 
 ```php
-use Rubix\ML\Tokenizers\Word;
+use Rubix\ML\Tokenizers\WordStemmer;
+use Rubix\ML\Tokenizers\Stemmers\PorterEnglish;
 
 // before
 $tokenizer = new WordStemmer('en');
 
 // after
-$tokenizer = new Word();
+$tokenizer = new WordStemmer();
+
+// or, explicitly
+$tokenizer = new WordStemmer(new PorterEnglish());
 ```
 
 ### 11. Updated dependencies
