@@ -135,13 +135,7 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
      */
     public function train(Dataset $dataset) : void
     {
-        foreach ($this->transformers as $transformer) {
-            if ($transformer instanceof Stateful) {
-                $transformer->fit($dataset);
-            }
-
-            $dataset->apply($transformer);
-        }
+        $this->preprocess($dataset);
 
         if ($this->base instanceof Learner) {
             $this->base->train($dataset);
@@ -234,6 +228,20 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
         }
 
         return $this->base->score($dataset);
+    }
+
+    /**
+     * Fit all the transformers in the pipeline to the given dataset.
+     *
+     * @param Dataset $dataset
+     */
+    public function fit(Dataset $dataset) : void
+    {
+        foreach ($this->transformers as $transformer) {
+            if ($transformer instanceof Stateful) {
+                $transformer->fit($dataset);
+            }
+        }
     }
 
     /**
