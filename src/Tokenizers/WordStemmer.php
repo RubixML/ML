@@ -3,12 +3,15 @@
 namespace Rubix\ML\Tokenizers;
 
 use Rubix\ML\Helpers\Params;
+use Rubix\ML\Tokenizers\Stemmers\PorterEnglish;
+use Rubix\ML\Tokenizers\Stemmers\Stemmer;
 
 /**
  * Word Stemmer
  *
- * Word Stemmer reduces inflected and derived words to their root form using the Snowball method. For example,
- * the sentence "Majority voting is likely foolish" might stem to "Major vote is like foolish."
+ * Word Stemmer reduces inflected and derived words to their root form using a stemmer. For example, the
+ * sentence "Majority voting is likely foolish" might stem to "major vote is like foolish." The
+ * Porter English stemmer is used by default.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -17,18 +20,30 @@ use Rubix\ML\Helpers\Params;
 class WordStemmer extends Word
 {
     /**
-     * The word stemmer.
+     * The underlying word stemmer.
      *
-     * @var \Rubix\ML\Tokenizers\Stemmers\Stemmer
+     * @var Stemmer
      */
     protected $stemmer;
 
     /**
-     * @param string $language
+     * @param Stemmer|null $stemmer
      */
-    public function __construct(Stemmer $stemmer)
+    public function __construct(?Stemmer $stemmer = null)
     {
-        $this->stemmer = $stemmer;
+        $this->stemmer = $stemmer ?? new PorterEnglish();
+    }
+
+    /**
+     * Return the underlying word stemmer.
+     *
+     * @internal
+     *
+     * @return Stemmer
+     */
+    public function stemmer() : Stemmer
+    {
+        return $this->stemmer;
     }
 
     /**
