@@ -112,9 +112,10 @@ nav:
       - Committee Machine: committee-machine.md
       - Grid Search: grid-search.md
       - Persistent Model: persistent-model.md
-      - Pipeline: pipeline.md
     - Transformers:
       - API Reference: transformers/api.md
+      - Composition:
+        - Pipeline: transformers/pipeline.md
       - Standardization and Normalization:
         - L1 Normalizer: transformers/l1-normalizer.md
         - L2 Normalizer: transformers/l2-normalizer.md

@@ -26,7 +26,7 @@ This affects you in two important ways:
 - Estimators and transformers that require continuous features will now **reject** datasets with integer columns. For example, training a [K Means](clusterers/k-means.md), [Ridge](regressors/ridge.md), or any neural network on a column of `[1, 2, 3]` will throw an `InvalidArgumentException` because the features are no longer continuous.
 - A column that mixes integers and floats such as `[1, 2, 3.0]` is no longer homogeneous and will fail **dataset validation** with an `InvalidArgumentException`.
 
-The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a [Pipeline](./pipeline.md):
+The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a [Pipeline](transformers/pipeline.md):
 
 ```php
 use Rubix\ML\Transformers\FloatTypeConverter;
@@ -35,13 +35,17 @@ $dataset->apply(new FloatTypeConverter());
 ```
 
 ```php
-use Rubix\ML\Pipeline;
+use Rubix\ML\Transformers\Pipeline;
 use Rubix\ML\Clusterers\KMeans;
 
-$estimator = new Pipeline([
+$pipeline = new Pipeline([
     new FloatTypeConverter(),
     // ...
-], new KMeans(5));
+]);
+
+$clusterer = new KMeans(5);
+
+$clusterer->train($dataset->apply($pipeline));
 ```
 
 Output of certain Transformers such as [One Hot Encoder](transformers/one-hot-encoder.md), [Word Count Vectorizer](transformers/word-count-vectorizer.md), and [Token Hashing Vectorizer](transformers/token-hashing-vectorizer.md) are now interpretted as categorical by default. Use [Float Type Converter](transformers/float-type-converter.md) after the initial transformation to recover the old behavior.
