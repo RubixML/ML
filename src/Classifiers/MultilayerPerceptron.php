@@ -663,12 +663,12 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($validation);
+                $predictions = $this->predict($this->validation);
 
-                $score = $this->metric->score($predictions, $validation->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }

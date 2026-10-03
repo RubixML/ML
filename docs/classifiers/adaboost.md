@@ -8,7 +8,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
     The default base learner is a [Classification Tree](classification-tree.md) with a max height of 1 i.e a *Decision Stump*.
 
 !!! note
-    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one, in which case the learner trains on all of the data passed to `train()`. Without a validation set, `scores()` remains empty and early stopping is disabled.
+    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -45,7 +45,7 @@ Return the loss for each epoch from the last training session.
 public losses() : float[]|null
 ```
 
-Set the dataset used to score the model during training. The learner always trains on the *entire* dataset given to `train()`. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping. The dataset is not persisted with the model, so a learner restored from a snapshot must have it set again before resuming.
+Set the dataset used to score the model during training. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping.
 
 ```php
 public setValidationDataset(?Labeled $dataset) : void

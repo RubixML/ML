@@ -5,7 +5,7 @@
 *Adaptive Linear Neuron* is a single layer feed-forward neural network with a continuous linear output neuron suitable for regression tasks. Training is equivalent to solving regularized linear regression with an elastic net penalty online using Mini Batch Gradient Descent. In addition, the learner features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
 !!! note
-    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one, in which case the learner trains on all of the data passed to `train()`. Without a validation set, `scores()` remains empty and early stopping is disabled.
+    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -57,6 +57,12 @@ Return the loss for each epoch from the last training session.
 public losses() : float[]|null
 ```
 
+Set the dataset used to score the model during training. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping.
+
+```php
+public setValidationDataset(?Labeled $dataset) : void
+```
+
 Return the validation score for each epoch from the last training session.
 
 ```php
@@ -69,22 +75,16 @@ Returns the underlying neural network instance or `null` if untrained. See [Feed
 public network() : FeedForward|null
 ```
 
-Set the path of the temporary snapshot file used to store network parameters during training.
-
-```php
-public setSnapshotPath(?string $path) : void
-```
-
-Set the dataset used to score the model during training. The learner always trains on the *entire* dataset given to `train()`. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping. The dataset is not persisted with the model, so a learner restored from a snapshot must have it set again before resuming.
-
-```php
-public setValidationDataset(?Labeled $dataset) : void
-```
-
 Clean up any leftover state after training. Only do this if you plan to use the model for inference.
 
 ```php
 public cleanup() : void
+```
+
+Set the path of the temporary snapshot file used to store network parameters during training.
+
+```php
+public setSnapshotPath(?string $path) : void
 ```
 
 ## References

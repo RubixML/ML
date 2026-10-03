@@ -5,7 +5,7 @@
 A multiclass feed-forward neural network classifier with user-defined hidden layers. The Multilayer Perceptron is a deep learning model capable of forming higher-order feature representations through layers of computation. In addition, the MLP features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
 !!! note
-    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one, in which case the learner trains on all of the data passed to `train()`. Without a validation set, `scores()` remains empty and early stopping is disabled.
+    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -72,16 +72,22 @@ Return the loss for each epoch from the last training session.
 public losses() : float[]|null
 ```
 
-Return the validation score for each epoch from the last training session.
-
-```php
-public scores() : float[]|null
-```
-
 Return the gradient norm for each epoch from the last training session.
 
 ```php
 public norms() : float[]|null
+```
+
+Set the dataset used to score the model during training. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping.
+
+```php
+public setValidationDataset(?Labeled $dataset) : void
+```
+
+Return the validation score for each epoch from the last training session.
+
+```php
+public scores() : float[]|null
 ```
 
 Returns the underlying neural network instance or `null` if untrained. See [FeedForward](../neural-network/feed-forward.md) for more details.
@@ -100,12 +106,6 @@ Set the path of the temporary snapshot file used to store network parameters dur
 
 ```php
 public setSnapshotPath(?string $path) : void
-```
-
-Set the dataset used to score the model during training. The learner always trains on the *entire* dataset given to `train()`. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping. The dataset is not persisted with the model, so a learner restored from a snapshot must have it set again before resuming.
-
-```php
-public setValidationDataset(?Labeled $dataset) : void
 ```
 
 ## References
