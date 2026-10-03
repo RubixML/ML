@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Datasets\Generators\Hyperplane;
@@ -22,6 +23,7 @@ use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
 #[Group('Regressors')]
+#[RequiresPhpExtension('svm')]
 #[CoversClass(SVR::class)]
 class SVRTest extends TestCase
 {
