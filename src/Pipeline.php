@@ -241,6 +241,8 @@ class Pipeline implements Online, Probabilistic, Scoring, Persistable, Estimator
             if ($transformer instanceof Stateful) {
                 $transformer->fit($dataset);
             }
+
+            $dataset->apply($transformer);
         }
     }
 
