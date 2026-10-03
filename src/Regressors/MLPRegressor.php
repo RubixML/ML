@@ -758,7 +758,7 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath'],
-            $properties['validationDataset']
+            $properties['validation']
         );
 
         return $properties;
