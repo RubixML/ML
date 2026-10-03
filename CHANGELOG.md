@@ -2,7 +2,6 @@
 
 - 3.0.0
     - Integers are now considered a categorical data type
-    - `Pipeline` is now a Transformer decorator wrapping a list of Transformers, exposing `fit()`, `fitted()`, `update()`, and `transform()`. It has moved to the `Rubix\ML\Transformers` namespace and no longer implements Estimator, Learner, Online, Probabilistic, Scoring, or EstimatorWrapper
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
     - `Isolation Forest` training and inference is now parallelized
     - Added disk-based streaming neural network snapshotting
@@ -71,6 +70,7 @@
     - Added `fillColor` parameter to Image Rotator
     - Remove `holdOut` paramereter from Learners with validation set
     - Added `setValidationDataset()` method to Learners with validation set
+    - `Pipeline` is now a Transformer decorator
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
