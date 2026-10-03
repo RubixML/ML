@@ -381,7 +381,7 @@ $lr->train($training);
 Both parameters are inert until a validation dataset is set. `$evalInterval` is covered in more detail in [item 39](#39-validation-interval-for-early-stopping-evaluation).
 
 !!! note
-    With no validation set the behavior matches 2.0 exactly: the learner trains on all of the data and runs for the full epoch budget, so models fit without explicit configuration are unaffected. This change is purely additive.
+    With no validation set, the learner trains on all of the data and validation-score-based monitoring is inactive; loss-based stopping via `minChange` still applies. Remove any `holdOut` argument when migrating, and shift positional arguments that followed it.
 
 ### 19. Token Hashing Vectorizer now defaults to Murmur3
 
