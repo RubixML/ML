@@ -411,6 +411,11 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                     . ' that are unknown to this classifier: '
                     . implode(', ', $unknown) . '.');
             }
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
         }
 
         [$minScore, $maxScore] = $this->metric->range()->list();

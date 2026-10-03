@@ -407,6 +407,11 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
                     . ' that are unknown to this classifier: '
                     . implode(', ', $unknown) . '.');
             }
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
         }
 
         [$minScore, $maxScore] = $this->metric->range()->list();
@@ -479,7 +484,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
             $this->ensemble[] = $estimator;
             $this->influences[] = $influence;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
+            $evalThisStep = isset($this->validation) && $epoch % $this->evalInterval === 0;
 
             if ($evalThisStep) {
                 $score = $this->metric->score($this->predict($this->validation), $this->validation->labels());

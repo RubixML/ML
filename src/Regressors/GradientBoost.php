@@ -402,6 +402,11 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
 
         if (isset($this->validation)) {
             $outTest = array_fill(0, $this->validation->numSamples(), $mu);
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));

@@ -498,6 +498,11 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
                     . ' that are unknown to this classifier: '
                     . implode(', ', $unknown) . '.');
             }
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
         }
 
         [$minScore, $maxScore] = $this->metric->range()->list();

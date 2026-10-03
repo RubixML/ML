@@ -533,6 +533,11 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
 
         if (isset($this->validation)) {
             DatasetHasDimensionality::with($this->validation, $dataset->numFeatures())->check();
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
         }
 
         [$minScore, $maxScore] = $this->metric->range()->list();
