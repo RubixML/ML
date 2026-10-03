@@ -352,39 +352,36 @@ $dataset->binnedSplit(0.8);       // 3.0 - stratify over equal frequency bins
 ```
 
 !!! note
-    Only datasets with a *continuous* target are affected — in practice, regression datasets. Classifiers, clusterers (whose cluster labels are integers, and therefore [categorical](representing-your-data.md) — see [item 1](#1-integers-are-now-a-categorical-data-type)), and any other learner with categorical labels are unaffected and continue to use `stratifiedSplit()` and `stratifiedFold()` as before. The [Validators](cross-validation.md) dispatch on the label type for you (see [item 51](#51-validators-and-regressors-now-stratify-continuous-labels-by-bin)).
+    Only datasets with a *continuous* target are affected — in practice, regression datasets. Classifiers, clusterers (whose cluster labels are integers, and therefore [categorical](representing-your-data.md) — see [item 1](#1-integers-are-now-a-categorical-data-type)), and any other learner with categorical labels are unaffected and continue to use `stratifiedSplit()` and `stratifiedFold()` as before. The [Validators](cross-validation.md) dispatch on the label type for you (see [item 51](#51-validators-now-stratify-continuous-labels-by-bin)).
 
 ## Behavioral Changes
 
 These changes won't throw errors, but they can change the output of your models or the shape of your data. Verify that your results are still what you expect.
 
-### 18. Gradient learners now hold out validation data for early stopping
+### 18. Gradient learners now support early stopping
 
-[Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Adaline](regressors/adaline.md), and [AdaBoost](classifiers/adaboost.md) now reserve a portion of the training set as a hold-out to drive early stopping, matching the behavior the [MLP](classifiers/multilayer-perceptron.md) learners already had. In 2.0 these learners trained on 100% of the data — now, by default, 10% is held out and the remainder is trained on. Training stops when the validation score does not improve within a window of evaluations.
+[Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Adaline](regressors/adaline.md), [AdaBoost](classifiers/adaboost.md), and the other windowed learners now support progress monitoring and early stopping. They always train on the *entire* dataset given to `train()` — no portion of it is carved out. To enable early stopping, supply the validation set yourself with `setValidationDataset()`, which is covered in [item 54](#54-early-stopping-is-opt-in-via-user-supplied-validation-sets). Training stops when the validation score fails to improve within a window of evaluations.
 
-The relevant constructor parameters (defaults in parentheses) are:
+The relevant constructor parameters are:
 
-- `$holdOut` — the fraction of samples held out for validation (0.1, must be between 0.0 and 0.5)
-- `$evalInterval` — the number of epochs between hold-out evaluations (3)
-- `$window` — the number of evaluations without improvement before early stopping (5)
+- `$evalInterval` — the number of epochs between validation evaluations (1, or 3 for the boosting learners)
+- `$window` — the number of evaluations without improvement before early stopping (10, or 5 for the boosting learners)
 
 ```php
 use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\Datasets\Labeled;
 
-// before - trained on all the data
-$lr = new LogisticRegression();
+$lr = new LogisticRegression(window: 5, evalInterval: 3);
 
-// after - holds out 10% for validation and early stops
-$lr = new LogisticRegression(holdOut: 0.1, window: 5, evalInterval: 3);
+$lr->setValidationDataset($validation);
 
-// to train on all the data without early stopping
-$lr = new LogisticRegression(holdOut: 0.0);
+$lr->train($training);
 ```
 
-These parameters are inserted into the constructors after `$minChange`, so calls that pass arguments positionally past that point must be updated (or converted to named arguments). The `$evalInterval` parameter itself is covered in more detail in [item 39](#39-validation-interval-for-hold-out-evaluation).
+Both parameters are inert until a validation dataset is set. `$evalInterval` is covered in more detail in [item 39](#39-validation-interval-for-early-stopping-evaluation).
 
-!!! warning
-    Because these learners now see only 90% of your training data by default and may stop early, models fit without explicit configuration may differ from 2.0. Fit with `holdOut: 0.0` or re-tune if results change unexpectedly.
+!!! note
+    With no validation set the behavior matches 2.0 exactly: the learner trains on all of the data and runs for the full epoch budget, so models fit without explicit configuration are unaffected. This change is purely additive.
 
 ### 19. Token Hashing Vectorizer now defaults to Murmur3
 
@@ -625,9 +622,9 @@ $mlp->train($dataset);
 $mlp->cleanup();
 ```
 
-### 39. Validation interval for hold-out evaluation
+### 39. Validation interval for early stopping evaluation
 
-The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Gradient Boost](regressors/gradient-boost.md), and [AdaBoost](classifiers/adaboost.md) — now accept a `$evalInterval` constructor parameter (default `3`). It controls how often the hold-out set is scored during training, working in tandem with the `window` parameter for early stopping:
+The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Gradient Boost](regressors/gradient-boost.md), [AdaBoost](classifiers/adaboost.md), and [Logit Boost](classifiers/logit-boost.md) — now accept a `$evalInterval` constructor parameter (default `1`, or `3` for the boosting learners). It controls how often the validation set supplied via `setValidationDataset()` is scored during training, working in tandem with the `window` parameter for early stopping:
 
 ```php
 $mlp = new MultilayerPerceptron(hiddenLayers: [new Dense(neurons: 100)], epochs: 1000, evalInterval: 5, window: 10);
@@ -719,7 +716,7 @@ The second argument is the size of each chunk (default `1024`), and the last chu
 
 ### 47. Iterative interface with progress() method
 
-A new [Iterative](iterative.md) interface groups the learners, estimators, and transformers that record their progress epoch by epoch during training or transformation. It exposes a `progress()` method that returns an iterable table combining every recorded epoch — the loss, the validation score (when a hold-out set was used), and, for neural network learners, the gradient norm — into a single ordered sequence:
+A new [Iterative](iterative.md) interface groups the learners, estimators, and transformers that record their progress epoch by epoch during training or transformation. It exposes a `progress()` method that returns an iterable table combining every recorded epoch — the loss, the validation score (when a validation dataset was supplied), and, for neural network learners, the gradient norm — into a single ordered sequence:
 
 ```php
 use Rubix\ML\Extractors\CSV;
@@ -802,18 +799,17 @@ There are a few constraints worth knowing about, since the bin count is a new de
 !!! note
     Empty bins are dropped from the result rather than returned as empty datasets, and a dataset with a constant target yields a single stratum. Because bins are ordered by target value, `binnedSplit()` shuffles the bins before awarding the leftover samples, so ties don't consistently favor the lowest valued bins. See [Binned Stratification](datasets/labeled.md#binned-stratification) for the full method reference.
 
-### 51. Validators and regressors now stratify continuous labels by bin
+### 51. Validators now stratify continuous labels by bin
 
-The [Validators](cross-validation.md) and the windowed regressors now use the new binned stratification from [item 50](#50-binned-stratification-for-continuous-labels) whenever the label is continuous, instead of dividing the dataset at random. They dispatch on the label type, so categorical datasets are unaffected and keep using the existing categorical methods.
+The [Validators](cross-validation.md) now use the new binned stratification from [item 50](#50-binned-stratification-for-continuous-labels) whenever the label is continuous, instead of dividing the dataset at random. They dispatch on the label type, so categorical datasets are unaffected and keep using the existing categorical methods.
 
 - [Hold Out](cross-validation/hold-out.md) and [Monte Carlo](cross-validation/monte-carlo.md) call `binnedSplit()` on continuous labels (previously `randomize()->split()` and `split()`).
 - [K Fold](cross-validation/k-fold.md) calls `binnedFold()` on continuous labels (previously `fold()`).
-- [Adaline](regressors/adaline.md), [Gradient Boost](regressors/gradient-boost.md), and [MLP Regressor](regressors/mlp-regressor.md) call `binnedSplit()` for their hold-out sets (previously `randomize()->split()`).
 
 The subset *sizes* are unchanged — the hold-out and fold partitions are still exactly as large as before. What changes is *which* samples land in each subset: a hold-out set drawn at random no longer tracks the shape of the target distribution, so it could end up with almost no samples from one end of the label range. The subsets are now spread evenly across that range, which is what makes them a meaningful validation signal.
 
 !!! warning
-    Because the hold-out membership differs from 2.0, models fit with the default `holdOut` setting may differ from 2.0 even with identical hyper-parameters. This compounds the early-stopping change in [item 18](#18-gradient-learners-now-hold-out-validation-data-for-early-stopping), since the score that drives early stopping is now measured against a differently-distributed hold-out set. Fit with `holdOut: 0.0` to remove both effects.
+    Because the hold-out membership differs from 2.0, models fit through [Hold Out](cross-validation/hold-out.md) or [Monte Carlo](cross-validation/monte-carlo.md) may differ from 2.0 even with identical hyper-parameters. The same applies to the validation set you inject into the windowed learners for early stopping — stratify it yourself if you need it to track the target distribution. See [item 54](#54-early-stopping-is-opt-in-via-user-supplied-validation-sets).
 
 ### 52. Binned description for continuous labels
 
@@ -849,3 +845,37 @@ $transformer = new ImageRotator(0.0, 0.2); // fillColor = '#000000'
 ```
 
 Any string that isn't a valid 6-digit hex color throws an `InvalidArgumentException` at construction. GD treats the background argument of `imagerotate()` as an RGB value for truecolor images but as a palette index for palette images, so the transformer allocates the color against the image when necessary — the same hex value works for both. This parameter is appended after `$jitter`, so existing calls that pass `$offset` and `$jitter` positionally are unaffected.
+
+### 54. Early stopping is opt-in via user-supplied validation sets
+
+The windowed learners no longer reserve a portion of the training set for validation. In 2.0, and throughout the 3.0 release candidates, an internal split meant that early stopping came at the cost of training on less data, and that the split itself was neither inspectable nor reusable. Now every one of these learners trains on the *entire* dataset given to `train()`, and the validation set is yours to supply.
+
+[Adaline](regressors/adaline.md), [MLP Regressor](regressors/mlp-regressor.md), [Gradient Boost](regressors/gradient-boost.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Multilayer Perceptron](classifiers/multilayer-perceptron.md), [AdaBoost](classifiers/adaboost.md), and [Logit Boost](classifiers/logit-boost.md) all take the validation set through `setValidationDataset()`:
+
+```php
+use Rubix\ML\Classifiers\MultilayerPerceptron;
+use Rubix\ML\Datasets\Labeled;
+
+[$validation, $training] = Labeled::build($samples, $labels)->split(0.8);
+
+$mlp = new MultilayerPerceptron(hiddenLayers: [$layer]);
+
+// validate against an external split and train on all of $training
+$mlp->setValidationDataset($validation);
+
+$mlp->train($training);
+```
+
+With a validation set in place, the learner scores it every `$evalInterval` epochs and stops early when the score fails to improve for `$window` evaluations. Passing `null` disables progress monitoring and early stopping, leaving `scores()` empty.
+
+There are a few constraints worth knowing about:
+
+- **The set must be labeled and non-empty.** An empty dataset throws an `EmptyDataset` at the time of the call.
+- **Dimensionality must match the training set.** A validation set whose `numFeatures()` differs from the training set throws an `IncorrectDatasetDimensionality` when training begins.
+- **Classifiers require known labels.** Every label in the validation set must be one the classifier can emit, otherwise the score would be measured against classes the model can never predict. A validation set carrying an unknown label throws an `InvalidArgumentException`.
+- **Online learners retain the set.** For the learners that implement [Online](online.md), the injected validation set persists across `partial()` calls instead of being re-derived from each incoming batch.
+- **The set is transient.** Like the snapshot path, it is excluded from serialization. A learner restored from disk therefore has no validation set, so progress monitoring and early stopping stay inactive until you set one again.
+
+!!! note
+    Early stopping is entirely opt-in, so with no call to `setValidationDataset()` these learners behave exactly as they did in 2.0 — they train on all of the data for the full epoch budget.
+

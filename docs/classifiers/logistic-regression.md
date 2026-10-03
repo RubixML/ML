@@ -5,7 +5,7 @@
 A linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly two class outcomes. The model parameters (weights and bias) are solved using Mini Batch Gradient Descent with pluggable optimizers and cost functions that run on the neural network subsystem. In addition, the learner features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
 !!! note
-    If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
+    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one, in which case the learner trains on all of the data passed to `train()`. Without a validation set, `scores()` remains empty and early stopping is disabled.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -21,11 +21,10 @@ A linear classifier that uses the logistic (*sigmoid*) function to estimate the 
 | 4 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 6 | minChange | 1e-5 | float | The minimum change in the training loss necessary to continue training. |
-| 7 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the holdout set. |
+| 7 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the validation set. |
 | 8 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. Set to 0 to disable early stopping. |
-| 9 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
-| 10 | costFn | BinaryCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
-| 11 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
+| 9 | costFn | BinaryCrossEntropy | ClassificationLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 10 | metric | FBeta | Metric | The validation metric used to score the generalization performance of the model during training. |
 
 ## Example
 
@@ -45,7 +44,6 @@ $estimator = new LogisticRegression(
     minChange: 1e-5,
     evalInterval: 1,
     window: 10,
-    holdOut: 0.1,
     costFn: new BinaryCrossEntropy(),
     metric: new MCC()
 );
@@ -75,6 +73,12 @@ Set the path of the temporary snapshot file used to store network parameters dur
 
 ```php
 public setSnapshotPath(?string $path) : void
+```
+
+Set the dataset used to score the model during training. The learner always trains on the *entire* dataset given to `train()`. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping. The dataset is not persisted with the model, so a learner restored from a snapshot must have it set again before resuming.
+
+```php
+public setValidationDataset(?Labeled $dataset) : void
 ```
 
 Clean up any leftover state after training. Only do this if you plan to use the model for inference.

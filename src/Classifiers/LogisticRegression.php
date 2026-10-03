@@ -16,6 +16,7 @@ use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Snapshot;
@@ -39,6 +40,7 @@ use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
@@ -53,6 +55,8 @@ use function get_object_vars;
 use function number_format;
 use function array_map;
 use function array_flip;
+use function array_diff;
+use function implode;
 use function sys_get_temp_dir;
 
 /**
@@ -114,7 +118,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
     protected float $minChange;
 
     /**
-     * The number of epochs to train before evaluating the model with the holdout set.
+     * The number of epochs to train before evaluating the model with the validation set.
      *
      * @var int
      */
@@ -128,11 +132,12 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
     protected int $window;
 
     /**
-     * The proportion of training samples to use for validation and progress monitoring.
+     * The dataset used to score the model during training. When null, progress
+     * monitoring and early stopping are disabled.
      *
-     * @var float
+     * @var Labeled|null
      */
-    protected float $holdOut;
+    protected ?Labeled $validation = null;
 
     /**
      * The function that computes the loss associated with an erroneous activation during training.
@@ -192,7 +197,6 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
-     * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
      * @throws InvalidArgumentException
@@ -206,7 +210,6 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
         float $minChange = 1e-5,
         int $evalInterval = 1,
         int $window = 10,
-        float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null,
     ) {
@@ -254,11 +257,6 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be'
-                . " between 0 and 0.5, $holdOut given.");
-        }
-
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -271,7 +269,6 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
         $this->window = $window;
-        $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new BinaryCrossEntropy();
         $this->metric = $metric ?? new FBeta();
     }
@@ -320,7 +317,6 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
             'window' => $this->window,
-            'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
         ];
@@ -402,9 +398,28 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
     }
 
     /**
+     * Set the dataset used to score the model during training. The learner always
+     * trains on the entire dataset given to train(). While set, this dataset is
+     * scored every evalInterval epochs and drives early stopping once the score
+     * has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping. The dataset is excluded from serialization.
+     *
+     * @param Labeled|null $dataset
+     * @throws EmptyDataset
+     */
+    public function setValidationDataset(?Labeled $dataset) : void
+    {
+        if (isset($dataset)) {
+            DatasetIsNotEmpty::with($dataset)->check();
+        }
+
+        $this->validation = $dataset;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -445,7 +460,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
     /**
      * Perform a partial train on the learner.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -471,7 +486,23 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
-        [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
+        $validation = $this->validation;
+
+        if (isset($validation)) {
+            SpecificationChain::with([
+                new DatasetHasDimensionality($validation, $dataset->numFeatures()),
+            ])->check();
+
+            $unknown = array_diff($validation->possibleOutcomes(), $this->classes);
+
+            if ($unknown) {
+                throw new InvalidArgumentException('Validation dataset contains labels'
+                    . ' that are unknown to this classifier: '
+                    . implode(', ', $unknown) . '.');
+            }
+        }
+
+        $training = $dataset;
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
@@ -486,16 +517,11 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
         }
 
-        if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
-        }
-
         $this->scores = $this->losses = [];
 
         $classMap = array_flip($this->classes);
 
-        $training = $training->transformLabels(
+        $training = (clone $training)->transformLabels(
             static fn ($label) => $classMap[$label]
                 ?? throw new RuntimeException("Unknown class $label encountered during training.")
         );
@@ -542,12 +568,12 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($testing);
+                $predictions = $this->predict($validation);
 
-                $score = $this->metric->score($predictions, $testing->labels());
+                $score = $this->metric->score($predictions, $validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -724,7 +750,8 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             $properties['losses'],
             $properties['scores'],
             $properties['logger'],
-            $properties['snapshotPath']
+            $properties['snapshotPath'],
+            $properties['validationDataset']
         );
 
         return $properties;

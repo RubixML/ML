@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
@@ -130,7 +131,7 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
     protected float $minChange;
 
     /**
-     * The number of epochs to train before evaluating the model with the holdout set.
+     * The number of epochs to train before evaluating the model with the validation set.
      *
      * @var int
      */
@@ -144,11 +145,12 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
     protected int $window;
 
     /**
-     * The proportion of training samples to use for validation and progress monitoring.
+     * The dataset used to score the model during training. When null, progress
+     * monitoring and early stopping are disabled.
      *
-     * @var float
+     * @var Labeled|null
      */
-    protected float $holdOut;
+    protected ?Labeled $validation = null;
 
     /**
      * The function that computes the loss associated with an erroneous activation during training.
@@ -209,7 +211,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
-     * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
      */
@@ -223,7 +224,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
         float $minChange = 1e-5,
         int $evalInterval = 1,
         int $window = 10,
-        float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
         ?Metric $metric = null
     ) {
@@ -283,11 +283,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be'
-                . " between 0 and 0.5, $holdOut given.");
-        }
-
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -301,7 +296,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
         $this->window = $window;
-        $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
     }
@@ -351,7 +345,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
             'window' => $this->window,
-            'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
         ];
@@ -444,6 +437,25 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
     }
 
     /**
+     * Set the dataset used to score the model during training. The learner always
+     * trains on the entire dataset given to train(). While set, this dataset is
+     * scored every evalInterval epochs and drives early stopping once the score
+     * has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping. The dataset is excluded from serialization.
+     *
+     * @param Labeled|null $dataset
+     * @throws EmptyDataset
+     */
+    public function setValidationDataset(?Labeled $dataset) : void
+    {
+        if (isset($dataset)) {
+            DatasetIsNotEmpty::with($dataset)->check();
+        }
+
+        $this->validation = $dataset;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -520,7 +532,13 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
-        [$testing, $training] = $dataset->randomize()->binnedSplit($this->holdOut);
+        $validation = $this->validation;
+
+        if (isset($validation)) {
+            DatasetHasDimensionality::with($validation, $dataset->numFeatures())->check();
+        }
+
+        $training = $dataset;
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
@@ -533,11 +551,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
 
         if (!$snapshotPath) {
             $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
-        }
-
-        if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
         }
 
         $this->scores = $this->losses = $this->norms = [];
@@ -611,12 +624,12 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($testing);
+                $predictions = $this->predict($validation);
 
-                $score = $this->metric->score($predictions, $testing->labels());
+                $score = $this->metric->score($predictions, $validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -749,7 +762,8 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $properties['norms'],
             $properties['scores'],
             $properties['logger'],
-            $properties['snapshotPath']
+            $properties['snapshotPath'],
+            $properties['validationDataset']
         );
 
         return $properties;
