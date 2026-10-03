@@ -747,7 +747,7 @@ class LogisticRegression implements Estimator, Learner, Iterative, Online, Proba
             $properties['scores'],
             $properties['logger'],
             $properties['snapshotPath'],
-            $properties['validationDataset']
+            $properties['validation']
         );
 
         return $properties;
