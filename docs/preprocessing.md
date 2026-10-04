@@ -207,34 +207,37 @@ $dataset = $dataset1->join($dataset2)
 
 ## Transformer Pipelines
 
-The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
+The [Pipeline](transformers/pipeline.md) transformer helps you compose an arbitrarily long series of [Transformers](transformers/api.md) into a single unit. With a Pipeline, any dataset passed in is fitted to and/or transformed by each transformer in order before it arrives in the next transformer's context. The pipeline and its fitted transformer state can be persisted independently from an estimator.
 
 ```php
-use Rubix\ML\Pipeline;
+use Rubix\ML\Transformers\Pipeline;
 use Rubix\ML\Transformers\HotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\Clusterers\KMeans;
 
-$estimator = new Pipeline([
+$transformer = new Pipeline([
     new HotDeckImputer(5),
     new OneHotEncoder(),
     new ZScaleStandardizer(),
-], new KMeans(10));
+]);
 ```
 
-Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the Softmax Classifier.
+Calling `fit()` will result in the transformers being fitted to the dataset in order, while streaming a working copy of the data through the chain; the input dataset is left unaltered.
 
 ```php
-$estimator->train($dataset); // Transformers fitted and applied
-
-$estimator->partial($dataset); // Transformers updated and applied
+$transformer->fit($dataset); // Transformers fitted in order
 ```
 
-Any time a dataset is passed to the Pipeline it will automatically be transformed before being handed to the underlying estimator.
+Calling `update()` on a pipeline where any transformer in the stack is [Elastic](transformers/api.md#elastic) will refine each elastic fitting in place, lazily fitting any stateful transformer that has not yet been seen, again without touching the input dataset.
 
 ```php
-$predictions = $estimator->predict($dataset); // Dataset transformed automatically
+$transformer->update($dataset); // Elastic transformers refined
+```
+
+To transform a dataset in place, use `apply()` (or the pipeline's `transform()` method).
+
+```php
+$dataset->apply($transformer); // Dataset transformed in place
 ```
 
 ## Filtering Records
