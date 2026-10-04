@@ -31,14 +31,11 @@ For datasets that are too large to fit into memory all at once, you can stream t
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Regressors\MLPRegressor;
-use Rubix\ML\Transformers\MinMaxNormalizer;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
-
-$transformer = new MinMaxNormalizer();
 
 $estimator = new MLPRegressor([
     new Dense(128),
@@ -50,14 +47,9 @@ $estimator = new MLPRegressor([
 
 $extractor = new NDJSON('too-large.jsonl');
 
-foreach (Labeled::chunked($extractor, 1024) as $batch) {
-    $batch->apply($transformer);
-
+foreach (Labeled::chunked($extractor, 8192) as $batch) {
     $estimator->partial($batch);
 }
 ```
 
 Because `partial()` warms up a learner on the first call, there is no need to call `train()` beforehand. Every batch must be of the same shape and feature order, and since each batch is validated on construction, the first batch will fail fast if a record is malformed.
-
-!!! note
-    Streaming training does not shuffle the dataset, so order may effect training.
