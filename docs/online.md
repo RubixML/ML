@@ -25,7 +25,7 @@ $estimator->partial($folds[2]);
 
 ## Streaming Training
 
-For datasets that are too large to fit into memory all at once, you can stream the records from disk using an [Extractor](extracting-data.md) and train in batches with the `chunked()` dataset factory method. In the example below, we stream the records of a large NDJSON file from disk and partially train an [MLP Regressor](regressors/mlp-regressor.md). Any [Elastic](transformers/api.md#elastic) transformers in the preprocessing pipeline can be updated alongside the learner by calling `partial()` on the learner.
+For datasets that are too large to fit into memory all at once, you can stream the records from disk using an [Extractor](extracting-data.md) and train in batches with the `chunked()` dataset factory method. In the example below, we stream the records of a large NDJSON file from disk and partially train an [MLP Regressor](regressors/mlp-regressor.md).
 
 ```php
 use Rubix\ML\Datasets\Labeled;
