@@ -77,7 +77,13 @@ class PipelineTest extends TestCase
 
         $this->assertTrue($transformer->fitted());
 
-        $this->assertEqualsWithDelta([[0.0], [0.5], [1.0]], $dataset->samples(), 1e-8);
+        $this->assertSame([[1.0], [2.0], [3.0]], $dataset->samples());
+
+        $samples = $dataset->samples();
+
+        $transformer->transform($samples);
+
+        $this->assertEqualsWithDelta([[0.0], [0.5], [1.0]], $samples, 1e-8);
     }
 
     #[Test]
@@ -96,13 +102,82 @@ class PipelineTest extends TestCase
 
         $transformer->fit($dataset);
 
+        $this->assertSame([[1.0], [2.0], [3.0]], $dataset->samples());
+
+        $samples = $dataset->samples();
+
+        $transformer->transform($samples);
+
         $expected = [
             [0.0, 0.0],
             [0.5, 0.25],
             [1.0, 1.0],
         ];
 
-        $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);
+        $this->assertEqualsWithDelta($expected, $samples, 1e-8);
+    }
+
+    #[Test]
+    public function applyThroughPipelineTransformsOnce() : void
+    {
+        $transformer = new Pipeline([
+            new MinMaxNormalizer(0.0, 1.0),
+        ]);
+
+        $dataset = new Unlabeled(samples: [
+            [1.0],
+            [2.0],
+            [3.0],
+        ]);
+
+        $dataset->apply($transformer);
+
+        $this->assertTrue($transformer->fitted());
+
+        $this->assertEqualsWithDelta([[0.0], [0.5], [1.0]], $dataset->samples(), 1e-8);
+    }
+
+    #[Test]
+    public function applyThroughNestedPipelineTransformsOnce() : void
+    {
+        $transformer = new Pipeline([
+            new Pipeline([
+                new MinMaxNormalizer(0.0, 1.0),
+            ]),
+        ]);
+
+        $dataset = new Unlabeled(samples: [
+            [1.0],
+            [2.0],
+            [3.0],
+        ]);
+
+        $dataset->apply($transformer);
+
+        $this->assertTrue($transformer->fitted());
+
+        $this->assertEqualsWithDelta([[0.0], [0.5], [1.0]], $dataset->samples(), 1e-8);
+    }
+
+    #[Test]
+    public function fitLeavesCallerUnaltered() : void
+    {
+        $transformer = new Pipeline([
+            new MinMaxNormalizer(0.0, 1.0),
+            new PolynomialExpander(2),
+        ]);
+
+        $dataset = new Unlabeled(samples: [
+            [1.0],
+            [2.0],
+            [3.0],
+        ]);
+
+        $transformer->fit($dataset);
+
+        $this->assertTrue($transformer->fitted());
+
+        $this->assertSame([[1.0], [2.0], [3.0]], $dataset->samples());
     }
 
     #[Test]
@@ -158,7 +233,13 @@ class PipelineTest extends TestCase
 
         $this->assertTrue($transformer->fitted());
 
-        $this->assertEqualsWithDelta([[0.0], [1.0]], $dataset->samples(), 1e-8);
+        $this->assertSame([[0.0], [2.0]], $dataset->samples());
+
+        $samples = $dataset->samples();
+
+        $transformer->transform($samples);
+
+        $this->assertEqualsWithDelta([[0.0], [1.0]], $samples, 1e-8);
     }
 
     #[Test]

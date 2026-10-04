@@ -222,19 +222,19 @@ $transformer = new Pipeline([
 ]);
 ```
 
-Calling `fit()` will result in the transformers being fitted to the dataset in order, and the transformed samples are left in place in the same dataset.
+Calling `fit()` will result in the transformers being fitted to the dataset in order, while streaming a working copy of the data through the chain; the input dataset is left unaltered.
 
 ```php
-$transformer->fit($dataset); // Transformers fitted in order, samples transformed
+$transformer->fit($dataset); // Transformers fitted in order
 ```
 
-Calling `update()` on a pipeline where any transformer in the stack is [Elastic](transformers/api.md#elastic) will update each elastic fitting in place, lazily fitting any stateful transformer that has not yet been seen. The samples are still transformed as they pass through the chain.
+Calling `update()` on a pipeline where any transformer in the stack is [Elastic](transformers/api.md#elastic) will refine each elastic fitting in place, lazily fitting any stateful transformer that has not yet been seen, again without touching the input dataset.
 
 ```php
-$transformer->update($dataset); // Elastic transformers refined, samples transformed
+$transformer->update($dataset); // Elastic transformers refined
 ```
 
-Any time a dataset is passed to the Pipeline, it will be transformed by the stack in order.
+To transform a dataset in place, use `apply()` (or the pipeline's `transform()` method).
 
 ```php
 $dataset->apply($transformer); // Dataset transformed in place

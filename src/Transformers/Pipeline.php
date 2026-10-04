@@ -15,10 +15,11 @@ use function count;
  *
  * Pipeline is a Transformer decorator capable of composing an arbitrarily
  * long series of Transformer middleware into a single unit. It fits the
- * stack to a training dataset, transforms incoming samples by streaming
- * them through each transformer in order, and — when updated — refines
- * the fitting of any Elastic transformers (or lazily fits any Stateful
- * ones that have not yet been seen) while still transforming the data.
+ * stack to a training dataset without mutating it, transforms incoming
+ * samples by streaming them through each transformer in order, and — when
+ * updated — refines the fitting of any Elastic transformers (or lazily fits
+ * any Stateful ones that have not yet been seen) while streaming a working
+ * copy of the data through the chain.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -63,19 +64,23 @@ class Pipeline implements Transformer, Stateful, Elastic, Persistable
 
     /**
      * Fit the pipeline to a dataset. Every stateful transformer in the
-     * stack is refit to the current dataset, then the samples are
-     * transformed in place as they pass through the chain.
+     * stack is refit to the current dataset and the chain is streamed
+     * over a working copy of the samples as they pass through, so the
+     * caller's dataset is left unaltered. Use `transform()` or
+     * `Dataset::apply()` to transform data in place.
      *
      * @param Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
+        $working = clone $dataset;
+
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
-                $transformer->fit($dataset);
+                $transformer->fit($working);
             }
 
-            $dataset->apply($transformer);
+            $working->apply($transformer);
         }
     }
 
@@ -101,21 +106,24 @@ class Pipeline implements Transformer, Stateful, Elastic, Persistable
 
     /**
      * Update the fitting of the pipeline with an incremental dataset.
-     * Any elastic transformer in the stack will have its fitting refined.
-     * Any stateful transformer that has not yet been fitted will be
-     * lazily fitted. In all cases the samples are transformed in place
-     * as they pass through the chain.
+     * Any elastic transformer in the stack will have its fitting refined
+     * and any stateful transformer that has not yet been fitted will be
+     * lazily fitted, with the chain streamed over a working copy of the
+     * samples so the caller's dataset is left unaltered. Use `transform()`
+     * or `Dataset::apply()` to transform data in place.
      *
      * @param Dataset $dataset
      */
     public function update(Dataset $dataset) : void
     {
+        $working = clone $dataset;
+
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Elastic) {
-                $transformer->update($dataset);
+                $transformer->update($working);
             }
 
-            $dataset->apply($transformer);
+            $working->apply($transformer);
         }
     }
 
