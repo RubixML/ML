@@ -207,7 +207,7 @@ $dataset = $dataset1->join($dataset2)
 
 ## Transformer Pipelines
 
-The [Pipeline](transformers/pipeline.md) transformer helps you compose an arbitrarily long series of [Transformers](transformers/api.md) into a single unit. With a Pipeline, any dataset passed in is fitted to and/or transformed by each transformer in order before it arrives in the next transformer's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
+The [Pipeline](transformers/pipeline.md) transformer helps you compose an arbitrarily long series of [Transformers](transformers/api.md) into a single unit. With a Pipeline, any dataset passed in is fitted to and/or transformed by each transformer in order before it arrives in the next transformer's context. The pipeline and its fitted transformer state can be persisted independently from an estimator.
 
 ```php
 use Rubix\ML\Transformers\Pipeline;
