@@ -51,7 +51,7 @@ use function is_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements EstimatorWrapper, Learner, Parallel, Verbose, Persistable
+class GridSearch implements Learner, Parallel, Verbose, Persistable
 {
     use AutotrackRevisions, Multiprocessing, LoggerAware;
 

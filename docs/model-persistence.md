@@ -73,6 +73,31 @@ use Rubix\ML\Persisters\Filesystem;
 $transformer = $persister->load()->deserializeWith(new RBX());
 ```
 
+Or, like the [Persistent Model](persistent-model.md) meta-estimator does for learners, the same thing can be done at a higher level by decorating the transformer with the [Persistent Transformer](transformers/persistent-transformer.md), which provides `save()` and `load()` methods. This is especially convenient for [Pipelines](transformers/pipeline.md), whose internal transformer state would otherwise have to be reached through a Serializer and Persister by hand.
+
+```php
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = new PersistentTransformer(
+    new Pipeline([new OneHotEncoder()]),
+    new Filesystem('example.rbx')
+);
+
+$transformer->fit($dataset);
+
+$transformer->save();
+```
+
+```php
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = PersistentTransformer::load(new Filesystem('example.rbx'));
+```
+
 ## Caveats
 
 Since model data are exported with the learner's current class definition in mind, problems may occur when loading a model using a different version of the library than the one it was trained and saved on. For example, when upgrading to a new version, there is a small chance that a previously saved learner may not be able to be deserialized if the model is not compatible with the learner's new class definition. For maximum interoperability, ensure that each system is running the same version of the library.

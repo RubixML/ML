@@ -55,3 +55,27 @@ Since fitting does not transform the data, transform your dataset explicitly wit
 ```php
 $dataset->apply($transformer);
 ```
+
+## Persistence
+
+A fitted pipeline can be saved to and loaded from storage by decorating it with the [Persistent Transformer](persistent-transformer.md), which interfaces with the persistence subsystem on your behalf.
+
+```php
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = new PersistentTransformer(
+    new Pipeline([new OneHotEncoder()]),
+    new Filesystem('example.rbx')
+);
+
+$transformer->fit($dataset);
+
+$transformer->save();
+```
+
+```php
+$transformer = PersistentTransformer::load(new Filesystem('example.rbx'));
+```

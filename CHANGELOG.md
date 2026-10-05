@@ -71,6 +71,7 @@
     - Remove `holdOut` paramereter from Learners with validation set
     - Added `setValidationDataset()` method to Learners with validation set
     - `Pipeline` is now a Transformer decorator
+    - Added `PersistentTransformer` decorator
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
