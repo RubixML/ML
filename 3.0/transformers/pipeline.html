@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://rubixml.github.io/ML/3.0/transformers/l1-normalizer.html">
+        <link rel="canonical" href="https://rubixml.github.io/ML/3.0/transformers/pipeline.html">
       
       
-        <link rel="prev" href="persistent-transformer.html">
+        <link rel="prev" href="api.html">
       
       
-        <link rel="next" href="l2-normalizer.html">
+        <link rel="next" href="persistent-transformer.html">
       
       
       <link rel="icon" href="../images/app-icon-small.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>L1 Normalizer - Rubix ML</title>
+        <title>Pipeline - Rubix ML</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#l1-normalizer" class="md-skip">
+        <a href="#pipeline" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              L1 Normalizer
+              Pipeline
             
           </span>
         </div>
@@ -3098,101 +3098,6 @@
                 
   
   
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9_2" id="__nav_4_9_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    Composition
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9_2">
-            <span class="md-nav__icon md-icon"></span>
-            Composition
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="pipeline.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Pipeline
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="persistent-transformer.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Persistent Transformer
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -3209,15 +3114,15 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_4_9_3" id="__nav_4_9_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_9_2" id="__nav_4_9_2_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Standardization and Normalization
+    Composition
     
   </span>
   
@@ -3225,10 +3130,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_9_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Standardization and Normalization
+            Composition
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -3253,7 +3158,7 @@
   
   
   <span class="md-ellipsis">
-    L1 Normalizer
+    Pipeline
     
   </span>
   
@@ -3261,12 +3166,12 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="l1-normalizer.html" class="md-nav__link md-nav__link--active">
+      <a href="pipeline.html" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    L1 Normalizer
+    Pipeline
     
   </span>
   
@@ -3307,9 +3212,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-methods" class="md-nav__link">
+  <a href="#fitting-and-updating" class="md-nav__link">
     <span class="md-ellipsis">
-      Additional Methods
+      Fitting and Updating
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persistence
     </span>
   </a>
   
@@ -3319,6 +3233,101 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="persistent-transformer.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Persistent Transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9_3" id="__nav_4_9_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Standardization and Normalization
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9_3">
+            <span class="md-nav__icon md-icon"></span>
+            Standardization and Normalization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="l1-normalizer.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    L1 Normalizer
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -8173,9 +8182,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-methods" class="md-nav__link">
+  <a href="#fitting-and-updating" class="md-nav__link">
     <span class="md-ellipsis">
-      Additional Methods
+      Fitting and Updating
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persistence
     </span>
   </a>
   
@@ -8200,20 +8218,78 @@
   
 
 
-<p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/L1Normalizer.php">[source]</a></span></p>
-<h1 id="l1-normalizer">L1 Normalizer<a class="headerlink" href="#l1-normalizer" title="Permanent link">#</a></h1>
-<p>Transform each sample (row) vector in the sample matrix such that each feature is divided by the L1 norm (or <em>magnitude</em>) of that vector.</p>
-<p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
-<p><strong>Data Type Compatibility:</strong> Continuous only</p>
+<p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/Pipeline.php">[source]</a></span></p>
+<h1 id="pipeline">Pipeline<a class="headerlink" href="#pipeline" title="Permanent link">#</a></h1>
+<p>Pipeline is a <a href="api.html">Transformer</a> decorator capable of composing an arbitrarily long series of Transformer middleware into a single unit. It fits the stack to a training dataset without mutating it, transforms incoming samples by streaming them through each transformer in order, and — when updated — refines the fitting of <a href="api.html#elastic">Elastic</a> transformers (or lazily fits any <a href="api.html#stateful">Stateful</a> ones that have not yet been seen) while streaming a working copy of the data through the chain.</p>
+<p><strong>Interfaces:</strong> <a href="api.html">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="api.html#elastic">Elastic</a>, <a href="../persistable.html">Persistable</a></p>
+<p><strong>Data Type Compatibility:</strong> Defined by the first transformer in the stack; an empty pipeline accepts every data type</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
-<p>This transformer does not have any parameters.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>transformers</td>
+<td></td>
+<td>array</td>
+<td>A list of transformers to be composed in order.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\L1Normalizer</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\Pipeline</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\HotDeckImputer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\ZScaleStandardizer</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">L1Normalizer</span><span class="p">();</span>
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span>
+    <span class="k">new</span> <span class="nx">HotDeckImputer</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+    <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">(),</span>
+    <span class="k">new</span> <span class="nx">ZScaleStandardizer</span><span class="p">(),</span>
+<span class="p">]);</span>
 </code></pre></div>
-<h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
-<p>This transformer does not have any additional methods.</p>
+<h2 id="fitting-and-updating">Fitting and Updating<a class="headerlink" href="#fitting-and-updating" title="Permanent link">#</a></h2>
+<p>Because Pipeline is a <a href="api.html#stateful">Stateful</a> transformer itself, it exposes <code>fit()</code> and <code>fitted()</code>. Calling <code>fit()</code> will refit every stateful transformer in the stack to the current dataset, streaming a working copy of the data through the chain — the input dataset is left unaltered.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span>
+    <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">(),</span>
+    <span class="k">new</span> <span class="nx">ZScaleStandardizer</span><span class="p">(),</span>
+<span class="p">]);</span>
+
+<span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">fit</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+</code></pre></div>
+<p>If any transformer in the stack is <a href="api.html#elastic">Elastic</a>, the pipeline is also Elastic: <code>update()</code> will refine each elastic fitting and lazily fit any stateful transformer that has not yet been seen, again streaming a working copy of the data through the chain without touching the input.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+</code></pre></div>
+<p>Transformers that are stateless and non-elastic are applied as-is — they are always <code>fitted()</code>, so they contribute nothing to the <code>fitted()</code> status of the pipeline. An empty pipeline is always considered fitted and behaves as a no-op.</p>
+<p>Since fitting does not transform the data, transform your dataset explicitly with the pipeline's <code>transform()</code> method or, more idiomatically, with <code>Dataset::apply()</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="persistence">Persistence<a class="headerlink" href="#persistence" title="Permanent link">#</a></h2>
+<p>A fitted pipeline can be saved to and loaded from storage by decorating it with the <a href="persistent-transformer.html">Persistent Transformer</a>, which interfaces with the persistence subsystem on your behalf.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\Pipeline</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\PersistentTransformer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
+
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PersistentTransformer</span><span class="p">(</span>
+    <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span><span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">()]),</span>
+    <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.rbx&#39;</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">fit</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+
+<span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nv">$transformer</span> <span class="o">=</span> <span class="nx">PersistentTransformer</span><span class="o">::</span><span class="na">load</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;example.rbx&#39;</span><span class="p">));</span>
+</code></pre></div>
 
 
 
@@ -8236,7 +8312,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2026 01:02:37">August 30, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 5, 2026 17:12:51">October 5, 2026</span>
   </span>
 
     
@@ -8246,7 +8322,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2024 17:37:43">August 30, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 4, 2026 04:26:21">October 4, 2026</span>
   </span>
 
     
