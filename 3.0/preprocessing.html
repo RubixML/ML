@@ -838,6 +838,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#persisting-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persisting Transformers
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#filtering-records" class="md-nav__link">
     <span class="md-ellipsis">
       Filtering Records
@@ -8452,6 +8461,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#persisting-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persisting Transformers
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#filtering-records" class="md-nav__link">
     <span class="md-ellipsis">
       Filtering Records
@@ -8892,20 +8910,49 @@
 <span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Transformers\ZScaleStandardizer</span><span class="p">;</span>
 
-<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span>
+<span class="nv">$pipeline</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span>
     <span class="k">new</span> <span class="nx">HotDeckImputer</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
     <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">(),</span>
     <span class="k">new</span> <span class="nx">ZScaleStandardizer</span><span class="p">(),</span>
 <span class="p">]);</span>
 </code></pre></div>
 <p>Calling <code>fit()</code> will result in the transformers being fitted to the dataset in order, while streaming a working copy of the data through the chain; the input dataset is left unaltered.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">fit</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span> <span class="c1">// Transformers fitted in order</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$pipeline</span><span class="o">-&gt;</span><span class="na">fit</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span> <span class="c1">// Transformers fitted in order</span>
 </code></pre></div>
 <p>Calling <code>update()</code> on a pipeline where any transformer in the stack is <a href="transformers/api.html#elastic">Elastic</a> will refine each elastic fitting in place, lazily fitting any stateful transformer that has not yet been seen, again without touching the input dataset.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span> <span class="c1">// Elastic transformers refined</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$pipeline</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span> <span class="c1">// Elastic transformers refined</span>
 </code></pre></div>
 <p>To transform a dataset in place, use <code>apply()</code> (or the pipeline's <code>transform()</code> method).</p>
-<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span> <span class="c1">// Dataset transformed in place</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$pipeline</span><span class="p">);</span> <span class="c1">// Dataset transformed in place</span>
+</code></pre></div>
+<h2 id="persisting-transformers">Persisting Transformers<a class="headerlink" href="#persisting-transformers" title="Permanent link">#</a></h2>
+<p>A fitted <a href="transformers/pipeline.html">Pipeline</a> — or any <a href="transformers/api.html#stateful">Stateful</a> transformer — can be saved to storage and loaded in another process, so the same preprocessing can be applied to new data without re-fitting. The <a href="transformers/persistent-transformer.html">Persistent Transformer</a> decorator wraps a transformer and gives it <code>save()</code> and <code>load()</code> methods, using a <a href="persisters/api.html">Persister</a> to talk to a storage backend such as the <a href="persisters/filesystem.html">Filesystem</a>.</p>
+<p>To fit a transformer and save it to the filesystem:</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\Pipeline</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\OneHotEncoder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\ZScaleStandardizer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Transformers\PersistentTransformer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
+
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PersistentTransformer</span><span class="p">(</span>
+    <span class="k">new</span> <span class="nx">Pipeline</span><span class="p">([</span>
+        <span class="k">new</span> <span class="nx">OneHotEncoder</span><span class="p">(),</span>
+        <span class="k">new</span> <span class="nx">ZScaleStandardizer</span><span class="p">(),</span>
+    <span class="p">]),</span>
+    <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;pipeline.rbx&#39;</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">fit</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+
+<span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
+</code></pre></div>
+<p>Then, in another process, load the fitted transformer and apply it to new data. Because the decorator delegates to the same transformer instance, any <code>fit()</code> or <code>update()</code> performed through it is captured by the next call to <code>save()</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\PersistentTransformer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>
+
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="nx">PersistentTransformer</span><span class="o">::</span><span class="na">load</span><span class="p">(</span><span class="k">new</span> <span class="nx">Filesystem</span><span class="p">(</span><span class="s1">&#39;pipeline.rbx&#39;</span><span class="p">));</span>
+
+<span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="filtering-records">Filtering Records<a class="headerlink" href="#filtering-records" title="Permanent link">#</a></h2>
 <p>In some cases, you may want to remove entire rows from the dataset. For example, you may want to remove records that contain features with abnormally low/high values as these samples can be interpreted as noise. The <code>filter()</code> method on the dataset object uses a callback function to determine if a row should be included in the return dataset. In this example, we'll filter all the samples whose value for feature at offset 3 is greater than some amount.</p>
@@ -8972,7 +9019,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 17:24:40">October 6, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 18:55:26">October 6, 2026</span>
   </span>
 
     
