@@ -497,7 +497,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         $estimator = new $this->base(...$best);
 
         if ($this->logger) {
-            $this->logger->info('Training with best hyper-parameters'
+            $this->logger->info('Training with best hyper-parameters '
                 . Params::stringify($best) . ' on full dataset.');
         }
 
