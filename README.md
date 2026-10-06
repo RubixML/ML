@@ -10,16 +10,26 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **Open source** and free to use commercially.
 
 ## Installation
+
 Install Rubix ML into your project using [Composer](https://getcomposer.org/):
+
 ```sh
 composer require rubix/ml
 ```
 
+Optionally, install the Tensor extension using [PIE](https://www.php.net/manual/en/install.pie.intro.php) like in the example below:
+
+```sh
+pie install rubix/tensor_ext:^3.0
+```
+
 ### Requirements
+
 - [PHP](https://php.net/manual/en/install.php) 7.4 or above
 
 #### Recommended
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
+
+- [Tensor 3.x extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
 
 #### Optional
 
@@ -30,15 +40,19 @@ composer require rubix/ml
 - [GraphViz](https://graphviz.org/) for graph visualization
 
 ## Documentation
+
 Read the latest docs [here](https://rubixml.github.io/ML/latest/).
 
 ## What is Rubix ML?
+
 Rubix ML is a free open-source machine learning (ML) library that allows you to build programs that learn from your data using the PHP language. We provide tools for the entire machine learning life cycle from ETL to training, cross-validation, and production with over 40 supervised and unsupervised learning algorithms. In addition, we provide tutorials and other educational content to help you get started using ML in your projects.
 
 ## Getting Started
+
 If you are new to machine learning, we recommend taking a look at the [What is Machine Learning?](https://rubixml.github.io/ML/latest/what-is-machine-learning.html) section to get started. If you are already familiar with basic ML concepts, you can browse the [basic introduction](https://rubixml.github.io/ML/latest/basic-introduction.html) for a brief look at a typical Rubix ML project. From there, you can browse the official tutorials below which range from beginner to advanced skill level.
 
 ### Tutorials & Example Projects
+
 Check out these example projects using the Rubix ML library. Many come with instructions and a pre-cleaned dataset.
 
 - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
@@ -60,7 +74,9 @@ Check out these example projects using the Rubix ML library. Many come with inst
 - [Join Our Telegram Channel](https://t.me/RubixML)
 
 ## Contributing
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
+
 The code is licensed [MIT](LICENSE) and the documentation is licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).

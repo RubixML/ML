@@ -6,13 +6,19 @@ Install Rubix ML into your project using [Composer](https://getcomposer.org/):
 composer require rubix/ml
 ```
 
+Optionally, install the Tensor extension using [PIE](https://www.php.net/manual/en/install.pie.intro.php) like in the example below:
+
+```sh
+pie install rubix/tensor_ext:^3.0
+```
+
 ## Requirements
 
 - [PHP](https://php.net/manual/en/install.php) 7.4 or above
 
 ### Recommended
 
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing
+- [Tensor 3.x extension](https://github.com/RubixML/Tensor-Ext) for fast Matrix/Vector computing
 
 ### Optional
 

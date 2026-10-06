@@ -7,6 +7,8 @@ use Rubix\ML\DataType;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMaximumVersion;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -72,6 +74,10 @@ class PrincipalComponentAnalysis implements Transformer, Stateful, Persistable
      */
     public function __construct(int $dimensions)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMaximumVersion::with('tensor', '3.99.99')->check();
+        }
+
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
                 . " greater than 0, $dimensions given.");
