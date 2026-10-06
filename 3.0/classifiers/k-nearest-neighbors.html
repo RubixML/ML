@@ -3198,7 +3198,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3209,7 +3209,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8268,9 +8268,10 @@
 </code></pre></div>
 <h2 id="parallel">Parallel<a class="headerlink" href="#parallel" title="Permanent link">#</a></h2>
 <p>This estimator implements the <a href="../parallel.html">Parallel</a> interface and can utilize a parallel processing backend such as <a href="../backends/swoole.html">Swoole</a> to speed up inference and probability estimation:</p>
-<p>```php
-use Rubix\ML\Backends\Swoole;</p>
-<p>$estimator-&gt;setBackend(new Swoole(16));</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Backends\Swoole</span><span class="p">;</span>
+
+<span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">setBackend</span><span class="p">(</span><span class="k">new</span> <span class="nx">Swoole</span><span class="p">(</span><span class="mi">16</span><span class="p">));</span>
+</code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>This estimator does not have any additional methods.</p>
 

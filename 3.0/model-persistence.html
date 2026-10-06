@@ -3194,7 +3194,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3205,7 +3205,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8215,7 +8215,7 @@
 <h1 id="model-persistence">Model Persistence<a class="headerlink" href="#model-persistence" title="Permanent link">#</a></h1>
 <p>Model persistence is the ability to save and subsequently load a learner's state in another process. Trained estimators can be used for real-time inference by loading the model onto a server or they can be saved to make predictions in batches offline at a later time. Estimators that implement the <a href="persistable.html">Persistable</a> interface are able to have their internal state captured between processes. In addition, the library provides the <a href="persistent-model.html">Persistent Model</a> meta-estimator that acts as a wrapper for persistable estimators.</p>
 <h2 id="serialization">Serialization<a class="headerlink" href="#serialization" title="Permanent link">#</a></h2>
-<p>Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in a lightweight format such as with PHP's <a href="serializers/native.html">Native</a> serializer or in a robust format such as <a href="serializers/rbx-v1.md">RBX</a>. In the this example, we'll demonstrate how to encode a Persistable learner using the RBX format, save the encoding with a <a href="persisters/api.html">Persister</a>, and then how to deserialize the encoding.</p>
+<p>Serialization occurs in between saving and loading a model and can be thought of as packaging the model's parameters. The data can be in a lightweight format such as with PHP's <a href="serializers/native.html">Native</a> serializer or in a robust format such as <a href="serializers/rbx.html">RBX</a>. In the this example, we'll demonstrate how to encode a Persistable learner using the RBX format, save the encoding with a <a href="persisters/api.html">Persister</a>, and then how to deserialize the encoding.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\RandomForest</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Serializers\RBX</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Persisters\Filesystem</span><span class="p">;</span>

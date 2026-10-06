@@ -3118,7 +3118,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3129,7 +3129,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -4444,6 +4444,15 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
@@ -8144,6 +8153,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       Example
@@ -8187,6 +8205,41 @@
 <p class="admonition-title">Note</p>
 <p>The Feed Forward network is part of the neural network subsystem and is not a standalone estimator.</p>
 </div>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>input</td>
+<td></td>
+<td>Input</td>
+<td>The input layer.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>hidden</td>
+<td></td>
+<td>array</td>
+<td>The array of hidden layers in the network.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>output</td>
+<td></td>
+<td>Output</td>
+<td>The output layer.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\FeedForward</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\NeuralNet\Layers\Placeholder1D</span><span class="p">;</span>

@@ -3120,7 +3120,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3131,7 +3131,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8225,7 +8225,7 @@
 {\displaystyle z = {x - \mu \over \sigma }}
 \]</div>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="api.html#elastic">Elastic</a>, <a href="api.html#reversible">Reversible</a>, <a href="../persistable.html">Persistable</a></p>
-<p><strong>Data Type Compatibility:</strong> Continuous</p>
+<p><strong>Data Type Compatibility:</strong> Categorical, Continuous, Image, Other</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -8254,10 +8254,10 @@
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return the means calculated by fitting the training set.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">means</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">means</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="k">array</span>
 </code></pre></div>
 <p>Return the variances calculated during fitting.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">variances</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">variances</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="k">array</span>
 </code></pre></div>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
 <div class="footnote">

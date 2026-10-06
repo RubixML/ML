@@ -3198,7 +3198,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3209,7 +3209,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8235,31 +8235,31 @@
 <tbody>
 <tr>
 <td>1</td>
+<td>contamination</td>
+<td>0.1</td>
+<td>float</td>
+<td>The proportion of outliers that are assumed to be present in the training set.</td>
+</tr>
+<tr>
+<td>2</td>
 <td>estimators</td>
 <td>100</td>
 <td>int</td>
 <td>The number of projection/histogram pairs in the ensemble.</td>
 </tr>
 <tr>
-<td>2</td>
+<td>3</td>
 <td>bins</td>
 <td>null</td>
 <td>int</td>
 <td>The number of equi-width bins for each histogram. If null then will estimate bin count.</td>
-</tr>
-<tr>
-<td>3</td>
-<td>contamination</td>
-<td>0.1</td>
-<td>float</td>
-<td>The proportion of outliers that are assumed to be present in the training set.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\AnomalyDetectors\Loda</span><span class="p">;</span>
 
-<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Loda</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">);</span>
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Loda</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>This estimator does not have any additional methods.</p>

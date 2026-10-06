@@ -3198,7 +3198,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3209,7 +3209,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8364,7 +8364,7 @@
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">scores</span><span class="p">()</span> <span class="o">:</span> <span class="nx">float</span><span class="p">[]</span><span class="o">|</span><span class="k">null</span>
 </code></pre></div>
 <p>Returns the underlying neural network instance or <code>null</code> if untrained. See <a href="../neural-network/feed-forward.html">FeedForward</a> for more details.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">network</span><span class="p">()</span> <span class="o">:</span> <span class="nx">FeedForward</span><span class="o">|</span><span class="k">null</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">network</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="nx">\Rubix\ML\NeuralNet\Network</span>
 </code></pre></div>
 <p>Clean up any leftover state after training. Only do this if you plan to use the model for inference.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">cleanup</span><span class="p">()</span> <span class="o">:</span> <span class="nx">void</span>

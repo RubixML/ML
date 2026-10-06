@@ -3342,7 +3342,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3353,7 +3353,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8530,7 +8530,7 @@
 
 <span class="nv">$dataset</span> <span class="o">=</span> <span class="nx">Labeled</span><span class="o">::</span><span class="na">fromIterator</span><span class="p">(</span><span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;example.csv&#39;</span><span class="p">));</span>
 </code></pre></div>
-<p>Stream Dataset chunks that are lazy-loaded from an iterator such as an <a href="../extractors/api.html">Extractor</a>. Useful for training an <a href="online.md">Online</a> learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting <code>verify</code> to false.</p>
+<p>Stream Dataset chunks that are lazy-loaded from an iterator such as an <a href="../extractors/api.html">Extractor</a>. Useful for training an <a href="../online.html">Online</a> learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting <code>verify</code> to false.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">static</span> <span class="nx">chunked</span><span class="p">(</span><span class="nx">iterable</span> <span class="nv">$iterator</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$size</span><span class="p">,</span> <span class="nx">bool</span> <span class="nv">$verify</span> <span class="o">=</span> <span class="k">true</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Generator</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Datasets\Labeled</span><span class="p">;</span>

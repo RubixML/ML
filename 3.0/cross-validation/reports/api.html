@@ -3118,7 +3118,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3129,7 +3129,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8242,7 +8242,7 @@
 <p>To generate a report from the predictions of an estimator given the ground truth labels:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">generate</span><span class="p">(</span><span class="k">array</span> <span class="nv">$predictions</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$labels</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Report</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Reports\ConfusionMatrix</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Reports\ConfusionMatrix</span><span class="p">;</span>
 
 <span class="nv">$predictions</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">predict</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
 
@@ -8282,7 +8282,7 @@
 <p>To return a JSON encoding that can be written to a file, call the <code>toJSON()</code> method on the report object.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">toJSON</span><span class="p">(</span><span class="nx">bool</span> <span class="nv">$pretty</span> <span class="o">=</span> <span class="k">true</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Encoding</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$report</span><span class="o">-&gt;</span><span class="na">toJSON</span><span class="p">();</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$encoding</span> <span class="o">=</span> <span class="nv">$results</span><span class="o">-&gt;</span><span class="na">toJSON</span><span class="p">();</span>
 </code></pre></div>
 
 

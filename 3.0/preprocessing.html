@@ -3332,7 +3332,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3343,7 +3343,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8840,7 +8840,7 @@
 
 <span class="nv">$binarize</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$sample</span><span class="p">)</span> <span class="p">{</span>
     <span class="nv">$sample</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$sample</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">182</span> <span class="o">?</span> <span class="s1">&#39;tall&#39;</span> <span class="o">:</span> <span class="s1">&#39;not tall&#39;</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="p">};</span>
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">LambdaFunction</span><span class="p">(</span><span class="nv">$binarize</span><span class="p">));</span>
 </code></pre></div>
@@ -8920,7 +8920,7 @@
 
 <span class="nv">$dogsAndCats</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nb">in_array</span><span class="p">(</span><span class="nb">end</span><span class="p">(</span><span class="nv">$record</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">]);</span>
-<span class="p">}</span>
+<span class="p">};</span>
 
 <span class="nv">$training</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="nv">$dogsAndCats</span><span class="p">);</span>
 </code></pre></div>

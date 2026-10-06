@@ -3344,7 +3344,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3355,7 +3355,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8567,7 +8567,7 @@
 <tr>
 <td><a href="cross-validation/metrics/accuracy.html">Accuracy</a></td>
 <td>[0, 1]</td>
-<td><span class="arithmatex">\(\frac{TP}{TP + FP}\)</span></td>
+<td><span class="arithmatex">\(\frac{TP + TN}{n}\)</span></td>
 <td>Not suited for imbalanced datasets</td>
 </tr>
 <tr>
@@ -8579,7 +8579,7 @@
 <tr>
 <td><a href="cross-validation/metrics/informedness.html">Informedness</a></td>
 <td>[-1, 1]</td>
-<td><span class="arithmatex">\({\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1\)</span></td>
+<td><span class="arithmatex">\({\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TN}}{{\text{TN}}+{\text{FP}}}}-1\)</span></td>
 <td></td>
 </tr>
 <tr>
@@ -8617,7 +8617,7 @@
 <tr>
 <td><a href="cross-validation/metrics/median-absolute-error.html">Median Absolute Error</a></td>
 <td>[-∞, 0]</td>
-<td><span class="arithmatex">\({\operatorname {median} (&verbar; Y_{i}-{\tilde {Y}} &verbar;)}\)</span></td>
+<td><span class="arithmatex">\({-\operatorname {median}_i (&verbar; Y_{i}-\hat{Y}_{i}&verbar;)}\)</span></td>
 <td>Robust to outliers</td>
 </tr>
 <tr>
@@ -8635,8 +8635,8 @@
 <tr>
 <td><a href="cross-validation/metrics/smape.html">SMAPE</a></td>
 <td>[-100, 0]</td>
-<td><span class="arithmatex">\({\frac {100\%}{n}}\sum _{t=1}^{n}{\frac {\left&verbar;F_{t}-A_{t}\right&verbar;}{(&verbar;A_{t}&verbar;+&verbar;F_{t}&verbar;)/2}}\)</span></td>
-<td></td>
+<td>${\frac {100\%}{n}}\sum <em t="t">{t=1}^{n}{\frac {\left&verbar;F</em>{}-A_{t}\right&verbar;</td>
+<td>A_{t}</td>
 </tr>
 </tbody>
 </table>
@@ -8778,12 +8778,12 @@
 <span class="w">    </span><span class="nt">&quot;mean absolute error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;median absolute error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;mean squared error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mean squared log error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.019107097505647368</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;mean absolute percentage error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.930194805194805</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;rms error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;mean squared log error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.019107097505647368</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;r squared&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9958930551562692</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;error mean&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;error standard deviation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9898464007663</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;error standard deviation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9797958971132712</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;error skewness&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.22963966338592326</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;error kurtosis&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-1.0520833333333324</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;error min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-2</span><span class="p">,</span>

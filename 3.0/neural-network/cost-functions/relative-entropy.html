@@ -3118,7 +3118,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3129,7 +3129,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8186,7 +8186,7 @@
 <h1 id="relative-entropy">Relative Entropy<a class="headerlink" href="#relative-entropy" title="Permanent link">#</a></h1>
 <p>Relative Entropy (or <em>Kullback-Leibler divergence</em>) is a measure of how the expectation and activation of the network diverge. It is different from <a href="cross-entropy.md">Cross Entropy</a> in that it is <em>asymmetric</em> and thus does not qualify as a statistical measure of error.</p>
 <div class="arithmatex">\[
-KL(\hat{y} || y) = \sum_{c=1}^{M}\hat{y}_c \log{\frac{\hat{y}_c}{y_c}}
+KL(y || \hat{y}) = \sum_{c=1}^{M} y_c \log{\frac{y_c}{\hat{y}_c}}
 \]</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <p>This cost function does not have any parameters.</p>

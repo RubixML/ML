@@ -3120,7 +3120,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3131,7 +3131,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8204,7 +8204,7 @@
 <h1 id="word-count-vectorizer">Word Count Vectorizer<a class="headerlink" href="#word-count-vectorizer" title="Permanent link">#</a></h1>
 <p>The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length sparse feature vectors. Each feature column represents a word or <em>token</em> from the vocabulary and the value denotes the number of times that word appears in a given document.</p>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="../persistable.html">Persistable</a></p>
-<p><strong>Data Type Compatibility:</strong> Categorical</p>
+<p><strong>Data Type Compatibility:</strong> Categorical, Continuous, Image, Other</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -8228,7 +8228,7 @@
 <td>2</td>
 <td>minDocumentCount</td>
 <td>1</td>
-<td>float</td>
+<td>int</td>
 <td>The minimum number of documents a word must appear in to be added to the vocabulary.</td>
 </tr>
 <tr>
@@ -8255,7 +8255,7 @@
 </code></pre></div>
 <h2 id="additional-methods">Additional Methods<a class="headerlink" href="#additional-methods" title="Permanent link">#</a></h2>
 <p>Return an array of words that comprise each of the vocabularies.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">vocabularies</span><span class="p">()</span> <span class="o">:</span> <span class="k">array</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">vocabularies</span><span class="p">()</span> <span class="o">:</span> <span class="o">?</span><span class="k">array</span>
 </code></pre></div>
 
 

@@ -3122,7 +3122,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3133,7 +3133,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8222,7 +8222,7 @@
 <h1 id="pipeline">Pipeline<a class="headerlink" href="#pipeline" title="Permanent link">#</a></h1>
 <p>Pipeline is a <a href="api.html">Transformer</a> decorator capable of composing an arbitrarily long series of Transformer middleware into a single unit. It fits the stack to a training dataset without mutating it, transforms incoming samples by streaming them through each transformer in order, and — when updated — refines the fitting of <a href="api.html#elastic">Elastic</a> transformers (or lazily fits any <a href="api.html#stateful">Stateful</a> ones that have not yet been seen) while streaming a working copy of the data through the chain.</p>
 <p><strong>Interfaces:</strong> <a href="api.html">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="api.html#elastic">Elastic</a>, <a href="../persistable.html">Persistable</a></p>
-<p><strong>Data Type Compatibility:</strong> Defined by the first transformer in the stack; an empty pipeline accepts every data type</p>
+<p><strong>Data Type Compatibility:</strong> Categorical, Continuous, Image, Other</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>

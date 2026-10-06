@@ -3120,7 +3120,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3131,7 +3131,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8218,15 +8218,15 @@
   
 
 
-<p><span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Transformers/TokenHashingVectorizer.php">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Transformers/TokenHashingVectorizer.php">[source]</a></span></p>
 <h1 id="token-hashing-vectorizer">Token Hashing Vectorizer<a class="headerlink" href="#token-hashing-vectorizer" title="Permanent link">#</a></h1>
 <p>Token Hashing Vectorizer builds token count vectors on the fly by employing a <em>hashing trick</em>. It is a stateless transformer that uses a hashing algorithm to assign token occurrences to a bucket in a vector of user-specified dimensionality. The advantage of hashing over storing a fixed vocabulary is that there is no memory footprint however there is a chance that certain tokens will collide with other tokens especially in lower-dimensional vector spaces.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The default hashing function is CRC32 and is a good mix between speed and output space utilization. MurmurHash has even greater utilization but at the cost of some speed and it is only available on PHP 8.1 and above. FNV1 is comparable to CRC32 but with slightly more overhead.</p>
+<p>The default hashing function is MurmurHash3 and is a good mix between speed and output space utilization. MurmurHash has even greater utilization but at the cost of some speed and it is only available on PHP 8.1 and above. FNV1 is comparable to CRC32 but with slightly more overhead.</p>
 </div>
 <p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a></p>
-<p><strong>Data Type Compatibility:</strong> Categorical</p>
+<p><strong>Data Type Compatibility:</strong> Categorical, Continuous, Image, Other</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -8257,14 +8257,14 @@
 <td>3</td>
 <td>hashFn</td>
 <td>callable</td>
-<td>'murmur3'</td>
+<td>TokenHashingVectorizer::MURMUR3</td>
 <td>The hash function that accepts a string token and returns an integer.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TokenHashingVectorizer</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Tokenizers\Word</span><span class="p">();</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Tokenizers\Word</span><span class="p">;</span>
 
 <span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TokenHashingVectorizer</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Word</span><span class="p">(),</span> <span class="nx">TokenHashingVectorizer</span><span class="o">::</span><span class="na">MURMUR3</span><span class="p">);</span>
 </code></pre></div>
@@ -8283,7 +8283,7 @@
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">static</span> <span class="nx">murmur3</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$input</span><span class="p">)</span> <span class="o">:</span> <span class="nx">int</span>
 </code></pre></div>
 <p>The FNV1a 32-bit hashing function.</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">static</span> <span class="nx">fnv1a32</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$input</span><span class="p">)</span> <span class="o">:</span> <span class="nx">int</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fnv1</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$input</span><span class="p">)</span> <span class="o">:</span> <span class="nx">int</span>
 </code></pre></div>
 
 

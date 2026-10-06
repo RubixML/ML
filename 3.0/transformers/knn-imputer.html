@@ -3120,7 +3120,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3131,7 +3131,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8225,7 +8225,7 @@
 <p class="admonition-title">Note</p>
 <p>Requires a NaN safe distance kernel such as <a href="../kernels/distance/safe-euclidean.html">Safe Euclidean</a> for continuous features.</p>
 </div>
-<p><strong>Interfaces:</strong> <a href="api.html#transformers">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="../persistable.html">Persistable</a></p>
+<p><strong>Interfaces:</strong> <a href="api.html#transformer">Transformer</a>, <a href="api.html#stateful">Stateful</a>, <a href="../persistable.html">Persistable</a></p>
 <p><strong>Data Type Compatibility:</strong> Depends on distance kernel</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
@@ -8271,7 +8271,7 @@
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\KNNImputer</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Rubix\ML\Graph\Trees\BallTee</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Graph\Trees\BallTree</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Rubix\ML\Kernels\Distance\SafeEuclidean</span><span class="p">;</span>
 
 <span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">KNNImputer</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="k">false</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">BallTree</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="k">new</span> <span class="nx">SafeEuclidean</span><span class="p">()));</span>

@@ -3118,7 +3118,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3129,7 +3129,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8184,13 +8184,9 @@
 
 <p><span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/NeuralNet/CostFunctions/HuberLoss.php">[source]</a></span></p>
 <h1 id="huber-loss">Huber Loss<a class="headerlink" href="#huber-loss" title="Permanent link">#</a></h1>
-<p>The pseudo Huber Loss function transitions between L1 and L2 loss at a given pivot point (defined by <em>delta</em>) such that the function becomes more quadratic as the loss decreases. The combination of L1 and L2 losses make Huber more robust to outliers while maintaining smoothness near the minimum.</p>
+<p>The pseudo Huber Loss function transitions between L1 and L2 loss at a given pivot point (defined by <em>alpha</em>) such that the function becomes more quadratic as the loss decreases. The combination of L1 and L2 losses make Huber more robust to outliers while maintaining smoothness near the minimum.</p>
 <div class="arithmatex">\[
-L_{\delta}=
-    \left\{\begin{matrix}
-        \frac{1}{2}(y - \hat{y})^{2} &amp; if \left | (y - \hat{y})  \right | &lt; \delta\\
-        \delta ((y - \hat{y}) - \frac1 2 \delta) &amp; otherwise
-    \end{matrix}\right.
+L = \alpha^2\left(\sqrt{1 + \frac{(y - \hat{y})^2}{\alpha^2}} - 1\right)
 \]</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>

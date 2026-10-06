@@ -3194,7 +3194,7 @@
   
   
   <span class="md-ellipsis">
-    Composition
+    Decorators
     
   </span>
   
@@ -3205,7 +3205,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_9_2">
             <span class="md-nav__icon md-icon"></span>
-            Composition
+            Decorators
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -8253,7 +8253,7 @@
 
 <span class="nv">$addFeature</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$sample</span><span class="p">,</span> <span class="nv">$offset</span><span class="p">,</span> <span class="nv">$context</span><span class="p">)</span> <span class="p">{</span>
     <span class="nv">$sample</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$context</span><span class="p">[</span><span class="nv">$offset</span><span class="p">];</span>
-<span class="p">}</span>
+<span class="p">};</span>
 
 <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="k">new</span> <span class="nx">LambdaFunction</span><span class="p">(</span><span class="nv">$addFeature</span><span class="p">,</span> <span class="nv">$creditScores</span><span class="p">));</span>
 
