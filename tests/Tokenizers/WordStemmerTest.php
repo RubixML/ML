@@ -42,6 +42,18 @@ class WordStemmerTest extends TestCase
         ];
     }
 
+    /**
+     * @return Generator<mixed[]>
+     */
+    public static function punctuatedTokenProvider() : Generator
+    {
+        yield ['don\'t care', ['don\'t', 'care']];
+        yield ['the pony\'s hooves', ['the', "poni's", 'hoov']];
+        yield ['the foals\' hooves', ['the', "foal'", 'hoov']];
+        yield ['something\'s', ['someth\'s']];
+        yield ['well-known words', ['well-known', 'word']];
+    }
+
     protected function setUp() : void
     {
         $this->tokenizer = new WordStemmer();
@@ -81,6 +93,17 @@ class WordStemmerTest extends TestCase
         $this->assertSame($expected, $this->tokenizer->tokenize($text));
     }
 
+    /**
+     * @param string $text
+     * @param list<string> $expected
+     */
+    #[DataProvider('punctuatedTokenProvider')]
+    #[Test]
+    public function tokenizePreservesDelimiters(string $text, array $expected) : void
+    {
+        $this->assertSame($expected, $this->tokenizer->tokenize($text));
+    }
+
     #[Test]
     public function tokenizeIsRepeatable() : void
     {
@@ -98,6 +121,6 @@ class WordStemmerTest extends TestCase
     #[Test]
     public function toStringReturnsTokenizer() : void
     {
-        $this->assertSame('Word Stemmer (language: PorterEnglish)', (string) $this->tokenizer);
+        $this->assertSame('Word Stemmer (stemmer: Porter English)', (string) $this->tokenizer);
     }
 }

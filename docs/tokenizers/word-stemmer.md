@@ -2,7 +2,7 @@
 
 # Word Stemmer
 
-The Word Stemmer reduces inflected and derived words to their root form using a [stemmer](stemmers/stemmer.md). For example, the sentence "Majority voting is likely foolish" might stem to "major vote is like foolish."
+The Word Stemmer reduces inflected and derived words to their root form using a [stemmer](stemmers/stemmer.md). For example, the sentence "Majority voting is likely foolish" might stem to "major vote is like foolish." Tokens containing delimiters such as apostrophes and hyphens have only their word segments stemmed and the delimiters are preserved, e.g. "something's" stems to "someth's" and "well-known" stems to "well-known".
 
 ## Parameters
 
