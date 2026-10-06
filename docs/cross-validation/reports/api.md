@@ -11,7 +11,7 @@ public generate(array $predictions, array $labels) : Report
 ```
 
 ```php
-use Rubix\ML\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 
 $predictions = $estimator->predict($dataset);
 
@@ -69,5 +69,5 @@ public toJSON(bool $pretty = true) : Encoding
 ```
 
 ```php
-$encoding = $report->toJSON();
+$encoding = $results->toJSON();
 ```

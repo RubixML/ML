@@ -53,14 +53,14 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     /**
      * The base classifier.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * A map of each class to its binary classifier.
      *
-     * @var array<Learner>
+     * @var array<Learner & Estimator>
      */
     protected array $classifiers = [
         //
@@ -74,10 +74,10 @@ class OneVsRest implements Estimator, Learner, Probabilistic, Parallel, Persista
     protected ?int $featureCount = null;
 
     /**
-     * @param Learner $base
+     * @param Learner & Estimator $base
      * @throws InvalidArgumentException
      */
-    public function __construct(Learner $base)
+    public function __construct(Learner & Estimator $base)
     {
         if (!$base->type()->isClassifier()) {
             throw new InvalidArgumentException('Base Learner must be'

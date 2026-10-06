@@ -8,7 +8,7 @@
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Compatibility** Depends on callback function
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

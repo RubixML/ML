@@ -10,7 +10,7 @@ $$
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Reversible](api.md#reversible), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
@@ -31,13 +31,13 @@ $transformer = new ZScaleStandardizer(true);
 Return the means calculated by fitting the training set.
 
 ```php
-public means() : array
+public means() : ?array
 ```
 
 Return the variances calculated during fitting.
 
 ```php
-public variances() : array
+public variances() : ?array
 ```
 
 ## References

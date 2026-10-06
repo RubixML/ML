@@ -16,7 +16,9 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\IncorrectDatasetDimensionality;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
@@ -81,7 +83,6 @@ class MLPRegressorTest extends TestCase
             minChange: 1e-4,
             evalInterval: 3,
             window: 5,
-            holdOut: 0.1,
             costFn: new LeastSquares(),
             metric: new RMSE()
         );
@@ -118,7 +119,6 @@ class MLPRegressorTest extends TestCase
             minChange: 1e-12,
             evalInterval: 1,
             window: 0,
-            holdOut: 0.1,
             costFn: new LeastSquares(),
             metric: new RMSE()
         );
@@ -152,7 +152,6 @@ class MLPRegressorTest extends TestCase
             epochs: 5,
             minChange: 1e-6,
             evalInterval: 1,
-            holdOut: 0.1,
             costFn: new LeastSquares(),
             metric: new RMSE()
         );
@@ -250,7 +249,6 @@ class MLPRegressorTest extends TestCase
             'min change' => 1e-4,
             'eval interval' => 3,
             'window' => 5,
-            'hold out' => 0.1,
             'cost fn' => new LeastSquares(),
             'metric' => new RMSE(),
             'gradient accumulation steps' => 1,
@@ -504,10 +502,9 @@ class MLPRegressorTest extends TestCase
         self::assertIsArray($scores);
         self::assertIsArray($norms);
         self::assertNotEmpty($losses);
-        self::assertNotEmpty($scores);
+        self::assertEmpty($scores);
         self::assertNotEmpty($norms);
         self::assertContainsOnlyFloat($losses);
-        self::assertContainsOnlyFloat($scores);
         self::assertContainsOnlyFloat($norms);
 
         $predictions = $this->estimator->predict($testing);
@@ -517,6 +514,163 @@ class MLPRegressorTest extends TestCase
         foreach ($predictions as $prediction) {
             self::assertIsNumeric($prediction);
         }
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset enables progress monitoring and early stopping')]
+    public function injectedValidationDatasetEnablesScoring() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+        self::assertEmpty($estimator->scores());
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+        self::assertNotEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset is retained across partial training')]
+    public function injectedValidationDatasetIsRetainedAcrossPartialTraining() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training->fold(2)[0]);
+
+        self::assertNotEmpty($estimator->scores());
+
+        $estimator->partial($training->fold(2)[1]);
+
+        self::assertNotEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset is not persisted')]
+    public function injectedValidationDatasetIsNotPersisted() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training);
+
+        $serialized = $estimator->__serialize();
+
+        self::assertArrayNotHasKey('validationDataset', $serialized);
+
+        $copy = unserialize(serialize($estimator));
+
+        self::assertTrue($copy->trained());
+        self::assertArrayNotHasKey('validationDataset', $copy->__serialize());
+    }
+
+    #[Test]
+    #[TestDox('Null injected validation dataset disables progress monitoring and early stopping')]
+    public function nullInjectedValidationDatasetDisablesScoring() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+        $estimator->setValidationDataset(null);
+
+        $estimator->train($training);
+
+        self::assertTrue($estimator->trained());
+        self::assertEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset must not be empty')]
+    public function injectedValidationDatasetRejectsEmptyDataset() : void
+    {
+        $this->expectException(EmptyDataset::class);
+
+        $this->estimator->setValidationDataset(Labeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset must match the training dimensionality')]
+    public function injectedValidationDatasetRejectsMismatchedDimensionality() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $validation = Labeled::quick(
+            samples: [[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0]],
+            labels: [1.0, 2.0]
+        );
+
+        $this->estimator->setValidationDataset($validation);
+
+        $this->expectException(IncorrectDatasetDimensionality::class);
+
+        $this->estimator->train($training);
+    }
+
+    /**
+     * Build an estimator with a small epoch budget.
+     *
+     * @return MLPRegressor
+     */
+    private function buildEstimator() : MLPRegressor
+    {
+        return new MLPRegressor(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new SiLU()),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(new Constant(0.01)),
+            epochs: 10,
+            minChange: 0.0,
+            evalInterval: 1,
+            window: 0,
+            costFn: new LeastSquares(),
+            metric: new RMSE()
+        );
     }
 
     /**

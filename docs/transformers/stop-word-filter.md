@@ -6,20 +6,20 @@ Removes user-specified words from any categorical feature columns including blob
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Categorical
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | stopWords | | array | A list of stop words to filter out of each text feature. |
+| 1 | stopWords | [] | array | A list of stop words to filter out of each text feature. |
 
 ## Example
 
 ```php
 use Rubix\ML\Transformers\StopWordFilter;
 
-$transformer = new StopWordFilter(['i', 'me', 'my', ...]);
+$transformer = new StopWordFilter(['i', 'me', 'my', 'myself']);
 ```
 
 ## Additional Methods

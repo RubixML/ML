@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Tensor\Matrix;
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
@@ -72,17 +71,45 @@ class RandIndex implements Metric
      */
     public function score(array $predictions, array $labels) : float
     {
-        $table = (new ContingencyTable())->generate($labels, $predictions);
+        $n = count($predictions);
 
-        $table = Matrix::fromArray($table->toArray());
+        if ($n < 2) {
+            return 1.0;
+        }
 
-        $sigma = $table->map([self::class, 'comb2'])->sum()->sum();
+        $table = (new ContingencyTable())->generate($labels, $predictions)->toArray();
 
-        $alpha = $table->sum()->map([self::class, 'comb2'])->sum();
-        $beta = $table->transpose()->sum()->map([self::class, 'comb2'])->sum();
+        $sigma = $alpha = $beta = 0;
 
-        $pHat = ($alpha * $beta) / self::comb2(count($predictions));
+        foreach ($table as $row) {
+            $rowSum = 0;
+
+            foreach ($row as $count) {
+                $sigma += self::comb2($count);
+                $rowSum += $count;
+            }
+
+            $alpha += self::comb2($rowSum);
+        }
+
+        $columns = [];
+
+        foreach ($table as $row) {
+            foreach ($row as $label => $count) {
+                $columns[$label] = ($columns[$label] ?? 0) + $count;
+            }
+        }
+
+        foreach ($columns as $count) {
+            $beta += self::comb2($count);
+        }
+
+        $pHat = ($alpha * $beta) / self::comb2($n);
         $mean = ($alpha + $beta) / 2.0;
+
+        if ($mean == $pHat) {
+            return 1.0;
+        }
 
         return ($sigma - $pHat) / ($mean - $pHat);
     }

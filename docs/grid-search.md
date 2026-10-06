@@ -12,7 +12,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | base | | string | The class name of the base learner. |
+| 1 | class | | string | The class name of the base learner. |
 | 2 | params | | array | An array of lists containing the possible values for each of the base learner's constructor parameters. |
 | 3 | metric | auto | Metric | The validation metric used to score each set of hyper-parameters. |
 | 4 | validator | KFold | Validator | The validator used to test and score the model. |
@@ -66,7 +66,7 @@ $estimator->setBackend(new Amp(4));
 Return the base learner instance.
 
 ```php
-public base() : ?\Rubix\ML\Learner
+public base() : \Rubix\ML\Estimator
 ```
 
 Return an iterable table of every parameter combination tested along with its validation score from the last search.

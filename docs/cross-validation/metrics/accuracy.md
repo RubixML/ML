@@ -2,10 +2,10 @@
 
 # Accuracy
 
-A quick and simple classification and anomaly detection metric defined as the number of true positives over the number of samples in the testing set. Since Accuracy gives equal weight to false positives and false negatives, it is *not* a good metric for datasets with a highly imbalanced distribution of labels.
+A quick and simple classification and anomaly detection metric defined as the proportion of correct predictions over the number of samples in the testing set. Since Accuracy gives equal weight to false positives and false negatives, it is *not* a good metric for datasets with a highly imbalanced distribution of labels.
 
 $$
-{\displaystyle Accuracy = \frac{TP}{TP + FP}}
+{\displaystyle Accuracy = \frac{TP + TN}{n}}
 $$
 
 **Estimator Compatibility:** Classifier, Anomaly Detector

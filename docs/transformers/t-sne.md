@@ -9,7 +9,7 @@
 
 **Interfaces:** [Transformer](../transformers/api.md#transformer), [Iterative](../iterative.md), [Verbose](../verbose.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 

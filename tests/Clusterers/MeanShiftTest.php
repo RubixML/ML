@@ -236,8 +236,86 @@ class MeanShiftTest extends TestCase
         $this->assertSame($presets, $estimator->centroids());
     }
 
+    /**
+     * The shift reported for an epoch is the total displacement of the centroid
+     * candidates from the exact positions they were shifted from.
+     *
+     * The candidates in this fixture are seeded more than the radius apart and
+     * each one only ever sees the pair of samples in its own neighborhood, so no
+     * candidate is ever pruned and consecutive epochs can be compared directly.
+     */
     #[Test]
     public function lossesMatchCentroidDisplacement() : void
+    {
+        $presets = [];
+        $samples = [];
+
+        for ($i = 0; $i < 20; ++$i) {
+            $presets[] = [(float) ($i * 20)];
+
+            $samples[] = [(float) ($i * 20 + 3)];
+            $samples[] = [(float) ($i * 20 + 4)];
+        }
+
+        $training = Unlabeled::quick($samples);
+
+        foreach ([3.0, 5.0, 7.0] as $radius) {
+            foreach ([2, 3, 4, 5, 6] as $epochs) {
+                $previous = new MeanShift(
+                    radius: $radius,
+                    ratio: 0.5,
+                    epochs: $epochs - 1,
+                    minShift: 0.0,
+                    tree: new BallTree(),
+                    seeder: new Preset($presets)
+                );
+
+                $previous->train($training);
+
+                $estimator = new MeanShift(
+                    radius: $radius,
+                    ratio: 0.5,
+                    epochs: $epochs,
+                    minShift: 0.0,
+                    tree: new BallTree(),
+                    seeder: new Preset($presets)
+                );
+
+                $estimator->train($training);
+
+                $this->assertSame(
+                    count($estimator->centroids()),
+                    count($previous->centroids()),
+                    'Fixture pruned candidates, radius '
+                    . "$radius, epochs $epochs"
+                );
+
+                $expected = $this->displacement(
+                    current: $estimator->centroids(),
+                    previous: $previous->centroids()
+                ) / $training->numSamples();
+
+                $this->assertEqualsWithDelta(
+                    $expected,
+                    $estimator->losses()[$epochs],
+                    1e-12,
+                    "Radius $radius epoch $epochs"
+                );
+            }
+        }
+    }
+
+    /**
+     * Candidates that were pruned by the merge step of an epoch are not charged
+     * for the shift of the candidate that absorbed them, and the candidates that
+     * survived are charged from the positions they were shifted from rather than
+     * from their former index in the unmerged list.
+     *
+     * The candidates in this fixture are 5 apart so 9, 13, and 16 of them are
+     * pruned during the first two epochs at radii 6, 14, and 22 respectively.
+     */
+    #[Test]
+    public function lossesExcludePrunedCandidates() : void
     {
         $samples = [];
 
@@ -250,40 +328,55 @@ class MeanShiftTest extends TestCase
 
         $training = Unlabeled::quick($samples);
 
-        foreach ([6.0, 14.0, 22.0] as $radius) {
-            foreach ([2, 3, 4, 5, 6] as $epochs) {
-                $previous = new MeanShift(
-                    radius: $radius,
-                    ratio: 0.05,
-                    epochs: $epochs - 1,
-                    minShift: 0.0,
-                    tree: new BallTree(),
-                    seeder: new Preset($samples)
-                );
+        $expected = [
+            [6.0, [
+                1 => 0.368520038173,
+                2 => 0.033673603439,
+                3 => 0.006231837823,
+                4 => 0.001252842273,
+                5 => 0.000294386435,
+                6 => 0.000086803173,
+            ]],
+            [14.0, [
+                1 => 0.469491981338,
+                2 => 0.125865079631,
+                3 => 0.113513533954,
+                4 => 0.026387599012,
+                5 => 0.006151814003,
+                6 => 0.001435147581,
+            ]],
+            [22.0, [
+                1 => 0.461785166053,
+                2 => 0.155143397263,
+                3 => 0.129400532072,
+                4 => 0.122586570570,
+                5 => 0.033391727535,
+                6 => 0.009132488142,
+            ]],
+        ];
 
-                $previous->train($training);
+        foreach ($expected as [$radius, $losses]) {
+            $estimator = new MeanShift(
+                radius: $radius,
+                ratio: 0.05,
+                epochs: 6,
+                minShift: 0.0,
+                tree: new BallTree(),
+                seeder: new Preset($samples)
+            );
 
-                $estimator = new MeanShift(
-                    radius: $radius,
-                    ratio: 0.05,
-                    epochs: $epochs,
-                    minShift: 0.0,
-                    tree: new BallTree(),
-                    seeder: new Preset($samples)
-                );
+            $estimator->train($training);
 
-                $estimator->train($training);
+            $this->assertLessThan(count($samples), count($estimator->centroids()));
 
-                $expected = $this->displacement(
-                    current: $estimator->centroids(),
-                    previous: $previous->centroids()
-                ) / $training->numSamples();
+            $this->assertSame(array_keys($losses), array_keys($estimator->losses()));
 
+            foreach ($losses as $epoch => $loss) {
                 $this->assertEqualsWithDelta(
-                    $expected,
-                    $estimator->losses()[$epochs],
-                    1e-12,
-                    "Radius $radius epoch $epochs"
+                    $loss,
+                    $estimator->losses()[$epoch],
+                    1e-9,
+                    "Radius $radius epoch $epoch"
                 );
             }
         }

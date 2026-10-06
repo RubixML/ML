@@ -20,7 +20,7 @@ The Support Vector Machine Regressor (SVR) is a maximum margin algorithm for the
 | 3 | kernel | RBF | Kernel | The kernel function used to operate in higher dimensions. |
 | 4 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 5 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
-| 6 | cache size | 100.0 | float | The size of the kernel cache in MB. |
+| 6 | cacheSize | 100.0 | float | The size of the kernel cache in MB. |
 
 ## Additional Methods
 

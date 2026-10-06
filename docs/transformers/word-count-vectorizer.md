@@ -6,14 +6,14 @@ The Word Count Vectorizer builds a vocabulary from the training samples and tran
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Categorical
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | maxVocabularySize | PHP_INT_MAX | int | The maximum number of unique tokens to embed into each document vector. |
-| 2 | minDocumentCount | 1 | float | The minimum number of documents a word must appear in to be added to the vocabulary. |
+| 2 | minDocumentCount | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
 | 3 | maxDocumentRatio | 0.8 | float | The maximum ratio of documents a word can appear in to be added to the vocabulary. |
 | 4 | tokenizer | Word | Tokenizer | The tokenizer used to extract features from blobs of text. |
 
@@ -31,5 +31,5 @@ $transformer = new WordCountVectorizer(10000, 5, 0.5, new NGram(1, 2));
 Return an array of words that comprise each of the vocabularies.
 
 ```php
-public vocabularies() : array
+public vocabularies() : ?array
 ```

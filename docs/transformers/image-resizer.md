@@ -9,14 +9,14 @@ Image Resizer fits (scales and crops) images to a user-specified width and heigh
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Image
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | width | 32 | int | The width of the resized image. |
-| 2 | heights | 32 | int | The height of the resized image. |
+| 2 | height | 32 | int | The height of the resized image. |
 
 ## Example
 

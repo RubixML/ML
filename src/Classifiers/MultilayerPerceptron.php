@@ -14,6 +14,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\Network;
@@ -39,6 +40,7 @@ use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
@@ -53,6 +55,8 @@ use function get_object_vars;
 use function number_format;
 use function array_map;
 use function array_flip;
+use function array_diff;
+use function implode;
 use function array_fill;
 use function is_dir;
 use function uniqid;
@@ -134,7 +138,7 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
     protected float $minChange;
 
     /**
-     * The number of epochs to train before evaluating the model with the holdout set.
+     * The number of epochs to train before evaluating the model with the validation set.
      *
      * @var int
      */
@@ -148,11 +152,12 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
     protected int $window;
 
     /**
-     * The proportion of training samples to use for validation and progress monitoring.
+     * The dataset used to score the model during training. When null, progress
+     * monitoring and early stopping are disabled.
      *
-     * @var float
+     * @var Labeled|null
      */
-    protected float $holdOut;
+    protected ?Labeled $validation = null;
 
     /**
      * The function that computes the loss associated with an erroneous activation during training.
@@ -220,7 +225,6 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
-     * @param float $holdOut
      * @param ClassificationLoss|null $costFn
      * @param Metric|null $metric
      * @throws InvalidArgumentException
@@ -235,7 +239,6 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
         float $minChange = 1e-5,
         int $evalInterval = 1,
         int $window = 10,
-        float $holdOut = 0.1,
         ?ClassificationLoss $costFn = null,
         ?Metric $metric = null,
     ) {
@@ -295,11 +298,6 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be'
-                . " between 0 and 0.5, $holdOut given.");
-        }
-
         if ($costFn and $costFn instanceof BinaryCrossEntropy) {
             throw new InvalidArgumentException('Not compatible with binary cross entropy.');
         }
@@ -317,7 +315,6 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
         $this->window = $window;
-        $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new MulticlassCrossEntropy();
         $this->metric = $metric ?? new FBeta();
     }
@@ -367,7 +364,6 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
             'window' => $this->window,
-            'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
         ];
@@ -460,9 +456,27 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
     }
 
     /**
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
+     *
+     * @param Labeled|null $dataset
+     * @throws EmptyDataset
+     */
+    public function setValidationDataset(?Labeled $dataset) : void
+    {
+        if (isset($dataset)) {
+            DatasetIsNotEmpty::with($dataset)->check();
+        }
+
+        $this->validation = $dataset;
+    }
+
+    /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -518,7 +532,7 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -544,7 +558,24 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
-        [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
+        if (isset($this->validation)) {
+            SpecificationChain::with([
+                new DatasetHasDimensionality($this->validation, $dataset->numFeatures()),
+            ])->check();
+
+            $unknown = array_diff($this->validation->possibleOutcomes(), $this->classes);
+
+            if ($unknown) {
+                throw new InvalidArgumentException('Validation dataset contains labels'
+                    . ' that are unknown to this classifier: '
+                    . implode(', ', $unknown) . '.');
+            }
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
+        }
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
@@ -559,22 +590,17 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
             $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
         }
 
-        if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
-        }
-
         $this->scores = $this->losses = $this->norms = [];
 
         $classMap = array_flip($this->classes);
 
-        $training = $training->transformLabels(
+        $dataset = (clone $dataset)->transformLabels(
             static fn ($label) => $classMap[$label]
                 ?? throw new RuntimeException("Unknown class $label encountered during training.")
         );
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $batches = $training->randomize()->batch($this->batchSize);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
             $totalLoss = $norm = $totalNorm = 0.0;
 
@@ -642,12 +668,12 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($testing);
+                $predictions = $this->predict($this->validation);
 
-                $score = $this->metric->score($predictions, $testing->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -815,7 +841,8 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
             $properties['norms'],
             $properties['scores'],
             $properties['logger'],
-            $properties['snapshotPath']
+            $properties['snapshotPath'],
+            $properties['validation']
         );
 
         return $properties;
