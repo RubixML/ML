@@ -2,6 +2,7 @@
 
 - 3.0.0
     - Integers are now considered a categorical data type
+    - Updated to Tensor version 4
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
     - `Isolation Forest` training and inference is now parallelized
     - Added disk-based streaming neural network snapshotting
