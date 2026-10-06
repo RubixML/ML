@@ -9,7 +9,7 @@ This transformer converts the characters in all [multibyte strings](https://www.
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Categorical
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

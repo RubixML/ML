@@ -13,7 +13,7 @@ A *database-friendly* random projector that samples its random projection matrix
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
-| 2 | sparsity | 0.66 | float | The proportion of zero to non-zero elements in the random projection matrix. If null, sparsity factor will be chosen automatically. |
+| 2 | sparsity | 2/3 | float | The proportion of zero to non-zero elements in the random projection matrix. If null, sparsity factor will be chosen automatically. |
 
 ## Example
 

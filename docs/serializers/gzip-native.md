@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Persisters/Serializers/GzipNative.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Serializers/GzipNative.php">[source]</a></span>
 
 # Gzip Native
 

@@ -7,7 +7,7 @@ A *hot deck* is a set of complete donor samples that may be referenced when impu
 !!! note
     Requires a NaN safe distance kernel such as [Safe Euclidean](../kernels/distance/safe-euclidean.md) for continuous features.
 
-**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 

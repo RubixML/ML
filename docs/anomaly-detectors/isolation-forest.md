@@ -13,7 +13,7 @@ An ensemble of Isolation Trees that each specialize on a unique subset of the tr
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | estimators | 100 | int | The number of isolation trees to train in the ensemble. |
-| 2 | ratio | null | float | The ratio of samples to train each estimator with. If null, the subsample size will be set to 256. |
+| 2 | ratio | null | float | The ratio of samples to train each estimator with. If null, the subsample size will be set to min(256, n). |
 | 3 | contamination | null | float | The proportion of outliers that are assumed to be present in the training set. If null, the threshold anomaly score will be set to 0.5. |
 
 ## Example

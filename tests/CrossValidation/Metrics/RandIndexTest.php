@@ -54,6 +54,24 @@ class RandIndexTest extends TestCase
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
             0.0,
         ];
+
+        yield [
+            [0],
+            [0],
+            1.0,
+        ];
+
+        yield [
+            [0, 0],
+            [0, 0],
+            1.0,
+        ];
+
+        yield [
+            ['a', 'a', 'a', 'a'],
+            ['b', 'b', 'b', 'b'],
+            1.0,
+        ];
     }
 
     protected function setUp() : void

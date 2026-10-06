@@ -3,6 +3,7 @@
 namespace Rubix\ML\Specifications;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
@@ -23,27 +24,27 @@ class LabelsAreCompatibleWithLearner extends Specification
     /**
      * The learner instance.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $estimator;
+    protected Learner & Estimator $estimator;
 
     /**
      * Build a specification object with the given arguments.
      *
      * @param Labeled $dataset
-     * @param Learner $estimator
+     * @param Learner & Estimator $estimator
      * @return self
      */
-    public static function with(Labeled $dataset, Learner $estimator) : self
+    public static function with(Labeled $dataset, Learner & Estimator $estimator) : self
     {
         return new self($dataset, $estimator);
     }
 
     /**
      * @param Labeled $dataset
-     * @param Learner $estimator
+     * @param Learner & Estimator $estimator
      */
-    public function __construct(Labeled $dataset, Learner $estimator)
+    public function __construct(Labeled $dataset, Learner & Estimator $estimator)
     {
         $this->dataset = $dataset;
         $this->estimator = $estimator;

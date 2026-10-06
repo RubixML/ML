@@ -26,7 +26,7 @@ This affects you in two important ways:
 - Estimators and transformers that require continuous features will now **reject** datasets with integer columns. For example, training a [K Means](clusterers/k-means.md), [Ridge](regressors/ridge.md), or any neural network on a column of `[1, 2, 3]` will throw an `InvalidArgumentException` because the features are no longer continuous.
 - A column that mixes integers and floats such as `[1, 2, 3.0]` is no longer homogeneous and will fail **dataset validation** with an `InvalidArgumentException`.
 
-The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a [Pipeline](./pipeline.md):
+The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integers (and numeric strings) to floats. You can apply it to an existing dataset in place with the `apply()` method, or add it to a [Pipeline](transformers/pipeline.md):
 
 ```php
 use Rubix\ML\Transformers\FloatTypeConverter;
@@ -35,13 +35,17 @@ $dataset->apply(new FloatTypeConverter());
 ```
 
 ```php
-use Rubix\ML\Pipeline;
+use Rubix\ML\Transformers\Pipeline;
 use Rubix\ML\Clusterers\KMeans;
 
-$estimator = new Pipeline([
+$pipeline = new Pipeline([
     new FloatTypeConverter(),
     // ...
-], new KMeans(5));
+]);
+
+$clusterer = new KMeans(5);
+
+$clusterer->train($dataset->apply($pipeline));
 ```
 
 Output of certain Transformers such as [One Hot Encoder](transformers/one-hot-encoder.md), [Word Count Vectorizer](transformers/word-count-vectorizer.md), and [Token Hashing Vectorizer](transformers/token-hashing-vectorizer.md) are now interpretted as categorical by default. Use [Float Type Converter](transformers/float-type-converter.md) after the initial transformation to recover the old behavior.
@@ -294,7 +298,7 @@ foreach ($estimator->steps() as $epoch) { /* ... */ }
 foreach ($estimator->progress() as $epoch) { /* ... */ }
 ```
 
-The returned table is now also described by the [Iterative](iterative.md) interface, which the `progress()` method implements. See [item 49](#49-grid-search-results-table) for the new results() table.
+The returned table is now also described by the [Iterative](iterative.md) interface, which the `progress()` method implements. See [item 50](#50-grid-search-results-table) for the new results() table.
 
 ### 16. DBSCAN is now a Learner, Probabilistic, and Persistable
 
@@ -342,7 +346,7 @@ $strata = $dataset->stratifyByClassLabels();
 $report = $dataset->describeByClassLabels();
 ```
 
-`stratifyByClassLabels()`, `stratifiedSplit()`, and `stratifiedFold()` all throw an `InvalidArgumentException` when the label is continuous. In 2.0 they grouped samples by *exact* label equality, which is meaningless for a float target — every distinct value became its own stratum, or the whole target collapsed into a single stratum when all values repeated. Rather than silently produce a meaningless "stratification", 3.0 refuses the call and directs you to the binned variants described in [item 50](#50-binned-stratification-for-continuous-labels):
+`stratifyByClassLabels()`, `stratifiedSplit()`, and `stratifiedFold()` all throw an `InvalidArgumentException` when the label is continuous. In 2.0 they grouped samples by *exact* label equality, which is meaningless for a float target — every distinct value became its own stratum, or the whole target collapsed into a single stratum when all values repeated. Rather than silently produce a meaningless "stratification", 3.0 refuses the call and directs you to the binned variants described in [item 51](#51-binned-stratification-for-continuous-labels):
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -356,41 +360,116 @@ $dataset->binnedSplit(0.8);       // 3.0 - stratify over equal frequency bins
 ```
 
 !!! note
-    Only datasets with a *continuous* target are affected — in practice, regression datasets. Classifiers, clusterers (whose cluster labels are integers, and therefore [categorical](representing-your-data.md) — see [item 1](#1-integers-are-now-a-categorical-data-type)), and any other learner with categorical labels are unaffected and continue to use `stratifiedSplit()` and `stratifiedFold()` as before. The [Validators](cross-validation.md) dispatch on the label type for you (see [item 51](#51-validators-and-regressors-now-stratify-continuous-labels-by-bin)).
+    Only datasets with a *continuous* target are affected — in practice, regression datasets. Classifiers, clusterers (whose cluster labels are integers, and therefore [categorical](representing-your-data.md) — see [item 1](#1-integers-are-now-a-categorical-data-type)), and any other learner with categorical labels are unaffected and continue to use `stratifiedSplit()` and `stratifiedFold()` as before. The [Validators](cross-validation.md) dispatch on the label type for you (see [item 52](#52-validators-now-stratify-continuous-labels-by-bin)).
+
+### 18. Pipeline is now a Transformer decorator
+
+The `Pipeline` moved from the root namespace into `Rubix\ML\Transformers` and changed from a meta-estimator that wrapped a base estimator into a plain [Transformer](transformers/api.md). Code that still imports `Rubix\ML\Pipeline` now dies with a fatal `Error: Class "Rubix\ML\Pipeline" not found`, and once that import is fixed, the two parameters that carried the wrapped estimator and the elastic flag no longer exist:
+
+```php
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+
+// before - transformers, a base estimator, and the elastic flag
+$estimator = new Pipeline([new OneHotEncoder()], new SoftmaxClassifier(), true);
+
+// after - transformers only
+$pipeline = new Pipeline([new OneHotEncoder()]);
+```
+
+Mind how that fails: PHP silently ignores surplus arguments, so the call above throws nothing at all — it just drops the wrapped estimator and the elastic flag on the floor. The error surfaces later, from a method the pipeline no longer has: `Error: Call to undefined method Rubix\ML\Transformers\Pipeline::train()`. There is no `$elastic` flag anymore either: a pipeline is [Elastic](transformers/api.md#elastic) whenever at least one transformer in its stack is, and `update()` then refines those fittings while lazily fitting any stateful transformer it has not yet seen.
+
+Everything that made the 2.0 Pipeline a meta-estimator is gone along with the estimator it held:
+
+| 2.0 | 3.0 |
+| --- | --- |
+| `Estimator`, `Learner`, `Online`, `Probabilistic`, `Scoring`, `Persistable` | `Transformer`, [Stateful](transformers/api.md#stateful), [Elastic](transformers/api.md#elastic), [Persistable](persistable.md) |
+| `train()`, `partial()`, `predict()`, `proba()`, `score()`, `base()`, `__call()` | `fit()`, `fitted()`, `update()`, `transform()` |
+| `compatibility()` from the base estimator | `compatibility()` from the first transformer in the stack |
+| `params()` returns `transformers`, `estimator`, `elastic` | `params()` returns `transformers` |
+
+Since a pipeline no longer holds an estimator, it transforms nothing implicitly. Apply it to the dataset yourself at both training and inference time:
+
+```php
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+
+$pipeline = new Pipeline([new OneHotEncoder()]);
+
+$estimator = new SoftmaxClassifier();
+
+$dataset->apply($pipeline);
+
+$estimator->train($dataset);
+
+$predictions = $estimator->predict($dataset);
+```
+
+[apply()](datasets/api.md) transforms the dataset *in place*, fits the pipeline first if it isn't fitted yet, and returns the same object — hence the `clone`, which preserves your untransformed table for the next call. Calling `fit()` yourself is optional, and unlike 2.0 it no longer mutates the dataset you hand it: the pipeline streams a working copy of the samples through the chain and leaves the input alone. Note that fitting only fits — transform separately with `transform()` or `apply()`.
+
+[Online](online.md) learners get the same treatment: nothing is updated for you, so update the pipeline and transform each batch explicitly.
+
+```php
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\MinMaxNormalizer;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Extractors\NDJSON;
+use Rubix\ML\Regressors\MLPRegressor;
+
+$pipeline = new Pipeline([
+    new MinMaxNormalizer(),  // Elastic - refined by every update()
+    new OneHotEncoder(),
+]);
+
+$regressor = new MLPRegressor($layers);
+
+foreach (Labeled::chunked(new NDJSON('data.jsonl')) as $batch) {
+    $pipeline->update($batch);
+
+    $batch->apply($pipeline);
+
+    $regressor->partial($batch);
+}
+```
+
+Finally, fitted transformer state is no longer persisted along with the estimator — 2.0 saved the whole wrapped pipeline in the same file as the model. A pipeline is a [Persistable](persistable.md) transformer in its own right now, so fit and save it separately, most conveniently with the [Persistent Transformer](transformers/persistent-transformer.md) decorator covered in [item 56](#56-persistenttransformer-decorator).
+
+!!! warning
+    A 2.x model whose persisted state embeds a `Rubix\ML\Pipeline` cannot be restored by 3.0 — the class no longer exists. Re-fit your transformers and re-save the model. See [Pipeline](transformers/pipeline.md) for the full reference.
 
 ## Behavioral Changes
 
 These changes won't throw errors, but they can change the output of your models or the shape of your data. Verify that your results are still what you expect.
 
-### 18. Gradient learners now hold out validation data for early stopping
+### 19. Gradient learners now support early stopping
 
-[Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Adaline](regressors/adaline.md), and [AdaBoost](classifiers/adaboost.md) now reserve a portion of the training set as a hold-out to drive early stopping, matching the behavior the [MLP](classifiers/multilayer-perceptron.md) learners already had. In 2.0 these learners trained on 100% of the data — now, by default, 10% is held out and the remainder is trained on. Training stops when the validation score does not improve within a window of evaluations.
+[Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Adaline](regressors/adaline.md), [AdaBoost](classifiers/adaboost.md), and the other windowed learners now support progress monitoring and early stopping. They always train on the *entire* dataset given to `train()` — no portion of it is carved out. To enable early stopping, supply the validation set yourself with `setValidationDataset()`, which is covered in [item 55](#55-early-stopping-is-opt-in-via-user-supplied-validation-sets). Training stops when the validation score fails to improve within a window of evaluations.
 
-The relevant constructor parameters (defaults in parentheses) are:
+The relevant constructor parameters are:
 
-- `$holdOut` — the fraction of samples held out for validation (0.1, must be between 0.0 and 0.5)
-- `$evalInterval` — the number of epochs between hold-out evaluations (3)
-- `$window` — the number of evaluations without improvement before early stopping (5)
+- `$evalInterval` — the number of epochs between validation evaluations (1, or 3 for the boosting learners)
+- `$window` — the number of evaluations without improvement before early stopping (10, or 5 for the boosting learners)
 
 ```php
 use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\Datasets\Labeled;
 
-// before - trained on all the data
-$lr = new LogisticRegression();
+$lr = new LogisticRegression(window: 5, evalInterval: 3);
 
-// after - holds out 10% for validation and early stops
-$lr = new LogisticRegression(holdOut: 0.1, window: 5, evalInterval: 3);
+$lr->setValidationDataset($validation);
 
-// to train on all the data without early stopping
-$lr = new LogisticRegression(holdOut: 0.0);
+$lr->train($training);
 ```
 
-These parameters are inserted into the constructors after `$minChange`, so calls that pass arguments positionally past that point must be updated (or converted to named arguments). The `$evalInterval` parameter itself is covered in more detail in [item 39](#39-validation-interval-for-hold-out-evaluation).
+Both parameters are inert until a validation dataset is set. `$evalInterval` is covered in more detail in [item 40](#40-validation-interval-for-early-stopping-evaluation).
 
-!!! warning
-    Because these learners now see only 90% of your training data by default and may stop early, models fit without explicit configuration may differ from 2.0. Fit with `holdOut: 0.0` or re-tune if results change unexpectedly.
+!!! note
+    With no validation set, the learner trains on all of the data and validation-score-based monitoring is inactive; loss-based stopping via `minChange` still applies. Remove any `holdOut` argument when migrating, and shift positional arguments that followed it.
 
-### 19. Token Hashing Vectorizer now defaults to Murmur3
+### 20. Token Hashing Vectorizer now defaults to Murmur3
 
 The default hash function of the [Token Hashing Vectorizer](transformers/token-hashing-vectorizer.md) changed from CRC32 to `Murmur3`. Since the hashing function determines which dimensions the tokens map to, the resulting vectors are different from 2.0. Re-fit any pipeline that uses this transformer, or pass `TokenHashingVectorizer::CRC32` explicitly to preserve the previous behavior:
 
@@ -400,23 +479,23 @@ use Rubix\ML\Transformers\TokenHashingVectorizer;
 $vectorizer = new TokenHashingVectorizer(100_000, hashFn: TokenHashingVectorizer::CRC32);
 ```
 
-### 20. V-measure, Completeness, and Homogeneity are now entropy-based
+### 21. V-measure, Completeness, and Homogeneity are now entropy-based
 
 The [V-measure](cross-validation/metrics/v-measure.md), [Completeness](cross-validation/metrics/completeness.md), and [Homogeneity](cross-validation/metrics/homogeneity.md) clustering metrics now use a proper entropy-based formula. Their score ranges are unchanged (0.0 to 1.0), but raw scores are not directly comparable to those produced by 2.0.
 
-### 21. Dataset sort() is now unstable
+### 22. Dataset sort() is now unstable
 
 The [Dataset](datasets/api.md) `sort()` method is no longer stable. Equal elements are not guaranteed to retain their relative order. If your comparisons can produce ties and you rely on the previous order, break ties explicitly in your callback.
 
-### 22. Dataset fold() distributes the remainder across all folds
+### 23. Dataset fold() distributes the remainder across all folds
 
 The `fold()` method of both [Unlabeled](datasets/unlabeled.md) and [Labeled](datasets/labeled.md) datasets forms folds that are as equal size as possible. If `n` samples are folded `k` ways, the first `n % k` folds contain `ceil(n / k)` samples and the remaining folds contain `floor(n / k)`. Previously the last fold received the entire remainder, which could leave it holding many times the samples of its siblings.
 
-The [Labeled](datasets/labeled.md) `stratifiedFold()` and `binnedFold()` methods no longer call `fold()` on each stratum independently. Doing so sent the remainder of *every* stratum to the final fold, so a dataset whose strata did not divide evenly produced a single oversized fold — 143 samples across 10 bins folded 10 ways gave sizes of `[10, ..., 10, 53]` instead of `[14, ..., 15]`. Each stratum now awards its remainder to a rotating window of folds whose cursor carries over between strata, which keeps the aggregate fold sizes within a single sample of one another and keeps the proportions of every stratum intact. See [item 50](#50-binned-stratification-for-continuous-labels) for the binned variant.
+The [Labeled](datasets/labeled.md) `stratifiedFold()` and `binnedFold()` methods no longer call `fold()` on each stratum independently. Doing so sent the remainder of *every* stratum to the final fold, so a dataset whose strata did not divide evenly produced a single oversized fold — 143 samples across 10 bins folded 10 ways gave sizes of `[10, ..., 10, 53]` instead of `[14, ..., 15]`. Each stratum now awards its remainder to a rotating window of folds whose cursor carries over between strata, which keeps the aggregate fold sizes within a single sample of one another and keeps the proportions of every stratum intact. See [item 51](#51-binned-stratification-for-continuous-labels) for the binned variant.
 
 Both `fold()` methods now throw an `InvalidArgumentException` when `k` is greater than the number of samples, preventing empty folds (previously this silently produced `k - 1` empty folds with all samples lumped into the last). The [Labeled](datasets/labeled.md) `stratifiedFold()` method additionally throws when `k` is greater than the number of samples in the *smallest* stratum, since every fold must contain at least one sample of every class.
 
-### 23. Interval Discretizer now outputs integers
+### 24. Interval Discretizer now outputs integers
 
 The [Interval Discretizer](transformers/interval-discretizer.md) now casts intervals as integers instead of strings. Consumers that expect string output — for example, when feeding a one-hot encoder or writing to CSV — should cast the values to strings. The change aligns with integers now being interpreted as categorical data.
 
@@ -426,7 +505,7 @@ use Rubix\ML\Transformers\IntervalDiscretizer;
 $transformer = new IntervalDiscretizer(5); // outputs ints, e.g. 0 .. 4
 ```
 
-### 24. Persistence changes
+### 25. Persistence changes
 
 A few changes affect [model persistence](model-persistence.md):
 
@@ -436,11 +515,11 @@ A few changes affect [model persistence](model-persistence.md):
 - **Atomic writes** — the [Filesystem persister](persisters/filesystem.md) now writes files atomically, so writes either fully succeed or leave the previous file intact.
 - **SVC class map sidecar** — [SVC](classifiers/svc.md) now saves and restores its class label map via a sidecar file. Re-save any SVC/SVR models trained with 2.x to capture their class maps.
 
-### 25. Boolean Converter now converts truthy and falsy values
+### 26. Boolean Converter now converts truthy and falsy values
 
 The [Boolean Converter](transformers/boolean-converter.md) previously only converted actual PHP booleans. It now converts any truthy or falsy value (such as the strings `'true'`/`'false'`, `'1'`/`'0'`, and the integers `1`/`0`). Review any columns you pass through this transformer for unexpected conversions.
 
-### 26. Polynomial Expander is limited to the 10th degree
+### 27. Polynomial Expander is limited to the 10th degree
 
 The [Polynomial Expander](transformers/polynomial-expander.md) now throws an `InvalidArgumentException` if you request a maximum degree greater than 10.
 
@@ -451,7 +530,7 @@ $transformer = new PolynomialExpander(10); // OK
 $transformer = new PolynomialExpander(11); // throws
 ```
 
-### 27. TSNE window early stopping was removed
+### 28. TSNE window early stopping was removed
 
 The `$window` early-stopping parameter was removed from [t-SNE](transformers/t-sne.md). Adjust any constructor calls that passed it:
 
@@ -463,7 +542,7 @@ $tsne = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6, 5);
 $tsne = new TSNE(3, 10.0, 30, 12.0, 500, 1e-6);
 ```
 
-### 28. Decision Trees now have larger leaf nodes by default
+### 29. Decision Trees now have larger leaf nodes by default
 
 The default maximum leaf node size (`$maxLeafSize`) of the decision-tree learners — [Classification Tree](classifiers/classification-tree.md), [Regression Tree](regressors/regression-tree.md), and the [Extra Tree Classifier](classifiers/extra-tree-classifier.md) and [Extra Tree Regressor](regressors/extra-tree-regressor.md) — increased from 3 to 5. Since leaf nodes may now hold more samples, trees fit with default hyper-parameters may be shallower and their predictions may differ from 2.0.
 
@@ -475,7 +554,7 @@ use Rubix\ML\Classifiers\ClassificationTree;
 $tree = new ClassificationTree(maxLeafSize: 3);
 ```
 
-### 29. The He initializer was canonicalized and Xavier 2 is a deprecated alias
+### 30. The He initializer was canonicalized and Xavier 2 is a deprecated alias
 
 The [He initializer](neural-network/initializers/he.md) now draws its weights uniformly from ±√(6/fanIn), matching the canonical *Kaiming* He initialization. The 2.0 implementation used a fan-out-biased formula, so neural networks trained in 3.0 start from different weights and may converge to different results.
 
@@ -491,11 +570,11 @@ $initializer = new Xavier2();
 $initializer = new He();
 ```
 
-### 30. Multiclass output gradients were corrected
+### 31. Multiclass output gradients were corrected
 
 The `Multiclass` output layer now backpropagates through the softmax Jacobian when the cost function is *not* [Multiclass Cross Entropy](neural-network/cost-functions/multiclass-cross-entropy.md) — for example with [Relative Entropy](neural-network/cost-functions/relative-entropy.md). Previously the gradient was treated as a simple `output - expected` difference, which is incorrect, so MLPs trained with a non-cross-entropy cost function will now train differently (and more correctly).
 
-### 31. Plus Plus and KMC2 seeders always return unique seeds
+### 32. Plus Plus and KMC2 seeders always return unique seeds
 
 The [Plus Plus](clusterers/seeders/plus-plus.md) and [KMC2](clusterers/seeders/k-mc2.md) cluster seeders now reject candidate centroids that duplicate an already-selected one, so they produce exactly `k` *distinct* seeds. Previously a re-drawn sample that coincided with an existing centroid was allowed to be added a second time, which could yield fewer than `k` unique centroids and bias cluster initialization.
 
@@ -511,7 +590,7 @@ $seeder->seed($dataset, 10); // guarantees 10 unique centroids in 3.0
 
 There is no API change. The only effect is that [K Means](clusterers/k-means.md) and [Fuzzy C Means](clusterers/fuzzy-c-means.md) now always start from `k` distinct initial centroids, which may shift where they converge relative to 2.0.
 
-### 32. NDJSON exporter preserves zero decimals as floats
+### 33. NDJSON exporter preserves zero decimals as floats
 
 The [NDJSON](extractors/ndjson.md) exporter now encodes with the `JSON_PRESERVE_ZERO_FRACTION` flag. Floats whose fractional part is zero — for example `5.0` — are now written as `5.0` in the file instead of `5`. This round-trips through the extractor as a float rather than an integer, which matters now that integers are [categorical data](representing-your-data.md) (see [item 1](#1-integers-are-now-a-categorical-data-type)):
 
@@ -522,13 +601,13 @@ The [NDJSON](extractors/ndjson.md) exporter now encodes with the `JSON_PRESERVE_
 !!! note
     Re-extract any NDJSON files that were exported with 2.0 and that rely on whole-number floats being read back as integers. The extractor now preserves them as floats.
 
-### 33. Gradient learners' default `minChange` was lowered from 1e-4 to 1e-5
+### 34. Gradient learners' default `minChange` was lowered from 1e-4 to 1e-5
 
 The default `$minChange` — the minimum change in the training loss necessary for training to continue — of the gradient-based learners was lowered from `1e-4` to `1e-5`. This affects [Adaline](regressors/adaline.md), [MLP](classifiers/multilayer-perceptron.md), [MLP Regressor](regressors/mlp-regressor.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Logit Boost](classifiers/logit-boost.md), [AdaBoost](classifiers/adaboost.md), and [Gradient Boost](regressors/gradient-boost.md).
 
 With a smaller convergence threshold, these learners will train for slightly longer before their loss plateaus, so the loss (and, with hold-out early stopping, the model you end up with) may differ marginally from 2.0. There is no API change — the parameter and its position are the same, only the default value moved. Pass `minChange: 1e-4` to recover the 2.0 default. The clusterers' `minChange` parameters ([K Means](clusterers/k-means.md), [Fuzzy C Means](clusterers/fuzzy-c-means.md)) are unaffected and remain at `1e-4`.
 
-### 34. Prior is now the default Strategy of the Missing Data Imputer
+### 35. Prior is now the default Strategy of the Missing Data Imputer
 
 The default imputation `Strategy` for *categorical* columns of the [Missing Data Imputer](transformers/missing-data-imputer.md) changed from [K Most Frequent](strategies/k-most-frequent.md) to [Prior](strategies/prior.md). Both make a frequency-based guess, so imputed values are typically the same, but the two strategies compute the guess slightly differently and can diverge on edges (such as a placeholder category that is itself the most frequent). If your imputed categories depended on the exact K Most Frequent behavior, pass the old default explicitly to keep it:
 
@@ -546,7 +625,7 @@ $imputer = new MissingDataImputer(categorical: new KMostFrequent(1));
 
 The default `Strategy` for *continuous* columns remains [Mean](strategies/mean.md).
 
-### 35. Image Rotator constructor defaults changed
+### 36. Image Rotator constructor defaults changed
 
 The [Image Rotator](transformers/image-rotator.md) constructor defaults have changed:
 
@@ -575,7 +654,7 @@ $transformer = new ImageRotator(offset: -90.0, jitter: 0.0);
 
 The following changes are additive. They require no action to keep existing code working, but you can take advantage of them as part of your upgrade.
 
-### 36. Parallelized nearest neighbors and Isolation Forest
+### 37. Parallelized nearest neighbors and Isolation Forest
 
 [K Nearest Neighbors](classifiers/k-nearest-neighbors.md), the [KNN Regressor](regressors/knn-regressor.md), and [Isolation Forest](anomaly-detectors/isolation-forest.md) now implement the [Parallel](parallel.md) interface. K-nearest neighbors splits inference across worker processes, and Isolation Forest splits both training and inference — each tree grows and scores independently.
 
@@ -598,7 +677,7 @@ $estimator->setBackend(new Swoole(16));
 !!! note
     Number of workers now default to the number of *physical* CPU cores rather than logical cores — see the Backend changes in [item 9](#9-the-backend-interface-gained-a-workers-method).
 
-### 37. Disk-based neural network snapshots
+### 38. Disk-based neural network snapshots
 
 The neural network learners — [MLP](classifiers/multilayer-perceptron.md), [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), and [Softmax Classifier](classifiers/softmax-classifier.md) — now stream their parameters to a snapshot file on disk during training. This keeps a copy of the best-performing weights available without holding them in memory, and if training diverges into numerical instability the learner restores from the snapshot instead of the last (possibly unstable) epoch.
 
@@ -618,7 +697,7 @@ $mlp = new MultilayerPerceptron(hiddenLayers: [
 $mlp->setSnapshotPath('/var/tmp/mlp-snapshot.dat');
 ```
 
-### 38. Clearable adaptive optimizer state
+### 39. Clearable adaptive optimizer state
 
 Optimizers such as [Adam](neural-network/optimizers/adam.md), [RMS Prop](neural-network/optimizers/rms-prop.md), [AdaGrad](neural-network/optimizers/adagrad.md), and [Momentum](neural-network/optimizers/momentum.md) maintain per-parameter state (gradient caches, momentum velocities) that is only needed during training. The neural network learners now expose a `cleanup()` method that discards this residual state by calling `flush()` on the optimizer — useful before reusing an estimator in a long-running process or to free memory after training:
 
@@ -629,19 +708,19 @@ $mlp->train($dataset);
 $mlp->cleanup();
 ```
 
-### 39. Validation interval for hold-out evaluation
+### 40. Validation interval for early stopping evaluation
 
-The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Gradient Boost](regressors/gradient-boost.md), and [AdaBoost](classifiers/adaboost.md) — now accept a `$evalInterval` constructor parameter (default `3`). It controls how often the hold-out set is scored during training, working in tandem with the `window` parameter for early stopping:
+The windowed gradient-based learners — MLP, [MLP Regressor](regressors/mlp-regressor.md), [Adaline](regressors/adaline.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Gradient Boost](regressors/gradient-boost.md), [AdaBoost](classifiers/adaboost.md), and [Logit Boost](classifiers/logit-boost.md) — now accept a `$evalInterval` constructor parameter (default `1`, or `3` for the boosting learners). It controls how often the validation set supplied via `setValidationDataset()` is scored during training, working in tandem with the `window` parameter for early stopping:
 
 ```php
 $mlp = new MultilayerPerceptron(hiddenLayers: [new Dense(neurons: 100)], epochs: 1000, evalInterval: 5, window: 10);
 ```
 
-### 40. Per-class and per-cluster variance smoothing
+### 41. Per-class and per-cluster variance smoothing
 
 [Gaussian Naive Bayes](classifiers/gaussian-naive-bayes.md) and [Gaussian Mixture](clusterers/gaussian-mixture.md) now compute an independent variance epsilon for *each* class (or cluster) instead of a single global epsilon across all of them. This keeps fitting numerically stable even when classes or clusters have very different variance scales. There is no API change — the existing `$smoothing` parameter behaves as before, only the per-class application of it is new.
 
-### 41. One Hot Encoder category exclusion
+### 42. One Hot Encoder category exclusion
 
 The [One Hot Encoder](transformers/one-hot-encoder.md) now accepts a list of `$ignoredCategories` to exclude from encoding. Categories in the list are skipped when the encoder is fitted, so they produce no columns. Only string and integer categories can be ignored:
 
@@ -651,11 +730,11 @@ use Rubix\ML\Transformers\OneHotEncoder;
 $encoder = new OneHotEncoder(['unknown', -1]); // ignore these categories
 ```
 
-### 42. Class Purity and Cluster Purity metrics
+### 43. Class Purity and Cluster Purity metrics
 
 Two new ground-truth clustering metrics were added — [Class Purity](cross-validation/metrics/class-purity.md) and [Cluster Purity](cross-validation/metrics/cluster-purity.md). They measure the extent to which each class (or cluster) is dominated by a single cluster (or class), returning a score between 0.0 and 1.0 where higher is better. They are complementary to the entropy-based [V-measure](cross-validation/metrics/v-measure.md), [Completeness](cross-validation/metrics/completeness.md), and [Homogeneity](cross-validation/metrics/homogeneity.md) metrics, and are only compatible with clusterers.
 
-### 43. Float Type Converter
+### 44. Float Type Converter
 
 The new [Float Type Converter](transformers/float-type-converter.md) transformer converts integer and numeric-string values to their floating point equivalents. It is the drop-in remedy for the integers-as-categorical change in [item 1](#1-integers-are-now-a-categorical-data-type) — apply it to a dataset directly or add it to a Pipeline so that numeric features are always presented to the estimator as continuous:
 
@@ -665,7 +744,7 @@ use Rubix\ML\Transformers\FloatTypeConverter;
 $dataset->apply(new FloatTypeConverter());
 ```
 
-### 44. Gradient accumulation and clipping for MLP learners
+### 45. Gradient accumulation and clipping for MLP learners
 
 The [MLP](classifiers/multilayer-perceptron.md) and [MLP Regressor](regressors/mlp-regressor.md) accept two new constructor parameters:
 
@@ -684,7 +763,7 @@ $mlp = new MultilayerPerceptron(
 );
 ```
 
-### 45. Layer freezing for fine-tuning
+### 46. Layer freezing for fine-tuning
 
 The neural network learners expose their underlying network via the `network()` method. Before continuing training with `partial()`, you can freeze the first `k` hidden layers so their parameters stay fixed while the remaining layers keep training — useful for fine-tuning a pretrained model on new data:
 
@@ -702,7 +781,7 @@ $mlp->partial($newData);
 $mlp->network()->unfreeze();
 ```
 
-### 46. Dataset chunked() factory for online training
+### 47. Dataset chunked() factory for online training
 
 A new static `chunked()` factory was added to the [Dataset](datasets/api.md) object API on both the [Labeled](datasets/labeled.md) and [Unlabeled](datasets/unlabeled.md) datasets. It lazily builds an iterable of fixed-size dataset chunks from a larger iterator, so online and [partial-training](online.md) learners can consume samples in bounded batches without loading the whole table into memory at once:
 
@@ -721,9 +800,9 @@ foreach (Labeled::chunked($extractor, 256) as $batch) {
 
 The second argument is the size of each chunk (default `1024`), and the last chunk may contain fewer samples. The third argument, `$verify` (default `true`), controls whether each chunk is validated as it is produced — pass `false` to skip per-chunk validation for maximum throughput.
 
-### 47. Iterative interface with progress() method
+### 48. Iterative interface with progress() method
 
-A new [Iterative](iterative.md) interface groups the learners, estimators, and transformers that record their progress epoch by epoch during training or transformation. It exposes a `progress()` method that returns an iterable table combining every recorded epoch — the loss, the validation score (when a hold-out set was used), and, for neural network learners, the gradient norm — into a single ordered sequence:
+A new [Iterative](iterative.md) interface groups the learners, estimators, and transformers that record their progress epoch by epoch during training or transformation. It exposes a `progress()` method that returns an iterable table combining every recorded epoch — the loss, the validation score (when a validation dataset was supplied), and, for neural network learners, the gradient norm — into a single ordered sequence:
 
 ```php
 use Rubix\ML\Extractors\CSV;
@@ -737,7 +816,7 @@ $extractor->export($estimator->progress());
 
 Most iterative learners — including [Adaline](regressors/adaline.md), [MLP](classifiers/multilayer-perceptron.md), [Logistic Regression](classifiers/logistic-regression.md), [K Means](clusterers/k-means.md), [t-SNE](transformers/t-sne.md), and the others listed in [item 15](#15-the-steps-method-was-renamed-to-progress) — now implement the interface. Because `progress()` returns a `Generator`, it can be streamed to an exporter or plotted without loading the whole table into memory. Learners that already exposed this table via `steps()` (renamed to `progress()` in [item 15](#15-the-steps-method-was-renamed-to-progress)) continue to work unchanged.
 
-### 48. Grid Search fromNamedParams() factory method
+### 49. Grid Search fromNamedParams() factory method
 
 A new static `fromNamedParams()` factory was added to [Grid Search](grid-search.md). It lets you specify the hyper-parameters by the *name* of the base learner's constructor parameter instead of by position, so the order no longer matters:
 
@@ -759,7 +838,7 @@ $estimator = GridSearch::fromNamedParams(
 
 Omitted hyper-parameters are filled in with their default from the base learner's constructor. Passing a name that is not a constructor parameter throws an `InvalidArgumentException`. This is purely additive — the existing `GridSearch` constructor is unchanged.
 
-### 49. Grid Search results() table
+### 50. Grid Search results() table
 
 [Grid Search](grid-search.md) now generates a `results()` table: an iterable of every parameter combination tested, each row paired with its validation score, sorted from best to worst. It is convenient for inspecting the entire search space at a glance or exporting it:
 
@@ -775,7 +854,7 @@ $extractor->export($estimator->results());
 
 The existing `best()` and `scores()` methods are unchanged and continue to return the best combination and the raw scores respectively.
 
-### 50. Binned stratification for continuous labels
+### 51. Binned stratification for continuous labels
 
 The [Labeled](datasets/labeled.md) dataset gained three methods that stratify a *continuous* label by **bin** rather than by exact label equality. Bin edges are derived from the quantiles of the label, so each bin holds roughly the same number of samples, and stratifying over them preserves the *shape* of the target distribution in every subset:
 
@@ -806,22 +885,21 @@ There are a few constraints worth knowing about, since the bin count is a new de
 !!! note
     Empty bins are dropped from the result rather than returned as empty datasets, and a dataset with a constant target yields a single stratum. Because bins are ordered by target value, `binnedSplit()` shuffles the bins before awarding the leftover samples, so ties don't consistently favor the lowest valued bins. See [Binned Stratification](datasets/labeled.md#binned-stratification) for the full method reference.
 
-### 51. Validators and regressors now stratify continuous labels by bin
+### 52. Validators now stratify continuous labels by bin
 
-The [Validators](cross-validation.md) and the windowed regressors now use the new binned stratification from [item 50](#50-binned-stratification-for-continuous-labels) whenever the label is continuous, instead of dividing the dataset at random. They dispatch on the label type, so categorical datasets are unaffected and keep using the existing categorical methods.
+The [Validators](cross-validation.md) now use the new binned stratification from [item 51](#51-binned-stratification-for-continuous-labels) whenever the label is continuous, instead of dividing the dataset at random. They dispatch on the label type, so categorical datasets are unaffected and keep using the existing categorical methods.
 
 - [Hold Out](cross-validation/hold-out.md) and [Monte Carlo](cross-validation/monte-carlo.md) call `binnedSplit()` on continuous labels (previously `randomize()->split()` and `split()`).
 - [K Fold](cross-validation/k-fold.md) calls `binnedFold()` on continuous labels (previously `fold()`).
-- [Adaline](regressors/adaline.md), [Gradient Boost](regressors/gradient-boost.md), and [MLP Regressor](regressors/mlp-regressor.md) call `binnedSplit()` for their hold-out sets (previously `randomize()->split()`).
 
 The subset *sizes* are unchanged — the hold-out and fold partitions are still exactly as large as before. What changes is *which* samples land in each subset: a hold-out set drawn at random no longer tracks the shape of the target distribution, so it could end up with almost no samples from one end of the label range. The subsets are now spread evenly across that range, which is what makes them a meaningful validation signal.
 
 !!! warning
-    Because the hold-out membership differs from 2.0, models fit with the default `holdOut` setting may differ from 2.0 even with identical hyper-parameters. This compounds the early-stopping change in [item 18](#18-gradient-learners-now-hold-out-validation-data-for-early-stopping), since the score that drives early stopping is now measured against a differently-distributed hold-out set. Fit with `holdOut: 0.0` to remove both effects.
+    Because the hold-out membership differs from 2.0, models fit through [Hold Out](cross-validation/hold-out.md) or [Monte Carlo](cross-validation/monte-carlo.md) may differ from 2.0 even with identical hyper-parameters. The same applies to the validation set you inject into the windowed learners for early stopping — stratify it yourself if you need it to track the target distribution. See [item 55](#55-early-stopping-is-opt-in-via-user-supplied-validation-sets).
 
-### 52. Binned description for continuous labels
+### 53. Binned description for continuous labels
 
-[Labeled](datasets/labeled.md) gained `describeByLabelBins($bins = 10)`, the continuous-label counterpart to the `describeByClassLabels()` introduced in [item 17](#17-stratification-methods-were-renamed-and-now-require-categorical-labels). It reuses the equal frequency bins from [item 50](#50-binned-stratification-for-continuous-labels) to produce a [Report](cross-validation/reports/api.md#report-objects) describing the features of the dataset broken down by bin of the target:
+[Labeled](datasets/labeled.md) gained `describeByLabelBins($bins = 10)`, the continuous-label counterpart to the `describeByClassLabels()` introduced in [item 17](#17-stratification-methods-were-renamed-and-now-require-categorical-labels). It reuses the equal frequency bins from [item 51](#51-binned-stratification-for-continuous-labels) to produce a [Report](cross-validation/reports/api.md#report-objects) describing the features of the dataset broken down by bin of the target:
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -838,7 +916,7 @@ There is one difference from `describeByClassLabels()` worth knowing about: the 
 !!! note
     See [Describe by Label](datasets/labeled.md#describe-by-label) for the full method reference.
 
-### 53. Image Rotator fill color
+### 54. Image Rotator fill color
 
 The [Image Rotator](transformers/image-rotator.md) gained a third constructor parameter, `$fillColor`, which controls the color used to fill the area exposed by rotation. In 2.0 the fill color was a hardcoded constant, so the exposed corners could not be controlled. The parameter accepts a 6-digit hex color string (with or without a leading `#`) and defaults to black (`'#000000'`):
 
@@ -853,3 +931,76 @@ $transformer = new ImageRotator(0.0, 0.2); // fillColor = '#000000'
 ```
 
 Any string that isn't a valid 6-digit hex color throws an `InvalidArgumentException` at construction. GD treats the background argument of `imagerotate()` as an RGB value for truecolor images but as a palette index for palette images, so the transformer allocates the color against the image when necessary — the same hex value works for both. This parameter is appended after `$jitter`, so existing calls that pass `$offset` and `$jitter` positionally are unaffected.
+
+### 55. Early stopping is opt-in via user-supplied validation sets
+
+The windowed learners no longer reserve a portion of the training set for validation. In 2.0, and throughout the 3.0 release candidates, an internal split meant that early stopping came at the cost of training on less data, and that the split itself was neither inspectable nor reusable. Now every one of these learners trains on the *entire* dataset given to `train()`, and the validation set is yours to supply.
+
+[Adaline](regressors/adaline.md), [MLP Regressor](regressors/mlp-regressor.md), [Gradient Boost](regressors/gradient-boost.md), [Logistic Regression](classifiers/logistic-regression.md), [Softmax Classifier](classifiers/softmax-classifier.md), [Multilayer Perceptron](classifiers/multilayer-perceptron.md), [AdaBoost](classifiers/adaboost.md), and [Logit Boost](classifiers/logit-boost.md) all take the validation set through `setValidationDataset()`:
+
+```php
+use Rubix\ML\Classifiers\MultilayerPerceptron;
+use Rubix\ML\Datasets\Labeled;
+
+[$validation, $training] = Labeled::build($samples, $labels)->split(0.8);
+
+$mlp = new MultilayerPerceptron(hiddenLayers: [$layer]);
+
+// validate against an external split and train on all of $training
+$mlp->setValidationDataset($validation);
+
+$mlp->train($training);
+```
+
+With a validation set in place, the learner scores it every `$evalInterval` epochs and stops early when the score fails to improve for `$window` evaluations. Passing `null` disables progress monitoring and early stopping, leaving `scores()` empty.
+
+There are a few constraints worth knowing about:
+
+- **The set must be labeled and non-empty.** An empty dataset throws an `EmptyDataset` at the time of the call.
+- **Dimensionality must match the training set.** A validation set whose `numFeatures()` differs from the training set throws an `IncorrectDatasetDimensionality` when training begins.
+- **Classifiers require known labels.** Every label in the validation set must be one the classifier can emit, otherwise the score would be measured against classes the model can never predict. A validation set carrying an unknown label throws an `InvalidArgumentException`.
+- **Online learners retain the set.** For the learners that implement [Online](online.md), the injected validation set persists across `partial()` calls instead of being re-derived from each incoming batch.
+- **The set is transient.** Like the snapshot path, it is excluded from serialization. A learner restored from disk therefore has no validation set, so progress monitoring and early stopping stay inactive until you set one again.
+
+### 56. PersistentTransformer decorator
+
+The new [Persistent Transformer](transformers/persistent-transformer.md) decorator gives any [Stateful](transformers/api.md#stateful) transformer the `save()` and `load()` methods it needs to round-trip through storage. It interfaces with a [Persister](persisters/api.md) — the [Filesystem](persisters/filesystem.md) persister is the usual choice — and serializes with the [RBX](serializers/rbx.md) serializer unless you pass another one:
+
+```php
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\HotDeckImputer;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = new PersistentTransformer(
+    new Pipeline([
+        new HotDeckImputer(5),
+        new OneHotEncoder(),
+    ]),
+    new Filesystem('pipeline.rbx')
+);
+
+$transformer->fit($dataset);
+
+$transformer->save();
+```
+
+```php
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = PersistentTransformer::load(new Filesystem('pipeline.rbx'));
+```
+
+[Pipelines](transformers/pipeline.md) are the most common thing to decorate, and this is the migration path for the transformer state that 2.0 saved implicitly inside a persisted estimator (see [item 18](#18-pipeline-is-now-a-transformer-decorator)). Any other persistable Stateful transformer may be decorated just as well. Because the decorator delegates to the very same transformer instance it was constructed with, any fitting performed through it is captured by the next `save()`, and it can be handed straight to [apply()](datasets/api.md) like any other transformer.
+
+There are a few constraints worth knowing about:
+
+- **The decorator is a runtime object.** Unlike the transformer it decorates, it is not [Persistable](persistable.md) and therefore cannot itself be serialized. The [Persister](persisters/api.md) and [Serializer](serializers/api.md) it carries never leak into the transformer's saved state.
+- **Restoring requires a Stateful base.** `load()` throws an `InvalidArgumentException` if the persisted object is not Stateful, and `save()` throws a `RuntimeException` if it is not Persistable.
+- **`update()` must reach an Elastic base.** Calling `update()` when the decorated transformer is not [Elastic](transformers/api.md#elastic) throws a `RuntimeException`.
+
+```php
+$transformer->base()->update($dataset);
+```

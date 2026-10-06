@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Graph/Trees/VPTree.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Graph/Trees/VantageTree.php">[source]</a></span>
 
 # Vantage Tree
 

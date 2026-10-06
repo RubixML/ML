@@ -9,7 +9,7 @@
 
 ## Example
 
-No parameters are required. It's a drop-in replacement for the [Serial](backends/serial.md) backend.
+No parameters are required. It's a drop-in replacement for the [Serial](serial.md) backend.
 
 ```php
 use Rubix\ML\Backends\Swoole;

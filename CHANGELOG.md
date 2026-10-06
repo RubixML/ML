@@ -7,6 +7,7 @@
 
 - 3.0.0
     - Integers are now considered a categorical data type
+    - Updated to Tensor version 4
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
     - `Isolation Forest` training and inference is now parallelized
     - Added disk-based streaming neural network snapshotting
@@ -73,6 +74,11 @@
     - Validators and regressors now stratify continuous labels by bin
     - Image Rotator `offset` is now optional and default `jitter` is 0.2
     - Added `fillColor` parameter to Image Rotator
+    - Remove `holdOut` paramereter from Learners with validation set
+    - Added `setValidationDataset()` method to Learners with validation set
+    - `Pipeline` is now a Transformer decorator
+    - Added `PersistentTransformer` decorator
+    - Removed Trainable interface, API transferred to Learner interface
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension

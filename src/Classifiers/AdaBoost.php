@@ -11,6 +11,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -22,6 +23,7 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
@@ -30,6 +32,9 @@ use function Rubix\ML\logsumexp;
 use function count;
 use function is_nan;
 use function array_slice;
+use function array_diff;
+use function array_keys;
+use function implode;
 use function array_fill;
 use function array_fill_keys;
 use function get_object_vars;
@@ -82,9 +87,9 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     /**
      * The base classifier to be boosted.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -115,7 +120,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     protected float $minChange;
 
     /**
-     * The number of epochs to train before evaluating the model with the holdout set.
+     * The number of epochs to train before evaluating the model with the validation set.
      *
      * @var int
      */
@@ -129,11 +134,12 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     protected int $window;
 
     /**
-     * The proportion of training samples to use for validation and progress monitoring.
+     * The dataset used to score the model during training. When null, progress
+     * monitoring and early stopping are disabled.
      *
-     * @var float
+     * @var Labeled|null
      */
-    protected float $holdOut;
+    protected ?Labeled $validation = null;
 
     /**
      * The metric used to score the generalization performance of the model during training.
@@ -145,7 +151,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     /**
      * The ensemble of *weak* classifiers.
      *
-     * @var Learner[]|null
+     * @var (Learner & Estimator)[]|null
      */
     protected ?array $ensemble = null;
 
@@ -185,26 +191,24 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     protected ?int $featureCount = null;
 
     /**
-     * @param Learner|null $base
+     * @param (Learner & Estimator)|null $base
      * @param float $rate
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
-     * @param float $holdOut
      * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ?Learner $base = null,
+        (Learner & Estimator)|null $base = null,
         float $rate = 1.0,
         float $ratio = 0.8,
         int $epochs = 100,
         float $minChange = 1e-5,
         int $evalInterval = 3,
         int $window = 5,
-        float $holdOut = 0.1,
         ?Metric $metric = null
     ) {
         if ($base and !$base->type()->isClassifier()) {
@@ -242,11 +246,6 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be'
-                . " between 0 and 0.5, $holdOut given.");
-        }
-
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -258,7 +257,6 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
         $this->window = $window;
-        $this->holdOut = $holdOut;
         $this->metric = $metric ?? new FBeta();
     }
 
@@ -303,7 +301,6 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
             'window' => $this->window,
-            'hold out' => $this->holdOut,
             'metric' => $this->metric,
         ];
     }
@@ -349,6 +346,24 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     }
 
     /**
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
+     *
+     * @param Labeled|null $dataset
+     * @throws EmptyDataset
+     */
+    public function setValidationDataset(?Labeled $dataset) : void
+    {
+        if (isset($dataset)) {
+            DatasetIsNotEmpty::with($dataset)->check();
+        }
+
+        $this->validation = $dataset;
+    }
+
+    /**
      * Return the validation score at each epoch from the last training session.
      *
      * @return float[]|null
@@ -361,7 +376,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     /**
      * Train the learner with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param Labeled $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -378,13 +393,32 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
 
         $classes = $dataset->possibleOutcomes();
 
-        [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
+        $this->classes = array_fill_keys($classes, 0.0);
+
+        if (isset($this->validation)) {
+            SpecificationChain::with([
+                new DatasetHasDimensionality($this->validation, $dataset->numFeatures()),
+            ])->check();
+
+            $unknown = array_diff($this->validation->possibleOutcomes(), array_keys($this->classes));
+
+            if ($unknown) {
+                throw new InvalidArgumentException('Validation dataset contains labels'
+                    . ' that are unknown to this classifier: '
+                    . implode(', ', $unknown) . '.');
+            }
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
+        }
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
-        [$m, $n] = $training->shape();
+        [$m, $n] = $dataset->shape();
 
-        $labels = $training->labels();
+        $labels = $dataset->labels();
 
         $k = count($classes);
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -393,15 +427,9 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
 
         $totalWeight = 1.0;
 
-        $this->classes = array_fill_keys($classes, 0.0);
         $this->featureCount = $n;
 
         $this->ensemble = $this->influences = $this->scores = $this->losses = [];
-
-        if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
-        }
 
         $bestScore = $minScore;
         $bestEpoch = $numWorseEvals = 0;
@@ -413,11 +441,11 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $estimator = clone $this->base;
 
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
 
             $estimator->train($subset);
 
-            $predictions = $estimator->predict($training);
+            $predictions = $estimator->predict($dataset);
 
             $loss = 0.0;
 
@@ -456,10 +484,10 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
             $this->ensemble[] = $estimator;
             $this->influences[] = $influence;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+            $evalThisStep = isset($this->validation) && $epoch % $this->evalInterval === 0;
 
             if ($evalThisStep) {
-                $score = $this->metric->score($this->predict($testing), $testing->labels());
+                $score = $this->metric->score($this->predict($this->validation), $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -638,7 +666,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['validation']);
 
         return $properties;
     }

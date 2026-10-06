@@ -12,7 +12,7 @@ Return an iterable progress table from the last training session:
 public progress() : iterable
 ```
 
-Each entry in the table is an associative array with `Epoch` as one of its keys. The other keys present may vary by estimator; every entry includes the epoch number and the training loss keyed by its name (such as `Exponential Loss` or `Inertia`), and most also include the validation score keyed by the metric name (when a holdout set was used) and the gradient norm (for estimators trained with the neural network subsystem).
+Each entry in the table is an associative array with `Epoch` as one of its keys. The other keys present may vary by estimator; every entry includes the epoch number and the training loss keyed by its name (such as `Exponential Loss` or `Inertia`), and most also include the validation score keyed by the metric name (when a validation dataset was supplied) and the gradient norm (for estimators trained with the neural network subsystem).
 
 ```php
 use Rubix\ML\Extractors\CSV;

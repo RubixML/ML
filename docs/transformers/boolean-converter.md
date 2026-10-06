@@ -6,7 +6,7 @@ This transformer is used to convert truthy or falsy values to a another continuo
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Categorical, Continuous
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

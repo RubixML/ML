@@ -268,6 +268,8 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             ->transpose()
             ->asArray();
 
+        $histograms = [];
+
         foreach ($projections as $values) {
             /** @var non-empty-array<float|int> $values */
             [$min, $max] = minmax($values);
@@ -282,9 +284,10 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
                 ++$counts[$index];
             }
 
-            $this->histograms[] = [$min, $width, $counts];
+            $histograms[] = [$min, $width, $counts];
         }
 
+        $this->histograms = $histograms;
         $this->n = $m;
 
         $densities = $this->densities($projections);

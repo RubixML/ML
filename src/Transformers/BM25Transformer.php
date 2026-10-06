@@ -4,6 +4,8 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -170,7 +172,10 @@ class BM25Transformer implements Transformer, Stateful, Elastic
      */
     public function update(Dataset $dataset) : void
     {
-        SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
+        SpecificationChain::with([
+            new DatasetIsNotEmpty($dataset),
+            new SamplesAreCompatibleWithTransformer($dataset, $this),
+        ])->check();
 
         if ($this->dfs === null or $this->n === null) {
             $this->fit($dataset);
@@ -188,17 +193,24 @@ class BM25Transformer implements Transformer, Stateful, Elastic
             }
         }
 
-        $this->n += $dataset->numSamples();
+        $n = $this->n + $dataset->numSamples();
 
-        $this->averageDocumentLength = $this->totalTokens / $this->n;
+        $averageDocumentLength = $this->totalTokens / $n;
+
+        if ($averageDocumentLength === 0) {
+            throw new RuntimeException('Average document length cannot be zero.');
+        }
+
+        $this->averageDocumentLength = $averageDocumentLength;
 
         $idfs = [];
 
         foreach ($this->dfs as $df) {
-            $idfs[] = log1p(($this->n - $df + 0.5) / ($df + 0.5));
+            $idfs[] = log1p(($n - $df + 0.5) / ($df + 0.5));
         }
 
         $this->idfs = $idfs;
+        $this->n = $n;
     }
 
     /**

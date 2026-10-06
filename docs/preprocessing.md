@@ -152,7 +152,7 @@ use Rubix\ML\Transformers\LambdaFunction;
 
 $binarize = function (&$sample) {
     $sample[3] = $sample[3] > 182 ? 'tall' : 'not tall';
-}
+};
 
 $dataset->apply(new LambdaFunction($binarize));
 ```
@@ -207,34 +207,74 @@ $dataset = $dataset1->join($dataset2)
 
 ## Transformer Pipelines
 
-The [Pipeline](pipeline.md) meta-estimator helps you automate a series of transformations applied to the input dataset to an estimator. With a Pipeline, any dataset object passed to will automatically be fitted and/or transformed before it arrives in the estimator's context. In addition, transformer fittings can be saved alongside the model data when the Pipeline is persisted.
+The [Pipeline](transformers/pipeline.md) transformer helps you compose an arbitrarily long series of [Transformers](transformers/api.md) into a single unit. With a Pipeline, any dataset passed in is fitted to and/or transformed by each transformer in order before it arrives in the next transformer's context. The pipeline and its fitted transformer state can be persisted independently from an estimator.
 
 ```php
-use Rubix\ML\Pipeline;
+use Rubix\ML\Transformers\Pipeline;
 use Rubix\ML\Transformers\HotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\Clusterers\KMeans;
 
-$estimator = new Pipeline([
+$pipeline = new Pipeline([
     new HotDeckImputer(5),
     new OneHotEncoder(),
     new ZScaleStandardizer(),
-], new KMeans(10));
+]);
 ```
 
-Calling `train()` or `partial()` will result in the transformers being fitted or updated before being passed to the Softmax Classifier.
+Calling `fit()` will result in the transformers being fitted to the dataset in order, while streaming a working copy of the data through the chain; the input dataset is left unaltered.
 
 ```php
-$estimator->train($dataset); // Transformers fitted and applied
-
-$estimator->partial($dataset); // Transformers updated and applied
+$pipeline->fit($dataset); // Transformers fitted in order
 ```
 
-Any time a dataset is passed to the Pipeline it will automatically be transformed before being handed to the underlying estimator.
+Calling `update()` on a pipeline where any transformer in the stack is [Elastic](transformers/api.md#elastic) will refine each elastic fitting in place, lazily fitting any stateful transformer that has not yet been seen, again without touching the input dataset.
 
 ```php
-$predictions = $estimator->predict($dataset); // Dataset transformed automatically
+$pipeline->update($dataset); // Elastic transformers refined
+```
+
+To transform a dataset in place, use `apply()` (or the pipeline's `transform()` method).
+
+```php
+$dataset->apply($pipeline); // Dataset transformed in place
+```
+
+## Persisting Transformers
+
+A fitted [Pipeline](transformers/pipeline.md) — or any [Stateful](transformers/api.md#stateful) transformer — can be saved to storage and loaded in another process, so the same preprocessing can be applied to new data without re-fitting. The [Persistent Transformer](transformers/persistent-transformer.md) decorator wraps a transformer and gives it `save()` and `load()` methods, using a [Persister](persisters/api.md) to talk to a storage backend such as the [Filesystem](persisters/filesystem.md).
+
+To fit a transformer and save it to the filesystem:
+
+```php
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = new PersistentTransformer(
+    new Pipeline([
+        new OneHotEncoder(),
+        new ZScaleStandardizer(),
+    ]),
+    new Filesystem('pipeline.rbx')
+);
+
+$transformer->fit($dataset);
+
+$transformer->save();
+```
+
+Then, in another process, load the fitted transformer and apply it to new data. Because the decorator delegates to the same transformer instance, any `fit()` or `update()` performed through it is captured by the next call to `save()`.
+
+```php
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = PersistentTransformer::load(new Filesystem('pipeline.rbx'));
+
+$dataset->apply($transformer);
 ```
 
 ## Filtering Records
@@ -256,7 +296,7 @@ use function in_array;
 
 $dogsAndCats = function ($record) {
     return in_array(end($record), ['dog', 'cat']);
-}
+};
 
 $training = $dataset->filter($dogsAndCats);
 ```

@@ -7,6 +7,7 @@ use Traversable;
 
 use function array_key_exists;
 use function array_values;
+use function is_int;
 
 /**
  * Column Picker
@@ -56,13 +57,17 @@ class ColumnPicker implements Extractor
         foreach ($this->iterator as $i => $record) {
             $picked = [];
 
-            foreach ($this->columns as $column) {
+            foreach ($this->columns as $i => $column) {
                 if (!array_key_exists($column, $record)) {
                     throw new RuntimeException("Column '$column' not found"
                         . " at row offset $i.");
                 }
 
-                $picked[$column] = $record[$column];
+                if (is_int($column)) {
+                    $picked[$i] = $record[$column];
+                } else {
+                    $picked[$column] = $record[$column];
+                }
             }
 
             yield $picked;
