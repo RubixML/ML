@@ -66,6 +66,6 @@ class WordStemmer extends Word
      */
     public function __toString() : string
     {
-        return 'Word Stemmer (language: ' . Params::shortName(get_class($this->stemmer)) . ')';
+        return 'Word Stemmer (stemmer: ' . Params::toString($this->stemmer) . ')';
     }
 }
