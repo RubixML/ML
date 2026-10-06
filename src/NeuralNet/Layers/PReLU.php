@@ -224,8 +224,9 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        return $x->clipLower(0.0)
-            ->add($x->clipUpper(0.0)->multiply($this->alpha->param()));
+        $leakage = $x->clipUpper(0.0)->multiply($this->alpha->param());
+
+        return $x->clipLower(0.0)->add($leakage);
     }
 
     /**
@@ -241,8 +242,9 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        return $x->greater(0.0)
-            ->add($x->lessEqual(0.0)->multiply($this->alpha->param()));
+        $dLeakage = $x->lessEqual(0.0)->multiply($this->alpha->param());
+
+        return $x->greater(0.0)->add($dLeakage);
     }
 
     /**
