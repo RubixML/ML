@@ -7,6 +7,14 @@ The Feed Forward network is the core neural network implementation of the librar
 !!! note
     The Feed Forward network is part of the neural network subsystem and is not a standalone estimator.
 
+## Parameters
+
+| # | Name | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| 1 | input | | Input | The input layer. |
+| 2 | hidden | | array | The array of hidden layers in the network. |
+| 3 | output | | Output | The output layer. |
+
 ## Example
 
 ```php

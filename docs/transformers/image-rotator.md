@@ -9,7 +9,7 @@ Image Rotator permutes an image feature by rotating it by a given offset angle a
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Image
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

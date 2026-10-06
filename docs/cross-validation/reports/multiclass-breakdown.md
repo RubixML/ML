@@ -26,7 +26,7 @@ echo $results;
 {
     "overall": {
         "accuracy": 0.6,
-        "accuracy balanced": 0.5833333333333333,
+        "balanced accuracy": 0.5833333333333333,
         "f1 score": 0.5833333333333333,
         "precision": 0.5833333333333333,
         "recall": 0.5833333333333333,
@@ -48,7 +48,7 @@ echo $results;
     "classes": {
         "wolf": {
             "accuracy": 0.6,
-            "accuracy balanced": 0.5833333333333333,
+            "balanced accuracy": 0.5833333333333333,
             "f1 score": 0.6666666666666666,
             "precision": 0.6666666666666666,
             "recall": 0.6666666666666666,
@@ -70,7 +70,7 @@ echo $results;
         },
         "lamb": {
             "accuracy": 0.6,
-            "accuracy balanced": 0.5833333333333333,
+            "balanced accuracy": 0.5833333333333333,
             "f1 score": 0.5,
             "precision": 0.5,
             "recall": 0.5,

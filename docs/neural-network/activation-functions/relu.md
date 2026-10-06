@@ -17,7 +17,7 @@ This activation function does not have any parameters.
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
-$activationFunction = new ReLU(0.1);
+$activationFunction = new ReLU();
 ```
 
 ## References

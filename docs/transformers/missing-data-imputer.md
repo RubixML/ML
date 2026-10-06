@@ -4,9 +4,9 @@
 
 Missing Data Imputer replaces missing continuous (denoted by `NaN`) or categorical values (denoted by special placeholder category such as `'?'`) with a guess based on user-defined Strategy.
 
-**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Categorical and Continuous
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
@@ -14,7 +14,7 @@ Missing Data Imputer replaces missing continuous (denoted by `NaN`) or categoric
 | --- | --- | --- | --- | --- |
 | 1 | continuous | Mean | Strategy | The guessing strategy to employ for continuous feature columns. |
 | 2 | categorical | Prior | Strategy | The guessing strategy to employ for categorical feature columns. |
-| 3 | categoricalPlaceholder | '?' | string | The special placeholder category that denotes missing values. |
+| 3 | categoricalPlaceholder | '?' | string|int | The special placeholder category that denotes missing values. |
 
 ## Example
 

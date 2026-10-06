@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
@@ -85,9 +86,9 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     /**
      * The regressor that will fix up the error residuals of the *weak* base learner.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $booster;
+    protected Learner & Estimator $booster;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -118,7 +119,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     protected float $minChange;
 
     /**
-     * The number of epochs to train before evaluating the model with the holdout set.
+     * The number of epochs to train before evaluating the model with the validation set.
      *
      * @var int
      */
@@ -133,11 +134,12 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     protected int $window;
 
     /**
-     * The proportion of training samples to use for validation and progress monitoring.
+     * The dataset used to score the model during training. When null, progress
+     * monitoring and early stopping are disabled.
      *
-     * @var float
+     * @var Labeled|null
      */
-    protected float $holdOut;
+    protected ?Labeled $validation = null;
 
     /**
      * The metric used to score the generalization performance of the model during training.
@@ -184,26 +186,24 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     protected ?float $mu = null;
 
     /**
-     * @param Learner|null $booster
+     * @param (Learner & Estimator)|null $booster
      * @param float $rate
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
-     * @param float $holdOut
      * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ?Learner $booster = null,
+        (Learner & Estimator)|null $booster = null,
         float $rate = 0.1,
         float $ratio = 0.5,
         int $epochs = 1000,
         float $minChange = 1e-5,
         int $evalInterval = 3,
         int $window = 5,
-        float $holdOut = 0.1,
         ?Metric $metric = null
     ) {
         if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
@@ -241,11 +241,6 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
                 . " greater than 0, $window given.");
         }
 
-        if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be'
-                . " between 0 and 0.5, $holdOut given.");
-        }
-
         if ($metric) {
             EstimatorIsCompatibleWithMetric::with($this, $metric)->check();
         }
@@ -257,7 +252,6 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
         $this->window = $window;
-        $this->holdOut = $holdOut;
         $this->metric = $metric ?? new RMSE();
     }
 
@@ -302,7 +296,6 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
             'window' => $this->window,
-            'hold out' => $this->holdOut,
             'metric' => $this->metric,
         ];
     }
@@ -358,6 +351,24 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     }
 
     /**
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
+     *
+     * @param Labeled|null $dataset
+     * @throws EmptyDataset
+     */
+    public function setValidationDataset(?Labeled $dataset) : void
+    {
+        if (isset($dataset)) {
+            DatasetIsNotEmpty::with($dataset)->check();
+        }
+
+        $this->validation = $dataset;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -375,23 +386,27 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
             $this->logger->info("Training $this");
         }
 
-        [$testing, $training] = $dataset->randomize()->binnedSplit($this->holdOut);
+        if (isset($this->validation)) {
+            DatasetHasDimensionality::with($this->validation, $dataset->numFeatures())->check();
+        }
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
-        [$m, $n] = $training->shape();
+        [$m, $n] = $dataset->shape();
 
-        $targets = $training->labels();
+        $targets = $dataset->labels();
 
         $mu = Stats::mean($targets);
 
         $out = array_fill(0, $m, $mu);
 
-        if (!$testing->empty()) {
-            $outTest = array_fill(0, $testing->numSamples(), $mu);
-        } elseif ($this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
+        if (isset($this->validation)) {
+            $outTest = array_fill(0, $this->validation->numSamples(), $mu);
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -418,10 +433,10 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
 
             $this->losses[$epoch] = $loss;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep and isset($outTest)) {
-                $score = $this->metric->score($outTest, $testing->labels());
+                $score = $this->metric->score($outTest, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -483,9 +498,9 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
                 break;
             }
 
-            $training = Labeled::quick($training->samples(), $gradient);
+            $dataset = Labeled::quick($dataset->samples(), $gradient);
 
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
 
             $booster = clone $this->booster;
 
@@ -493,12 +508,12 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
 
             $this->ensemble[] = $booster;
 
-            $predictions = $booster->predict($training);
+            $predictions = $booster->predict($dataset);
 
             $out = array_map([$this, 'updateOut'], $predictions, $out);
 
             if (isset($outTest)) {
-                $predictions = $booster->predict($testing);
+                $predictions = $booster->predict($this->validation);
 
                 $outTest = array_map([$this, 'updateOut'], $predictions, $outTest);
             }
@@ -627,7 +642,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['validation']);
 
         return $properties;
     }

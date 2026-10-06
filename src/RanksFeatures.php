@@ -9,7 +9,7 @@ namespace Rubix\ML;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-interface RanksFeatures extends Trainable
+interface RanksFeatures extends Learner
 {
     /**
      * Return the importance scores of each feature column of the training set.

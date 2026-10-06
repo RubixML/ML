@@ -1,6 +1,6 @@
 # Transformer
 
-Transformers take Dataset objects and modify the features contained within. They are often used as part of a transformer [Pipeline](../pipeline.md) or they can be used on their own.
+Transformers take Dataset objects and modify the features contained within. They are often used as part of a [Pipeline](pipeline.md) or they can be used on their own.
 
 ## Transform a Dataset
 

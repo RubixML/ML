@@ -6,7 +6,7 @@ The One Hot Encoder takes a categorical feature column and produces an n-dimensi
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Categorical
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

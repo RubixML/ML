@@ -59,7 +59,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * The committee of experts. i.e. the ensemble of estimators.
      *
-     * @var list<Learner>
+     * @var list<Learner & Estimator>
      */
     protected array $experts;
 
@@ -87,7 +87,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     ];
 
     /**
-     * @param Learner[] $experts
+     * @param (Learner & Estimator)[] $experts
      * @param (int|float)[]|null $influences
      * @throws InvalidArgumentException
      */
@@ -264,7 +264,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     /**
      * Return the learner instances of the committee.
      *
-     * @return list<Learner>
+     * @return list<Learner & Estimator>
      */
     public function experts() : array
     {

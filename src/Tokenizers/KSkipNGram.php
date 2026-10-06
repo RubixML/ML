@@ -5,6 +5,7 @@ namespace Rubix\ML\Tokenizers;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
+use function intdiv;
 use function min;
 
 /**
@@ -120,11 +121,11 @@ class KSkipNGram implements Tokenizer
                 $partialGrams = [];
 
                 for ($j = 2; $j <= $this->max; ++$j) {
-                    $p = min($n - ($i + $j), $this->skip);
+                    $p = min(intdiv($n - 1 - $i, $j - 1) - 1, $this->skip);
 
                     for ($k = 0; $k <= $p; ++$k) {
                         $partialGrams[$k] = ($partialGrams[$k] ?? $word)
-                            . self::SEPARATOR . $words[$i + $k + $j - 1];
+                            . self::SEPARATOR . $words[$i + ($j - 1) * ($k + 1)];
 
                         if ($j >= $this->min) {
                             $skipGrams[] = $partialGrams[$k];

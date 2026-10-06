@@ -74,9 +74,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     /**
      * The base learner.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * The number of learners to train in the ensemble.
@@ -121,14 +121,14 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Ranks
     protected ?int $featureCount = null;
 
     /**
-     * @param Learner|null $base
+     * @param (Learner & Estimator)|null $base
      * @param int $estimators
      * @param float $ratio
      * @param bool $balanced
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ?Learner $base = null,
+        (Learner & Estimator)|null $base = null,
         int $estimators = 100,
         float $ratio = 0.5,
         bool $balanced = false

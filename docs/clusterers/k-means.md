@@ -13,9 +13,9 @@ A fast online centroid-based hard clustering algorithm capable of grouping linea
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | k | | int | The number of target clusters. |
-| 2 | batch size | 128 | int | The size of each mini batch in samples. |
+| 2 | batchSize | 128 | int | The size of each mini batch in samples. |
 | 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
-| 4 | min change | 1e-4 | float | The minimum change in the inertia for training to continue. |
+| 4 | minChange | 1e-4 | float | The minimum change in the inertia for training to continue. |
 | 5 | kernel | Euclidean | Distance | The distance kernel used to compute the distance between sample points. |
 | 6 | seeder | PlusPlus | Seeder | The seeder used to initialize the cluster centroids. |
 

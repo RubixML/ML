@@ -8,7 +8,7 @@ Generates a random weight matrix from a Gaussian distribution with user-specifie
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | stddev | 0.05 | float | The standard deviation of the distribution to sample from. |
+| 1 | stdDev | 0.05 | float | The standard deviation of the distribution to sample from. |
 
 ## Example
 

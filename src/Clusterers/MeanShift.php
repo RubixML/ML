@@ -364,8 +364,6 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
 
         $this->losses = [];
 
-        $previous = $centroids;
-
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $centroids = $this->mergeNearDuplicates($centroids);
 
@@ -393,9 +391,9 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
                 $shifted[] = array_map($weightedMeanFunc, array_transpose($samples));
             }
 
-            $centroids = $shifted;
+            $loss = $this->shift($shifted, $centroids);
 
-            $loss = $this->shift($centroids, $previous);
+            $centroids = $shifted;
 
             $loss /= $n;
 
@@ -421,8 +419,6 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
 
                 break;
             }
-
-            $previous = $centroids;
         }
 
         $this->centroids = $centroids;
@@ -553,7 +549,8 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
     }
 
     /**
-     * Calculate the amount of centroid shift from the previous epoch.
+     * Calculate the amount of centroid shift from the positions the centroids
+     * were shifted from.
      *
      * @param list<(int|float)[]> $current
      * @param list<(int|float)[]> $previous

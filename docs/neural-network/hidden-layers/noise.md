@@ -8,14 +8,14 @@ This layer adds random Gaussian noise to the inputs with a user-defined standard
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | stddev | | float | The standard deviation of the Gaussian noise added to the inputs. |
+| 1 | stdDev | | float | The standard deviation of the Gaussian noise added to the inputs. |
 
 ## Example
 
 ```php
 use Rubix\ML\NeuralNet\Layers\Noise;
 
-$layer = new Noise(stddev: 1e-3);
+$layer = new Noise(stdDev: 1e-3);
 ```
 
 ## References

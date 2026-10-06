@@ -19,8 +19,12 @@ An extractor that wraps another iterator and selects and reorders the columns of
 use Rubix\ML\Extractors\ColumnPicker;
 use Rubix\ML\Extractors\CSV;
 
-$extractor = new ColumnPicker(new CSV('example.csv', true), [
+$extractor = new ColumnPicker(new CSV('example.csv', header: true), [
     'attitude', 'texture', 'class', 'rating',
+]);
+
+$extractor = new ColumnPicker(new CSV('example.csv', header: false), [
+    0, 5, 13, 3, 7, 9,
 ]);
 ```
 
