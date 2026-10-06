@@ -3,32 +3,21 @@
 namespace Rubix\ML\Tests\Specifications;
 
 use Rubix\ML\Specifications\ExtensionMaximumVersion;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-/**
- * @group Specifications
- * @requires extension json
- * @covers \Rubix\ML\Specifications\ExtensionMaximumVersion
- */
+#[Group('Specifications')]
+#[CoversClass(ExtensionMaximumVersion::class)]
 class ExtensionMaximumVersionTest extends TestCase
 {
     /**
-     * @test
-     * @dataProvider passesProvider
-     *
-     * @param ExtensionMaximumVersion $specification
-     * @param bool $expected
-     */
-    public function passes(ExtensionMaximumVersion $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
-    }
-
-    /**
      * @return Generator<mixed[]>
      */
-    public function passesProvider() : Generator
+    public static function passesProvider() : Generator
     {
         yield [
             ExtensionMaximumVersion::with('json', '0.0.0'),
@@ -44,5 +33,16 @@ class ExtensionMaximumVersionTest extends TestCase
             ExtensionMaximumVersion::with('What about the forest?', '999.0.0'),
             false,
         ];
+    }
+
+    /**
+     * @param ExtensionMaximumVersion $specification
+     * @param bool $expected
+     */
+    #[DataProvider('passesProvider')]
+    #[Test]
+    public function passes(ExtensionMaximumVersion $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
     }
 }
