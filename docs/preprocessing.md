@@ -215,7 +215,7 @@ use Rubix\ML\Transformers\HotDeckImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
-$transformer = new Pipeline([
+$pipeline = new Pipeline([
     new HotDeckImputer(5),
     new OneHotEncoder(),
     new ZScaleStandardizer(),
@@ -225,19 +225,56 @@ $transformer = new Pipeline([
 Calling `fit()` will result in the transformers being fitted to the dataset in order, while streaming a working copy of the data through the chain; the input dataset is left unaltered.
 
 ```php
-$transformer->fit($dataset); // Transformers fitted in order
+$pipeline->fit($dataset); // Transformers fitted in order
 ```
 
 Calling `update()` on a pipeline where any transformer in the stack is [Elastic](transformers/api.md#elastic) will refine each elastic fitting in place, lazily fitting any stateful transformer that has not yet been seen, again without touching the input dataset.
 
 ```php
-$transformer->update($dataset); // Elastic transformers refined
+$pipeline->update($dataset); // Elastic transformers refined
 ```
 
 To transform a dataset in place, use `apply()` (or the pipeline's `transform()` method).
 
 ```php
-$dataset->apply($transformer); // Dataset transformed in place
+$dataset->apply($pipeline); // Dataset transformed in place
+```
+
+## Persisting Transformers
+
+A fitted [Pipeline](transformers/pipeline.md) — or any [Stateful](transformers/api.md#stateful) transformer — can be saved to storage and loaded in another process, so the same preprocessing can be applied to new data without re-fitting. The [Persistent Transformer](transformers/persistent-transformer.md) decorator wraps a transformer and gives it `save()` and `load()` methods, using a [Persister](persisters/api.md) to talk to a storage backend such as the [Filesystem](persisters/filesystem.md).
+
+To fit a transformer and save it to the filesystem:
+
+```php
+use Rubix\ML\Transformers\Pipeline;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = new PersistentTransformer(
+    new Pipeline([
+        new OneHotEncoder(),
+        new ZScaleStandardizer(),
+    ]),
+    new Filesystem('pipeline.rbx')
+);
+
+$transformer->fit($dataset);
+
+$transformer->save();
+```
+
+Then, in another process, load the fitted transformer and apply it to new data. Because the decorator delegates to the same transformer instance, any `fit()` or `update()` performed through it is captured by the next call to `save()`.
+
+```php
+use Rubix\ML\Transformers\PersistentTransformer;
+use Rubix\ML\Persisters\Filesystem;
+
+$transformer = PersistentTransformer::load(new Filesystem('pipeline.rbx'));
+
+$dataset->apply($transformer);
 ```
 
 ## Filtering Records

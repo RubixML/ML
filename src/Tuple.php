@@ -21,7 +21,7 @@ use function implode;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * 
+ *
  * @internal
  *
  * @implements ArrayAccess<int, mixed>
