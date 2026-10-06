@@ -86,9 +86,9 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     /**
      * The regressor that will fix up the error residuals of the *weak* base learner.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $booster;
+    protected Learner & Estimator $booster;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -186,7 +186,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
     protected ?float $mu = null;
 
     /**
-     * @param Learner|null $booster
+     * @param (Learner & Estimator)|null $booster
      * @param float $rate
      * @param float $ratio
      * @param int $epochs
@@ -197,7 +197,7 @@ class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Ver
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ?Learner $booster = null,
+        (Learner & Estimator)|null $booster = null,
         float $rate = 0.1,
         float $ratio = 0.5,
         int $epochs = 1000,

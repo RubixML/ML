@@ -90,9 +90,9 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     /**
      * The regressor used to fix up error residuals.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $booster;
+    protected Learner & Estimator $booster;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -187,7 +187,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     protected ?int $featureCount = null;
 
     /**
-     * @param Learner|null $booster
+     * @param (Learner & Estimator)|null $booster
      * @param float $rate
      * @param float $ratio
      * @param int $epochs
@@ -198,7 +198,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ?Learner $booster = null,
+        (Learner & Estimator)|null $booster = null,
         float $rate = 0.1,
         float $ratio = 0.5,
         int $epochs = 1000,

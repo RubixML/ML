@@ -3,6 +3,7 @@
 namespace Rubix\ML\Backends\Tasks;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -21,14 +22,14 @@ class CrossValidate extends Task
     /**
      * Cross validate a learner with a given dataset and return the score.
      *
-     * @param Learner $estimator
+     * @param Learner & Estimator $estimator
      * @param Labeled $dataset
      * @param Validator $validator
      * @param Metric $metric
      * @return float
      */
     public static function score(
-        Learner $estimator,
+        Learner & Estimator $estimator,
         Labeled $dataset,
         Validator $validator,
         Metric $metric
@@ -37,13 +38,13 @@ class CrossValidate extends Task
     }
 
     /**
-     * @param Learner $estimator
+     * @param Learner & Estimator $estimator
      * @param Labeled $dataset
      * @param Validator $validator
      * @param Metric $metric
      */
     public function __construct(
-        Learner $estimator,
+        Learner & Estimator $estimator,
         Labeled $dataset,
         Validator $validator,
         Metric $metric

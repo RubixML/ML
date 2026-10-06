@@ -87,9 +87,9 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     /**
      * The base classifier to be boosted.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -151,7 +151,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     /**
      * The ensemble of *weak* classifiers.
      *
-     * @var Learner[]|null
+     * @var (Learner & Estimator)[]|null
      */
     protected ?array $ensemble = null;
 
@@ -191,7 +191,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
     protected ?int $featureCount = null;
 
     /**
-     * @param Learner|null $base
+     * @param (Learner & Estimator)|null $base
      * @param float $rate
      * @param float $ratio
      * @param int $epochs
@@ -202,7 +202,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ?Learner $base = null,
+        (Learner & Estimator)|null $base = null,
         float $rate = 1.0,
         float $ratio = 0.8,
         int $epochs = 100,

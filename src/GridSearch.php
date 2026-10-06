@@ -51,7 +51,7 @@ use function is_array;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements Learner, Parallel, Verbose, Persistable
+class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 {
     use AutotrackRevisions, Multiprocessing, LoggerAware;
 
@@ -91,9 +91,9 @@ class GridSearch implements Learner, Parallel, Verbose, Persistable
     /**
      * The base estimator instance.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * The validation scores obtained from the last search.
@@ -233,9 +233,9 @@ class GridSearch implements Learner, Parallel, Verbose, Persistable
 
         $proxy = new $class(...array_map('current', $params));
 
-        if (!$proxy instanceof Learner) {
+        if (!$proxy instanceof Learner or !$proxy instanceof Estimator) {
             throw new InvalidArgumentException('Base class must'
-                . ' implement the Learner Interface.');
+                . ' implement the Learner and Estimator Interfaces.');
         }
 
         if ($metric) {
@@ -466,7 +466,7 @@ class GridSearch implements Learner, Parallel, Verbose, Persistable
         $this->backend()->flush();
 
         foreach ($combinations as $params) {
-            /** @var Learner $estimator */
+            /** @var Learner & Estimator $estimator */
             $estimator = new $this->class(...$params);
 
             $task = new CrossValidate(

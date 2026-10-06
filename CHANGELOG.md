@@ -73,6 +73,7 @@
     - Added `setValidationDataset()` method to Learners with validation set
     - `Pipeline` is now a Transformer decorator
     - Added `PersistentTransformer` decorator
+    - Removed Trainable interface, API transferred to Learner interface
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
