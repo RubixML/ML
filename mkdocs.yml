@@ -114,7 +114,7 @@ nav:
       - Persistent Model: persistent-model.md
     - Transformers:
       - API Reference: transformers/api.md
-      - Composition:
+      - Decorators:
         - Pipeline: transformers/pipeline.md
         - Persistent Transformer: transformers/persistent-transformer.md
       - Standardization and Normalization:
