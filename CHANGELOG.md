@@ -87,7 +87,7 @@
     - Optimize Dataset validation
     - Fix AdaBoost early stopping with dropped learners
     - Fix Report and Tuple null values
-    - Fix Random Projector mangitudes
+    - Fix Random Projector magnitudes
     - Prevent division by zero in Sparse Random Projector
 
 - 2.5.13
