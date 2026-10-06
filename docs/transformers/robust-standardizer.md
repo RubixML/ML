@@ -10,7 +10,7 @@ $$
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Reversible](api.md#reversible), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
@@ -31,11 +31,11 @@ $transformer = new RobustStandardizer(true);
 Return the medians calculated by fitting the training set.
 
 ```php
-public medians() : array
+public medians() : ?array
 ```
 
 Return the median absolute deviations calculated during fitting.
 
 ```php
-public mads() : array
+public mads() : ?array
 ```

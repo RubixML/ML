@@ -93,7 +93,7 @@ public scores() : float[]|null
 Returns the underlying neural network instance or `null` if untrained. See [FeedForward](../neural-network/feed-forward.md) for more details.
 
 ```php
-public network() : FeedForward|null
+public network() : ?\Rubix\ML\NeuralNet\Network
 ```
 
 Clean up any leftover state after training. Only do this if you plan to use the model for inference.

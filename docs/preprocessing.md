@@ -152,7 +152,7 @@ use Rubix\ML\Transformers\LambdaFunction;
 
 $binarize = function (&$sample) {
     $sample[3] = $sample[3] > 182 ? 'tall' : 'not tall';
-}
+};
 
 $dataset->apply(new LambdaFunction($binarize));
 ```
@@ -259,7 +259,7 @@ use function in_array;
 
 $dogsAndCats = function ($record) {
     return in_array(end($record), ['dog', 'cat']);
-}
+};
 
 $training = $dataset->filter($dogsAndCats);
 ```

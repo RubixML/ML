@@ -8,7 +8,7 @@ Generates a random uniform distribution centered at 0 and bounded at both ends b
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | beta | 0.05 | float | The upper and lower bound of the distribution. |
+| 1 | beta | 0.5 | float | The upper and lower bound of the distribution. |
 
 ## Example
 

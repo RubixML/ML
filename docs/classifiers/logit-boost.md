@@ -1,4 +1,4 @@
-<span style="float:right;"><a href="https://github.com/RubixML/Extras/blob/master/src/Classifiers/LogitBoost.php">[source]</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/ML/blob/master/src/Classifiers/LogitBoost.php">[source]</a></span>
 
 # Logit Boost
 

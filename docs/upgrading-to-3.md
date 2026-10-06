@@ -396,7 +396,7 @@ $pipeline = new Pipeline([new OneHotEncoder()]);
 
 $estimator = new SoftmaxClassifier();
 
-$dataset->apply($pipeline)
+$dataset->apply($pipeline);
 
 $estimator->train($dataset);
 

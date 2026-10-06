@@ -6,7 +6,7 @@ Pipeline is a [Transformer](api.md) decorator capable of composing an arbitraril
 
 **Interfaces:** [Transformer](api.md), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Defined by the first transformer in the stack; an empty pipeline accepts every data type
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
