@@ -502,7 +502,7 @@ class Unlabeled extends Dataset
         }
 
         $total = 0.0;
-        $cums = [];
+        $cumsums = [];
 
         foreach ($weights as $weight) {
             if ($weight < 0.0) {
@@ -512,7 +512,7 @@ class Unlabeled extends Dataset
 
             $total += $weight;
 
-            $cums[] = $total;
+            $cumsums[] = $total;
         }
 
         if ($total <= 0.0) {
@@ -521,7 +521,7 @@ class Unlabeled extends Dataset
         }
 
         /** @var positive-int $numWeights */
-        $numWeights = count($cums);
+        $numWeights = count($cumsums);
 
         $phi = getrandmax() / $total;
         $max = (int) round($total * $phi);
@@ -537,7 +537,7 @@ class Unlabeled extends Dataset
             while ($lower < $upper) {
                 $mid = intdiv($lower + $upper, 2);
 
-                if ($cums[$mid] < $delta) {
+                if ($cumsums[$mid] < $delta) {
                     $lower = ++$mid;
                 } else {
                     $upper = $mid;

@@ -16,7 +16,13 @@ use function fopen;
 use function fgetcsv;
 use function fputcsv;
 use function fclose;
+use function fread;
+use function fseek;
+use function fwrite;
+use function filesize;
 use function array_combine;
+use function array_count_values;
+use function implode;
 use function count;
 use function strlen;
 
@@ -148,6 +154,24 @@ class CSV implements Extractor, Exporter
 
         $writeHeader = $this->header && ($overwrite or !is_file($this->path));
 
+        $needsSeparator = false;
+
+        if (!$writeHeader and is_file($this->path) and filesize($this->path) > 0) {
+            $existing = fopen($this->path, 'r');
+
+            if ($existing) {
+                fseek($existing, -1, SEEK_END);
+
+                $last = fread($existing, 1);
+
+                fclose($existing);
+
+                if ($last !== "\n" and $last !== "\r") {
+                    $needsSeparator = true;
+                }
+            }
+        }
+
         $handle = fopen($this->path, $overwrite ? 'w' : 'a');
 
         if (!$handle) {
@@ -164,7 +188,17 @@ class CSV implements Extractor, Exporter
             }
         }
 
+        $firstRow = true;
+
         foreach (enumerate($iterator, $writeHeader ? 2 : 1) as $line => $row) {
+            if ($firstRow and $needsSeparator) {
+                if (fwrite($handle, "\n") === false) {
+                    throw new RuntimeException('Row separator could not be written.');
+                }
+            }
+
+            $firstRow = false;
+
             $length = fputcsv($handle, $row, $this->delimiter, $this->enclosure, $this->escape);
 
             if ($length === false) {
@@ -204,6 +238,21 @@ class CSV implements Extractor, Exporter
 
             if (!$header) {
                 throw new RuntimeException("Header not found on line $line.");
+            }
+
+            $counts = array_count_values($header);
+
+            $duplicates = [];
+
+            foreach ($counts as $name => $count) {
+                if ($count > 1) {
+                    $duplicates[] = $name;
+                }
+            }
+
+            if (!empty($duplicates)) {
+                throw new RuntimeException('Duplicate column name(s) in header: '
+                    . implode(', ', $duplicates) . '.');
             }
 
             ++$line;
