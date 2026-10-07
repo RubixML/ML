@@ -83,10 +83,10 @@ Return the base learner instance.
 public base() : \Rubix\ML\Estimator
 ```
 
-Return an iterable table of every parameter combination tested along with its validation score from the last search.
+Return a table of every parameter combination tested along with its validation score from the last search.
 
 ```php
-public results() : Generator
+public results() : array
 ```
 
 Return the best combination of parameters found during the last search along with their validation score in a 2-tuple.

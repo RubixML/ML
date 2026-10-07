@@ -25,7 +25,6 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use ReflectionClass;
 use Closure;
-use Generator;
 
 use function in_array;
 use function class_exists;
@@ -383,12 +382,12 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      * Return a table of the validation score obtained from each parameter
      * combination from the last search.
      *
-     * @return Generator<mixed[]>
+     * @return list<array<mixed>>
      */
-    public function results() : Generator
+    public function results() : array
     {
         if (!$this->scores) {
-            return;
+            return [];
         }
 
         $combinations = $this->combinations();
@@ -397,6 +396,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         array_multisort($scores, SORT_DESC, $combinations);
 
         $names = self::constructorParamNames($this->class);
+
+        $results = [];
 
         foreach ($scores as $i => $score) {
             $row = [];
@@ -407,8 +408,10 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
             $row["{$this->metric}"] = Params::toString($score);
 
-            yield $row;
+            $results[] = $row;
         }
+
+        return $results;
     }
 
     /**

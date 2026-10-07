@@ -31,8 +31,6 @@ use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 
-use function Rubix\ML\iterator_first;
-
 #[Group('MetaEstimators')]
 #[CoversClass(GridSearch::class)]
 class GridSearchTest extends TestCase
@@ -215,11 +213,7 @@ class GridSearchTest extends TestCase
 
         $this->assertNotEmpty($this->estimator->scores());
 
-        $progress = $this->estimator->results();
-
-        $this->assertInstanceOf(Generator::class, $progress);
-
-        $rows = iterator_to_array($progress);
+        $rows = $this->estimator->results();
 
         $this->assertCount(6, $rows);
 
@@ -288,7 +282,7 @@ class GridSearchTest extends TestCase
 
         $metric = new FBeta();
 
-        $first = iterator_first($this->estimator->results());
+        $first = $this->estimator->results()[0];
 
         $this->assertSame($first["{$metric}"], $bestScore);
     }
@@ -321,7 +315,7 @@ class GridSearchTest extends TestCase
 
         $this->assertEquals($expectedBest, $estimator->base()->params());
 
-        $rows = iterator_to_array($estimator->results());
+        $rows = $estimator->results();
 
         $expectedFirst = [
             'k' => '5',
