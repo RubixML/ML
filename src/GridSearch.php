@@ -382,12 +382,12 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      * Return a table of the validation score obtained from each parameter
      * combination from the last search.
      *
-     * @return list<array<mixed>>
+     * @return Report
      */
-    public function results() : array
+    public function results() : Report
     {
         if (!$this->scores) {
-            return [];
+            return new Report([]);
         }
 
         $combinations = $this->combinations();
@@ -408,10 +408,10 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
             $row["{$this->metric}"] = Params::toString($score);
 
-            $results[] = $row;
+            $results['Trial ' . ($i + 1)] = $row;
         }
 
-        return $results;
+        return new Report($results);
     }
 
     /**
@@ -426,11 +426,13 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             return [null, null];
         }
 
-        $params = iterator_first($this->results());
+        $results = $this->results()->toArray();
 
-        $score = array_pop($params);
+        $row = $results[array_key_first($results)];
 
-        return [$params, $score];
+        $score = array_pop($row);
+
+        return [$row, $score];
     }
 
     /**

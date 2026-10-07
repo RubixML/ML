@@ -836,7 +836,7 @@ Omitted hyper-parameters are filled in with their default from the base learner'
 
 ### 50. Grid Search results() table
 
-[Grid Search](grid-search.md) now generates a `results()` table: an array of every parameter combination tested, each row paired with its validation score, sorted from best to worst. It is convenient for inspecting the entire search space at a glance or exporting it:
+[Grid Search](grid-search.md) now generates a `results()` table: a Report of every parameter combination tested, each row paired with its validation score, sorted from best to worst. It is convenient for inspecting the entire search space at a glance or exporting it:
 
 ```php
 use Rubix\ML\Extractors\CSV;

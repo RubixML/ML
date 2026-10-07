@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
 use Rubix\ML\GridSearch;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Report;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\KFold;
@@ -215,6 +216,8 @@ class GridSearchTest extends TestCase
 
         $rows = $this->estimator->results();
 
+        $this->assertInstanceOf(Report::class, $rows);
+
         $this->assertCount(6, $rows);
 
         $metric = new FBeta();
@@ -225,7 +228,7 @@ class GridSearchTest extends TestCase
             'kernel' => 'Euclidean',
         ];
 
-        $first = $rows[0];
+        $first = $rows['Trial 1'];
 
         foreach ($expectedBest as $key => $value) {
             $this->assertArrayHasKey($key, $first);
@@ -282,7 +285,7 @@ class GridSearchTest extends TestCase
 
         $metric = new FBeta();
 
-        $first = $this->estimator->results()[0];
+        $first = $this->estimator->results()['Trial 1'];
 
         $this->assertSame($first["{$metric}"], $bestScore);
     }
@@ -324,12 +327,12 @@ class GridSearchTest extends TestCase
         ];
 
         foreach ($expectedFirst as $key => $value) {
-            $this->assertSame($value, $rows[0][$key]);
+            $this->assertSame($value, $rows['Trial 1'][$key]);
         }
 
         $this->assertSame(
             ['k', 'weighted', 'kernel'],
-            array_slice(array_keys($rows[0]), 0, 3)
+            array_slice(array_keys($rows['Trial 1']), 0, 3)
         );
     }
 
