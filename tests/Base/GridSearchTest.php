@@ -409,4 +409,56 @@ class GridSearchTest extends TestCase
 
         new GridSearch(KNearestNeighbors::class, ['k' => [1, 5]]);
     }
+
+    #[Test]
+    #[TestDox('Setup callback is invoked on each estimator before cross-validation')]
+    public function setupIsCalledForEachEstimator() : void
+    {
+        $callCount = 0;
+        $types = [];
+
+        $this->estimator->setup(function (KNearestNeighbors $estimator) use (&$callCount, &$types) {
+            ++$callCount;
+            $types[] = $estimator::class;
+        });
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        // 6 param combinations + 1 final best estimator
+        $this->assertSame(7, $callCount);
+
+        foreach ($types as $type) {
+            $this->assertSame(KNearestNeighbors::class, $type);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Setup callback returns $this for fluent chaining')]
+    public function setupIsFluent() : void
+    {
+        $result = $this->estimator->setup(function (KNearestNeighbors $e) : void {
+        });
+
+        $this->assertSame($this->estimator, $result);
+    }
+
+    #[Test]
+    #[TestDox('Setup closure is transient and excluded from serialization')]
+    public function setupIsTransient() : void
+    {
+        $this->estimator->setup(function (KNearestNeighbors $e) : void {
+        });
+
+        $this->assertArrayNotHasKey('setup', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        $this->assertInstanceOf(GridSearch::class, $copy);
+
+        $this->assertArrayNotHasKey('setup', $copy->__serialize());
+    }
 }

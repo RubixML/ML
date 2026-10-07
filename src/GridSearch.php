@@ -24,6 +24,7 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use ReflectionClass;
+use Closure;
 use Generator;
 
 use function in_array;
@@ -101,6 +102,13 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      * @var list<float>|null
      */
     protected ?array $scores = null;
+
+    /**
+     * A callback invoked on each estimator instance before it is cross-validated.
+     *
+     * @var Closure(Learner & Estimator) : mixed|null
+     */
+    protected ?Closure $setup = null;
 
     /**
      * Return a Grid Search instance from a set of hyper-parameters keyed by the
@@ -269,6 +277,20 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(5);
         $this->base = $proxy;
+    }
+
+    /**
+     * Register a callback to be invoked on each estimator instance before it is
+     * cross-validated, allowing you to configure any of its methods.
+     *
+     * @param Closure(Learner & Estimator) : mixed $setup
+     * @return $this
+     */
+    public function setup(Closure $setup) : static
+    {
+        $this->setup = $setup;
+
+        return $this;
     }
 
     /**
@@ -471,6 +493,10 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             /** @var Learner & Estimator $estimator */
             $estimator = new $this->class(...$params);
 
+            if ($this->setup) {
+                call_user_func($this->setup, $estimator);
+            }
+
             $task = new CrossValidate(
                 $estimator,
                 $dataset,
@@ -497,6 +523,10 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
         $best = $combinations[array_key_first($combinations)];
 
         $estimator = new $this->base(...$best);
+
+        if ($this->setup) {
+            call_user_func($this->setup, $estimator);
+        }
 
         if ($this->logger) {
             $this->logger->info('Training with best hyper-parameters '
@@ -566,7 +596,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     {
         $properties = get_object_vars($this);
 
-        unset($properties['backend']);
+        unset($properties['backend'], $properties['setup']);
 
         return $properties;
     }

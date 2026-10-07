@@ -51,6 +51,20 @@ $estimator = GridSearch::fromNamedParams(
 );
 ```
 
+## Setup
+
+Some estimators expose configuration methods that are unrelated to their constructor parameters—for example, `setValidationDataset()` on iterative learners. Use `setup()` to register a callback that is invoked on each newly-instantiated base estimator before it is cross-validated (and again on the final best estimator before it is trained on the full dataset).
+
+The callback receives the base estimator instance and may call any of its methods. It is not serialized with the grid search instance.
+
+```php
+$estimator = new GridSearch(LogisticRegression::class, $params, new FBeta(), new KFold(5));
+
+$estimator->setup(function (LogisticRegression $regressor) : void {
+    $regressor->setValidationDataset($validation);
+});
+```
+
 ## Parallel
 
 This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Amp](backends/amp.md) to speed up training and inference:

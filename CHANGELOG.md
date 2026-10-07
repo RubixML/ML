@@ -74,6 +74,7 @@
     - `Pipeline` is now a Transformer decorator
     - Added `PersistentTransformer` decorator
     - Removed Trainable interface, API transferred to Learner interface
+    - `GridSearch` now has a setup() hook before each iteration
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
