@@ -52,7 +52,7 @@ class AdaGrad implements Optimizer
     public function __construct(Scheduler $scheduler)
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
-            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
         }
 
         $this->scheduler = $scheduler;
@@ -107,7 +107,7 @@ class AdaGrad implements Optimizer
         $this->cache[$param->id()] = $norm;
 
         $step = $param->gradient()->multiply($this->scheduler->rate())
-            ->divide($norm->sqrt()->clipLower(EPSILON));
+            ->multiply($norm->rsqrt()->clipUpper(1.0 / EPSILON));
 
         $param->update($step);
     }

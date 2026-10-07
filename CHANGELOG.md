@@ -2,7 +2,7 @@
 
 - 3.0.0
     - Integers are now considered a categorical data type
-    - Updated to Tensor version 4
+    - Updated to Tensor API version 4.1
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
     - `Isolation Forest` training and inference is now parallelized
     - Added disk-based streaming neural network snapshotting
@@ -75,6 +75,7 @@
     - Added `PersistentTransformer` decorator
     - Removed Trainable interface, API transferred to Learner interface
     - `GridSearch` now has a setup() hook before each iteration
+    - `GELU` now uses exact formula instead of the tanh approximation
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension

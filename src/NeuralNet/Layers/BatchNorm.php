@@ -116,7 +116,7 @@ class BatchNorm implements Hidden, Parametric
         ?Initializer $gammaInitializer = null
     ) {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
-            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
         }
 
         if ($decay < 0.0 or $decay > 1.0) {
@@ -184,7 +184,7 @@ class BatchNorm implements Hidden, Parametric
 
         $mean = $x->mean();
         $variance = $x->variance($mean)->clipLower(EPSILON);
-        $stdInv = $variance->sqrt()->reciprocal();
+        $stdInv = $variance->rsqrt();
 
         $xHat = $stdInv->multiply($x->subtract($mean));
 
@@ -222,7 +222,7 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $xHat = $x->subtract($this->mean)
-            ->divide($this->variance->sqrt());
+            ->multiply($this->variance->rsqrt());
 
         return $this->gamma->param()->multiply($xHat)
             ->add($this->beta->param());

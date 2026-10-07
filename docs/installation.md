@@ -8,7 +8,7 @@ Rubix ML installs into your project using [Composer](https://getcomposer.org/) a
 
 ### Recommended
 
-- [Tensor Ext 4.0+](https://github.com/RubixML/Tensor-Ext) for fast Matrix/Vector computing.
+- [Tensor Ext 4.1+](https://github.com/RubixML/Tensor-Ext) for fast Matrix/Vector computing.
 - [Swoole extension](https://openswoole.com/) for fast multiprocessing support.
 
 ### Optional
@@ -30,5 +30,5 @@ composer require rubix/ml
 Install the recommended extensions using [PIE](https://github.com/php/pie):
 
 ```sh
-pie install rubix/tensor_ext:^4.0 swoole/swoole
+pie install rubix/tensor_ext:^4.1 swoole/swoole
 ```
