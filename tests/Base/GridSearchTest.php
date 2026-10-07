@@ -420,16 +420,6 @@ class GridSearchTest extends TestCase
     }
 
     #[Test]
-    #[TestDox('Setup callback returns $this for fluent chaining')]
-    public function setupIsFluent() : void
-    {
-        $result = $this->estimator->setup(function (KNearestNeighbors $e) : void {
-        });
-
-        $this->assertSame($this->estimator, $result);
-    }
-
-    #[Test]
     #[TestDox('Setup closure is transient and excluded from serialization')]
     public function setupIsTransient() : void
     {

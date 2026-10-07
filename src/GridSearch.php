@@ -282,13 +282,10 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      * cross-validated, allowing you to configure any of its methods.
      *
      * @param Closure(Learner & Estimator) : mixed $setup
-     * @return $this
      */
-    public function setup(Closure $setup) : static
+    public function setup(Closure $setup) : void
     {
         $this->setup = $setup;
-
-        return $this;
     }
 
     /**
