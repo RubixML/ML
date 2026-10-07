@@ -31,7 +31,6 @@ use function class_exists;
 use function array_unique;
 use function array_keys;
 use function array_pop;
-use function array_multisort;
 use function array_key_exists;
 use function array_is_list;
 use function is_array;
@@ -380,7 +379,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
     /**
      * Return a table of the validation score obtained from each parameter
-     * combination from the last search.
+     * combination from the last search, keyed by the trial number in the order
+     * they were trained in.
      *
      * @return Report
      */
@@ -392,8 +392,6 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
         $combinations = $this->combinations();
         $scores = $this->scores;
-
-        array_multisort($scores, SORT_DESC, $combinations);
 
         $names = self::constructorParamNames($this->class);
 
@@ -426,9 +424,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             return [null, null];
         }
 
-        $results = $this->results()->toArray();
+        $i = argmax($this->scores);
 
-        $row = $results[array_key_first($results)];
+        $row = $this->results()['Trial ' . ($i + 1)];
 
         $score = array_pop($row);
 
@@ -494,7 +492,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
         $this->backend()->flush();
 
-        foreach ($combinations as $params) {
+        foreach (enumerate($combinations, 1) as $trial => $params) {
             /** @var Learner & Estimator $estimator */
             $estimator = new $this->class(...$params);
 
@@ -509,9 +507,9 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
                 $this->metric
             );
 
-            $after = function (float $score) use ($params) {
+            $after = function (float $score) use ($trial, $params) {
                 if ($this->logger) {
-                    $this->logger->info("{$this->metric}: $score, "
+                    $this->logger->info("Trial {$trial}: {$this->metric}: $score, "
                        . 'params: [' . Params::stringify($this->named($params)) . ']');
                 }
             };
@@ -523,9 +521,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
         $this->scores = $scores;
 
-        array_multisort($scores, SORT_DESC, $combinations);
-
-        $best = $combinations[array_key_first($combinations)];
+        $best = $combinations[argmax($scores)];
 
         $estimator = new $this->base(...$best);
 

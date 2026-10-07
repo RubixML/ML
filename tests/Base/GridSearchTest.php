@@ -15,6 +15,7 @@ use Rubix\ML\DataType;
 use Rubix\ML\GridSearch;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Report;
+use Rubix\ML\Helpers\Params;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\KFold;
@@ -222,37 +223,25 @@ class GridSearchTest extends TestCase
 
         $metric = new FBeta();
 
-        $expectedBest = [
-            'k' => '5',
-            'weighted' => 'true',
-            'kernel' => 'Euclidean',
-        ];
+        $scores = $this->estimator->scores();
 
-        $first = $rows['Trial 1'];
+        foreach ($this->estimator->combinations() as $i => $combination) {
+            $row = $rows['Trial ' . ($i + 1)];
 
-        foreach ($expectedBest as $key => $value) {
-            $this->assertArrayHasKey($key, $first);
-            $this->assertSame($value, $first[$key]);
-        }
-
-        $this->assertArrayHasKey("{$metric}", $first);
-
-        $scores = [];
-
-        foreach ($rows as $row) {
             $this->assertSame(
                 ['k', 'weighted', 'kernel', "{$metric}"],
                 array_keys($row)
             );
 
-            $scores[] = (float) $row["{$metric}"];
+            $expectedParams = array_map(
+                [Params::class, 'toString'],
+                $combination
+            );
+
+            $this->assertSame($expectedParams, array_values(array_slice($row, 0, 3)));
+
+            $this->assertSame((string) $scores[$i], $row["{$metric}"]);
         }
-
-        $sorted = $scores;
-
-        rsort($sorted);
-
-        $this->assertSame($sorted, $scores);
     }
 
     #[Test]
@@ -283,11 +272,10 @@ class GridSearchTest extends TestCase
             array_keys($bestParams)
         );
 
-        $metric = new FBeta();
-
-        $first = $this->estimator->results()['Trial 1'];
-
-        $this->assertSame($first["{$metric}"], $bestScore);
+        $this->assertSame(
+            Params::toString(max($this->estimator->scores())),
+            $bestScore
+        );
     }
 
     #[Test]
@@ -318,21 +306,19 @@ class GridSearchTest extends TestCase
 
         $this->assertEquals($expectedBest, $estimator->base()->params());
 
-        $rows = $estimator->results();
+        [$bestParams, $bestScore] = $estimator->best();
 
-        $expectedFirst = [
+        $expectedBestParams = [
             'k' => '5',
             'weighted' => 'true',
             'kernel' => 'Euclidean',
         ];
 
-        foreach ($expectedFirst as $key => $value) {
-            $this->assertSame($value, $rows['Trial 1'][$key]);
-        }
+        $this->assertSame($expectedBestParams, $bestParams);
 
         $this->assertSame(
-            ['k', 'weighted', 'kernel'],
-            array_slice(array_keys($rows['Trial 1']), 0, 3)
+            Params::toString(max($estimator->scores())),
+            $bestScore
         );
     }
 

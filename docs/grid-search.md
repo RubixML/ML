@@ -83,7 +83,7 @@ Return the base learner instance.
 public base() : \Rubix\ML\Estimator
 ```
 
-Return a Report of every parameter combination tested along with its validation score from the last search. As with the other Report-returning methods (e.g. `describe()`), you can echo it or encode it with `toJSON()`.
+Return a Report of every parameter combination tested along with its validation score from the last search. The rows are keyed by trial number in the order the trials were trained in, so the `Trial N` entries line up with the `N`-th parameter combination (`scores()[N - 1]`) and the trial numbers logged during training. As with the other Report-returning methods (e.g. `describe()`), you can echo it or encode it with `toJSON()`.
 
 ```php
 public results() : \Rubix\ML\Report
@@ -95,7 +95,7 @@ Return the best combination of parameters found during the last search along wit
 public best() : array
 ```
 
-Return the validation scores of each of the parameter combinations.
+Return the validation scores of each of the parameter combinations. The scores are returned in the order the trials were trained in, so the score at index `N - 1` corresponds to `Trial N`.
 
 ```php
 public scores() : ?array
