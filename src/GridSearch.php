@@ -424,9 +424,11 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             return [null, null];
         }
 
-        $i = argmax($this->scores);
+        $index = argmax($this->scores);
 
-        $row = $this->results()['Trial ' . ($i + 1)];
+        $results = $this->results()->toArray();
+
+        $row = $results['Trial ' . ($index + 1)];
 
         $score = array_pop($row);
 
