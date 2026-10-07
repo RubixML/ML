@@ -76,6 +76,7 @@
     - Removed Trainable interface, API transferred to Learner interface
     - `GridSearch` now has a setup() hook before each iteration
     - `GELU` now uses exact formula instead of the tanh approximation
+    - Fix TruncatedSVD lossiness value
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
