@@ -456,7 +456,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
             $numCombinations = number_format((float) count($combinations));
 
-            $message = number_format($numCombinations) . ' total parameter combinations';
+            $message = "{$numCombinations} total parameter combinations";
 
             $this->logger->info($message);
         }
