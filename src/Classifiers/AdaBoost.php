@@ -216,7 +216,7 @@ class AdaBoost implements Estimator, Learner, Iterative, Probabilistic, Verbose,
                 . " a classifier, {$base->type()} given.");
         }
 
-        if ($rate < 0.0) {
+        if ($rate <= 0.0) {
             throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
