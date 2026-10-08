@@ -337,15 +337,11 @@ class ColorJitter implements Transformer, Stringable
                     if ($this->hue > 0.0) {
                         [$hsvH, $hsvS, $hsvV] = self::rgbToHsv($r, $g, $b);
 
-                        $hsvHNew = $hsvH + $hueShift;
+                    $hsvHNew = fmod($hsvH + $hueShift, 360.0);
 
-                        while ($hsvHNew >= 360.0) {
-                            $hsvHNew -= 360.0;
-                        }
-
-                        while ($hsvHNew < 0.0) {
-                            $hsvHNew += 360.0;
-                        }
+                    if ($hsvHNew < 0.0) {
+                        $hsvHNew += 360.0;
+                    }
 
                         [$r, $g, $b] = self::hsvToRgb($hsvHNew, $hsvS, $hsvV);
                     }
