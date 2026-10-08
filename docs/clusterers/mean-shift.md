@@ -4,7 +4,7 @@
 
 A hierarchical clustering algorithm that uses peak (maxima) finding to locate the candidate centroids of a training set given a radius constraint. Near-duplicate centroids are merged together and the algorithm iterates on the remaining candidates in subsequent steps until the centroids stabilize.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -50,6 +50,12 @@ Returns the amount of centroid shift during each epoch of training. The shift of
 
 ```php
 public losses() : float[]|null
+```
+
+Return the progress table combining every epoch recorded during the last training session — the centroid shift at each epoch — into a single ordered sequence.
+
+```php
+public progress() : iterable
 ```
 
 Return the base spatial tree instance.

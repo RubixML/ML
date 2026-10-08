@@ -4,6 +4,14 @@
 
 Gaussian Error Linear Units (GELUs) are rectifiers that are gated by the magnitude of their input rather than the sign of their input as with ReLU variants. Their output can be interpreted as the expected value of a neuron with random dropout regularization applied.
 
+$$
+{\displaystyle \operatorname{GELU}(x) = x \, \Phi(x) = \frac{x}{2}\left(1 + \operatorname{erf}\left(\frac{x}{\sqrt{2}}\right)\right)}
+$$
+
+$$
+{\displaystyle \operatorname{GELU}'(x) = \Phi(x) + x \, \varphi(x) = \frac{1}{2}\left(1 + \operatorname{erf}\left(\frac{x}{\sqrt{2}}\right)\right) + \frac{x}{\sqrt{2\pi}} \exp\left(-\frac{x^2}{2}\right)}
+$$
+
 ## Parameters
 
 This activation function does not have any parameters.

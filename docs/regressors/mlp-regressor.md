@@ -7,7 +7,7 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 !!! note
     Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -69,6 +69,12 @@ Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null
+```
+
+Return the progress table combining every epoch recorded during the last training session — the loss, the validation score, and the gradient norm when available — into a single ordered sequence.
+
+```php
+public progress() : iterable
 ```
 
 Return the gradient norm for each epoch from the last training session.

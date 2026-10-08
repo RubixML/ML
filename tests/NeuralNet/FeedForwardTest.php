@@ -374,7 +374,7 @@ class FeedForwardTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $output);
         $this->assertEquals([3, 3], $output->shape());
 
-        $rows = $output->asArray();
+        $rows = $output->transpose()->asArray();
 
         $this->assertCount(3, $rows);
 
@@ -404,7 +404,7 @@ class FeedForwardTest extends TestCase
 
         $inferred = $network->infer($x);
 
-        $this->assertEquals($forward->transpose()->asArray(), $inferred->asArray());
+        $this->assertEquals($forward->asArray(), $inferred->asArray());
     }
 
     #[Test]

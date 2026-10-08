@@ -10,7 +10,7 @@ Validators take an instance of a [Learner](../learner.md), a [Labeled](../datase
 To train and test a Learner on a dataset and return the validation score:
 
 ```php
-public test(Learner $estimator, Labeled $dataset, Metric $metric) : float
+public test(Learner & Estimator $estimator, Labeled $dataset, Metric $metric) : float
 ```
 
 ```php

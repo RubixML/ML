@@ -137,12 +137,12 @@ class Adam implements Optimizer
         [$velocity, $norm] = $this->cache[$param->id()];
 
         $vHat = $param->gradient()->subtract($velocity)
-            ->multiplyScalar($this->momentumDecay);
+            ->multiply($this->momentumDecay);
 
         $velocity = $velocity->add($vHat);
 
         $nHat = $param->gradient()->square()->subtract($norm)
-            ->multiplyScalar($this->normDecay);
+            ->multiply($this->normDecay);
 
         $norm = $norm->add($nHat);
 

@@ -15,11 +15,11 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 
 ### Recommended
 
-- [Tensor Ext 4.0+](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
-- [Swoole extension](https://openswoole.com/) for fast multiprocessing support.
+- [Tensor Ext 4.1+](https://github.com/RubixML/Tensor-Ext) for fast Matrix/Vector computing.
 
 ### Optional
 
+- [Swoole extension](https://openswoole.com/) for fast multiprocessing support.
 - [GD extension](https://php.net/manual/en/book.image.php) for image support.
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).
@@ -42,10 +42,10 @@ Make sure you have all the necessary build tools installed such as a C compiler 
 sudo apt-get install make gcc gfortran php-dev libopenblas-dev liblapacke-dev re2c build-essential
 ```
 
-Compile and install the recommended extensions using [PIE](https://github.com/php/pie):
+Compile and install the Tensor 4.1+ extension using [PIE](https://github.com/php/pie):
 
 ```sh
-pie install rubix/tensor_ext swoole/swoole
+pie install rubix/tensor_ext:^4.1
 ```
 
 ## Documentation
