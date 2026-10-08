@@ -10,6 +10,7 @@ use Rubix\ML\Transformers\ColorJitter;
 use function imagecolorat;
 use function imagecreatetruecolor;
 use function imagefill;
+use function imagesetpixel;
 use function imagesx;
 use function imagesy;
 
@@ -156,6 +157,31 @@ class ColorJitterTest extends TestCase
 
         $jittered = imagecolorat($samples[0][0], 0, 0);
         $this->assertNotSame($original, $jittered);
+    }
+
+    public function testContrastScalesAroundSharedLuminancePivot() : void
+    {
+        $image = imagecreatetruecolor(2, 2);
+
+        imagesetpixel($image, 0, 0, imagecolorallocate($image, 64, 64, 64));
+        imagesetpixel($image, 1, 0, imagecolorallocate($image, 192, 192, 192));
+        imagesetpixel($image, 0, 1, imagecolorallocate($image, 64, 64, 64));
+        imagesetpixel($image, 1, 1, imagecolorallocate($image, 192, 192, 192));
+
+        mt_srand(4242);
+
+        $transformer = new ColorJitter(0.0, 1.0, 0.0, 0.0);
+        $samples = [[$image]];
+
+        $transformer->transform($samples);
+
+        $dark = imagecolorat($samples[0][0], 0, 0);
+        $light = imagecolorat($samples[0][0], 1, 0);
+
+        $this->assertNotSame(64, $dark & 0xFF, 'Dark grayscale pixel must respond to contrast.');
+        $this->assertNotSame(192, $light & 0xFF, 'Light grayscale pixel must respond to contrast.');
+
+        imagedestroy($image);
     }
 
     public function testTransformWithSaturation() : void

@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
-use Rubix\ML\Transformers\Checks\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
@@ -246,6 +246,41 @@ class ColorJitter implements Transformer, Stringable
     }
 
     /**
+     * Compute the mean luminance of an image using Rec. 601 luma weights.
+     *
+     * @param \GdImage $image
+     * @param int $width
+     * @param int $height
+     * @return float
+     */
+    protected function luminanceMean($image, int $width, int $height) : float
+    {
+        if ($width < 1 or $height < 1) {
+            return 127.5;
+        }
+
+        $total = 0.0;
+
+        for ($y = 0; $y < $height; ++$y) {
+            for ($x = 0; $x < $width; ++$x) {
+                $pixel = imagecolorat($image, $x, $y);
+
+                if ($pixel === false) {
+                    continue;
+                }
+
+                $r = ($pixel >> 16) & 0xFF;
+                $g = ($pixel >> 8) & 0xFF;
+                $b = $pixel & 0xFF;
+
+                $total += 0.299 * $r + 0.587 * $g + 0.114 * $b;
+            }
+        }
+
+        return $total / ($width * $height);
+    }
+
+    /**
      * Jitter the images within a sample.
      *
      * @param array<mixed> $sample
@@ -283,6 +318,12 @@ class ColorJitter implements Transformer, Stringable
                 $brightnessFactor = 0.0;
             }
 
+            $pivot = 127.5;
+
+            if ($this->contrast > 0.0) {
+                $pivot = $this->luminanceMean($image, $width, $height);
+            }
+
             for ($y = 0; $y < $height; ++$y) {
                 for ($x = 0; $x < $width; ++$x) {
                     $pixel = imagecolorat($image, $x, $y);
@@ -307,11 +348,9 @@ class ColorJitter implements Transformer, Stringable
                     }
 
                     if ($this->contrast > 0.0) {
-                        $mean = ($r + $g + $b) / 3.0;
-
-                        $r = (int) round($mean + ($r - $mean) * $contrastFactor);
-                        $g = (int) round($mean + ($g - $mean) * $contrastFactor);
-                        $b = (int) round($mean + ($b - $mean) * $contrastFactor);
+                        $r = (int) round($pivot + ($r - $pivot) * $contrastFactor);
+                        $g = (int) round($pivot + ($g - $pivot) * $contrastFactor);
+                        $b = (int) round($pivot + ($b - $pivot) * $contrastFactor);
 
                         $r = max(0, min(255, $r));
                         $g = max(0, min(255, $g));
@@ -337,11 +376,11 @@ class ColorJitter implements Transformer, Stringable
                     if ($this->hue > 0.0) {
                         [$hsvH, $hsvS, $hsvV] = self::rgbToHsv($r, $g, $b);
 
-                    $hsvHNew = fmod($hsvH + $hueShift, 360.0);
+                        $hsvHNew = fmod($hsvH + $hueShift, 360.0);
 
-                    if ($hsvHNew < 0.0) {
-                        $hsvHNew += 360.0;
-                    }
+                        if ($hsvHNew < 0.0) {
+                            $hsvHNew += 360.0;
+                        }
 
                         [$r, $g, $b] = self::hsvToRgb($hsvHNew, $hsvS, $hsvV);
                     }
