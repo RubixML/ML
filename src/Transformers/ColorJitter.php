@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\DataType;
+use Rubix\ML\Transformers\Checks\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
@@ -186,24 +187,22 @@ class ColorJitter implements Transformer, Stringable
         float $saturation = 0.2,
         float $hue = 0.0
     ) {
-        if ($brightness < 0.0) {
-            throw new InvalidArgumentException('Brightness must be greater'
-                . ' than or equal to 0.');
+        ExtensionIsLoaded::with('gd')->check();
+
+        if ($brightness < 0.0 or $brightness > 1.0) {
+            throw new InvalidArgumentException('Brightness must be between 0 and 1.');
         }
 
-        if ($contrast < 0.0) {
-            throw new InvalidArgumentException('Contrast must be greater'
-                . ' than or equal to 0.');
+        if ($contrast < 0.0 or $contrast > 1.0) {
+            throw new InvalidArgumentException('Contrast must be between 0 and 1.');
         }
 
-        if ($saturation < 0.0) {
-            throw new InvalidArgumentException('Saturation must be greater'
-                . ' than or equal to 0.');
+        if ($saturation < 0.0 or $saturation > 1.0) {
+            throw new InvalidArgumentException('Saturation must be between 0 and 1.');
         }
 
-        if ($hue < 0.0) {
-            throw new InvalidArgumentException('Hue must be greater'
-                . ' than or equal to 0.');
+        if ($hue < 0.0 or $hue > 360.0) {
+            throw new InvalidArgumentException('Hue must be between 0 and 360.');
         }
 
         $this->brightness = $brightness;
