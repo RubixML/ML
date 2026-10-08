@@ -233,6 +233,10 @@
          <lastmod>2026-10-08</lastmod>
     </url>
     <url>
+         <loc>https://rubixml.github.io/ML/3.0/clusterers/k-medoids.html</loc>
+         <lastmod>2026-10-08</lastmod>
+    </url>
+    <url>
          <loc>https://rubixml.github.io/ML/3.0/clusterers/mean-shift.html</loc>
          <lastmod>2026-10-08</lastmod>
     </url>
@@ -421,6 +425,10 @@
          <lastmod>2026-10-08</lastmod>
     </url>
     <url>
+         <loc>https://rubixml.github.io/ML/3.0/extractors/arff.html</loc>
+         <lastmod>2026-10-08</lastmod>
+    </url>
+    <url>
          <loc>https://rubixml.github.io/ML/3.0/extractors/column-filter.html</loc>
          <lastmod>2026-10-08</lastmod>
     </url>
@@ -442,6 +450,10 @@
     </url>
     <url>
          <loc>https://rubixml.github.io/ML/3.0/extractors/ndjson.html</loc>
+         <lastmod>2026-10-08</lastmod>
+    </url>
+    <url>
+         <loc>https://rubixml.github.io/ML/3.0/extractors/shuffler.html</loc>
          <lastmod>2026-10-08</lastmod>
     </url>
     <url>
@@ -681,7 +693,15 @@
          <lastmod>2026-10-08</lastmod>
     </url>
     <url>
+         <loc>https://rubixml.github.io/ML/3.0/neural-network/schedulers/cosine.html</loc>
+         <lastmod>2026-10-08</lastmod>
+    </url>
+    <url>
          <loc>https://rubixml.github.io/ML/3.0/neural-network/schedulers/cyclical.html</loc>
+         <lastmod>2026-10-08</lastmod>
+    </url>
+    <url>
+         <loc>https://rubixml.github.io/ML/3.0/neural-network/schedulers/ramp.html</loc>
          <lastmod>2026-10-08</lastmod>
     </url>
     <url>
@@ -809,6 +829,10 @@
          <lastmod>2026-10-08</lastmod>
     </url>
     <url>
+         <loc>https://rubixml.github.io/ML/3.0/transformers/color-jitter.html</loc>
+         <lastmod>2026-10-08</lastmod>
+    </url>
+    <url>
          <loc>https://rubixml.github.io/ML/3.0/transformers/float-type-converter.html</loc>
          <lastmod>2026-10-08</lastmod>
     </url>
@@ -818,6 +842,10 @@
     </url>
     <url>
          <loc>https://rubixml.github.io/ML/3.0/transformers/hot-deck-imputer.html</loc>
+         <lastmod>2026-10-08</lastmod>
+    </url>
+    <url>
+         <loc>https://rubixml.github.io/ML/3.0/transformers/image-flipper.html</loc>
          <lastmod>2026-10-08</lastmod>
     </url>
     <url>
