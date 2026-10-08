@@ -9,7 +9,7 @@ Convert all integer and numeric string values to their equivalent floating point
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Categorical, Continuous
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

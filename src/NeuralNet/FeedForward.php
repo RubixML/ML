@@ -8,6 +8,8 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Traversable;
 
 use function Rubix\ML\enumerate;
@@ -59,6 +61,10 @@ class FeedForward implements Network
      */
     public function __construct(Input $input, array $hidden, Output $output)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->input = $input;
         $this->hidden = array_values($hidden);
         $this->output = $output;
@@ -230,7 +236,7 @@ class FeedForward implements Network
             $x = $layer->infer($x);
         }
 
-        return $x->transpose();
+        return $x;
     }
 
     /**

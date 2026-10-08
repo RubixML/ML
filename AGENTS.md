@@ -9,7 +9,7 @@ The project documentation is located in the `/docs` folder in the project root.
 ## Requirements
 
 - [PHP](https://php.net/manual/en/install.php) 8.3 or above.
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
+- [Tensor 4.1+ extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
 - [Swoole extension](https://openswoole.com/) for multiprocessing support.
 - [GD extension](https://php.net/manual/en/book.image.php) for image support.
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
@@ -42,7 +42,7 @@ docs/         →  MkDocs documentation
 
 ### Core Interfaces
 
-`Estimator`, `Learner`, `Online`, `Iterative`, `Parallel`, `Probabilistic`, `Persistable`, `Verbose`, `RanksFeatures`, `Scoring`
+`Estimator`, `Learner`, `Online`, `Parallel`, `Probabilistic`, `Persistable`, `Verbose`, `RanksFeatures`, `Scoring`
 
 ### High-level data types
 
@@ -52,7 +52,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 
 - **Classifiers** (15): AdaBoost, RandomForest, SVC, LogisticRegression, MLP, KNN, NaiveBayes, etc.
 - **Regressors** (10): GradientBoost, Ridge, SVR, RegressionTree, Adaline, KNNRegressor, etc.
-- **Clusterers** (5): KMeans, DBSCAN, GaussianMixture, MeanShift, FuzzyCMeans
+- **Clusterers** (6): KMeans, KMedoids, DBSCAN, GaussianMixture, MeanShift, FuzzyCMeans
 - **Anomaly Detectors** (7): IsolationForest, LOF, OneClassSVM, GaussianMLE, Loda, RobustZScore
 
 ## Coding Conventions
@@ -60,6 +60,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 - PSR-2 with extended rules (enforced by PHP-CS-Fixer, see `.php-cs-fixer.dist.php`)
 - DocBlock on every class, property, method, constant, and function
 - No anonymous classes or functions (breaks serialization/persistence)
+- Prefer protected over private members of classes to encourage extension
 - Objects are *generally* immutable — state mutation only through a well-defined public API
 - Domain-driven naming — names reflect the ML domain
 - No inline comments — use expressive syntax and abstractions instead
@@ -72,7 +73,7 @@ Rubix ML uses a high-level type system. Strings and integers are considered `cat
 - Class members annotated `internal` are not part of the public API
 - Verify changes by running tests, static analysis, and code style fixer
 
-## Workflows
+## Example Workflows
 
 ### Adding a New Estimator
 

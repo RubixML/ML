@@ -28,6 +28,15 @@ If we have a [Labeled](datasets/labeled.md) dataset containing class labels, we 
 [$training, $testing] = $dataset->stratifiedSplit(0.8);
 ```
 
+Datasets with a *continuous* label use the `binnedSplit()` method instead, which preserves the *shape* of the target distribution by stratifying over equal frequency bins of the label.
+
+```php
+[$training, $testing] = $dataset->binnedSplit(0.8);
+```
+
+!!! note
+    `stratifiedSplit()` will throw an `InvalidArgumentException` when the label is continuous. See [Binned Stratification](datasets/labeled.md#binned-stratification) in the [Labeled](datasets/labeled.md) dataset documentation for more.
+
 ## Metrics
 
 Cross validation [Metrics](cross-validation/metrics/api.md) are used to score the predictions made by an [Estimator](estimator.md) with respect to their known ground-truth labels. There are different metrics for different types of problems. To return a validation score from a Metric pass the predictions and labels to the `score()` method like in the example below.
@@ -57,9 +66,9 @@ Metrics for classification and anomaly detection (a special case of binary class
 
 | Name | Range | Formula | Notes |
 | --- | --- | --- | --- |
-| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | $\frac{TP}{TP + FP}$ | Not suited for imbalanced datasets |
+| [Accuracy](cross-validation/metrics/accuracy.md) | [0, 1] | $\frac{TP + TN}{n}$ | Not suited for imbalanced datasets |
 | [F Beta](cross-validation/metrics/f-beta.md) | [0, 1] | $(1 + \beta^2) \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{(\beta^2 \cdot \mathrm{precision}) + \mathrm{recall}}$ | |
-| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | ${\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TP}}{{\text{TN}}+{\text{FP}}}}-1$ | |
+| [Informedness](cross-validation/metrics/informedness.md) | [-1, 1] | ${\frac {\text{TP}}{{\text{TP}}+{\text{FN}}}}+{\frac {\text{TN}}{{\text{TN}}+{\text{FP}}}}-1$ | |
 | [MCC](cross-validation/metrics/mcc.md) | [-1, 1] | ${\frac {\mathrm {TP} \times \mathrm {TN} -\mathrm {FP} \times \mathrm {FN} }{\sqrt {(\mathrm {TP} +\mathrm {FP} )(\mathrm {TP} +\mathrm {FN} )(\mathrm {TN} +\mathrm {FP} )(\mathrm {TN} +\mathrm {FN} )}}}$ | |
 
 ### Regression
@@ -70,10 +79,10 @@ Regression metrics output a score based on the error achieved by comparing conti
 | --- | --- | --- | --- |
 | [Mean Absolute Error](cross-validation/metrics/mean-absolute-error.md) | [-∞, 0] | ${\frac {1}{n}}{\sum _{i=1}^{n}\left &verbar; Y_{i}-\hat {Y_{i}}\right &verbar; }$ | Output in same units as predictions |
 | [Mean Squared Error](cross-validation/metrics/mean-squared-error.md) | [-∞, 0] | ${\frac {1}{n}}\sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}$ | Sensitive to outliers |
-| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] | ${\operatorname {median} (&verbar; Y_{i}-{\tilde {Y}} &verbar;)}$ | Robust to outliers |
+| [Median Absolute Error](cross-validation/metrics/median-absolute-error.md) | [-∞, 0] | ${-\operatorname {median}_i (&verbar; Y_{i}-\hat{Y}_{i}&verbar;)}$ | Robust to outliers |
 | [R Squared](cross-validation/metrics/r-squared.md) | [-∞, 1] | $1-{SS_{\rm {res}} \over SS_{\rm {tot}}}$ | |
 | [RMSE](cross-validation/metrics/rmse.md) | [-∞, 0] | ${\sqrt{ \frac {1}{n} \sum _{i=1}^{n}(Y_{i}-{\hat {Y_{i}}})^{2}}}$ | Output in same units as predictions |
-| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] | ${\frac {100\%}{n}}\sum _{t=1}^{n}{\frac {\left&verbar;F_{t}-A_{t}\right&verbar;}{(&verbar;A_{t}&verbar;+&verbar;F_{t}&verbar;)/2}}$ | |
+| [SMAPE](cross-validation/metrics/smape.md) | [-100, 0] | ${\frac {100\%}{n}}\sum _{t=1}^{n}{\frac {\left&verbar;F_{t}-A_{t}\right&verbar;}{|A_{t}|+|F_{t}|}}$ | |
 
 ### Clustering
 
@@ -150,12 +159,12 @@ echo $results;
     "mean absolute error": 0.8,
     "median absolute error": 1,
     "mean squared error": 1,
+    "mean squared log error": 0.019107097505647368,
     "mean absolute percentage error": 8.930194805194805,
     "rms error": 1,
-    "mean squared log error": 0.019107097505647368,
     "r squared": 0.9958930551562692,
     "error mean": -0.2,
-    "error standard deviation": 0.9898464007663,
+    "error standard deviation": 0.9797958971132712,
     "error skewness": -0.22963966338592326,
     "error kurtosis": -1.0520833333333324,
     "error min": -2,

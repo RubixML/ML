@@ -17,5 +17,5 @@ K Fold is a cross validation technique that splits the training set into *k* ind
 ```php
 use Rubix\ML\CrossValidation\KFold;
 
-$validator = new KFold(5, true);
+$validator = new KFold(5);
 ```

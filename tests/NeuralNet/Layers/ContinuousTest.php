@@ -36,9 +36,9 @@ class ContinuousTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->x = Matrix::quick([
+        $this->x = Matrix::fromArray([
             [2.5, 0.0, -6.0],
-        ]);
+        ], false);
 
         $this->labels = [[0.0, -2.5, 90]];
 
@@ -71,7 +71,7 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        [$computation, $loss] = $this->layer->back(Matrix::quick($this->labels));
+        [$computation, $loss] = $this->layer->back(Matrix::fromArray($this->labels, false));
 
         $this->assertInstanceOf(Deferred::class, $computation);
         $this->assertIsFloat($loss);
@@ -79,7 +79,7 @@ class ContinuousTest extends TestCase
         $gradient = $computation->compute();
 
         $expected = [
-            [0.8333333333333334, 0.8333333333333334, -32.0],
+            [1.6666666666666667, 1.6666666666666667, -64.0],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
@@ -93,5 +93,45 @@ class ContinuousTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $infer);
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
+    }
+
+    /**
+     * The gradient handed back to the previous layer must be the derivative of the
+     * loss that back() reports. Continuous has no activation, so the gradient is
+     * taken directly with respect to its input.
+     */
+    #[Test]
+    public function gradientIsDerivativeOfReportedLoss() : void
+    {
+        $this->layer->initialize(1);
+
+        $this->layer->forward($this->x);
+
+        $y = Matrix::fromArray($this->labels, false);
+
+        [$computation, $loss] = $this->layer->back($y);
+
+        $gradient = $computation->compute()->asArray();
+
+        $this->assertIsFloat($loss);
+
+        $costFn = new LeastSquares();
+
+        $epsilon = 1e-6;
+
+        foreach ($this->x->asArray() as $i => $row) {
+            foreach ($row as $j => $_) {
+                $plus = $this->x->asArray();
+                $minus = $this->x->asArray();
+
+                $plus[$i][$j] += $epsilon;
+                $minus[$i][$j] -= $epsilon;
+
+                $numeric = ($costFn->compute(Matrix::fromArray($plus, false), $y)
+                    - $costFn->compute(Matrix::fromArray($minus, false), $y)) / (2 * $epsilon);
+
+                $this->assertEqualsWithDelta($numeric, $gradient[$i][$j], 1e-6);
+            }
+        }
     }
 }

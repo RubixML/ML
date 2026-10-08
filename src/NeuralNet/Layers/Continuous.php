@@ -8,6 +8,8 @@ use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Continuous
@@ -41,6 +43,10 @@ class Continuous implements Output
      */
     public function __construct(?RegressionLoss $costFn = null)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         $this->costFn = $costFn ?? new LeastSquares();
     }
 
@@ -131,7 +137,7 @@ class Continuous implements Output
     public function gradient(Matrix $x, Matrix $y) : Matrix
     {
         return $this->costFn->differentiate($x, $y)
-            ->divide($x->n());
+            ->divideScalar($y->size());
     }
 
     /**

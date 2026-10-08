@@ -45,6 +45,46 @@ class ColumnPickerTest extends TestCase
     }
 
     #[Test]
+    public function extractWithIntegerKeys() : void
+    {
+        $iterable = (function () {
+            yield [0 => 'nice', 1 => 'furry', 2 => 'not monster', 3 => '4'];
+            yield [0 => 'mean', 1 => 'furry', 2 => 'monster', 3 => '-1.5'];
+        })();
+
+        $extractor = new ColumnPicker($iterable, [2, 0, 1, 3]);
+
+        $expected = [
+            [0 => 'not monster', 1 => 'nice', 2 => 'furry', 3 => '4'],
+            [0 => 'monster', 1 => 'mean', 2 => 'furry', 3 => '-1.5'],
+        ];
+
+        $records = iterator_to_array($extractor, false);
+
+        $this->assertEquals($expected, $records);
+        $this->assertTrue(array_is_list($records[0]));
+    }
+
+    #[Test]
+    public function extractWithNonContiguousIntegerKeys() : void
+    {
+        $iterable = (function () {
+            yield [0 => 'a', 1 => 'b', 2 => 'c', 3 => 'd'];
+        })();
+
+        $extractor = new ColumnPicker($iterable, [0, 3]);
+
+        $expected = [
+            [0 => 'a', 1 => 'd'],
+        ];
+
+        $records = iterator_to_array($extractor, false);
+
+        $this->assertEquals($expected, $records);
+        $this->assertTrue(array_is_list($records[0]));
+    }
+
+    #[Test]
     public function extractNullColumn() : void
     {
         $iterable = (function () {

@@ -7,7 +7,6 @@ use Tensor\ColumnVector;
 use Rubix\ML\Verbose;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Iterative;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -16,7 +15,10 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Set;
 use Generator;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
+use function Rubix\ML\warn;
 use function count;
 
 use const Rubix\ML\EPSILON;
@@ -44,7 +46,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Transformer, Iterative, Verbose
+class TSNE implements Transformer, Verbose
 {
     use LoggerAware;
 
@@ -126,13 +128,6 @@ class TSNE implements Transformer, Iterative, Verbose
     protected int $dofs;
 
     /**
-     * The precomputed c factor of the gradient computation.
-     *
-     * @var float
-     */
-    protected float $c;
-
-    /**
      * The learning rate that controls the global step size.
      *
      * @var float
@@ -169,13 +164,6 @@ class TSNE implements Transformer, Iterative, Verbose
     protected int $epochs;
 
     /**
-     * The number of epochs that are considered to be in the early training stage.
-     *
-     * @var int
-     */
-    protected int $early;
-
-    /**
      * The minimum norm of the gradient necessary to continue embedding.
      *
      * @var float
@@ -183,11 +171,33 @@ class TSNE implements Transformer, Iterative, Verbose
     protected float $minGradient;
 
     /**
+     * The number of epochs to wait between evaluations of the cost function.
+     *
+     * @var positive-int
+     */
+    protected int $evalInterval;
+
+    /**
+     * The number of consecutive cost evaluations without improving
+     * on the best cost observed before early stopping.
+     *
+     * @var int<0,max>
+     */
+    protected int $window;
+
+    /**
      * The distance metric used to measure distances between samples in both high and low dimensions.
      *
      * @var Distance
      */
     protected Distance $kernel;
+
+    /**
+     * The norm of the gradient at each epoch from the last embedding.
+     *
+     * @var float[]|null
+     */
+    protected ?array $norms = null;
 
     /**
      * The loss at each epoch from the last embedding.
@@ -203,6 +213,8 @@ class TSNE implements Transformer, Iterative, Verbose
      * @param float $exaggeration
      * @param int $epochs
      * @param float $minGradient
+     * @param int $evalInterval
+     * @param int $window
      * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
@@ -213,8 +225,19 @@ class TSNE implements Transformer, Iterative, Verbose
         float $exaggeration = 12.0,
         int $epochs = 1000,
         float $minGradient = 1e-7,
+        int $evalInterval = 50,
+        int $window = 5,
         ?Distance $kernel = null
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Dimensions must be'
                 . " greater than 0, $dimensions given.");
@@ -245,6 +268,16 @@ class TSNE implements Transformer, Iterative, Verbose
                 . " greater than 0, $minGradient given.");
         }
 
+        if ($evalInterval < 1) {
+            throw new InvalidArgumentException('Evaluation interval must be'
+                . " greater than 0, $evalInterval given.");
+        }
+
+        if ($window < 0) {
+            throw new InvalidArgumentException('Window must be'
+                . " greater than or equal to 0, $window given.");
+        }
+
         if (isset($kernel) and !$kernel instanceof Symmetric) {
             throw new InvalidArgumentException('Kernel must implement the Symmetric interface.');
         }
@@ -253,14 +286,14 @@ class TSNE implements Transformer, Iterative, Verbose
 
         $this->dimensions = $dimensions;
         $this->dofs = $dofs;
-        $this->c = 2.0 * (1.0 + $dofs) / $dofs;
         $this->rate = $rate;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->epochs = $epochs;
-        $this->early = min(self::MAX_EARLY_EPOCHS, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
+        $this->evalInterval = $evalInterval;
+        $this->window = $window;
         $this->kernel = $kernel ?? new Euclidean();
     }
 
@@ -283,20 +316,31 @@ class TSNE implements Transformer, Iterative, Verbose
      */
     public function progress() : Generator
     {
-        if (!$this->losses) {
+        if (!$this->norms) {
             return;
         }
 
-        foreach ($this->losses as $epoch => $loss) {
+        foreach ($this->norms as $epoch => $norm) {
             yield [
                 'Epoch' => $epoch,
-                'KL Divergence' => $loss,
+                'Gradient Norm' => $norm,
+                'KL Divergence' => $this->losses[$epoch] ?? null,
             ];
         }
     }
 
     /**
      * Return the magnitudes of the gradient at each epoch from the last embedding.
+     *
+     * @return float[]|null
+     */
+    public function norms() : ?array
+    {
+        return $this->norms;
+    }
+
+    /**
+     * Return the KL divergence at each epoch from the last embedding.
      *
      * @return float[]|null
      */
@@ -314,14 +358,16 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         SamplesAreCompatibleWithTransformer::with(new Unlabeled($samples), $this)->check();
 
-        if ($this->logger) {
-            $this->logger->info('Computing high-dimensional affinities');
-        }
-
         $m = count($samples);
 
         if ($m === 0) {
             return;
+        }
+
+        if ($this->logger) {
+            $this->logger->info("Embedding {$this}");
+
+            $this->logger->info('Computing high-dimensional affinities');
         }
 
         $distances = $this->pairwiseDistances($samples)->square();
@@ -337,7 +383,12 @@ class TSNE implements Transformer, Iterative, Verbose
 
         $momentum = self::INIT_MOMENTUM;
 
-        $this->losses = [];
+        $maxEarlyEpochs = min(self::MAX_EARLY_EPOCHS, (int) round($this->epochs / 4));
+
+        $this->norms = $this->losses = [];
+
+        $bestLoss = INF;
+        $numWorseEvals = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
             $squared = $this->pairwiseDistances($y->asArray())->square();
@@ -352,22 +403,18 @@ class TSNE implements Transformer, Iterative, Verbose
 
             unset($row);
 
-            $gradient = $gradient->multiply(Matrix::quick($gains));
+            $gradient = $gradient->multiply(Matrix::fromArray($gains, false));
 
             $velocity = $velocity->multiply($momentum)
                 ->subtract($gradient->multiply($this->rate));
 
             $y = $y->add($velocity);
 
-            $loss = $gradient->l2Norm();
+            $norm = $gradient->l2Norm();
 
-            $this->losses[] = $loss;
+            $this->norms[$epoch] = $norm;
 
-            if ($this->logger) {
-                $this->logger->info("Epoch: $epoch, Gradient: $loss");
-            }
-
-            if (is_nan($loss)) {
+            if (is_nan($norm)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
@@ -375,11 +422,53 @@ class TSNE implements Transformer, Iterative, Verbose
                 break;
             }
 
-            if ($loss < $this->minGradient) {
+            $evalThisEpoch = $epoch % $this->evalInterval === 0;
+
+            if ($evalThisEpoch) {
+                $loss = $this->klDivergence($p, $squared);
+
+                $this->losses[$epoch] = $loss;
+            }
+
+            if ($this->logger) {
+                $message = "Epoch: $epoch, Gradient: $norm";
+
+                if ($evalThisEpoch) {
+                    $message .= ", KL Divergence: {$this->losses[$epoch]}";
+                }
+
+                $this->logger->info($message);
+            }
+
+            if ($evalThisEpoch) {
+                if ($loss < $bestLoss) {
+                    $bestLoss = $loss;
+
+                    $numWorseEvals = 0;
+                } else {
+                    ++$numWorseEvals;
+                }
+
+                if ($this->window and $numWorseEvals >= $this->window) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
+                    }
+
+                    break;
+                }
+            }
+
+            if ($norm < $this->minGradient) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, gradient below '
+                        . "minimum of {$this->minGradient}");
+                }
+
                 break;
             }
 
-            if ($epoch === $this->early) {
+            if ($epoch === $maxEarlyEpochs) {
                 $p = $p->divide($this->exaggeration);
 
                 $momentum += self::MOMENTUM_BOOST;
@@ -418,7 +507,7 @@ class TSNE implements Transformer, Iterative, Verbose
             }
         }
 
-        return Matrix::quick($distances);
+        return Matrix::fromArray($distances, false);
     }
 
     /**
@@ -434,7 +523,7 @@ class TSNE implements Transformer, Iterative, Verbose
         $m = $distances->m();
 
         if ($m === 0) {
-            return Matrix::quick([]);
+            return Matrix::fromArray([], false);
         }
 
         $mask = Matrix::ones($m, $m)
@@ -455,7 +544,7 @@ class TSNE implements Transformer, Iterative, Verbose
                 break;
             }
 
-            $candidate = $distances->multiplyColumnVector(ColumnVector::quick($betas))
+            $candidate = $distances->multiplyColumnVector(ColumnVector::fromArray($betas, false))
                 ->negate()
                 ->exp()
                 ->multiply($mask);
@@ -466,7 +555,7 @@ class TSNE implements Transformer, Iterative, Verbose
 
             $candidate = $candidate->divideColumnVector($sigma);
 
-            $dcb = $distances->multiply($candidate)->sum()->multiply(ColumnVector::quick($betas));
+            $dcb = $distances->multiply($candidate)->sum()->multiply(ColumnVector::fromArray($betas, false));
 
             $diff = $sigma->log()
                 ->add($dcb)
@@ -524,19 +613,52 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         $base = $distances->divide($this->dofs)->add(1.0);
 
-        $kernel = $base->pow((1.0 + $this->dofs) / -2.0);
+        $weights = $base->reciprocal();
 
-        $weights = $base->pow(-1.0);
-
-        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
-
-        $q = $kernel->divide(max($norm, EPSILON));
+        $q = $this->q($distances);
 
         $pqd = $p->subtract($q)->multiply($weights);
 
+        $c = 2.0 * (1.0 + $this->dofs) / $this->dofs;
+
         return $y->multiplyColumnVector($pqd->sum())
             ->subtract($pqd->matmul($y))
-            ->multiplyScalar($this->c);
+            ->multiplyScalar($c);
+    }
+
+    /**
+     * Compute the KL Divergence cost C = sum over i != j of p[i][j] * log(p[i][j] / q[i][j]).
+     *
+     * @param Matrix $p
+     * @param Matrix $distances
+     * @return float
+     */
+    protected function klDivergence(Matrix $p, Matrix $distances) : float
+    {
+        $q = $this->q($distances);
+
+        $safeP = $p->add($p->equalScalar(0.0)->multiplyScalar(EPSILON));
+
+        $ratio = $safeP->divide($q->add(EPSILON));
+
+        return $p->multiply($ratio->log())->sum()->sum();
+    }
+
+    /**
+     * Compute the normalized t-distribution kernel (q) of the pairwise squared distances.
+     *
+     * @param Matrix $distances
+     * @return Matrix
+     */
+    protected function q(Matrix $distances) : Matrix
+    {
+        $base = $distances->divide($this->dofs)->add(1.0);
+
+        $t = $this->studentT($base);
+
+        $norm = $t->sum()->sum() - $t->diagonalAsVector()->sum();
+
+        return $t->divide(max($norm, EPSILON));
     }
 
     /**
@@ -556,6 +678,32 @@ class TSNE implements Transformer, Iterative, Verbose
     }
 
     /**
+     * Compute the unnormalized Student t-distribution kernel raised to the
+     * power of the number of degrees of freedom. For low dimensional
+     * embeddings the exponent reduces to a reciprocal, which is far cheaper
+     * than the generic pow() method.
+     *
+     * @param Matrix $base
+     * @return Matrix
+     */
+    protected function studentT(Matrix $base) : Matrix
+    {
+        if ($this->dofs === 1) {
+            return $base->reciprocal();
+        }
+
+        if ($this->dofs === 2) {
+            return $base->multiply($base->sqrt())->reciprocal();
+        }
+
+        if ($this->dofs === 3) {
+            return $base->square()->reciprocal();
+        }
+
+        return $base->pow((1.0 + $this->dofs) / -2.0);
+    }
+
+    /**
      * Return the string representation of the object.
      *
      * @internal
@@ -571,6 +719,8 @@ class TSNE implements Transformer, Iterative, Verbose
             'exaggeration' => $this->exaggeration,
             'epochs' => $this->epochs,
             'min gradient' => $this->minGradient,
+            'evaluation interval' => $this->evalInterval,
+            'window' => $this->window,
             'kernel' => $this->kernel,
         ]) . ')';
     }

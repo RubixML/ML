@@ -25,6 +25,8 @@ use function array_walk;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  *
+ * @internal
+ *
  * @implements ArrayAccess<int|string, bool>
  * @implements IteratorAggregate<int, int|string>
  */

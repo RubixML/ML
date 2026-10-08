@@ -28,7 +28,9 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
 use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\IncorrectDatasetDimensionality;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
@@ -108,7 +110,6 @@ class MultilayerPerceptronTest extends TestCase
             minChange: 1e-3,
             evalInterval: 3,
             window: 5,
-            holdOut: 0.1,
             costFn: new MulticlassCrossEntropy(),
             metric: new FBeta()
         );
@@ -122,6 +123,37 @@ class MultilayerPerceptronTest extends TestCase
     public function preConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
+    }
+
+    #[Test]
+    public function windowDisabled() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(16),
+                new Activation(new LeakyReLU(0.1)),
+                new Dense(8),
+                new Activation(new SoftPlus()),
+            ],
+            batchSize: 16,
+            optimizer: new Adam(new Constant(0.01)),
+            epochs: 10,
+            minChange: 1e-12,
+            evalInterval: 1,
+            window: 0,
+            costFn: new MulticlassCrossEntropy(),
+            metric: new FBeta()
+        );
+
+        $estimator->setLogger(new BlackHole());
+
+        $training = $this->generator->generate(self::TEST_SIZE);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
     }
 
     #[Test]
@@ -143,7 +175,6 @@ class MultilayerPerceptronTest extends TestCase
             epochs: 5,
             minChange: 1e-6,
             evalInterval: 1,
-            holdOut: 0.1,
             costFn: new MulticlassCrossEntropy(),
             metric: new FBeta()
         );
@@ -237,7 +268,6 @@ class MultilayerPerceptronTest extends TestCase
             'min change' => 1e-3,
             'eval interval' => 3,
             'window' => 5,
-            'hold out' => 0.1,
             'cost fn' => new MulticlassCrossEntropy(),
             'metric' => new FBeta(),
             'gradient accumulation steps' => 1,
@@ -343,8 +373,7 @@ class MultilayerPerceptronTest extends TestCase
             ],
             batchSize: 32,
             optimizer: new Adam($scheduler),
-            epochs: 5,
-            holdOut: 0.0
+            epochs: 5
         );
 
         $estimator->setLogger(new BlackHole());
@@ -410,5 +439,193 @@ class MultilayerPerceptronTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset enables progress monitoring and early stopping')]
+    public function injectedValidationDatasetEnablesScoring() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertEmpty($estimator->scores());
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertNotEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Training does not mutate the labels of the given dataset')]
+    public function trainingDoesNotMutateGivenDataset() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $labels = $training->labels();
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertSame($labels, $training->labels());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset is retained across partial training')]
+    public function injectedValidationDatasetIsRetainedAcrossPartialTraining() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training->fold(2)[0]);
+
+        $this->assertNotEmpty($estimator->scores());
+
+        $estimator->partial($training->fold(2)[1]);
+
+        $this->assertNotEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset is not persisted')]
+    public function injectedValidationDatasetIsNotPersisted() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training);
+
+        $serialized = $estimator->__serialize();
+
+        $this->assertArrayNotHasKey('validationDataset', $serialized);
+
+        $copy = unserialize(serialize($estimator));
+
+        $this->assertTrue($copy->trained());
+        $this->assertArrayNotHasKey('validationDataset', $copy->__serialize());
+    }
+
+    #[Test]
+    #[TestDox('Null injected validation dataset disables progress monitoring and early stopping')]
+    public function nullInjectedValidationDatasetDisablesScoring() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+        $estimator->setValidationDataset(null);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset must not be empty')]
+    public function injectedValidationDatasetRejectsEmptyDataset() : void
+    {
+        $this->expectException(EmptyDataset::class);
+
+        $this->estimator->setValidationDataset(Labeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset must match the training dimensionality')]
+    public function injectedValidationDatasetRejectsMismatchedDimensionality() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $validation = Labeled::quick(
+            samples: [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
+            labels: ['inner', 'inner']
+        );
+
+        $this->estimator->setValidationDataset($validation);
+
+        $this->expectException(IncorrectDatasetDimensionality::class);
+
+        $this->estimator->train($training);
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset rejects labels unknown to the classifier')]
+    public function injectedValidationDatasetRejectsUnknownLabels() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $validation = Labeled::quick(
+            samples: [[1.0, 2.0], [3.0, 4.0]],
+            labels: ['purple', 'purple']
+        );
+
+        $this->estimator->setValidationDataset($validation);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/unknown to this classifier/');
+
+        $this->estimator->train($training);
+    }
+
+    /**
+     * Build an estimator with a small epoch budget.
+     *
+     * @return MultilayerPerceptron
+     */
+    private function buildEstimator() : MultilayerPerceptron
+    {
+        return new MultilayerPerceptron(
+            hiddenLayers: [
+                new Dense(8),
+                new Activation(new LeakyReLU(0.1)),
+            ],
+            batchSize: 32,
+            optimizer: new Adam(new Constant(0.001)),
+            epochs: 10,
+            minChange: 0.0,
+            evalInterval: 1,
+            window: 0,
+            costFn: new MulticlassCrossEntropy(),
+            metric: new FBeta()
+        );
     }
 }

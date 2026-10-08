@@ -29,7 +29,10 @@ class BinaryCrossEntropy implements ClassificationLoss
     /**
      * Compute the loss score.
      *
-     * L(y, ŷ) = -Σ(y * log(ŷ) + (1 - y) * log(1 - ŷ)) / n
+     * The loss is the mean binary cross entropy over all elements of the matrix,
+     * where m is the number of output nodes and n is the number of samples.
+     *
+     * L(y, ŷ) = -Σ(y * log(ŷ) + (1 - y) * log(1 - ŷ)) / (m * n)
      *
      * @param Matrix $z
      * @param Matrix $y
@@ -56,6 +59,11 @@ class BinaryCrossEntropy implements ClassificationLoss
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
+     *
+     * The returned gradient is unnormalized. Scaling it by 1 / (m * n) yields the
+     * derivative of the loss score returned by compute(). Note that this expects
+     * the output in probability space; the Binary layer folds its Sigmoid into the
+     * gradient instead and works directly in logit space.
      *
      * ∂L/∂ŷ = (ŷ - y) / (ŷ * (1 - ŷ))
      *

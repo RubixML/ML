@@ -6,7 +6,7 @@ Converts all the characters in a blob of text to the same case.
 
 **Interfaces:** [Transformer](api.md#transformer)
 
-**Data Type Compatibility:** Categorical
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 !!! note
     This transformer does not handle multibyte strings. For multibyte support, see [MultibyteTextNormalizer](multibyte-text-normalizer.md).

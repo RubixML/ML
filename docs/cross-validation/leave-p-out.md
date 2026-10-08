@@ -2,7 +2,7 @@
 
 # Leave P Out
 
-Leave P Out tests a learner with a unique holdout set of size p for each iteration until all samples have been tested. Although Leave P Out can take long with large datasets and small values of p, it is especially suited for small datasets.
+Leave P Out tests a learner with a unique holdout set of size p for each iteration. Although Leave P Out can take long with large datasets and small values of p, it is especially suited for small datasets.
 
 **Interfaces:** [Validator](api.md#validator), [Parallel](../parallel.md)
 

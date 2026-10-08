@@ -11,6 +11,8 @@ use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use const Rubix\ML\EPSILON;
 
@@ -113,6 +115,10 @@ class BatchNorm implements Hidden, Parametric
         ?Initializer $betaInitializer = null,
         ?Initializer $gammaInitializer = null
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
+        }
+
         if ($decay < 0.0 or $decay > 1.0) {
             throw new InvalidArgumentException('Decay must be'
                 . " between 0 and 1, $decay given.");
@@ -177,8 +183,8 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $mean = $x->mean();
-        $variance = $x->subtractColumnVector($mean)->square()->mean()->clipLower(EPSILON);
-        $stdInv = $variance->sqrt()->reciprocal();
+        $variance = $x->variance($mean)->clipLower(EPSILON);
+        $stdInv = $variance->rsqrt();
 
         $xHat = $stdInv->multiply($x->subtract($mean));
 
@@ -216,7 +222,7 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $xHat = $x->subtract($this->mean)
-            ->divide($this->variance->sqrt());
+            ->multiply($this->variance->rsqrt());
 
         return $this->gamma->param()->multiply($xHat)
             ->add($this->beta->param());

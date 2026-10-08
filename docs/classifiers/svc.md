@@ -19,7 +19,7 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 | 2 | kernel | RBF | Kernel | The kernel function used to operate in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
-| 5 | cache size | 100.0 | float | The size of the kernel cache in MB. |
+| 5 | cacheSize | 100.0 | float | The size of the kernel cache in MB. |
 
 ## Example
 

@@ -48,19 +48,19 @@ class HoldOut implements Validator
     /**
      * Test the estimator with the supplied dataset and return a validation score.
      *
-     * @param Learner $estimator
+     * @param Learner & Estimator $estimator
      * @param Labeled $dataset
      * @param Metric $metric
      * @throws RuntimeException
      * @return float
      */
-    public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
+    public function test(Learner & Estimator $estimator, Labeled $dataset, Metric $metric) : float
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
         [$testing, $training] = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedSplit($this->ratio)
-            : $dataset->randomize()->split($this->ratio);
+            : $dataset->binnedSplit($this->ratio);
 
         if ($testing->empty()) {
             throw new RuntimeException('Dataset does not contain'

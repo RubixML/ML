@@ -22,6 +22,8 @@ use function implode;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  *
+ * @internal
+ *
  * @implements ArrayAccess<int, mixed>
  * @implements IteratorAggregate<int, mixed>
  */

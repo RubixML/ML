@@ -3,6 +3,7 @@
 namespace Rubix\ML\Benchmarks\Datasets;
 
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Datasets\Labeled;
 
@@ -19,6 +20,11 @@ class SplittingBench
      */
     protected Labeled $dataset;
 
+    /**
+     * @var Labeled
+     */
+    protected Labeled $regression;
+
     public function setUp() : void
     {
         $generator = new Agglomerate([
@@ -28,6 +34,8 @@ class SplittingBench
         ]);
 
         $this->dataset = $generator->generate(self::DATASET_SIZE);
+
+        $this->regression = (new Hyperplane(noise: 0.5))->generate(self::DATASET_SIZE);
     }
 
     /**
@@ -38,5 +46,25 @@ class SplittingBench
     public function splitByFeature() : void
     {
         $this->dataset->splitByFeature(2, 3.0);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function binnedSplit() : void
+    {
+        $this->regression->binnedSplit(0.2, 10);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function binnedFold() : void
+    {
+        $this->regression->binnedFold(5, 10);
     }
 }

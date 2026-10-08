@@ -63,7 +63,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * The base learner.
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * The number of base learners to train in the ensemble.
@@ -78,19 +78,19 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     /**
      * The ensemble of estimators.
      *
-     * @var list<Learner>
+     * @var list<Learner & Estimator>
      */
     protected array $ensemble = [
         //
     ];
 
     /**
-     * @param Learner $base
+     * @param Learner & Estimator $base
      * @param int $estimators
      * @param float $ratio
      * @throws InvalidArgumentException
      */
-    public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
+    public function __construct(Learner & Estimator $base, int $estimators = 10, float $ratio = 0.5)
     {
         if (!in_array($base->type()->code(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
@@ -261,7 +261,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             $this->backend()->enqueue($task);
         }
 
-        /** @var list<Learner> $process */
+        /** @var list<Learner & Estimator> $process */
         $process = $this->backend()->process();
         $this->ensemble = $process;
     }

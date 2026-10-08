@@ -12,16 +12,16 @@
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | estimators | 100 | int | The number of projection/histogram pairs in the ensemble. |
-| 2 | bins | null | int | The number of equi-width bins for each histogram. If null then will estimate bin count. |
-| 3 | contamination | 0.1 | float | The proportion of outliers that are assumed to be present in the training set. |
+| 1 | contamination | 0.1 | float | The proportion of outliers that are assumed to be present in the training set. |
+| 2 | estimators | 100 | int | The number of projection/histogram pairs in the ensemble. |
+| 3 | bins | null | int | The number of equi-width bins for each histogram. If null then will estimate bin count. |
 
 ## Example
 
 ```php
 use Rubix\ML\AnomalyDetectors\Loda;
 
-$estimator = new Loda(250, 8, 0.01);
+$estimator = new Loda(0.01, 250, 8);
 ```
 
 ## Additional Methods

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
@@ -27,6 +26,7 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
@@ -37,6 +37,8 @@ use function get_class;
 use function in_array;
 use function array_map;
 use function array_slice;
+use function array_diff;
+use function implode;
 use function array_fill;
 use function array_flip;
 use function round;
@@ -63,7 +65,7 @@ use function get_object_vars;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksFeatures, Verbose, Persistable
+class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -87,9 +89,9 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     /**
      * The regressor used to fix up error residuals.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $booster;
+    protected Learner & Estimator $booster;
 
     /**
      * The learning rate of the ensemble i.e. the *shrinkage* applied to each step.
@@ -120,7 +122,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     protected float $minChange;
 
     /**
-     * The number of epochs to train before evaluating the model with the holdout set.
+     * The number of epochs to train before evaluating the model with the validation set.
      *
      * @var int
      */
@@ -129,16 +131,17 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     /**
      * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
-     * @var positive-int
+     * @var int<0,max>
      */
     protected int $window;
 
     /**
-     * The proportion of training samples to use for validation and progress monitoring.
+     * The dataset used to score the model during training. When null, progress
+     * monitoring and early stopping are disabled.
      *
-     * @var float
+     * @var Labeled|null
      */
-    protected float $holdOut;
+    protected ?Labeled $validation = null;
 
     /**
      * The metric used to score the generalization performance of the model during training.
@@ -183,26 +186,24 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     protected ?int $featureCount = null;
 
     /**
-     * @param Learner|null $booster
+     * @param (Learner & Estimator)|null $booster
      * @param float $rate
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
-     * @param float $holdOut
      * @param Metric|null $metric
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ?Learner $booster = null,
+        (Learner & Estimator)|null $booster = null,
         float $rate = 0.1,
         float $ratio = 0.5,
         int $epochs = 1000,
         float $minChange = 1e-5,
         int $evalInterval = 3,
         int $window = 5,
-        float $holdOut = 0.1,
         ?Metric $metric = null
     ) {
         if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
@@ -235,14 +236,9 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                 . " greater than 0, $evalInterval given.");
         }
 
-        if ($window < 1) {
+        if ($window < 0) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
-        }
-
-        if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be'
-                . " between 0 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
@@ -256,7 +252,6 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
         $this->window = $window;
-        $this->holdOut = $holdOut;
         $this->metric = $metric ?? new FBeta();
     }
 
@@ -301,7 +296,6 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
             'window' => $this->window,
-            'hold out' => $this->holdOut,
             'metric' => $this->metric,
         ];
     }
@@ -359,6 +353,24 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     }
 
     /**
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
+     *
+     * @param Labeled|null $dataset
+     * @throws EmptyDataset
+     */
+    public function setValidationDataset(?Labeled $dataset) : void
+    {
+        if (isset($dataset)) {
+            DatasetIsNotEmpty::with($dataset)->check();
+        }
+
+        $this->validation = $dataset;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -384,40 +396,56 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
             $this->logger->info("Training $this");
         }
 
-        [$testing, $training] = $dataset->stratifiedSplit($this->holdOut);
+        $this->classes = $classes;
+
+        if (isset($this->validation)) {
+            SpecificationChain::with([
+                new DatasetHasDimensionality($this->validation, $dataset->numFeatures()),
+            ])->check();
+
+            $unknown = array_diff($this->validation->possibleOutcomes(), $this->classes);
+
+            if ($unknown) {
+                throw new InvalidArgumentException('Validation dataset contains labels'
+                    . ' that are unknown to this classifier: '
+                    . implode(', ', $unknown) . '.');
+            }
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
+        }
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
-        [$m, $n] = $training->shape();
+        [$m, $n] = $dataset->shape();
 
         $classMap = array_flip($classes);
 
         $targets = [];
 
-        foreach ($training->labels() as $label) {
+        foreach ($dataset->labels() as $label) {
             $targets[] = (float) $classMap[$label];
         }
 
         $z = array_fill(0, $m, 0.0);
         $out = array_fill(0, $m, 0.5);
 
-        if (!$testing->empty()) {
-            $zTest = array_fill(0, $testing->numSamples(), 0.0);
-        } elseif ($this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
+        if (isset($this->validation)) {
+            $zTest = array_fill(0, $this->validation->numSamples(), 0.0);
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
 
         $weights = array_fill(0, $m, 1.0 / $m);
 
-        $this->classes = $classes;
         $this->featureCount = $n;
         $this->boosters = $this->scores = $this->losses = [];
 
         $bestScore = $minScore;
-        $bestEpoch = $numWorseEpochs = 0;
+        $bestEpoch = $numWorseEvals = 0;
+        $bestSize = 0;
         $score = null;
         $prevLoss = INF;
 
@@ -439,7 +467,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
             $this->losses[$epoch] = $loss;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep and isset($zTest)) {
                 $predictions = [];
@@ -448,7 +476,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
                     $predictions[] = $value < 0.0 ? $classes[0] : $classes[1];
                 }
 
-                $score = $this->metric->score($predictions, $testing->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -465,30 +493,46 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
             if ($evalThisStep) {
                 if ($score >= $maxScore) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, maximum '
+                            . "{$this->metric} score reached");
+                    }
+
                     break;
                 }
 
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestEpoch = $epoch;
+                    $bestSize = count($this->boosters);
 
-                    $numWorseEpochs = 0;
+                    $numWorseEvals = 0;
                 } else {
-                    ++$numWorseEpochs;
+                    ++$numWorseEvals;
                 }
 
-                if ($numWorseEpochs >= $this->window) {
+                if ($this->window and $numWorseEvals >= $this->window) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
+                    }
+
                     break;
                 }
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 
-            $training = Labeled::quick($training->samples(), $gradient);
+            $dataset = Labeled::quick($dataset->samples(), $gradient);
 
-            $subset = $training->randomWeightedSubsetWithReplacement($p, $weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $weights);
 
             $booster = clone $this->booster;
 
@@ -496,13 +540,13 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
 
             $this->boosters[] = $booster;
 
-            $predictions = $booster->predict($training);
+            $predictions = $booster->predict($dataset);
 
             $z = array_map([$this, 'updateZ'], $predictions, $z);
             $out = array_map('Rubix\ML\sigmoid', $z);
 
             if (isset($zTest)) {
-                $predictions = $booster->predict($testing);
+                $predictions = $booster->predict($this->validation);
 
                 $zTest = array_map([$this, 'updateZ'], $predictions, $zTest);
             }
@@ -515,8 +559,8 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
         if ($this->scores) {
             $lastScore = $this->scores[array_key_last($this->scores)];
 
-            if ($lastScore < $bestScore) {
-                $this->boosters = array_slice($this->boosters, 0, $bestEpoch);
+            if ($lastScore <= $bestScore) {
+                $this->boosters = array_slice($this->boosters, 0, $bestSize);
 
                 if ($this->logger) {
                     $this->logger->info("Ensemble state restored to epoch $bestEpoch");
@@ -681,7 +725,7 @@ class LogitBoost implements Estimator, Learner, Iterative, Probabilistic, RanksF
     {
         $properties = get_object_vars($this);
 
-        unset($properties['losses'], $properties['scores'], $properties['logger']);
+        unset($properties['losses'], $properties['scores'], $properties['logger'], $properties['validation']);
 
         return $properties;
     }

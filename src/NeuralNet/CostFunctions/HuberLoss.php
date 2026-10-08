@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Tensor\Matrix;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Huber Loss
@@ -41,6 +43,10 @@ class HuberLoss implements RegressionLoss
      */
     public function __construct(float $alpha = 0.9)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
+        }
+
         if ($alpha <= 0.0) {
             throw new InvalidArgumentException('Alpha must be greater than'
                 . " 0, $alpha given.");
@@ -53,6 +59,13 @@ class HuberLoss implements RegressionLoss
     /**
      * Compute the loss score.
      *
+     * The loss is the mean pseudo Huber loss over all elements of the matrix, where
+     * m is the number of output nodes, n is the number of samples, and e = ŷ - y.
+     * Unlike the piecewise Huber loss, this formulation is smooth everywhere and
+     * approximates L1 as e grows beyond alpha and L2 near the minimum.
+     *
+     * L(y, ŷ) = Σα²(√(1 + (e / α)²) - 1) / (m * n)
+     *
      * @internal
      *
      * @param Matrix $z
@@ -61,11 +74,24 @@ class HuberLoss implements RegressionLoss
      */
     public function compute(Matrix $z, Matrix $y) : float
     {
-        return $y->subtract($z)->map([$this, '_compute'])->mean()->mean();
+        return $y->subtract($z)
+            ->divideScalar($this->alpha)
+            ->square()
+            ->addScalar(1.0)
+            ->sqrt()
+            ->subtractScalar(1.0)
+            ->multiplyScalar($this->alpha2)
+            ->mean()
+            ->mean();
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
+     *
+     * The returned gradient is unnormalized. Scaling it by 1 / (m * n) yields the
+     * derivative of the loss score returned by compute().
+     *
+     * ∂L/∂ŷ = α * (ŷ - y) / √(α² + (ŷ - y)²)
      *
      * @internal
      *
@@ -78,19 +104,10 @@ class HuberLoss implements RegressionLoss
         $beta = $z->subtract($y);
 
         return $beta->square()
-            ->add($this->alpha2)
-            ->pow(-0.5)
+            ->addScalar($this->alpha2)
+            ->rsqrt()
             ->multiply($beta)
-            ->multiply($this->alpha);
-    }
-
-    /**
-     * @param float $z
-     * @return float
-     */
-    public function _compute(float $z) : float
-    {
-        return $this->alpha2 * (sqrt(1.0 + ($z / $this->alpha) ** 2) - 1.0);
+            ->multiplyScalar($this->alpha);
     }
 
     /**

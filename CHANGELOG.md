@@ -1,7 +1,14 @@
 # Changelog
 
+- 3.1.0
+    - Added K-medoids clusterer
+    - Added `ARFF` and `Shuffler` extractors
+    - Added `Ramp` and `Cosine` learning rate Schedulers
+    - Added `Color Jitter` and `Image Flipper` transformers
+
 - 3.0.0
     - Integers are now considered a categorical data type
+    - Updated to Tensor API version 4.1
     - `K Nearest Neighbors` and `KNN Regressor` inference is now parallelized
     - `Isolation Forest` training and inference is now parallelized
     - Added disk-based streaming neural network snapshotting
@@ -39,7 +46,7 @@
     - `Filesystem` Persister now does atomic writes
     - Added cleanup() method to remove neural network residual state
     - Murmur3 new default Token Hashing Vectorizer hash function
-    - Dataset fold() now returns excess samples in last fold
+    - Dataset fold() now distributes excess samples over all folds
     - Increase default Decision Tree max leaf node size from 3 to 5
     - Canonicalized `He` initializer
     - `Xavier 2` now extends `He` as a deprecated alias
@@ -54,13 +61,28 @@
     - Add Dataset chunked() factory for online training
     - Added L1 penalty to `Dense` layers
     - `Adaline`, `Logistic Regression`, `Softmax Classifier` now elastic net
-    - Added Iterative interface with progress() method
+    - Added `Iterative` interface with progress() method
     - Iterative Learners renamed steps() method to progress()
     - Changed default gradient-based `minChange` from 1e-4 to 1e-5
     - `Prior` is now default `Strategy` of `Missing Data Imputer`
     - `DBSCAN` is now a `Learner`, `Probabilistic` and `Persistable`
     - `Grid Search` now has a fromNamedParams() factory method
     - `Grid Search` now generates a results() table
+    - Can now disable windowed early-stopping completely with window = 0
+    - TSNE now has KL Divergence loss evaluation and early stopping
+    - Added `binnedSplit()`, `binnedFold()`, and `stratifyByLabelBins()`
+    - `stratifiedSplit()` and `stratifiedFold()` now throw on continuous labels
+    - Validators and regressors now stratify continuous labels by bin
+    - Image Rotator `offset` is now optional and default `jitter` is 0.2
+    - Added `fillColor` parameter to Image Rotator
+    - Remove `holdOut` paramereter from Learners with validation set
+    - Added `setValidationDataset()` method to Learners with validation set
+    - `Pipeline` is now a Transformer decorator
+    - Added `PersistentTransformer` decorator
+    - Removed Trainable interface, API transferred to Learner interface
+    - `GridSearch` now has a setup() hook before each iteration
+    - `GELU` now uses exact formula instead of the tanh approximation
+    - Fix TruncatedSVD lossiness value
     
 - 2.6.0
     - PCA, SVD, and LDA now work without Tensor extension
@@ -74,7 +96,7 @@
     - Optimize Dataset validation
     - Fix AdaBoost early stopping with dropped learners
     - Fix Report and Tuple null values
-    - Fix Random Projector mangitudes
+    - Fix Random Projector magnitudes
     - Prevent division by zero in Sparse Random Projector
 
 - 2.5.13

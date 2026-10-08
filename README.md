@@ -9,6 +9,23 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **Support** for ETL, preprocessing, and cross-validation.
 - **Open source** and free to use commercially.
 
+## Requirements
+
+- [PHP](https://php.net/manual/en/install.php) 8.3 or above.
+
+### Recommended
+
+- [Tensor Ext 4.1+](https://github.com/RubixML/Tensor-Ext) for fast Matrix/Vector computing.
+
+### Optional
+
+- [Swoole extension](https://openswoole.com/) for fast multiprocessing support.
+- [GD extension](https://php.net/manual/en/book.image.php) for image support.
+- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
+- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).
+- [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support.
+- [GraphViz](https://graphviz.org/) for graph visualization.
+
 ## Installation
 
 Install Rubix ML into your project using [Composer](https://getcomposer.org/):
@@ -17,22 +34,19 @@ Install Rubix ML into your project using [Composer](https://getcomposer.org/):
 composer require rubix/ml
 ```
 
-### Requirements
+### Optional for best performance
 
-- [PHP](https://php.net/manual/en/install.php) 8.3 or above.
+Make sure you have all the necessary build tools installed such as a C compiler and make tools. For example, on an Ubuntu linux system you can enter the following on the command line to install the necessary dependencies.
 
-#### Recommended
+```sh
+sudo apt-get install make gcc gfortran php-dev libopenblas-dev liblapacke-dev re2c build-essential
+```
 
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
-- [Swoole extension](https://openswoole.com/) for multiprocessing support.
+Compile and install the Tensor 4.1+ extension using [PIE](https://github.com/php/pie):
 
-#### Optional
-
-- [GD extension](https://php.net/manual/en/book.image.php) for image support.
-- [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
-- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm).
-- [PDO extension](https://www.php.net/manual/en/book.pdo.php) for relational database support.
-- [GraphViz](https://graphviz.org/) for graph visualization.
+```sh
+pie install rubix/tensor_ext:^4.1
+```
 
 ## Documentation
 

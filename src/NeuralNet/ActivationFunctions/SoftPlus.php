@@ -3,8 +3,9 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
-
-use function exp;
+use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Soft Plus
@@ -22,6 +23,16 @@ use function exp;
 class SoftPlus implements ActivationFunction
 {
     /**
+     * @throws RuntimeException
+     */
+    public function __construct()
+    {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
+        }
+    }
+
+    /**
      * Compute the activation.
      *
      * @internal
@@ -31,7 +42,7 @@ class SoftPlus implements ActivationFunction
      */
     public function activate(Matrix $x) : Matrix
     {
-        return $x->map('Rubix\ML\softplus');
+        return $x->softplus();
     }
 
     /**
@@ -45,18 +56,7 @@ class SoftPlus implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->map([$this, '_differentiate']);
-    }
-
-    /**
-     * @internal
-     *
-     * @param float $x
-     * @return float
-     */
-    public function _differentiate(float $x) : float
-    {
-        return 1.0 / (1.0 + exp(-$x));
+        return $x->sigmoid();
     }
 
     /**

@@ -19,11 +19,14 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function Rubix\ML\minmax;
 use function count;
 use function is_null;
 use function array_fill;
+use function Rubix\ML\warn;
 use function round;
 use function max;
 use function log;
@@ -151,6 +154,15 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
      */
     public function __construct(float $contamination = 0.1, int $estimators = 100, ?int $bins = null)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if ($contamination < 0.0 or $contamination > 0.5) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
@@ -251,10 +263,12 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             $this->r = $this->r->multiply($mask);
         }
 
-        $projections = Matrix::quick($dataset->samples())
+        $projections = Matrix::fromArray($dataset->samples(), false)
             ->matmul($this->r)
             ->transpose()
             ->asArray();
+
+        $histograms = [];
 
         foreach ($projections as $values) {
             /** @var non-empty-array<float|int> $values */
@@ -270,9 +284,10 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
                 ++$counts[$index];
             }
 
-            $this->histograms[] = [$min, $width, $counts];
+            $histograms[] = [$min, $width, $counts];
         }
 
+        $this->histograms = $histograms;
         $this->n = $m;
 
         $densities = $this->densities($projections);
@@ -299,7 +314,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
             new DatasetHasDimensionality($dataset, $this->r->m()),
         ])->check();
 
-        $projections = Matrix::quick($dataset->samples())
+        $projections = Matrix::fromArray($dataset->samples(), false)
             ->matmul($this->r)
             ->transpose()
             ->asArray();
@@ -355,7 +370,7 @@ class Loda implements Estimator, Learner, Online, Scoring, Persistable
 
         DatasetHasDimensionality::with($dataset, $this->r->m())->check();
 
-        $projections = Matrix::quick($dataset->samples())
+        $projections = Matrix::fromArray($dataset->samples(), false)
             ->matmul($this->r)
             ->transpose()
             ->asArray();

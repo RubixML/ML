@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['8.4']
+        php-versions: ['8.3', '8.4', '8.5']
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,6 +25,20 @@ jobs:
           tools: composer, pecl
           extensions: svm, mbstring, gd, fileinfo, swoole
           ini-values: memory_limit=-1
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -qq -y gfortran liblapack-dev libopenblas-dev liblapacke-dev unzip build-essential
+
+      - name: Install PIE
+        run: |
+          curl -fL --output /tmp/pie.phar https://github.com/php/pie/releases/latest/download/pie.phar
+          sudo mv /tmp/pie.phar /usr/local/bin/pie
+          sudo chmod +x /usr/local/bin/pie
+
+      - name: Install Extensions
+        run: sudo pie install rubix/tensor_ext:^4.1
 
       - name: Validate composer.json
         run: composer validate

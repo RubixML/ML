@@ -3,7 +3,6 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Online;
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -57,7 +56,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Verbose, Persistable
+class KMeans implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -348,7 +347,6 @@ class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Ve
 
             foreach ($batches as $i => &$batch) {
                 $samples = $batch->samples();
-
                 $labels = $batch->labels();
 
                 foreach ($samples as $j => $sample) {
@@ -378,7 +376,7 @@ class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Ve
 
                 $batch = Labeled::quick($samples, $labels);
 
-                foreach ($batch->stratifyByLabel() as $cluster => $stratum) {
+                foreach ($batch->stratifyByClassLabels() as $cluster => $stratum) {
                     $centroid = &$this->centroids[$cluster];
 
                     $means = array_map([Stats::class, 'mean'], $stratum->features());
@@ -416,6 +414,11 @@ class KMeans implements Estimator, Learner, Iterative, Online, Probabilistic, Ve
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 

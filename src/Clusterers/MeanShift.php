@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Clusterers;
 
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -44,8 +43,8 @@ use const Rubix\ML\EPSILON;
  * Mean Shift
  *
  * A hierarchical clustering algorithm that uses peak finding to locate the candidate centroids of a
- * training set given a radius constraint. Near-duplicate candidates are merged together in a final
- * post-processing step.
+ * training set given a radius constraint. Near-duplicate candidates are merged together in a
+ * pre-processing step of every epoch.
  *
  * References:
  * [1] M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
@@ -55,7 +54,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose, Persistable
+class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -364,38 +363,36 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
 
         $this->losses = [];
 
-        $previous = $centroids;
-
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            foreach ($centroids as $i => &$centroidA) {
-                [$samples, $indices, $distances] = $this->tree->range($centroidA, $this->radius);
+            $centroids = $this->mergeNearDuplicates($centroids);
 
-                if (!empty($samples)) {
-                    $weights = [];
+            $shifted = [];
 
-                    foreach ($distances as $distance) {
-                        $weights[] = exp(-($distance ** 2) / $this->delta);
-                    }
+            foreach ($centroids as $centroid) {
+                [$samples, $indices, $distances] = $this->tree->range($centroid, $this->radius);
 
-                    $weightedMeanFunc = function (array $column) use ($weights) : float {
-                        return Stats::weightedMean($column, $weights);
-                    };
+                if (empty($samples)) {
+                    $shifted[] = $centroid;
 
-                    $centroidA = array_map($weightedMeanFunc, array_transpose($samples));
+                    continue;
                 }
 
-                foreach ($centroids as $j => $centroidB) {
-                    if ($i !== $j) {
-                        $distance = $this->tree->kernel()->compute($centroidA, $centroidB);
+                $weights = [];
 
-                        if ($distance < $this->radius) {
-                            unset($centroids[$j]);
-                        }
-                    }
+                foreach ($distances as $distance) {
+                    $weights[] = exp(-($distance ** 2) / $this->delta);
                 }
+
+                $weightedMeanFunc = function (array $column) use ($weights) : float {
+                    return Stats::weightedMean($column, $weights);
+                };
+
+                $shifted[] = array_map($weightedMeanFunc, array_transpose($samples));
             }
 
-            $loss = $this->shift($centroids, $previous);
+            $loss = $this->shift($shifted, $centroids);
+
+            $centroids = $shifted;
 
             $loss /= $n;
 
@@ -414,13 +411,16 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
             }
 
             if ($loss < $this->minShift) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, shift below '
+                        . "minimum of {$this->minShift}");
+                }
+
                 break;
             }
-
-            $previous = $centroids;
         }
 
-        $this->centroids = array_values($centroids);
+        $this->centroids = $centroids;
 
         $this->tree->destroy();
 
@@ -518,7 +518,38 @@ class MeanShift implements Estimator, Learner, Iterative, Probabilistic, Verbose
     }
 
     /**
-     * Calculate the amount of centroid shift from the previous epoch.
+     * Merge near-duplicate candidate centroids that lie within the radius of an
+     * already retained centroid.
+     *
+     * Candidates are always compared in the same state so that the surviving
+     * centroid of a near-duplicate pair depends only on the order of the seeds
+     * and never on whether its competitor has already been shifted.
+     *
+     * @internal
+     *
+     * @param list<(int|float)[]> $centroids
+     * @return list<(int|float)[]>
+     */
+    protected function mergeNearDuplicates(array $centroids) : array
+    {
+        $merged = [];
+
+        foreach ($centroids as $centroid) {
+            foreach ($merged as $retained) {
+                if ($this->tree->kernel()->compute($retained, $centroid) < $this->radius) {
+                    continue 2;
+                }
+            }
+
+            $merged[] = $centroid;
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Calculate the amount of centroid shift from the positions the centroids
+     * were shifted from.
      *
      * @param list<(int|float)[]> $current
      * @param list<(int|float)[]> $previous

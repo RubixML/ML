@@ -6,7 +6,7 @@ Assigns continuous features to ordered categories using variable width per-featu
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
@@ -28,5 +28,5 @@ $transformer = new IntervalDiscretizer(8, false);
 Return the bin intervals of the fitted data.
 
 ```php
-public intervals() : array
+public intervals() : ?array
 ```

@@ -32,11 +32,10 @@
     ],
     "require": {
         "php": ">=8.3",
-        "ext-json": "*",
         "amphp/parallel": "^2.0",
         "andrewdalpino/okbloomer": "^1.0",
         "psr/log": "^1.1|^2.0|^3.0",
-        "rubix/tensor": "^3.1",
+        "rubix/tensor": "^4.1",
         "symfony/polyfill-mbstring": "^1.0"
     },
     "require-dev": {

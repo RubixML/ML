@@ -12,6 +12,10 @@ use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
+use function array_unique;
+
+use const SORT_REGULAR;
+
 #[Group('Seeders')]
 #[CoversClass(Random::class)]
 class RandomTest extends TestCase
@@ -51,5 +55,7 @@ class RandomTest extends TestCase
         $seeds = $this->seeder->seed(dataset: $dataset, k: 3);
 
         $this->assertCount(3, $seeds);
+
+        $this->assertCount(3, array_unique($seeds, SORT_REGULAR));
     }
 }

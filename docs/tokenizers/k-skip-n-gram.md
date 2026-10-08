@@ -19,3 +19,20 @@ use Rubix\ML\Tokenizers\KSkipNGram;
 
 $tokenizer = new KSkipNGram(2, 3, 2);
 ```
+
+## How The Skip Works
+
+The *skip* parameter is the widest stride considered between the words of a single token, and every stride from `0` up to *skip* is emitted. A stride of `0` produces the plain (adjacent) n-gram, so this tokenizer is a superset of the [N-Gram](n-gram.md) tokenizer.
+
+For a stride of *k*, the words of a token are taken from positions `i`, `i + k + 1`, `i + 2(k + 1)`, and so on. Consider `a b c d e` with `min: 3`, `max: 3`, `skip: 1`:
+
+| Stride | Token | Words |
+| --- | --- | --- |
+| 0 | `a b c` | `a`, `b`, `c` |
+| 0 | `b c d` | `b`, `c`, `d` |
+| 0 | `c d e` | `c`, `d`, `e` |
+| 1 | `a c e` | `a`, `c`, `e` |
+| 1 | `b c d` | `b`, `c`, `d` |
+| 1 | `c d e` | `c`, `d`, `e` |
+
+Raising *skip* to `2` widens the stride further, adding `a d g` from `a b c d e f g` in addition to the `0` and `1` stride tokens. Strides that would reach past the end of a sentence are simply not emitted, so short sentences yield fewer tokens rather than partial ones.

@@ -12,6 +12,8 @@ use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * Dense
@@ -107,6 +109,10 @@ class Dense implements Hidden, Parametric
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if ($neurons < 1) {
             throw new InvalidArgumentException('Number of neurons'
                 . " must be greater than 0, $neurons given.");

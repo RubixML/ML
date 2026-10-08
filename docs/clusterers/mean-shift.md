@@ -4,7 +4,7 @@
 
 A hierarchical clustering algorithm that uses peak (maxima) finding to locate the candidate centroids of a training set given a radius constraint. Near-duplicate centroids are merged together and the algorithm iterates on the remaining candidates in subsequent steps until the centroids stabilize.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -15,7 +15,7 @@ A hierarchical clustering algorithm that uses peak (maxima) finding to locate th
 | 1 | radius | | float | The bandwidth of the radial basis function. |
 | 2 | ratio | 0.1 | float | The ratio of samples from the training set to use as initial centroids. |
 | 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
-| 4 | minShift | 1e-4 | float | The minimum shift in the position of the centroids necessary to continue training. |
+| 4 | minShift | 1e-4 | float | The minimum mean per-column displacement of the remaining centroids necessary to continue training. |
 | 5 | tree | BallTree | Spatial | The spatial tree used to run range searches. |
 | 6 | seeder | Random | Seeder | The seeder used to initialize the cluster centroids. |
 
@@ -46,10 +46,16 @@ Return the centroids computed from the training set.
 public centroids() : array[]
 ```
 
-Returns the amount of centroid shift during each epoch of training.
+Returns the amount of centroid shift during each epoch of training. The shift of an epoch is the total per-column displacement of the centroids that survived the merge step from the positions they were shifted from, divided by the number of training samples. Centroids that were pruned are not counted.
 
 ```php
 public losses() : float[]|null
+```
+
+Return the progress table combining every epoch recorded during the last training session — the centroid shift at each epoch — into a single ordered sequence.
+
+```php
+public progress() : iterable
 ```
 
 Return the base spatial tree instance.

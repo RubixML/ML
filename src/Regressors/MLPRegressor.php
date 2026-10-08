@@ -11,10 +11,10 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
@@ -40,8 +40,11 @@ use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Verbose;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function Rubix\ML\enumerate;
+use function Rubix\ML\warn;
 use function count;
 use function get_object_vars;
 use function is_dir;
@@ -70,7 +73,7 @@ use function sqrt;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Persistable
+class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -127,7 +130,7 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
     protected float $minChange;
 
     /**
-     * The number of epochs to train before evaluating the model with the holdout set.
+     * The number of epochs to train before evaluating the model with the validation set.
      *
      * @var int
      */
@@ -136,16 +139,17 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
     /**
      * The number of evaluations without improvement in the validation score to wait before considering an early stop.
      *
-     * @var positive-int
+     * @var int<0,max>
      */
     protected int $window;
 
     /**
-     * The proportion of training samples to use for validation and progress monitoring.
+     * The dataset used to score the model during training. When null, progress
+     * monitoring and early stopping are disabled.
      *
-     * @var float
+     * @var Labeled|null
      */
-    protected float $holdOut;
+    protected ?Labeled $validation = null;
 
     /**
      * The function that computes the loss associated with an erroneous activation during training.
@@ -206,7 +210,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
      * @param float $minChange
      * @param int $evalInterval
      * @param int $window
-     * @param float $holdOut
      * @param RegressionLoss|null $costFn
      * @param Metric|null $metric
      */
@@ -220,10 +223,18 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
         float $minChange = 1e-5,
         int $evalInterval = 1,
         int $window = 10,
-        float $holdOut = 0.1,
         ?RegressionLoss $costFn = null,
         ?Metric $metric = null
     ) {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        } else {
+            warn('The Tensor C extension is not loaded; performance will be'
+                . ' significantly slower. Install Tensor Ext'
+                . ' (https://packagist.org/packages/rubix/tensor_ext)'
+                . ' for better performance.');
+        }
+
         if (empty($hiddenLayers)) {
             throw new InvalidArgumentException('At least one hidden layer'
                 . ' must be specified.');
@@ -266,14 +277,9 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
                 . " greater than 0, $evalInterval given.");
         }
 
-        if ($window < 1) {
+        if ($window < 0) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
-        }
-
-        if ($holdOut < 0.0 or $holdOut > 0.5) {
-            throw new InvalidArgumentException('Hold out ratio must be'
-                . " between 0 and 0.5, $holdOut given.");
         }
 
         if ($metric) {
@@ -289,7 +295,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
         $this->minChange = $minChange;
         $this->evalInterval = $evalInterval;
         $this->window = $window;
-        $this->holdOut = $holdOut;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->metric = $metric ?? new RMSE();
     }
@@ -339,7 +344,6 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             'min change' => $this->minChange,
             'eval interval' => $this->evalInterval,
             'window' => $this->window,
-            'hold out' => $this->holdOut,
             'cost fn' => $this->costFn,
             'metric' => $this->metric,
         ];
@@ -432,6 +436,24 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
     }
 
     /**
+     * Set the dataset used to score the model during training. While set, this
+     * dataset is scored every evalInterval epochs and drives early stopping once the
+     * score has failed to improve for window evaluations. Pass null to disable progress
+     * monitoring and early stopping.
+     *
+     * @param Labeled|null $dataset
+     * @throws EmptyDataset
+     */
+    public function setValidationDataset(?Labeled $dataset) : void
+    {
+        if (isset($dataset)) {
+            DatasetIsNotEmpty::with($dataset)->check();
+        }
+
+        $this->validation = $dataset;
+    }
+
+    /**
      * Train the estimator with a dataset.
      *
      * @param Labeled $dataset
@@ -508,12 +530,19 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $this->logger->info("Network has {$numParams} trainable parameters");
         }
 
-        [$testing, $training] = $dataset->randomize()->split($this->holdOut);
+        if (isset($this->validation)) {
+            DatasetHasDimensionality::with($this->validation, $dataset->numFeatures())->check();
+        } else {
+            if ($this->logger) {
+                $this->logger->notice('No validation dataset provided; snapshotting '
+                    . 'and early stopping disabled.');
+            }
+        }
 
         [$minScore, $maxScore] = $this->metric->range()->list();
 
         $bestScore = $minScore;
-        $bestEpoch = $numWorseEpochs = 0;
+        $bestEpoch = $numWorseEvals = 0;
         $score = $snapshot = null;
         $prevLoss = $averageLoss = INF;
 
@@ -523,21 +552,16 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $snapshotPath = sys_get_temp_dir() . '/rubixml-snapshot-' . uniqid() . '.dat';
         }
 
-        if ($testing->empty() and $this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
-        }
-
         $this->scores = $this->losses = $this->norms = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; ++$epoch) {
-            $batches = $training->randomize()->batch($this->batchSize);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
             $totalLoss = $norm = $totalNorm = 0.0;
 
             foreach (enumerate($batches, 1) as $step => $batch) {
-                $x = Matrix::quick($batch->samples())->transpose();
-                $y = Matrix::quick([$batch->labels()]);
+                $x = Matrix::fromArray($batch->samples(), false)->transpose();
+                $y = Matrix::fromArray([$batch->labels()], false);
 
                 $this->network->feed($x);
 
@@ -599,12 +623,12 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
+            $evalThisStep = $epoch % $this->evalInterval === 0 && isset($this->validation);
 
             if ($evalThisStep) {
-                $predictions = $this->predict($testing);
+                $predictions = $this->predict($this->validation);
 
-                $score = $this->metric->score($predictions, $testing->labels());
+                $score = $this->metric->score($predictions, $this->validation->labels());
 
                 $this->scores[$epoch] = $score;
             }
@@ -628,6 +652,11 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
 
             if ($evalThisStep) {
                 if ($score >= $maxScore) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, maximum '
+                            . "{$this->metric} score reached");
+                    }
+
                     break;
                 }
 
@@ -641,17 +670,27 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
 
                     $snapshot = Snapshot::take($this->network, $snapshotPath);
 
-                    $numWorseEpochs = 0;
+                    $numWorseEvals = 0;
                 } else {
-                    ++$numWorseEpochs;
+                    ++$numWorseEvals;
                 }
 
-                if ($numWorseEpochs >= $this->window) {
+                if ($this->window and $numWorseEvals >= $this->window) {
+                    if ($this->logger) {
+                        $this->logger->info('Early stopping, no improvement in '
+                            . "the last {$this->window} evaluations");
+                    }
+
                     break;
                 }
             }
 
             if ($lossChange < $this->minChange) {
+                if ($this->logger) {
+                    $this->logger->info('Early stopping, loss change below '
+                        . "minimum of {$this->minChange}");
+                }
+
                 break;
             }
 
@@ -701,9 +740,9 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
 
         DatasetHasDimensionality::with($dataset, $this->network->input()->width())->check();
 
-        $x = Matrix::quick($dataset->samples())->transpose();
+        $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
-        $activations = $this->network->infer($x);
+        $activations = $this->network->infer($x)->transpose();
 
         return array_column($activations->asArray(), 0);
     }
@@ -722,7 +761,8 @@ class MLPRegressor implements Estimator, Learner, Iterative, Online, Verbose, Pe
             $properties['norms'],
             $properties['scores'],
             $properties['logger'],
-            $properties['snapshotPath']
+            $properties['snapshotPath'],
+            $properties['validation']
         );
 
         return $properties;

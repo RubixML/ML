@@ -9,6 +9,8 @@ use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 use function count;
 use function sqrt;
@@ -76,6 +78,10 @@ class Blob implements Generator
      */
     public function __construct(array $center = [0, 0], $stdDev = 1.0)
     {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+        }
+
         if (empty($center)) {
             throw new InvalidArgumentException('Cannot generate samples'
                 . ' with dimensionality less than 1.');
@@ -94,7 +100,7 @@ class Blob implements Generator
                 }
             }
 
-            $stdDev = Vector::quick($stdDev);
+            $stdDev = Vector::fromArray($stdDev, false);
         } else {
             if ($stdDev < 0) {
                 throw new InvalidArgumentException('Standard deviation'
@@ -102,7 +108,7 @@ class Blob implements Generator
             }
         }
 
-        $this->center = Vector::quick($center);
+        $this->center = Vector::fromArray($center, false);
         $this->stdDev = $stdDev;
     }
 

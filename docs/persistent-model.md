@@ -12,7 +12,7 @@ The Persistent Model meta-estimator wraps a [Persistable](persistable.md) learne
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | base | | Persistable | The persistable base learner. |
+| 1 | base | | Learner | The persistable base learner. |
 | 2 | persister | | Persister | The persister used to interface with the storage system. |
 | 3 | serializer | RBX | Serializer | The object serializer. |
 

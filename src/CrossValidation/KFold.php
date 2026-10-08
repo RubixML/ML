@@ -57,21 +57,19 @@ class KFold implements Validator, Parallel
     /**
      * Test the estimator with the supplied dataset and return a validation score.
      *
-     * @param Learner $estimator
+     * @param Learner & Estimator $estimator
      * @param Labeled $dataset
      * @param Metric $metric
      * @throws InvalidArgumentException
      * @return float
      */
-    public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
+    public function test(Learner & Estimator $estimator, Labeled $dataset, Metric $metric) : float
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
-        $dataset->randomize();
-
         $folds = $dataset->labelType()->isCategorical()
             ? $dataset->stratifiedFold($this->k)
-            : $dataset->fold($this->k);
+            : $dataset->binnedFold($this->k);
 
         $this->backend->flush();
 

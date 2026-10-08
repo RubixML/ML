@@ -185,6 +185,11 @@ class BallTree implements BinaryTree, Spatial
      */
     public function nearest(array $sample, int $k = 1) : array
     {
+        if ($k < 1) {
+            throw new InvalidArgumentException('K must be'
+                . " greater than 0, $k given.");
+        }
+
         $visited = new SplObjectStorage();
 
         $heap = new SplMaxHeap();
