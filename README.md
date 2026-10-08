@@ -50,7 +50,7 @@ pie install rubix/tensor_ext:^4.1
 
 ## Documentation
 
-Read the latest docs [here](https://rubixml.github.io/ML/latest/).
+Read the latest docs [here](https://rubixml.github.io/ML/).
 
 ## What is Rubix ML?
 
