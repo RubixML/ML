@@ -68,7 +68,7 @@ class RMSProp implements Optimizer
     public function __construct(Scheduler $scheduler, float $decay = 0.1)
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
-            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
         }
 
         if ($decay <= 0.0 or $decay >= 1.0) {
@@ -131,7 +131,7 @@ class RMSProp implements Optimizer
         $this->cache[$param->id()] = $norm;
 
         $step = $param->gradient()->multiply($this->scheduler->rate())
-            ->multiply($norm->rsqrt()->clipUpper(1.0 / EPSILON));
+            ->divide($norm->sqrt()->clipLower(EPSILON));
 
         $param->update($step);
     }

@@ -72,7 +72,7 @@ class Adam implements Optimizer
     public function __construct(Scheduler $scheduler, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
-            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
+            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
         }
 
         if ($momentumDecay <= 0.0 or $momentumDecay >= 1.0) {
@@ -137,20 +137,20 @@ class Adam implements Optimizer
         [$velocity, $norm] = $this->cache[$param->id()];
 
         $vHat = $param->gradient()->subtract($velocity)
-            ->multiplyScalar($this->momentumDecay);
+            ->multiply($this->momentumDecay);
 
         $velocity = $velocity->add($vHat);
 
         $nHat = $param->gradient()->square()->subtract($norm)
-            ->multiplyScalar($this->normDecay);
+            ->multiply($this->normDecay);
 
         $norm = $norm->add($nHat);
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
-        $norm = $norm->rsqrt()->clipUpper(1.0 / EPSILON);
+        $norm = $norm->sqrt()->clipLower(EPSILON);
 
-        $step = $velocity->multiply($this->scheduler->rate())->multiply($norm);
+        $step = $velocity->multiply($this->scheduler->rate())->divide($norm);
 
         $param->update($step);
     }

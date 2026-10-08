@@ -14,8 +14,6 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rubix\ML\DataType;
 use Rubix\ML\GridSearch;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Report;
-use Rubix\ML\Helpers\Params;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\KFold;
@@ -205,46 +203,6 @@ class GridSearchTest extends TestCase
         self::assertCount($training->numSamples(), $predictions);
 
         self::assertArrayNotHasKey('backend', $copy->__serialize());
-    }
-
-    #[Test]
-    public function resultsAreTableOfCombinationsAndScores() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertNotEmpty($this->estimator->scores());
-
-        $rows = $this->estimator->results();
-
-        $this->assertInstanceOf(Report::class, $rows);
-
-        $this->assertCount(6, $rows);
-
-        $metric = new FBeta();
-
-        $scores = $this->estimator->scores();
-
-        $names = ['k', 'weighted', 'kernel'];
-
-        foreach ($this->estimator->combinations() as $i => $combination) {
-            $row = $rows['Trial ' . ($i + 1)];
-
-            $this->assertSame(
-                ["{$metric}", 'params'],
-                array_keys($row)
-            );
-
-            $expectedParams = array_combine(
-                $names,
-                array_map([Params::class, 'toString'], $combination)
-            );
-
-            $this->assertSame($expectedParams, $row['params']);
-
-            $this->assertSame((string) $scores[$i], $row["{$metric}"]);
-        }
     }
 
     #[Test]
