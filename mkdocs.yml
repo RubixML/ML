@@ -155,6 +155,7 @@ nav:
         - Token Hashing Vectorizer: transformers/token-hashing-vectorizer.md
         - Word Count Vectorizer: transformers/word-count-vectorizer.md
       - Images:
+        - Image Flipper: transformers/image-flipper.md
         - Image Resizer: transformers/image-resizer.md
         - Image Rotator: transformers/image-rotator.md
         - Image Vectorizer: transformers/image-vectorizer.md
