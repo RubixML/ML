@@ -769,6 +769,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#progress-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Progress Table
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parallel-training" class="md-nav__link">
     <span class="md-ellipsis">
       Parallel Training
@@ -1012,29 +1021,6 @@
   
   <span class="md-ellipsis">
     Estimator
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="iterative.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Iterative
     
   </span>
   
@@ -8176,6 +8162,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#progress-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Progress Table
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parallel-training" class="md-nav__link">
     <span class="md-ellipsis">
       Parallel Training
@@ -8266,6 +8261,36 @@
 [2020-09-04 08:39:04] INFO: Epoch 81 - Cross Entropy: 0.0077978960869396
 [2020-09-04 08:39:04] INFO: Training complete
 </code></pre></div>
+<h2 id="progress-table">Progress Table<a class="headerlink" href="#progress-table" title="Permanent link">#</a></h2>
+<p>In addition to the scalar values returned by the <code>losses()</code> and <code>scores()</code> accessors, learners and other iterative estimators expose a <code>progress()</code> method that returns an iterable table combining every recorded epoch into a single, ordered sequence suitable for inspecting how the model evolved round over round.</p>
+<p>This is most useful when the loss and score do not move in tandem — for example, when a training loss continues to drop long after the validation score has begun to plateau or regress. Lining up the epochs side by side makes it possible to identify when the model stopped generalizing and to pick a reasonable point to stop at.</p>
+<p>Each entry in the table is an associative array with <code>Epoch</code> as one of its keys. The other keys present may vary by estimator; every entry includes the epoch number and the training loss keyed by its name (such as <code>Exponential Loss</code> or <code>Inertia</code>), and most also include the validation score keyed by the metric name (when a validation dataset was supplied) and the gradient norm (for estimators trained with the neural network subsystem).</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Extractors\CSV</span><span class="p">;</span>
+
+<span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+
+<span class="nv">$extractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CSV</span><span class="p">(</span><span class="s1">&#39;progress.csv&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+
+<span class="nv">$extractor</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">(</span><span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">progress</span><span class="p">());</span>
+</code></pre></div>
+<p>The resulting file contains one row per recorded epoch. Values that were not recorded at a given epoch are left blank, such as the validation score on epochs that fall between evaluation intervals.</p>
+<div class="highlight"><pre><span></span><code>Epoch,Exponential Loss,Gradient Norm,F Beta (beta: 1)
+1,0.6931,1.2007,
+2,0.4034,0.8631,
+3,0.2588,0.6102,0.7889
+</code></pre></div>
+<p>Because <code>progress()</code> returns an iterator, it can be passed directly to an exporter, plotted, or streamed without loading the entire table into memory.</p>
+<p>You can also iterate over it manually to extract or transform individual epochs:</p>
+<div class="highlight"><pre><span></span><code><span class="k">foreach</span> <span class="p">(</span><span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">progress</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$record</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$record</span><span class="p">[</span><span class="s1">&#39;F Beta (beta: 1)&#39;</span><span class="p">])</span> <span class="k">and</span> <span class="nv">$record</span><span class="p">[</span><span class="s1">&#39;Exponential Loss&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">printf</span><span class="p">(</span><span class="s2">&quot;Loss dropped below 0.3 at epoch %d with a score of %.4F.&quot;</span><span class="p">,</span> <span class="nv">$record</span><span class="p">[</span><span class="s1">&#39;Epoch&#39;</span><span class="p">],</span> <span class="nv">$record</span><span class="p">[</span><span class="s1">&#39;F Beta (beta: 1)&#39;</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A learner must be trained before <code>progress()</code> returns any epochs. The <code>Gradient Norm</code> and metric keys are only present for epochs where the corresponding value was actually recorded during training.</p>
+</div>
 <h2 id="parallel-training">Parallel Training<a class="headerlink" href="#parallel-training" title="Permanent link">#</a></h2>
 <p>Learners that implement the <a href="parallel.html">Parallel</a> interface can utilize a parallel processing (multiprocessing) backend for training. Parallel computing can greatly reduce training time on multicore systems at the cost of some overhead to synchronize the data. For small datasets, the overhead may actually cause the runtime to increase. Most parallel learners do not use parallel processing by default, so to enable it you must set a parallel backend using the <code>setBackend()</code> method. In the example below, we'll train a <a href="classifiers/random-forest.html">Random Forest</a> classifier with 500 trees in parallel using the <a href="backends/amp.html">Amp</a> backend under the hood. By settings the <code>$workers</code> argument to 4 we tell the backend to use up to 4 cores at a time to execute the computation.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\RandomForest</span><span class="p">;</span>
@@ -8320,7 +8345,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 11, 2026 16:18:15">September 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 8, 2026 17:21:50">October 8, 2026</span>
   </span>
 
     
