@@ -698,7 +698,7 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
 
         $x = Matrix::fromArray($dataset->samples())->transpose();
 
-        $activations = $this->network->infer($x);
+        $activations = $this->network->infer($x)->transpose();
 
         $activations = array_column($activations->asArray(), 0);
 

@@ -742,7 +742,7 @@ class MLPRegressor implements Estimator, Learner, Online, Verbose, Persistable
 
         $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
-        $activations = $this->network->infer($x);
+        $activations = $this->network->infer($x)->transpose();
 
         return array_column($activations->asArray(), 0);
     }
