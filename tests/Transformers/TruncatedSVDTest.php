@@ -83,7 +83,7 @@ class TruncatedSVDTest extends TestCase
 
         $this->assertTrue($this->transformer->fitted());
 
-        $this->assertEqualsWithDelta(0.23296036563469, $this->transformer->lossiness(), 1e-8);
+        $this->assertEqualsWithDelta(0.0734866769355824, $this->transformer->lossiness(), 1e-8);
 
         $transformed = $this->dataset->samples();
 

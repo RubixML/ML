@@ -7,7 +7,7 @@ A stage-wise additive ensemble that uses regression trees to iteratively learn a
 !!! note
     Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Ranks Features](../ranks-features.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on base learners
 
@@ -40,6 +40,12 @@ Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null
+```
+
+Return the progress table combining every epoch recorded during the last training session — the loss, the validation score, and the gradient norm when available — into a single ordered sequence.
+
+```php
+public progress() : iterable
 ```
 
 Set the dataset used to score the model during training. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping.

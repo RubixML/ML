@@ -51,6 +51,20 @@ $estimator = GridSearch::fromNamedParams(
 );
 ```
 
+## Setup
+
+Some estimators expose configuration methods that are unrelated to their constructor parameters—for example, `setValidationDataset()` on iterative learners. Use `setup()` to register a callback that is invoked on each newly-instantiated base estimator before it is cross-validated (and again on the final best estimator before it is trained on the full dataset).
+
+The callback receives the base estimator instance and may call any of its methods. It is not serialized with the grid search instance.
+
+```php
+$estimator = new GridSearch(LogisticRegression::class, $params, new FBeta(), new KFold(5));
+
+$estimator->setup(function (LogisticRegression $regressor) : void {
+    $regressor->setValidationDataset($validation);
+});
+```
+
 ## Parallel
 
 This estimator implements the [Parallel](parallel.md) interface and can utilize a parallel processing backend such as [Amp](backends/amp.md) to speed up training and inference:
@@ -69,19 +83,13 @@ Return the base learner instance.
 public base() : \Rubix\ML\Estimator
 ```
 
-Return an iterable table of every parameter combination tested along with its validation score from the last search.
+Return a Report of every parameter combination tested along with its validation score from the last search. The rows are keyed by trial number in the order the trials were trained in, so the `Trial N` entries line up with the `N`-th parameter combination (`scores()[N - 1]`) and the trial numbers logged during training. Each row pairs the validation score (keyed by the metric name) with a nested `params` map of the combination's constructor parameters:
 
 ```php
-public results() : Generator
+public results() : \Rubix\ML\Report
 ```
 
-Return the best combination of parameters found during the last search along with their validation score in a 2-tuple.
-
-```php
-public best() : array
-```
-
-Return the validation scores of each of the parameter combinations.
+Return the validation scores of each of the parameter combinations. The scores are returned in the order the trials were trained in, so the score at index `N - 1` corresponds to `Trial N`.
 
 ```php
 public scores() : ?array

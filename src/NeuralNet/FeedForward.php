@@ -236,7 +236,7 @@ class FeedForward implements Network
             $x = $layer->infer($x);
         }
 
-        return $x->transpose();
+        return $x;
     }
 
     /**

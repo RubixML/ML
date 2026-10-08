@@ -4,7 +4,6 @@ namespace Rubix\ML\Classifiers;
 
 use Tensor\Matrix;
 use Rubix\ML\Online;
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -83,7 +82,7 @@ use function sqrt;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Probabilistic, Verbose, Persistable
+class MultilayerPerceptron implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -797,7 +796,7 @@ class MultilayerPerceptron implements Estimator, Learner, Iterative, Online, Pro
 
         $x = Matrix::fromArray($dataset->samples(), false)->transpose();
 
-        $activations = $this->network->infer($x);
+        $activations = $this->network->infer($x)->transpose();
 
         $probabilities = [];
 
