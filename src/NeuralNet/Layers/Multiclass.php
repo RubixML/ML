@@ -175,11 +175,11 @@ class Multiclass implements Output
     {
         if ($this->costFn instanceof MulticlassCrossEntropy) {
             return $z->subtract($y)
-                ->divide($z->n());
+                ->divideScalar($y->size());
         }
 
         $dLoss = $this->costFn->differentiate($z, $y)
-            ->divide($z->n());
+            ->divideScalar($y->size());
 
         $zT = $z->transpose();
 

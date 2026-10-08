@@ -10,7 +10,7 @@ A learning-rate schedule that reduces the rate by a factor whenever it reaches a
 
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| 1 | rate | 0.01 | float | The initial learning rate. |
+| 1 | initialRate | 0.01 | float | The initial learning rate. |
 | 2 | steps | 100 | int | The size of every floor in steps. i.e. the number of batches to take before applying another factor of decay. |
 | 3 | decay | 1e-3 | float | The factor to decrease the learning rate by at each *floor*. |
 

@@ -6,7 +6,7 @@ Scale the sample matrix by the maximum absolute value of each feature column ind
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic), [Reversible](api.md#reversible), [Persistable](../persistable.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 
@@ -25,5 +25,5 @@ $transformer = new MaxAbsoluteScaler();
 Return the maximum absolute values for each feature column.
 
 ```php
-public maxabs() : array
+public maxabs() : ?array
 ```

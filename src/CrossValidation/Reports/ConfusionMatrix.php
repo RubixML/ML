@@ -3,7 +3,6 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Report;
-use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use Rubix\ML\Set;

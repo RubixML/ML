@@ -5,9 +5,9 @@
 A multilayer feed-forward neural network with a continuous output layer suitable for regression problems. The Multilayer Perceptron regressor is able to handle complex non-linear regression problems by forming higher-order representations of the input features using intermediate user-defined hidden layers. The MLP also has network snapshotting and progress monitoring to ensure that the model achieves the highest validation score per a given training time budget.
 
 !!! note
-    If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
+    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -22,11 +22,10 @@ A multilayer feed-forward neural network with a continuous output layer suitable
 | 5 | maxGradientNorm | null | float | The maximum L2 norm of the gradient set. When exceeded all gradients are rescaled proportionally so that the global norm equals the maximum. |
 | 6 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 7 | minChange | 1e-5 | float | The minimum change in the training loss necessary to continue training. |
-| 8 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the holdout set. |
+| 8 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the validation set. |
 | 9 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. Set to 0 to disable early stopping. |
-| 10 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
-| 11 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
-| 12 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
+| 10 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 11 | metric | RMSE | Metric | The metric used to score the generalization performance of the model during training. |
 
 ## Example
 
@@ -59,7 +58,6 @@ $estimator = new MLPRegressor(
 	minChange: 1e-5,
 	evalInterval: 5,
 	window: 10,
-	holdOut: 0.1,
 	costFn: new LeastSquares(),
 	metric: new RSquared()
 );
@@ -67,16 +65,16 @@ $estimator = new MLPRegressor(
 
 ## Additional Methods
 
-Return the validation score for each epoch from the last training session.
-
-```php
-public scores() : float[]|null
-```
-
 Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null
+```
+
+Return the progress table combining every epoch recorded during the last training session — the loss, the validation score, and the gradient norm when available — into a single ordered sequence.
+
+```php
+public progress() : iterable
 ```
 
 Return the gradient norm for each epoch from the last training session.
@@ -85,22 +83,34 @@ Return the gradient norm for each epoch from the last training session.
 public norms() : float[]|null
 ```
 
+Set the dataset used to score the model during training. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping.
+
+```php
+public setValidationDataset(?Labeled $dataset) : void
+```
+
+Return the validation score for each epoch from the last training session.
+
+```php
+public scores() : float[]|null
+```
+
 Returns the underlying neural network instance or `null` if untrained. See [FeedForward](../neural-network/feed-forward.md) for more details.
 
 ```php
 public network() : FeedForward|null
 ```
 
-Set the path of the temporary snapshot file used to store network parameters during training.
-
-```php
-public setSnapshotPath(?string $path) : void
-```
-
 Clean up any leftover state after training. Only do this if you plan to use the model for inference.
 
 ```php
 public cleanup() : void
+```
+
+Set the path of the temporary snapshot file used to store network parameters during training.
+
+```php
+public setSnapshotPath(?string $path) : void
 ```
 
 ## References

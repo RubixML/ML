@@ -88,9 +88,9 @@ class MulticlassTest extends TestCase
         $gradient = $computation->compute();
 
         $expected = [
-            [-0.14555953994735552, 0.3079893609690633, 0.013965541482243765],
-            [0.07634312728513858, -0.3080520270620123, 0.31000640944179936],
-            [0.06921641266221694, 6.266609294900586E-5, -0.3239719509240431],
+            [-0.04851984664911851, 0.1026631203230211, 0.004655180494081254],
+            [0.02544770909504619, -0.10268400902067076, 0.1033354698139331],
+            [0.02307213755407231, 2.088869764966862E-5, -0.10799065030801436],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
@@ -130,12 +130,99 @@ class MulticlassTest extends TestCase
         $gradient = $layer->gradient($forward, Matrix::fromArray($expected, false));
 
         $expected = [
-            [-0.012226206614022184, 0.27465602763572997, -0.0527011251844229],
-            [-0.023656872714861417, -0.174718693728679, 0.276673076108466],
-            [0.0358830793288836, -0.09993733390705099, -0.2239719509240431],
+            [-0.004075402204674061, 0.09155200921190998, -0.017567041728140966],
+            [-0.00788562423828714, -0.058239564576226324, 0.09222435870282196],
+            [0.011961026442961199, -0.03331244463568366, -0.074657316974681],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
+    }
+
+    /**
+     * The gradient handed back to the previous layer must be the derivative of the
+     * loss that back() reports. Rows are classes and columns are samples, so the
+     * Softmax normalizes each column and the loss is averaged over all elements.
+     */
+    #[Test]
+    public function gradientIsDerivativeOfReportedLoss() : void
+    {
+        $this->layer->initialize(3);
+
+        $this->layer->forward($this->x);
+
+        $y = Matrix::fromArray($this->expected, false);
+
+        [$computation, $loss] = $this->layer->back($y);
+
+        $gradient = $computation->compute()->asArray();
+
+        $this->assertIsFloat($loss);
+
+        $epsilon = 1e-6;
+
+        $logits = $this->x->asArray();
+
+        foreach ($logits as $i => $row) {
+            foreach ($row as $j => $_) {
+                $plus = $logits;
+                $minus = $logits;
+
+                $plus[$i][$j] += $epsilon;
+                $minus[$i][$j] -= $epsilon;
+
+                $numeric = ($this->lossOf($plus, $y) - $this->lossOf($minus, $y)) / (2 * $epsilon);
+
+                $this->assertEqualsWithDelta($numeric, $gradient[$i][$j], 1e-6);
+            }
+        }
+    }
+
+    /**
+     * Evaluate MulticlassCrossEntropy over a matrix of logits.
+     *
+     * @param array<list<float>> $logits
+     * @param Matrix $y
+     * @return float
+     */
+    private function lossOf(array $logits, Matrix $y) : float
+    {
+        $classes = count($logits);
+        $columns = count($logits[0]);
+
+        $normalized = [];
+
+        for ($j = 0; $j < $columns; ++$j) {
+            $column = [];
+
+            for ($i = 0; $i < $classes; ++$i) {
+                $column[] = $logits[$i][$j];
+            }
+
+            $maximum = max($column);
+
+            $exponentials = [];
+            $sum = 0.0;
+
+            foreach ($column as $logit) {
+                $exponential = exp($logit - $maximum);
+
+                $exponentials[] = $exponential;
+
+                $sum += $exponential;
+            }
+
+            foreach ($exponentials as $exponential) {
+                $normalized[] = $exponential / $sum;
+            }
+        }
+
+        $probabilities = array_fill(0, $classes, array_fill(0, $columns, 0.0));
+
+        foreach ($normalized as $index => $probability) {
+            $probabilities[$index % $classes][intdiv($index, $classes)] = $probability;
+        }
+
+        return (new MulticlassCrossEntropy())->compute(Matrix::fromArray($probabilities, false), $y);
     }
 }

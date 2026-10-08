@@ -9,7 +9,7 @@ Image Vectorizer takes images of the same size and converts them into flat featu
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 
-**Data Type Compatibility:** Image
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

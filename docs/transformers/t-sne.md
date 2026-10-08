@@ -7,9 +7,9 @@
 !!! note
     T-SNE is implemented using the *exact* method which scales quadratically in the number of samples. Therefore, it is recommended to subsample datasets larger than a few thousand samples.
 
-**Interfaces:** [Transformer](../transformers/api.md#transformer), [Iterative](../iterative.md), [Verbose](../verbose.md)
+**Interfaces:** [Transformer](../transformers/api.md#transformer), [Verbose](../verbose.md)
 
-**Data Type Compatibility:** Continuous
+**Data Type Compatibility:** Depends on distance kernel
 
 ## Parameters
 
@@ -54,6 +54,12 @@ Return the KL Divergence cost at each evaluation epoch from the last embedding.
 
 ```php
 public losses() : float[]|null
+```
+
+Return the progress table combining every epoch recorded during the last embedding — the gradient norm and the KL Divergence cost — into a single ordered sequence.
+
+```php
+public progress() : iterable
 ```
 
 ## References

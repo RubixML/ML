@@ -9,7 +9,7 @@ Convert all numeric strings to their equivalent integer and floating point types
 
 **Interfaces:** [Transformer](api.md#transformer), [Reversible](api.md#reversible)
 
-**Data Type Compatibility:** Categorical
+**Data Type Compatibility:** Categorical, Continuous, Image, Other
 
 ## Parameters
 

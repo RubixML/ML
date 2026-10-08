@@ -184,4 +184,45 @@ class CSVTest extends TestCase
 
         unlink($path);
     }
+
+    #[Test]
+    public function importDuplicateHeaderThrows() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'csv_');
+
+        file_put_contents($path, "attitude,attitude\nnice,nice\n");
+
+        $extractor = new CSV($path, true, ',', '"');
+
+        $this->expectException(RuntimeException::class);
+
+        iterator_to_array($extractor, false);
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function exportAppendNoTrailingNewline() : void
+    {
+        $path = sys_get_temp_dir() . '/csv_' . uniqid() . '.csv';
+
+        file_put_contents($path, "attitude,texture\nnice,furry");
+
+        $extractor = new CSV($path, header: true);
+
+        $extractor->export([
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+        ]);
+
+        $records = iterator_to_array($extractor, false);
+
+        $this->assertCount(2, $records);
+
+        $this->assertEquals([
+            ['attitude' => 'nice', 'texture' => 'furry'],
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+        ], $records);
+
+        unlink($path);
+    }
 }

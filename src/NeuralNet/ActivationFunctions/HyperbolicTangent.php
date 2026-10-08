@@ -40,7 +40,7 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $z->pow(2.0)->negate()->add(1.0);
+        return $z->square()->negate()->add(1.0);
     }
 
     /**

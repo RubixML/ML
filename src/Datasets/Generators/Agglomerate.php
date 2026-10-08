@@ -5,7 +5,10 @@ namespace Rubix\ML\Datasets\Generators;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
+use function arsort;
+use function array_sum;
 use function count;
+use function floor;
 
 /**
  * Agglomerate
@@ -131,10 +134,31 @@ class Agglomerate implements Generator
      */
     public function generate(int $n) : Labeled
     {
+        $allocations = $remainders = [];
+
+        foreach ($this->weights as $label => $weight) {
+            $allocations[$label] = (int) floor($weight * $n);
+
+            $remainders[$label] = $weight * $n - $allocations[$label];
+        }
+
+        $deficit = $n - array_sum($allocations);
+
+        arsort($remainders);
+
+        foreach ($remainders as $label => $remainder) {
+            if ($deficit <= 0) {
+                break;
+            }
+
+            ++$allocations[$label];
+            --$deficit;
+        }
+
         $samples = $labels = [];
 
         foreach ($this->generators as $label => $generator) {
-            $p = (int) round($this->weights[$label] * $n);
+            $p = $allocations[$label];
 
             if ($p < 1) {
                 continue;

@@ -8,14 +8,20 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
+use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\LogitBoost;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Exceptions\EmptyDataset;
+use Rubix\ML\Exceptions\IncorrectDatasetDimensionality;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
@@ -77,7 +83,6 @@ class LogitBoostTest extends TestCase
             minChange: 1e-4,
             evalInterval: 3,
             window: 5,
-            holdOut: 0.1,
             metric: new FBeta()
         );
 
@@ -105,7 +110,6 @@ class LogitBoostTest extends TestCase
             minChange: 1e-12,
             evalInterval: 1,
             window: 0,
-            holdOut: 0.1,
             metric: new FBeta()
         );
 
@@ -132,7 +136,6 @@ class LogitBoostTest extends TestCase
             epochs: 5,
             minChange: 1e-6,
             evalInterval: 1,
-            holdOut: 0.1,
             metric: new FBeta()
         );
 
@@ -191,7 +194,6 @@ class LogitBoostTest extends TestCase
             'min change' => 0.0001,
             'eval interval' => 3,
             'window' => 5,
-            'hold out' => 0.1,
             'metric' => new FBeta(1),
         ];
 
@@ -277,5 +279,218 @@ class LogitBoostTest extends TestCase
         foreach ($probabilities as $probability) {
             $this->assertEqualsWithDelta(1.0, array_sum($probability), 1e-8);
         }
+    }
+
+    #[Test]
+    public function earlyStoppingRestoresBestScoringEnsembleState() : void
+    {
+        [$validation, $training] = $this->generator->generate(self::TRAIN_SIZE)->randomize()->split(0.2);
+
+        $estimator = new LogitBoost(
+            booster: new RegressionTree(3),
+            rate: 0.5,
+            ratio: 0.5,
+            epochs: 5,
+            minChange: 0.0,
+            evalInterval: 1,
+            window: 0,
+            metric: new ScriptedMetric([0.5, 0.9, 0.7, 0.6, 0.55])
+        );
+
+        $estimator->setValidationDataset($validation);
+
+        $estimator->train($training);
+
+        $scores = $estimator->scores();
+
+        $this->assertIsArray($scores);
+        $this->assertSame([1, 2, 3, 4, 5], array_keys($scores));
+
+        $bestEpoch = array_search(max($scores), $scores);
+
+        $this->assertSame(2, $bestEpoch);
+
+        $boosters = $estimator->__serialize()['boosters'];
+
+        $this->assertCount($bestEpoch - 1, $boosters);
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset enables progress monitoring and early stopping')]
+    public function injectedValidationDatasetEnablesScoring() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertEmpty($estimator->scores());
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertNotEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset is not persisted')]
+    public function injectedValidationDatasetIsNotPersisted() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+
+        $estimator->train($training);
+
+        $serialized = $estimator->__serialize();
+
+        $this->assertArrayNotHasKey('validationDataset', $serialized);
+
+        $copy = unserialize(serialize($estimator));
+
+        $this->assertTrue($copy->trained());
+        $this->assertArrayNotHasKey('validationDataset', $copy->__serialize());
+    }
+
+    #[Test]
+    #[TestDox('Null injected validation dataset disables progress monitoring and early stopping')]
+    public function nullInjectedValidationDatasetDisablesScoring() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        [$testing, $training] = $dataset->randomize()->split(0.5);
+
+        $estimator = $this->buildEstimator();
+
+        $estimator->setValidationDataset($testing);
+        $estimator->setValidationDataset(null);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertEmpty($estimator->scores());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset must not be empty')]
+    public function injectedValidationDatasetRejectsEmptyDataset() : void
+    {
+        $this->expectException(EmptyDataset::class);
+
+        $this->estimator->setValidationDataset(Labeled::quick());
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset must match the training dimensionality')]
+    public function injectedValidationDatasetRejectsMismatchedDimensionality() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $validation = Labeled::quick(
+            samples: [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
+            labels: ['inner', 'outer']
+        );
+
+        $this->estimator->setValidationDataset($validation);
+
+        $this->expectException(IncorrectDatasetDimensionality::class);
+
+        $this->estimator->train($training);
+    }
+
+    #[Test]
+    #[TestDox('Injected validation dataset rejects labels unknown to the classifier')]
+    public function injectedValidationDatasetRejectsUnknownLabels() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $validation = Labeled::quick(
+            samples: [[1.0, 2.0], [3.0, 4.0]],
+            labels: ['purple', 'purple']
+        );
+
+        $this->estimator->setValidationDataset($validation);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/unknown to this classifier/');
+
+        $this->estimator->train($training);
+    }
+
+    /**
+     * Build an estimator with a small epoch budget.
+     *
+     * @return LogitBoost
+     */
+    private function buildEstimator() : LogitBoost
+    {
+        return new LogitBoost(
+            booster: new RegressionTree(3),
+            rate: 0.5,
+            ratio: 0.5,
+            epochs: 10,
+            minChange: 0.0,
+            evalInterval: 1,
+            window: 0,
+            metric: new FBeta()
+        );
+    }
+}
+
+class ScriptedMetric implements Metric
+{
+    /**
+     * @var float[]
+     */
+    private array $scores;
+
+    /**
+     * @param float[] $scores
+     */
+    public function __construct(array $scores)
+    {
+        $this->scores = $scores;
+    }
+
+    public function range() : Tuple
+    {
+        return new Tuple(0.0, 1.0);
+    }
+
+    public function compatibility() : array
+    {
+        return [EstimatorType::classifier()];
+    }
+
+    public function score(array $predictions, array $labels) : float
+    {
+        return array_shift($this->scores) ?? 0.0;
+    }
+
+    public function __toString() : string
+    {
+        return 'Scripted Metric';
     }
 }

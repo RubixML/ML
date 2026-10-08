@@ -1087,16 +1087,26 @@ class Labeled extends Dataset
         }
 
         $total = 0.0;
-        $cums = [];
+        $cumsums = [];
 
         foreach ($weights as $weight) {
+            if ($weight < 0.0) {
+                throw new InvalidArgumentException('The sample weights'
+                    . ' must be non-negative, ' . $weight . ' given.');
+            }
+
             $total += $weight;
 
-            $cums[] = $total;
+            $cumsums[] = $total;
+        }
+
+        if ($total <= 0.0) {
+            throw new InvalidArgumentException('The sum of the sample'
+                . ' weights must be greater than zero.');
         }
 
         /** @var positive-int $numWeights */
-        $numWeights = count($cums);
+        $numWeights = count($cumsums);
 
         $phi = getrandmax() / $total;
         $max = (int) round($total * $phi);
@@ -1112,7 +1122,7 @@ class Labeled extends Dataset
             while ($lower < $upper) {
                 $mid = intdiv($lower + $upper, 2);
 
-                if ($cums[$mid] < $delta) {
+                if ($cumsums[$mid] < $delta) {
                     $lower = ++$mid;
                 } else {
                     $upper = $mid;

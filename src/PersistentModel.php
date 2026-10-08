@@ -21,14 +21,14 @@ use Rubix\ML\Exceptions\RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scoring
+class PersistentModel implements Estimator, Learner, Probabilistic, Scoring
 {
     /**
      * The persistable base learner.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * The persister used to interface with the storage layer.
@@ -58,21 +58,21 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
 
         $base = $serializer->deserialize($persister->load());
 
-        if (!$base instanceof Learner) {
+        if (!$base instanceof Learner or !$base instanceof Estimator) {
             throw new InvalidArgumentException('Persistable must'
-                . ' implement the Learner interface.');
+                . ' implement the Learner and Estimator interfaces.');
         }
 
         return new self($base, $persister, $serializer);
     }
 
     /**
-     * @param Learner $base
+     * @param Learner & Estimator $base
      * @param Persister $persister
      * @param Serializer|null $serializer
      * @throws InvalidArgumentException
      */
-    public function __construct(Learner $base, Persister $persister, ?Serializer $serializer = null)
+    public function __construct(Learner & Estimator $base, Persister $persister, ?Serializer $serializer = null)
     {
         if (!$base instanceof Persistable) {
             throw new InvalidArgumentException('Base Learner must'

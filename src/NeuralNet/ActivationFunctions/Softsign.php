@@ -44,7 +44,7 @@ class Softsign implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        return $x->abs()->add(1.0)->pow(2.0)->reciprocal();
+        return $x->abs()->add(1.0)->square()->reciprocal();
     }
 
     /**

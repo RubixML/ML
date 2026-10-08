@@ -7,7 +7,7 @@ An unsupervised imputer that replaces missing values in a dataset with the dista
 !!! note
     Requires a NaN safe distance kernel such as [Safe Euclidean](../kernels/distance/safe-euclidean.md) for continuous features.
 
-**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful), [Persistable](../persistable.md)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on distance kernel
 
@@ -24,7 +24,7 @@ An unsupervised imputer that replaces missing values in a dataset with the dista
 
 ```php
 use Rubix\ML\Transformers\KNNImputer;
-use Rubix\ML\Graph\Trees\BallTee;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\SafeEuclidean;
 
 $transformer = new KNNImputer(10, false, '?', new BallTree(30, new SafeEuclidean()));

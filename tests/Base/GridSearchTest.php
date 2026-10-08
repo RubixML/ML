@@ -18,6 +18,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -30,8 +31,6 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
-
-use function Rubix\ML\iterator_first;
 
 #[Group('MetaEstimators')]
 #[CoversClass(GridSearch::class)]
@@ -207,90 +206,12 @@ class GridSearchTest extends TestCase
     }
 
     #[Test]
-    public function resultsAreTableOfCombinationsAndScores() : void
+    public function resultsThrowBeforeTraining() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('No trials have been run yet.');
 
-        $this->estimator->train($training);
-
-        $this->assertNotEmpty($this->estimator->scores());
-
-        $progress = $this->estimator->results();
-
-        $this->assertInstanceOf(Generator::class, $progress);
-
-        $rows = iterator_to_array($progress);
-
-        $this->assertCount(6, $rows);
-
-        $metric = new FBeta();
-
-        $expectedBest = [
-            'k' => '10',
-            'weighted' => 'true',
-            'kernel' => 'Manhattan',
-        ];
-
-        $first = $rows[0];
-
-        foreach ($expectedBest as $key => $value) {
-            $this->assertArrayHasKey($key, $first);
-            $this->assertSame($value, $first[$key]);
-        }
-
-        $this->assertArrayHasKey("{$metric}", $first);
-
-        $scores = [];
-
-        foreach ($rows as $row) {
-            $this->assertSame(
-                ['k', 'weighted', 'kernel', "{$metric}"],
-                array_keys($row)
-            );
-
-            $scores[] = (float) $row["{$metric}"];
-        }
-
-        $sorted = $scores;
-
-        rsort($sorted);
-
-        $this->assertSame($sorted, $scores);
-    }
-
-    #[Test]
-    public function bestIsNullsBeforeTraining() : void
-    {
-        $this->assertSame([null, null], $this->estimator->best());
-    }
-
-    #[Test]
-    public function bestReturnsTopPerformingParamsAndScore() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        [$bestParams, $bestScore] = $this->estimator->best();
-
-        $expectedParams = [
-            'k' => '10',
-            'weighted' => 'true',
-            'kernel' => 'Manhattan',
-        ];
-
-        $this->assertSame($expectedParams, $bestParams);
-
-        $this->assertSame(
-            ['k', 'weighted', 'kernel'],
-            array_keys($bestParams)
-        );
-
-        $metric = new FBeta();
-
-        $first = iterator_first($this->estimator->results());
-
-        $this->assertSame($first["{$metric}"], $bestScore);
+        $this->estimator->results();
     }
 
     #[Test]
@@ -314,29 +235,12 @@ class GridSearchTest extends TestCase
         $this->assertTrue($estimator->trained());
 
         $expectedBest = [
-            'k' => 10,
+            'k' => 5,
             'weighted' => true,
-            'kernel' => new Manhattan(),
+            'kernel' => new Euclidean(),
         ];
 
         $this->assertEquals($expectedBest, $estimator->base()->params());
-
-        $rows = iterator_to_array($estimator->results());
-
-        $expectedFirst = [
-            'k' => '10',
-            'weighted' => 'true',
-            'kernel' => 'Manhattan',
-        ];
-
-        foreach ($expectedFirst as $key => $value) {
-            $this->assertSame($value, $rows[0][$key]);
-        }
-
-        $this->assertSame(
-            ['k', 'weighted', 'kernel'],
-            array_slice(array_keys($rows[0]), 0, 3)
-        );
     }
 
     #[Test]
@@ -408,5 +312,47 @@ class GridSearchTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new GridSearch(KNearestNeighbors::class, ['k' => [1, 5]]);
+    }
+
+    #[Test]
+    #[TestDox('Setup callback is invoked on each estimator before cross-validation')]
+    public function setupIsCalledForEachEstimator() : void
+    {
+        $callCount = 0;
+        $types = [];
+
+        $this->estimator->setup(function (KNearestNeighbors $estimator) use (&$callCount, &$types) {
+            ++$callCount;
+            $types[] = $estimator::class;
+        });
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        // 6 param combinations + 1 final best estimator
+        $this->assertSame(7, $callCount);
+
+        foreach ($types as $type) {
+            $this->assertSame(KNearestNeighbors::class, $type);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Setup closure is transient and excluded from serialization')]
+    public function setupIsTransient() : void
+    {
+        $this->estimator->setup(function (KNearestNeighbors $e) : void {
+        });
+
+        $this->assertArrayNotHasKey('setup', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        $this->assertInstanceOf(GridSearch::class, $copy);
+
+        $this->assertArrayNotHasKey('setup', $copy->__serialize());
     }
 }

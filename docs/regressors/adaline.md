@@ -5,9 +5,9 @@
 *Adaptive Linear Neuron* is a single layer feed-forward neural network with a continuous linear output neuron suitable for regression tasks. Training is equivalent to solving regularized linear regression with an elastic net penalty online using Mini Batch Gradient Descent. In addition, the learner features progress monitoring which stops training when it can no longer improve the validation score. It also utilizes network snapshotting to make sure that it always has the best model parameters even if progress began to decline during training.
 
 !!! note
-    If there are not enough training samples to build an internal validation set with the user-specified holdout ratio then progress monitoring will be disabled.
+    Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Iterative](../iterative.md), [Online](../online.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -21,11 +21,10 @@
 | 4 | l2Penalty | 1e-4 | float | The amount of L2 regularization applied to the weights of the output layer. |
 | 5 | epochs | 1000 | int | The maximum number of training epochs. i.e. the number of times to iterate over the entire training set before terminating. |
 | 6 | minChange | 1e-5 | float | The minimum change in the training loss necessary to continue training. |
-| 7 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the holdout set. |
+| 7 | evalInterval | 1 | int | The number of epochs to train before evaluating the model using the validation set. |
 | 8 | window | 10 | int | The number of evaluations without improvement in the validation score to wait before considering an early stop. Set to 0 to disable early stopping. |
-| 9 | holdOut | 0.1 | float | The proportion of training samples to use for internal validation. Set to 0 to disable. |
-| 10 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
-| 11 | metric | RMSE | Metric | The validation metric used to score the generalization performance of the model during training. |
+| 9 | costFn | LeastSquares | RegressionLoss | The function that computes the loss associated with an erroneous activation during training. |
+| 10 | metric | RMSE | Metric | The validation metric used to score the generalization performance of the model during training. |
 
 ## Example
 
@@ -45,7 +44,6 @@ $estimator = new Adaline(
     minChange: 1e-5,
     evalInterval: 1,
     window: 10,
-    holdOut: 0.1,
     costFn: new HuberLoss(alpha: 2.5),
     metric: new RMSE()
 );
@@ -57,6 +55,18 @@ Return the loss for each epoch from the last training session.
 
 ```php
 public losses() : float[]|null
+```
+
+Return the progress table combining every epoch recorded during the last training session — the loss, the validation score, and the gradient norm when available — into a single ordered sequence.
+
+```php
+public progress() : iterable
+```
+
+Set the dataset used to score the model during training. Once a validation dataset is set, `evalInterval` and `window` determine how often it is scored and when training stops early. Pass `null` to disable progress monitoring and early stopping.
+
+```php
+public setValidationDataset(?Labeled $dataset) : void
 ```
 
 Return the validation score for each epoch from the last training session.
@@ -71,16 +81,16 @@ Returns the underlying neural network instance or `null` if untrained. See [Feed
 public network() : FeedForward|null
 ```
 
-Set the path of the temporary snapshot file used to store network parameters during training.
-
-```php
-public setSnapshotPath(?string $path) : void
-```
-
 Clean up any leftover state after training. Only do this if you plan to use the model for inference.
 
 ```php
 public cleanup() : void
+```
+
+Set the path of the temporary snapshot file used to store network parameters during training.
+
+```php
+public setSnapshotPath(?string $path) : void
 ```
 
 ## References

@@ -7,7 +7,6 @@ use Tensor\ColumnVector;
 use Rubix\ML\Verbose;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Iterative;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -47,7 +46,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Transformer, Iterative, Verbose
+class TSNE implements Transformer, Verbose
 {
     use LoggerAware;
 
@@ -614,7 +613,7 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         $base = $distances->divide($this->dofs)->add(1.0);
 
-        $weights = $base->pow(-1.0);
+        $weights = $base->reciprocal();
 
         $q = $this->q($distances);
 
@@ -655,11 +654,11 @@ class TSNE implements Transformer, Iterative, Verbose
     {
         $base = $distances->divide($this->dofs)->add(1.0);
 
-        $kernel = $base->pow((1.0 + $this->dofs) / -2.0);
+        $t = $this->studentT($base);
 
-        $norm = $kernel->sum()->sum() - $kernel->diagonalAsVector()->sum();
+        $norm = $t->sum()->sum() - $t->diagonalAsVector()->sum();
 
-        return $kernel->divide(max($norm, EPSILON));
+        return $t->divide(max($norm, EPSILON));
     }
 
     /**
@@ -676,6 +675,32 @@ class TSNE implements Transformer, Iterative, Verbose
             : $gain * self::GAIN_BRAKE;
 
         return max(self::MIN_GAIN, $value);
+    }
+
+    /**
+     * Compute the unnormalized Student t-distribution kernel raised to the
+     * power of the number of degrees of freedom. For low dimensional
+     * embeddings the exponent reduces to a reciprocal, which is far cheaper
+     * than the generic pow() method.
+     *
+     * @param Matrix $base
+     * @return Matrix
+     */
+    protected function studentT(Matrix $base) : Matrix
+    {
+        if ($this->dofs === 1) {
+            return $base->reciprocal();
+        }
+
+        if ($this->dofs === 2) {
+            return $base->multiply($base->sqrt())->reciprocal();
+        }
+
+        if ($this->dofs === 3) {
+            return $base->square()->reciprocal();
+        }
+
+        return $base->pow((1.0 + $this->dofs) / -2.0);
     }
 
     /**

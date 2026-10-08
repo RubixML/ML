@@ -9,7 +9,7 @@ The project documentation is located in the `/docs` folder in the project root.
 ## Requirements
 
 - [PHP](https://php.net/manual/en/install.php) 8.3 or above.
-- [Tensor extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
+- [Tensor 4.1+ extension](https://github.com/RubixML/Tensor) for fast Matrix/Vector computing.
 - [Swoole extension](https://openswoole.com/) for multiprocessing support.
 - [GD extension](https://php.net/manual/en/book.image.php) for image support.
 - [Mbstring extension](https://www.php.net/manual/en/book.mbstring.php) for fast multibyte string manipulation.
@@ -42,7 +42,7 @@ docs/         →  MkDocs documentation
 
 ### Core Interfaces
 
-`Estimator`, `Learner`, `Online`, `Iterative`, `Parallel`, `Probabilistic`, `Persistable`, `Verbose`, `RanksFeatures`, `Scoring`
+`Estimator`, `Learner`, `Online`, `Parallel`, `Probabilistic`, `Persistable`, `Verbose`, `RanksFeatures`, `Scoring`
 
 ### High-level data types
 

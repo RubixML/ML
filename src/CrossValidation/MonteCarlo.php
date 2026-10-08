@@ -4,6 +4,7 @@ namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
+use Rubix\ML\Estimator;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
@@ -71,13 +72,13 @@ class MonteCarlo implements Validator, Parallel
     /**
      * Test the estimator with the supplied dataset and return a validation score.
      *
-     * @param Learner $estimator
+     * @param Learner & Estimator $estimator
      * @param Labeled $dataset
      * @param Metric $metric
      * @throws RuntimeException
      * @return float
      */
-    public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
+    public function test(Learner & Estimator $estimator, Labeled $dataset, Metric $metric) : float
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 

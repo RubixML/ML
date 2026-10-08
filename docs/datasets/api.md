@@ -33,7 +33,7 @@ use Rubix\ML\Datasets\Extractors\CSV;
 $dataset = Labeled::fromIterator(new CSV('example.csv'));
 ```
 
-Stream Dataset chunks that are lazy-loaded from an iterator such as an [Extractor](../extractors/api.md). Useful for training an [Online](online.md) learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting `verify` to false.
+Stream Dataset chunks that are lazy-loaded from an iterator such as an [Extractor](../extractors/api.md). Useful for training an [Online](../online.md) learner on a dataset that is too large to fit into memory all at once. Because the batches are generated lazily, only n records are ever held in memory at a time. Each batch is validated on construction by default, but you can disable verification for speed if you trust the data by setting `verify` to false.
 
 ```php
 public static chunked(iterable $iterator, int $size, bool $verify = true) : Generator
@@ -265,6 +265,8 @@ public randomWeightedSubsetWithReplacement(int $n, array $weights) : self
 ```php
 $subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 ```
+
+Each weight must be non-negative and the sum of the weights must be greater than zero. If *n* is less than 1, there are no samples in the dataset, the number of weights does not equal the number of samples, any weight is negative, or the sum of the weights is not greater than zero then an `InvalidArgumentException` is thrown.
 
 ## Applying Transformations
 
