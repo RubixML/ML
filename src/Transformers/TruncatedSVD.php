@@ -127,18 +127,18 @@ class TruncatedSVD implements Transformer, Stateful, Persistable
 
         $svd = Matrix::fromArray($dataset->samples())->svd();
 
-        $singularValues = $svd->singularValues();
+        $singularValues = $svd->singularValues()->square();
         $components = $svd->vT()->asArray();
 
-        $totalStdDev = $singularValues->sum();
+        $totalVariance = $singularValues->sum();
 
         $singularValues = array_slice($singularValues->asArray(), 0, $this->dimensions);
         $components = array_slice($components, 0, $this->dimensions);
 
         $components = Matrix::fromArray($components, false)->transpose();
 
-        $noiseStdDev = $totalStdDev - array_sum($singularValues);
-        $lossiness = $noiseStdDev / ($totalStdDev ?: EPSILON);
+        $noiseVariance = $totalVariance - array_sum($singularValues);
+        $lossiness = $noiseVariance / ($totalVariance ?: EPSILON);
 
         $this->components = $components;
         $this->lossiness = $lossiness;

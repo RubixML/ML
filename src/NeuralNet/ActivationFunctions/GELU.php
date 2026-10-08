@@ -3,6 +3,9 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Tensor\Matrix;
+use Rubix\ML\Exceptions\RuntimeException;
+use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\ExtensionMinimumVersion;
 
 /**
  * GELU
@@ -20,38 +23,49 @@ use Tensor\Matrix;
 class GELU implements ActivationFunction
 {
     /**
-     * The square root of two over pi.
+     * The reciprocal of the square root of 2.
      *
      * @var float
      */
-    protected const ALPHA = 0.7978845608;
+    protected const INV_SQRT2 = M_SQRT1_2;
 
     /**
-     * Gaussian error function approximation term.
+     * The reciprocal of the square root of 2 pi i.e. the normalization
+     * constant of the standard normal probability density function.
      *
      * @var float
      */
-    protected const BETA = 0.044715;
+    protected const INV_SQRT_2PI = 0.3989422804014327;
+
+    /**
+     * @throws RuntimeException
+     */
+    public function __construct()
+    {
+        if (ExtensionIsLoaded::with('tensor')->passes()) {
+            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
+        }
+    }
 
     /**
      * Compute the output value.
+     *
+     * GELU(x) = x Φ(x) = 0.5 x (1 + erf(x / √2))
      *
      * @param Matrix $x
      * @return Matrix
      */
     public function activate(Matrix $x) : Matrix
     {
-        $x3 = $x->square()->multiply($x);
-
-        $inner = $x->add($x3->multiply(self::BETA))
-            ->multiplyScalar(self::ALPHA);
-
-        return $x->multiply($inner->tanh()->add(1.0))
+        return $x->multiply($x->multiplyScalar(self::INV_SQRT2)->erf()->add(1.0))
             ->multiplyScalar(0.5);
     }
 
     /**
      * Calculate the derivative of the activation function at a given output.
+     *
+     * GELU'(x) = Φ(x) + x φ(x)
+     *          = 0.5 (1 + erf(x / √2)) + x (2 π)^-0.5 exp(-x² / 2)
      *
      * @internal
      *
@@ -61,17 +75,13 @@ class GELU implements ActivationFunction
      */
     public function differentiate(Matrix $x, Matrix $z) : Matrix
     {
-        $x3 = $x->square()->multiply($x);
+        $cdf = $x->multiplyScalar(self::INV_SQRT2)->erf()->add(1.0)
+            ->multiplyScalar(0.5);
 
-        $alpha = $x3->multiply(0.0356774)->add($x->multiply(self::ALPHA));
-        $beta = $x3->multiply(0.0535161)->add($x->multiply(0.398942));
+        $pdf = $x->square()->multiplyScalar(-0.5)->exp()
+            ->multiplyScalar(self::INV_SQRT_2PI);
 
-        $tanhA = $alpha->tanh();
-        $sech2A = $tanhA->square()->negate()->add(1.0);
-
-        return $tanhA->multiply(0.5)
-            ->add($beta->multiply($sech2A))
-            ->addScalar(0.5);
+        return $cdf->add($x->multiply($pdf));
     }
 
     /**

@@ -44,7 +44,7 @@ class HuberLoss implements RegressionLoss
     public function __construct(float $alpha = 0.9)
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
-            ExtensionMinimumVersion::with('tensor', '4.0.0')->check();
+            ExtensionMinimumVersion::with('tensor', '4.1.0')->check();
         }
 
         if ($alpha <= 0.0) {
@@ -105,8 +105,7 @@ class HuberLoss implements RegressionLoss
 
         return $beta->square()
             ->addScalar($this->alpha2)
-            ->sqrt()
-            ->reciprocal()
+            ->rsqrt()
             ->multiply($beta)
             ->multiplyScalar($this->alpha);
     }

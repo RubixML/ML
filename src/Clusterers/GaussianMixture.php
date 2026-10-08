@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Clusterers;
 
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
@@ -61,7 +60,7 @@ use const Rubix\ML\TWO_PI;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMixture implements Estimator, Learner, Iterative, Probabilistic, Verbose, Persistable
+class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 

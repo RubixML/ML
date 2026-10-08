@@ -72,6 +72,48 @@ $estimator->train($dataset);
 
 ```
 
+## Progress Table
+
+In addition to the scalar values returned by the `losses()` and `scores()` accessors, learners and other iterative estimators expose a `progress()` method that returns an iterable table combining every recorded epoch into a single, ordered sequence suitable for inspecting how the model evolved round over round.
+
+This is most useful when the loss and score do not move in tandem — for example, when a training loss continues to drop long after the validation score has begun to plateau or regress. Lining up the epochs side by side makes it possible to identify when the model stopped generalizing and to pick a reasonable point to stop at.
+
+Each entry in the table is an associative array with `Epoch` as one of its keys. The other keys present may vary by estimator; every entry includes the epoch number and the training loss keyed by its name (such as `Exponential Loss` or `Inertia`), and most also include the validation score keyed by the metric name (when a validation dataset was supplied) and the gradient norm (for estimators trained with the neural network subsystem).
+
+```php
+use Rubix\ML\Extractors\CSV;
+
+$estimator->train($dataset);
+
+$extractor = new CSV('progress.csv', true);
+
+$extractor->export($estimator->progress());
+```
+
+The resulting file contains one row per recorded epoch. Values that were not recorded at a given epoch are left blank, such as the validation score on epochs that fall between evaluation intervals.
+
+```csv
+Epoch,Exponential Loss,Gradient Norm,F Beta (beta: 1)
+1,0.6931,1.2007,
+2,0.4034,0.8631,
+3,0.2588,0.6102,0.7889
+```
+
+Because `progress()` returns an iterator, it can be passed directly to an exporter, plotted, or streamed without loading the entire table into memory.
+
+You can also iterate over it manually to extract or transform individual epochs:
+
+```php
+foreach ($estimator->progress() as $record) {
+    if (isset($record['F Beta (beta: 1)']) and $record['Exponential Loss'] < 0.3) {
+        printf("Loss dropped below 0.3 at epoch %d with a score of %.4F.", $record['Epoch'], $record['F Beta (beta: 1)']);
+    }
+}
+```
+
+!!! note
+    A learner must be trained before `progress()` returns any epochs. The `Gradient Norm` and metric keys are only present for epochs where the corresponding value was actually recorded during training.
+
 ## Parallel Training
 
 Learners that implement the [Parallel](parallel.md) interface can utilize a parallel processing (multiprocessing) backend for training. Parallel computing can greatly reduce training time on multicore systems at the cost of some overhead to synchronize the data. For small datasets, the overhead may actually cause the runtime to increase. Most parallel learners do not use parallel processing by default, so to enable it you must set a parallel backend using the `setBackend()` method. In the example below, we'll train a [Random Forest](classifiers/random-forest.md) classifier with 500 trees in parallel using the [Amp](backends/amp.md) backend under the hood. By settings the `$workers` argument to 4 we tell the backend to use up to 4 cores at a time to execute the computation.

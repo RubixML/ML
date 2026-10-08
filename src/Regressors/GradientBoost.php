@@ -14,7 +14,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Helpers\Stats;
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
@@ -62,7 +61,7 @@ use function round;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class GradientBoost implements Estimator, Learner, Iterative, RanksFeatures, Verbose, Persistable
+class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
