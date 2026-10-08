@@ -7,6 +7,7 @@ use Rubix\ML\Transformers\ColorJitter;
 
 /**
  * @Groups({"Transformers"})
+ * @BeforeMethods({"setUp"})
  */
 class ColorJitterBench
 {
