@@ -295,7 +295,7 @@ foreach ($estimator->steps() as $epoch) { /* ... */ }
 foreach ($estimator->progress() as $epoch) { /* ... */ }
 ```
 
-The returned table is now also described by the [Iterative](iterative.md) interface, which the `progress()` method implements. See [item 52](#52-grid-search-results-table) for the new results() table.
+The returned table combines every recorded epoch — the loss, the validation score, and, for neural network learners, the gradient norm — into a single ordered sequence. See [item 52](#52-grid-search-results-table) for the new results() table.
 
 ### 16. DBSCAN is now a Learner, Probabilistic, and Persistable
 
@@ -875,9 +875,9 @@ foreach (Labeled::chunked($extractor, 256) as $batch) {
 
 The second argument is the size of each chunk (default `1024`), and the last chunk may contain fewer samples. The third argument, `$verify` (default `true`), controls whether each chunk is validated as it is produced — pass `false` to skip per-chunk validation for maximum throughput.
 
-### 50. Iterative interface with progress() method
+### 50. The progress() method
 
-A new [Iterative](iterative.md) interface groups the learners, estimators, and transformers that record their progress epoch by epoch during training or transformation. It exposes a `progress()` method that returns an iterable table combining every recorded epoch — the loss, the validation score (when a validation dataset was supplied), and, for neural network learners, the gradient norm — into a single ordered sequence:
+Learners, estimators, and transformers that record their progress epoch by epoch during training or transformation expose a `progress()` method that returns an iterable table combining every recorded epoch — the loss, the validation score (when a validation dataset was supplied), and, for neural network learners, the gradient norm — into a single ordered sequence:
 
 ```php
 use Rubix\ML\Extractors\CSV;
@@ -889,7 +889,7 @@ $extractor = new CSV('progress.csv', true);
 $extractor->export($estimator->progress());
 ```
 
-Most iterative learners — including [Adaline](regressors/adaline.md), [MLP](classifiers/multilayer-perceptron.md), [Logistic Regression](classifiers/logistic-regression.md), [K Means](clusterers/k-means.md), [t-SNE](transformers/t-sne.md), and the others listed in [item 15](#15-the-steps-method-was-renamed-to-progress) — now implement the interface. Because `progress()` returns a `Generator`, it can be streamed to an exporter or plotted without loading the whole table into memory. Learners that already exposed this table via `steps()` (renamed to `progress()` in [item 15](#15-the-steps-method-was-renamed-to-progress)) continue to work unchanged.
+Most iterative learners — including [Adaline](regressors/adaline.md), [MLP](classifiers/multilayer-perceptron.md), [Logistic Regression](classifiers/logistic-regression.md), [K Means](clusterers/k-means.md), [t-SNE](transformers/t-sne.md), and the others listed in [item 15](#15-the-steps-method-was-renamed-to-progress) — now expose this method. Because `progress()` returns a `Generator`, it can be streamed to an exporter or plotted without loading the whole table into memory. Learners that already exposed this table via `steps()` (renamed to `progress()` in [item 15](#15-the-steps-method-was-renamed-to-progress)) continue to work unchanged.
 
 ### 51. Grid Search fromNamedParams() factory method
 

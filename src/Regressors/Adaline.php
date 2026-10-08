@@ -13,7 +13,6 @@ use Rubix\ML\Exceptions\EmptyDataset;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\Iterative;
 use Rubix\ML\Learner;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
@@ -68,7 +67,7 @@ use function uniqid;
  * @author      Andrew DalPino
  * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
-class Adaline implements Estimator, Learner, Iterative, Online, RanksFeatures, Verbose, Persistable
+class Adaline implements Estimator, Learner, Online, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
