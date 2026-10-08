@@ -398,8 +398,6 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
             $row = [];
 
-            $row["{$this->metric}"] = Params::toString($score);
-
             $params = [];
 
             foreach ($combination as $j => $param) {
@@ -407,6 +405,8 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
             }
 
             $row['params'] = $params;
+
+            $row["{$this->metric}"] = Params::toString($score);
 
             $results['Trial ' . ($i + 1)] = $row;
         }
