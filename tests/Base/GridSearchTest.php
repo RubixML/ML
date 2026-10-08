@@ -20,6 +20,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -225,57 +226,34 @@ class GridSearchTest extends TestCase
 
         $scores = $this->estimator->scores();
 
+        $names = ['k', 'weighted', 'kernel'];
+
         foreach ($this->estimator->combinations() as $i => $combination) {
             $row = $rows['Trial ' . ($i + 1)];
 
             $this->assertSame(
-                ['k', 'weighted', 'kernel', "{$metric}"],
+                ["{$metric}", 'params'],
                 array_keys($row)
             );
 
-            $expectedParams = array_map(
-                [Params::class, 'toString'],
-                $combination
+            $expectedParams = array_combine(
+                $names,
+                array_map([Params::class, 'toString'], $combination)
             );
 
-            $this->assertSame($expectedParams, array_values(array_slice($row, 0, 3)));
+            $this->assertSame($expectedParams, $row['params']);
 
             $this->assertSame((string) $scores[$i], $row["{$metric}"]);
         }
     }
 
     #[Test]
-    public function bestIsNullsBeforeTraining() : void
+    public function resultsThrowBeforeTraining() : void
     {
-        $this->assertSame([null, null], $this->estimator->best());
-    }
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('No trials have been run yet.');
 
-    #[Test]
-    public function bestReturnsTopPerformingParamsAndScore() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        [$bestParams, $bestScore] = $this->estimator->best();
-
-        $expectedParams = [
-            'k' => '5',
-            'weighted' => 'true',
-            'kernel' => 'Euclidean',
-        ];
-
-        $this->assertSame($expectedParams, $bestParams);
-
-        $this->assertSame(
-            ['k', 'weighted', 'kernel'],
-            array_keys($bestParams)
-        );
-
-        $this->assertSame(
-            Params::toString(max($this->estimator->scores())),
-            $bestScore
-        );
+        $this->estimator->results();
     }
 
     #[Test]
@@ -305,21 +283,6 @@ class GridSearchTest extends TestCase
         ];
 
         $this->assertEquals($expectedBest, $estimator->base()->params());
-
-        [$bestParams, $bestScore] = $estimator->best();
-
-        $expectedBestParams = [
-            'k' => '5',
-            'weighted' => 'true',
-            'kernel' => 'Euclidean',
-        ];
-
-        $this->assertSame($expectedBestParams, $bestParams);
-
-        $this->assertSame(
-            Params::toString(max($estimator->scores())),
-            $bestScore
-        );
     }
 
     #[Test]

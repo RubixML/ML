@@ -23,6 +23,7 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use ReflectionClass;
 use Closure;
 
@@ -30,7 +31,6 @@ use function in_array;
 use function class_exists;
 use function array_unique;
 use function array_keys;
-use function array_pop;
 use function array_key_exists;
 use function array_is_list;
 use function is_array;
@@ -384,52 +384,34 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
     public function results() : Report
     {
         if (!$this->scores) {
-            return new Report([]);
+            throw new RuntimeException('No trials have been run yet.');
         }
 
         $combinations = $this->combinations();
-        $scores = $this->scores;
 
         $names = self::constructorParamNames($this->class);
 
         $results = [];
 
-        foreach ($scores as $i => $score) {
+        foreach ($this->scores as $i => $score) {
+            $combination = $combinations[$i];
+
             $row = [];
 
-            foreach ($combinations[$i] as $j => $param) {
-                $row[$names[$j] ?? 'param ' . ($j + 1)] = Params::toString($param);
+            $row["{$this->metric}"] = Params::toString($score);
+
+            $params = [];
+
+            foreach ($combination as $j => $param) {
+                $params[$names[$j]] = Params::toString($param);
             }
 
-            $row["{$this->metric}"] = Params::toString($score);
+            $row['params'] = $params;
 
             $results['Trial ' . ($i + 1)] = $row;
         }
 
         return new Report($results);
-    }
-
-    /**
-     * Return the best combination of parameters found during the last search along
-     * with their validation score in a 2-tuple.
-     *
-     * @return array{0: array<mixed>|null, 1: float|null}
-     */
-    public function best() : array
-    {
-        if (!$this->scores) {
-            return [null, null];
-        }
-
-        $index = argmax($this->scores);
-
-        $results = $this->results()->toArray();
-
-        $row = $results['Trial ' . ($index + 1)];
-
-        $score = array_pop($row);
-
-        return [$row, $score];
     }
 
     /**
@@ -508,8 +490,10 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
 
             $after = function (float $score) use ($trial, $params) {
                 if ($this->logger) {
+                    $namedParams = $this->named($params);
+
                     $this->logger->info("Trial {$trial}: {$this->metric}: $score, "
-                       . 'params: [' . Params::stringify($this->named($params)) . ']');
+                       . 'params: [' . Params::stringify($namedParams) . ']');
                 }
             };
 
@@ -546,7 +530,7 @@ class GridSearch implements Estimator, Learner, Parallel, Verbose, Persistable
      * Make a prediction on a given sample dataset.
      *
      * @param Dataset $dataset
-     * @throws Exceptions\RuntimeException
+     * @throws RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array

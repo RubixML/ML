@@ -915,7 +915,7 @@ Omitted hyper-parameters are filled in with their default from the base learner'
 
 ### 52. Grid Search results() table
 
-[Grid Search](grid-search.md) now generates a `results()` table: a Report of every parameter combination tested, each row paired with its validation score, sorted from best to worst. It is convenient for inspecting the entire search space at a glance or exporting it:
+[Grid Search](grid-search.md) now generates a `results()` table: a Report of every parameter combination tested, in the order the trials were trained. Each row pairs the validation score (keyed by the metric name) with a nested `params` map of the combination's constructor parameters. It is convenient for inspecting the entire search space at a glance or exporting it:
 
 ```php
 use Rubix\ML\Extractors\CSV;
@@ -927,7 +927,7 @@ $extractor = new CSV('results.csv', true);
 $extractor->export($estimator->results());
 ```
 
-The existing `best()` and `scores()` methods are unchanged and continue to return the best combination and the raw scores respectively.
+The `best()` method has been removed; `scores()` is unchanged and continues to return the raw scores in trial order. `results()` throws a `RuntimeException` if no trials have been run yet.
 
 ### 53. Binned stratification for continuous labels
 
