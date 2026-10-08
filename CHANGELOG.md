@@ -4,6 +4,7 @@
     - Added K-medoids clusterer
     - Added `ARFF` and `Shuffler` extractors
     - Added `Ramp` and `Cosine` learning rate Schedulers
+    - Added `Color Jitter` and `Image Flipper` transformers
 
 - 3.0.0
     - Integers are now considered a categorical data type
