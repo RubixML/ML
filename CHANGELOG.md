@@ -1,5 +1,11 @@
 # Changelog
 
+- 3.1.0
+    - Added K-medoids clusterer
+    - Added `ARFF` and `Shuffler` extractors
+    - Added `Ramp` and `Cosine` learning rate Schedulers
+    - Added `Color Jitter` and `Image Flipper` transformers
+
 - 3.0.0
     - Integers are now considered a categorical data type
     - Updated to Tensor API version 4.1
@@ -55,7 +61,7 @@
     - Add Dataset chunked() factory for online training
     - Added L1 penalty to `Dense` layers
     - `Adaline`, `Logistic Regression`, `Softmax Classifier` now elastic net
-    - Added Iterative interface with progress() method
+    - Added `Iterative` interface with progress() method
     - Iterative Learners renamed steps() method to progress()
     - Changed default gradient-based `minChange` from 1e-4 to 1e-5
     - `Prior` is now default `Strategy` of `Missing Data Imputer`
