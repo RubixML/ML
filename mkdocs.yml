@@ -49,7 +49,6 @@ nav:
       - CSV: extractors/csv.md
       - Deduplicator: extractors/deduplicator.md
       - NDJSON: extractors/ndjson.md
-      - Repeater: extractors/repeater.md
       - Shuffler: extractors/shuffler.md
       - SQL Table: extractors/sql-table.md
     - Dataset Objects:
