@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -14,10 +17,9 @@ use function imagesetpixel;
 use function imagesx;
 use function imagesy;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\ColorJitter
- */
+#[Group('Transformers')]
+#[RequiresPhpExtension('gd')]
+#[CoversClass(ColorJitter::class)]
 class ColorJitterTest extends TestCase
 {
     /**
