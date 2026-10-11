@@ -65,7 +65,7 @@ use function number_format;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BayesianSearch implements EstimatorWrapper, Learner, Verbose, Persistable
+class BayesianSearch implements Estimator, Learner, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
