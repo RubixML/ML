@@ -47,4 +47,14 @@ class PowerTransformerBench
     {
         $this->dataset->apply($this->transformer);
     }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("milliseconds", precision=3)
+     */
+    public function fit() : void
+    {
+        $this->transformer->fit($this->dataset);
+    }
 }

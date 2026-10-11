@@ -133,6 +133,23 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
     }
 
     /**
+     * Compute the sum of the log absolute Jacobian of the given values.
+     *
+     * @param list<int|float> $values
+     * @return float
+     */
+    protected static function logJacobian(array $values) : float
+    {
+        $sigma = 0.0;
+
+        foreach ($values as $value) {
+            $sigma += $value >= 0.0 ? log($value + 1.0) : -log(1.0 - $value);
+        }
+
+        return $sigma;
+    }
+
+    /**
      * @param float|null $lambda
      * @throws InvalidArgumentException
      */
@@ -267,14 +284,16 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
      */
     protected function estimateLambda(array $values) : float
     {
+        $sigma = self::logJacobian($values);
+
         $lo = self::LAMBDA_MIN;
         $ho = self::LAMBDA_MAX;
 
         $c = $ho - ($ho - $lo) * self::GOLDEN_RATIO;
         $d = $lo + ($ho - $lo) * self::GOLDEN_RATIO;
 
-        $fc = $this->logLikelihood($c, $values);
-        $fd = $this->logLikelihood($d, $values);
+        $fc = $this->logLikelihood($c, $values, $sigma);
+        $fd = $this->logLikelihood($d, $values, $sigma);
 
         for ($i = 0; $i < 100; ++$i) {
             if ($fc >= $fd) {
@@ -283,14 +302,14 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
                 $fd = $fc;
 
                 $c = $ho - ($ho - $lo) * self::GOLDEN_RATIO;
-                $fc = $this->logLikelihood($c, $values);
+                $fc = $this->logLikelihood($c, $values, $sigma);
             } else {
                 $lo = $c;
                 $c = $d;
                 $fc = $fd;
 
                 $d = $lo + ($ho - $lo) * self::GOLDEN_RATIO;
-                $fd = $this->logLikelihood($d, $values);
+                $fd = $this->logLikelihood($d, $values, $sigma);
             }
         }
 
@@ -302,19 +321,17 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
      *
      * @param float $lambda
      * @param list<int|float> $values
+     * @param float $sigma
      * @return float
      */
-    protected function logLikelihood(float $lambda, array $values) : float
+    protected function logLikelihood(float $lambda, array $values, float $sigma) : float
     {
         $n = count($values);
 
         $transformed = [];
-        $sigma = 0.0;
 
         foreach ($values as $value) {
             $transformed[] = self::yeoJohnson($value, $lambda);
-
-            $sigma += $value >= 0.0 ? log($value + 1.0) : -log(1.0 - $value);
         }
 
         $variance = Stats::variance($transformed);
