@@ -116,9 +116,9 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     /**
      * The base estimator instance.
      *
-     * @var Learner
+     * @var Learner & Estimator
      */
-    protected Learner $base;
+    protected Learner & Estimator $base;
 
     /**
      * The maximum number of trials to run during a single training session.
@@ -308,9 +308,9 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
 
         $proxy = new $class(...array_map('current', $params));
 
-        if (!$proxy instanceof Learner) {
+        if (!$proxy instanceof Learner or !$proxy instanceof Estimator) {
             throw new InvalidArgumentException('Base class must'
-                . ' implement the Learner Interface.');
+                . ' implement the Learner and Estimator Interfaces.');
         }
 
         if ($metric) {
@@ -539,7 +539,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         while (count($history) < $maxTrials) {
             $params = $this->propose($history);
 
-            /** @var Learner $estimator */
+            /** @var Learner & Estimator $estimator */
             $estimator = new $this->class(...$params);
 
             $score = $this->validator->test($estimator, $dataset, $this->metric);
