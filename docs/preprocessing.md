@@ -72,6 +72,7 @@ Oftentimes, the continuous features of a dataset will be on different scales bec
 | [L2 Normalizer](transformers/l2-normalizer.md) | Row-wise | [0, 1] | | |
 | [Max Absolute Scaler](transformers/max-absolute-scaler.md) | Column-wise | [-1, 1] | ● | ● |
 | [Min Max Normalizer](transformers/min-max-normalizer.md) | Column-wise | [min, max] | ● | ● |
+| [Power Transformer](transformers/power-transformer.md) | Column-wise | [-∞, ∞] | ● | |
 | [Robust Standardizer](transformers/robust-standardizer.md) | Column-wise | [-∞, ∞] | ● | |
 | [Z Scale Standardizer](transformers/z-scale-standardizer.md) | Column-wise | [-∞, ∞] | ● | ● |
 

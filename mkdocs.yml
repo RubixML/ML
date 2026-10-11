@@ -110,6 +110,7 @@ nav:
       - One Class SVM: anomaly-detectors/one-class-svm.md
       - Robust Z-Score: anomaly-detectors/robust-z-score.md
     - Meta Estimators:
+      - Bayesian Search: bayesian-search.md
       - Bootstrap Aggregator: bootstrap-aggregator.md
       - Committee Machine: committee-machine.md
       - Grid Search: grid-search.md
@@ -124,6 +125,7 @@ nav:
         - L2 Normalizer: transformers/l2-normalizer.md
         - Max Absolute Scaler: transformers/max-absolute-scaler.md
         - Min Max Normalizer: transformers/min-max-normalizer.md
+        - Power Transformer: transformers/power-transformer.md
         - Robust Standardizer: transformers/robust-standardizer.md
         - Z Scale Standardizer: transformers/z-scale-standardizer.md
       - Dimensionality Reduction:
