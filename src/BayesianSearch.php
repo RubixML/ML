@@ -302,7 +302,7 @@ class BayesianSearch implements EstimatorWrapper, Learner, Verbose, Persistable
                     $tuple = [$parameter->getDefaultValue()];
                 }
             } else {
-                $tuple = array_unique($tuple, SORT_REGULAR);
+                $tuple = array_values(array_unique($tuple, SORT_REGULAR));
             }
         }
 
