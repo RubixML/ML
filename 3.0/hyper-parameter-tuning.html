@@ -871,6 +871,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#bayesian-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bayesian Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grid-search-vs-bayesian-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grid Search vs. Bayesian Search
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3078,6 +3096,29 @@
   
   
     <li class="md-nav__item">
+      <a href="bayesian-search.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bayesian Search
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="bootstrap-aggregator.html" class="md-nav__link">
         
   
@@ -3453,6 +3494,29 @@
   
   <span class="md-ellipsis">
     Min Max Normalizer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="transformers/power-transformer.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Power Transformer
     
   </span>
   
@@ -7568,6 +7632,124 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/word-stemmer.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Word Stemmer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_14_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_14_7" id="__nav_4_14_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Stemmers
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_14_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_14_7">
+            <span class="md-nav__icon md-icon"></span>
+            Stemmers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/stemmers/stemmer.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizers/stemmers/porter-english.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Porter English
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8368,6 +8550,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#bayesian-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bayesian Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grid-search-vs-bayesian-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grid Search vs. Bayesian Search
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -8465,6 +8665,22 @@
     <span class="nx">Params</span><span class="o">::</span><span class="na">ints</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">[</span><span class="k">true</span><span class="p">,</span> <span class="k">false</span><span class="p">],</span> <span class="c1">// ...</span>
 <span class="p">];</span>
 </code></pre></div>
+<h3 id="bayesian-search">Bayesian Search<a class="headerlink" href="#bayesian-search" title="Permanent link">#</a></h3>
+<p><a href="bayesian-search.html">Bayesian Search</a> is a meta-estimator that, like Grid Search, wraps a base learner whose hyper-parameters we wish to optimize, but instead of exhaustively training one model for every combination it <em>optimizes</em> the search. Under the hood, Bayesian Search uses the Tree-structured Parzen Estimator (TPE) to propose the next set of hyper-parameters to evaluate based on the results of the trials before it. After a brief <em>initial trials</em> phase of random search, each subsequent trial is guided by the top performing trials seen so far, concentrating the search on the regions of the space most likely to yield an improvement. The number of models trained is bounded by the <code>maxTrials</code> parameter rather than the size of the search space, making Bayesian Search well-suited to large hyper-parameter spaces where exhaustive search is infeasible.</p>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\BayesianSearch</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Classifiers\KNearestNeighbors</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Kernels\Distance\Euclidean</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\Kernels\Distance\Manhattan</span><span class="p">;</span>
+<span class="nv">$params</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="k">true</span><span class="p">,</span> <span class="k">false</span><span class="p">],</span> <span class="p">[</span><span class="k">new</span> <span class="nx">Euclidean</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">Manhattan</span><span class="p">()]</span>
+<span class="p">];</span>
+
+<span class="nv">$estimator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BayesianSearch</span><span class="p">(</span><span class="nx">KNearestNeighbors</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span>
+
+<span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">train</span><span class="p">(</span><span class="nv">$dataset</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="grid-search-vs-bayesian-search">Grid Search vs. Bayesian Search<a class="headerlink" href="#grid-search-vs-bayesian-search" title="Permanent link">#</a></h3>
+<p>Grid Search is exhaustive and deterministic, guaranteeing the best combination within the search space is found, but the number of models trained grows multiplicatively with the number of parameters. Bayesian Search samples the space sequentially and uses the results of previous trials to guide future proposals, so it can explore much larger spaces with a bounded number of trials, at the cost of not being able to guarantee the global optimum is found. As a rule of thumb, use Grid Search when the search space is small and the best combination is important, and Bayesian Search when the space is large or training is expensive.</p>
 
 
 
@@ -8487,7 +8703,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 17:24:40">October 6, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 12, 2026 01:22:11">October 12, 2026</span>
   </span>
 
     
