@@ -90,6 +90,14 @@ class OPTICSTest extends TestCase
     }
 
     #[Test]
+    public function transientPropertiesDefaultToNull() : void
+    {
+        $this->assertNull($this->estimator->ordering());
+        $this->assertNull($this->estimator->reachability());
+        $this->assertNull($this->estimator->coreDistances());
+    }
+
+    #[Test]
     public function badRadius() : void
     {
         $this->expectException(InvalidArgumentException::class);

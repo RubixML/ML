@@ -141,47 +141,37 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * The cluster ordered list of sample indices from the last training session.
      *
-     * @var list<int>
+     * @var list<int>|null
      */
-    protected array $ordering = [
-        //
-    ];
+    protected ?array $ordering = null;
 
     /**
      * The reachability distance of each sample from the last training session.
      *
-     * @var list<float>
+     * @var list<float>|null
      */
-    protected array $reachability = [
-        //
-    ];
+    protected ?array $reachability = null;
 
     /**
      * The core distance of each sample from the last training session.
      *
-     * @var list<float>
+     * @var list<float>|null
      */
-    protected array $coreDistances = [
-        //
-    ];
+    protected ?array $coreDistances = null;
 
     /**
      * The predecessor of each sample from the last training session.
      *
-     * @var list<int>
+     * @var list<int>|null
      */
-    protected array $predecessor = [
-        //
-    ];
+    protected ?array $predecessor = null;
 
     /**
      * The set of samples already added to the cluster ordering.
      *
-     * @var list<bool>
+     * @var list<bool>|null
      */
-    protected array $processed = [
-        //
-    ];
+    protected ?array $processed = null;
 
     /**
      * @param float $radius
@@ -278,9 +268,9 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * Return the cluster ordered list of sample indices from the last training session.
      *
-     * @return list<int>
+     * @return list<int>|null
      */
-    public function ordering() : array
+    public function ordering() : ?array
     {
         return $this->ordering;
     }
@@ -288,9 +278,9 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * Return the reachability distance of each sample from the last training session.
      *
-     * @return list<float>
+     * @return list<float>|null
      */
-    public function reachability() : array
+    public function reachability() : ?array
     {
         return $this->reachability;
     }
@@ -298,9 +288,9 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * Return the core distance of each sample from the last training session.
      *
-     * @return list<float>
+     * @return list<float>|null
      */
-    public function coreDistances() : array
+    public function coreDistances() : ?array
     {
         return $this->coreDistances;
     }

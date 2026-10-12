@@ -49,19 +49,19 @@ public tree() : Spatial
 Return the cluster ordered list of sample indices from the last training session.
 
 ```php
-public ordering() : array
+public ordering() : ?array
 ```
 
 Return the reachability distance of each sample, indexed by sample number, from the last training session.
 
 ```php
-public reachability() : array
+public reachability() : ?array
 ```
 
 Return the core distance of each sample, indexed by sample number, from the last training session.
 
 ```php
-public coreDistances() : array
+public coreDistances() : ?array
 ```
 
 ## References
