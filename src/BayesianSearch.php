@@ -21,6 +21,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use ReflectionClass;
+use Closure;
 
 use function in_array;
 use function class_exists;
@@ -148,6 +149,13 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     protected array $history = [
         //
     ];
+
+    /**
+     * A callback invoked on each estimator instance before it is cross-validated.
+     *
+     * @var Closure(Learner & Estimator) : mixed|null
+     */
+    protected ?Closure $setup = null;
 
     /**
      * Return a Bayesian Search instance from a set of hyper-parameters keyed by the
@@ -349,6 +357,17 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
+     * Register a callback to be invoked on each estimator instance before it is
+     * cross-validated, allowing you to configure any of its methods.
+     *
+     * @param Closure(Learner & Estimator) : mixed $setup
+     */
+    public function setup(Closure $setup) : void
+    {
+        $this->setup = $setup;
+    }
+
+    /**
      * Return the estimator type.
      *
      * @internal
@@ -526,6 +545,10 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
             /** @var Learner & Estimator $estimator */
             $estimator = new $this->class(...$params);
 
+            if ($this->setup) {
+                call_user_func($this->setup, $estimator);
+            }
+
             $score = $this->validator->test($estimator, $dataset, $this->metric);
 
             if ($this->logger) {
@@ -544,6 +567,10 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         $params = $this->bestParams($history);
 
         $estimator = new $this->base(...$params);
+
+        if ($this->setup) {
+            call_user_func($this->setup, $estimator);
+        }
 
         if ($this->logger) {
             $this->logger->info('Training with best hyper-parameters'
@@ -736,7 +763,11 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      */
     public function __serialize() : array
     {
-        return get_object_vars($this);
+        $properties = get_object_vars($this);
+
+        unset($properties['setup']);
+
+        return $properties;
     }
 
     /**

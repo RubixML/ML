@@ -58,6 +58,20 @@ $estimator = BayesianSearch::fromNamedParams(
 );
 ```
 
+## Setup
+
+Some estimators expose configuration methods that are unrelated to their constructor parameters—for example, `setValidationDataset()` on iterative learners. Use `setup()` to register a callback that is invoked on each newly-instantiated base estimator before it is cross-validated (and again on the final best estimator before it is trained on the full dataset).
+
+The callback receives the base estimator instance and may call any of its methods. It is not serialized with the bayesian search instance.
+
+```php
+$estimator = new BayesianSearch(LogisticRegression::class, $params, new FBeta(), new KFold(5));
+
+$estimator->setup(function (LogisticRegression $regressor) : void {
+    $regressor->setValidationDataset($validation);
+});
+```
+
 ## Additional Methods
 
 Return the base learner instance.

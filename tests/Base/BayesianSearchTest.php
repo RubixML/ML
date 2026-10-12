@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Base;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use Rubix\ML\DataType;
 use Rubix\ML\BayesianSearch;
 use Rubix\ML\EstimatorType;
@@ -340,5 +341,47 @@ class BayesianSearchTest extends TestCase
 
         $this->assertCount(4, $estimator->scores());
         $this->assertCount(4, $estimator->results()->toArray());
+    }
+
+    #[Test]
+    #[TestDox('Setup callback is invoked on each estimator before cross-validation')]
+    public function setupIsCalledForEachEstimator() : void
+    {
+        $callCount = 0;
+        $types = [];
+
+        $this->estimator->setup(function (KNearestNeighbors $estimator) use (&$callCount, &$types) {
+            ++$callCount;
+            $types[] = $estimator::class;
+        });
+
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
+
+        // 12 max trials + 1 final best estimator
+        $this->assertSame(13, $callCount);
+
+        foreach ($types as $type) {
+            $this->assertSame(KNearestNeighbors::class, $type);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Setup closure is transient and excluded from serialization')]
+    public function setupIsTransient() : void
+    {
+        $this->estimator->setup(function (KNearestNeighbors $e) : void {
+        });
+
+        $this->assertArrayNotHasKey('setup', $this->estimator->__serialize());
+
+        $copy = unserialize(serialize($this->estimator));
+
+        $this->assertInstanceOf(BayesianSearch::class, $copy);
+
+        $this->assertArrayNotHasKey('setup', $copy->__serialize());
     }
 }
