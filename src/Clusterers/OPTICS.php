@@ -101,7 +101,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
      *
      * @var float
      */
-    protected float $xi;
+    protected float $steepness;
 
     /**
      * The minimum number of samples contained within an extracted cluster.
@@ -186,7 +186,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * @param float $radius
      * @param int $minDensity
-     * @param float $xi
+     * @param float $steepness
      * @param int|null $minClusterSize
      * @param bool $weighted
      * @param Spatial|null $tree
@@ -195,7 +195,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     public function __construct(
         float $radius = 1.0,
         int $minDensity = 5,
-        float $xi = 0.05,
+        float $steepness = 0.05,
         ?int $minClusterSize = null,
         bool $weighted = false,
         ?Spatial $tree = null
@@ -210,9 +210,9 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 . " greater than 0, $minDensity given.");
         }
 
-        if ($xi <= 0.0 or $xi >= 1.0) {
-            throw new InvalidArgumentException('Xi must be'
-                . " between 0 and 1, $xi given.");
+        if ($steepness <= 0.0 or $steepness >= 1.0) {
+            throw new InvalidArgumentException('Steepness must be'
+                . " between 0 and 1, $steepness given.");
         }
 
         if ($minClusterSize !== null and $minClusterSize < 1) {
@@ -222,7 +222,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $this->radius = $radius;
         $this->minDensity = $minDensity;
-        $this->xi = $xi;
+        $this->steepness = $steepness;
         $this->minClusterSize = $minClusterSize ?? $minDensity;
         $this->weighted = $weighted;
         $this->tree = $tree ?? new BallTree();
@@ -258,7 +258,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
         return [
             'radius' => $this->radius,
             'min density' => $this->minDensity,
-            'xi' => $this->xi,
+            'steepness' => $this->steepness,
             'min cluster size' => $this->minClusterSize,
             'weighted' => $this->weighted,
             'tree' => $this->tree,
@@ -273,16 +273,6 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     public function trained() : bool
     {
         return !$this->tree->bare();
-    }
-
-    /**
-     * Return the base spatial tree instance.
-     *
-     * @return Spatial
-     */
-    public function tree() : Spatial
-    {
-        return $this->tree;
     }
 
     /**
@@ -332,6 +322,16 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 'Reachability' => $this->reachability[$point],
             ];
         }
+    }
+
+    /**
+     * Return the base spatial tree instance.
+     *
+     * @return Spatial
+     */
+    public function tree() : Spatial
+    {
+        return $this->tree;
     }
 
     /**
@@ -392,6 +392,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info("Found $clusterCount clusters");
+
             $this->logger->info('Training complete');
         }
     }
@@ -648,7 +649,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $predecessors[] = $this->predecessor[$point];
         }
 
-        $xiComplement = 1.0 - $this->xi;
+        $steepnessComplement = 1.0 - $this->steepness;
 
         $steepUpward = $steepDownward = $upward = $downward = $steepIndices = [];
 
@@ -657,8 +658,8 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
             $upward[$i] = $ratio < 1.0;
             $downward[$i] = $ratio > 1.0;
-            $steepUpward[$i] = $ratio <= $xiComplement;
-            $steepDownward[$i] = $ratio >= 1.0 / $xiComplement;
+            $steepUpward[$i] = $ratio <= $steepnessComplement;
+            $steepDownward[$i] = $ratio >= 1.0 / $steepnessComplement;
 
             if ($steepUpward[$i] or $steepDownward[$i]) {
                 $steepIndices[] = $i;
@@ -686,7 +687,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $mib = max($mib, $slice);
 
             if ($steepDownward[$steepIndex]) {
-                $downAreas = $this->filterSteepDownAreas($downAreas, $mib, $xiComplement, $plot);
+                $downAreas = $this->filterSteepDownAreas($downAreas, $mib, $steepnessComplement, $plot);
 
                 $start = $steepIndex;
                 $end = $this->extendRegion($steepDownward, $upward, $start);
@@ -699,7 +700,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 continue;
             }
 
-            $downAreas = $this->filterSteepDownAreas($downAreas, $mib, $xiComplement, $plot);
+            $downAreas = $this->filterSteepDownAreas($downAreas, $mib, $steepnessComplement, $plot);
 
             $upStart = $steepIndex;
             $upEnd = $this->extendRegion($steepUpward, $downward, $upStart);
@@ -713,17 +714,17 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 $cStart = $area['start'];
                 $cEnd = $upEnd;
 
-                if ($plot[$cEnd + 1] * $xiComplement < $area['mib']) {
+                if ($plot[$cEnd + 1] * $steepnessComplement < $area['mib']) {
                     continue;
                 }
 
                 $max = $plot[$area['start']];
 
-                if ($max * $xiComplement >= $plot[$cEnd + 1]) {
+                if ($max * $steepnessComplement >= $plot[$cEnd + 1]) {
                     while ($plot[$cStart + 1] > $plot[$cEnd + 1] and $cStart < $area['end']) {
                         ++$cStart;
                     }
-                } elseif ($plot[$cEnd + 1] * $xiComplement >= $max) {
+                } elseif ($plot[$cEnd + 1] * $steepnessComplement >= $max) {
                     while ($cEnd > $upStart and $plot[$cEnd - 1] > $max) {
                         --$cEnd;
                     }
@@ -768,11 +769,11 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
      *
      * @param array<array{start:int,end:int,mib:float}> $downAreas
      * @param float $mib
-     * @param float $xiComplement
+     * @param float $steepnessComplement
      * @param list<float> $plot
      * @return array<array{start:int,end:int,mib:float}>
      */
-    protected function filterSteepDownAreas(array $downAreas, float $mib, float $xiComplement, array $plot) : array
+    protected function filterSteepDownAreas(array $downAreas, float $mib, float $steepnessComplement, array $plot) : array
     {
         if (is_infinite($mib)) {
             return [];
@@ -781,7 +782,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $filtered = [];
 
         foreach ($downAreas as $area) {
-            if ($mib <= $plot[$area['start']] * $xiComplement) {
+            if ($mib <= $plot[$area['start']] * $steepnessComplement) {
                 $area['mib'] = max($area['mib'], $mib);
 
                 $filtered[] = $area;

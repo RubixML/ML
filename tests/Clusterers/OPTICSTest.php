@@ -70,7 +70,7 @@ class OPTICSTest extends TestCase
         $this->estimator = new OPTICS(
             radius: 2.0,
             minDensity: 20,
-            xi: 0.05,
+            steepness: 0.05,
             minClusterSize: 20,
             weighted: false,
             tree: new BallTree()
@@ -104,11 +104,11 @@ class OPTICSTest extends TestCase
     }
 
     #[Test]
-    public function badXi() : void
+    public function badSteepness() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new OPTICS(xi: 1.0);
+        new OPTICS(steepness: 1.0);
     }
 
     #[Test]
@@ -141,7 +141,7 @@ class OPTICSTest extends TestCase
         $expected = [
             'radius' => 2.0,
             'min density' => 20,
-            'xi' => 0.05,
+            'steepness' => 0.05,
             'min cluster size' => 20,
             'weighted' => false,
             'tree' => new BallTree(),
@@ -255,7 +255,7 @@ class OPTICSTest extends TestCase
             $estimator = new OPTICS(
                 radius: 2.0,
                 minDensity: 20,
-                xi: 0.05,
+                steepness: 0.05,
                 minClusterSize: 20,
                 weighted: $weighted,
                 tree: new BallTree()
