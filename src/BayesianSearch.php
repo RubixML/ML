@@ -552,9 +552,11 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
             $score = $this->validator->test($estimator, $dataset, $this->metric);
 
             if ($this->logger) {
+                $trial = count($history) + 1;
+
                 $namedParams = $this->named($params);
 
-                $this->logger->info("{$this->metric}: $score, "
+                $this->logger->info("Trial {$trial}: {$this->metric}: $score, "
                     . 'params: [' . Params::stringify($namedParams) . ']');
             }
 
