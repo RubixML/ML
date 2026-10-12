@@ -66,16 +66,10 @@ Return the base learner instance.
 public base() : \Rubix\ML\Estimator
 ```
 
-Return an iterable table of every hyper-parameter combination tested along with its validation score from the last search, sorted by score descending.
+Return a Report of every hyper-parameter combination tested along with its validation score from the last search. The rows are keyed by trial number in the order the trials were evaluated, so the `Trial N` entries line up with the `N`-th combination (`scores()[N - 1]`) and the trial numbers logged during training. Each row pairs the validation score (keyed by the metric name) with a nested `params` map of the combination's constructor parameters:
 
 ```php
-public results() : Generator
-```
-
-Return the best combination of parameters found during the last search along with their validation score in a 2-tuple.
-
-```php
-public best() : array
+public results() : \Rubix\ML\Report
 ```
 
 Return the validation scores of each of the trials in the order they were evaluated.

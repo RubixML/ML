@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rubix\ML\Tests\Base;
 
-use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Rubix\ML\DataType;
@@ -14,6 +13,7 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -21,10 +21,7 @@ use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-use Rubix\ML\Helpers\Params;
 use PHPUnit\Framework\TestCase;
-
-use function Rubix\ML\iterator_first;
 
 #[CoversClass(BayesianSearch::class)]
 class BayesianSearchTest extends TestCase
@@ -135,15 +132,6 @@ class BayesianSearchTest extends TestCase
         );
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-
-        [$bestParams, $bestScore] = $this->estimator->best();
-
-        $this->assertNotNull($bestParams);
-        $this->assertNotNull($bestScore);
-
-        foreach ($bestParams as $name => $value) {
-            $this->assertSame($value, Params::toString($this->estimator->base()->params()[$name]));
-        }
     }
 
     #[Test]
@@ -165,60 +153,40 @@ class BayesianSearchTest extends TestCase
 
         $this->estimator->train($training);
 
-        $this->assertNotEmpty($this->estimator->scores());
+        $scores = $this->estimator->scores();
 
-        $progress = $this->estimator->results();
+        $this->assertNotEmpty($scores);
 
-        $this->assertInstanceOf(Generator::class, $progress);
-
-        $rows = iterator_to_array($progress);
+        $rows = $this->estimator->results()->toArray();
 
         $this->assertCount(12, $rows);
 
         $metric = new FBeta();
 
-        $scores = [];
+        foreach ($scores as $i => $score) {
+            $row = $rows['Trial ' . ($i + 1)];
 
-        foreach ($rows as $row) {
             $this->assertSame(
-                ['k', 'weighted', 'kernel', "{$metric}"],
+                ["{$metric}", 'params'],
                 array_keys($row)
             );
 
-            $scores[] = (float) $row["{$metric}"];
+            $this->assertSame(
+                ['k', 'weighted', 'kernel'],
+                array_keys($row['params'])
+            );
+
+            $this->assertSame((string) $score, $row["{$metric}"]);
         }
-
-        $sorted = $scores;
-
-        rsort($sorted);
-
-        $this->assertSame($sorted, $scores);
     }
 
     #[Test]
-    public function bestIsNullsBeforeTraining() : void
+    public function resultsThrowBeforeTraining() : void
     {
-        $this->assertSame([null, null], $this->estimator->best());
-    }
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('No trials have been run yet.');
 
-    #[Test]
-    public function bestMatchesTopPerformingTrial() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        [$bestParams, $bestScore] = $this->estimator->best();
-
-        $metric = new FBeta();
-
-        $first = iterator_first($this->estimator->results());
-
-        $this->assertSame($first["{$metric}"], $bestScore);
-
-        foreach ($bestParams as $name => $value) {
-            $this->assertSame($value, $first[$name]);
-        }
+        $this->estimator->results();
     }
 
     #[Test]
@@ -242,11 +210,13 @@ class BayesianSearchTest extends TestCase
 
         $this->assertTrue($estimator->trained());
 
-        $rows = iterator_to_array($estimator->results());
+        $rows = $estimator->results()->toArray();
+
+        $first = reset($rows);
 
         $this->assertSame(
             ['k', 'weighted', 'kernel'],
-            array_slice(array_keys($rows[0]), 0, 3)
+            array_keys($first['params'])
         );
     }
 
@@ -369,6 +339,6 @@ class BayesianSearchTest extends TestCase
         $estimator->train($training);
 
         $this->assertCount(4, $estimator->scores());
-        $this->assertCount(4, iterator_to_array($estimator->results()));
+        $this->assertCount(4, $estimator->results()->toArray());
     }
 }

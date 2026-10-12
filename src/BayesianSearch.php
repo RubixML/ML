@@ -19,13 +19,12 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use ReflectionClass;
-use Generator;
 
 use function in_array;
 use function class_exists;
 use function array_keys;
-use function array_pop;
 use function array_map;
 use function array_sum;
 use function array_slice;
@@ -428,53 +427,38 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
 
     /**
      * Return a table of the hyper-parameters evaluated during the last search along with
-     * their validation scores, sorted by score descending.
+     * their validation scores, keyed by trial number in the order they were evaluated.
      *
-     * @return Generator<mixed[]>
+     * @throws RuntimeException
+     * @return Report
      */
-    public function results() : Generator
+    public function results() : Report
     {
         if (!$this->history) {
-            return;
+            throw new RuntimeException('No trials have been run yet.');
         }
-
-        $scores = array_column($this->history, 'score');
-        $trialParams = array_column($this->history, 'params');
-
-        array_multisort($scores, SORT_DESC, $trialParams);
 
         $names = self::constructorParamNames($this->class);
 
-        foreach ($trialParams as $i => $params) {
+        $results = [];
+
+        foreach ($this->history as $i => $trial) {
             $row = [];
 
-            foreach ($params as $j => $param) {
-                $row[$names[$j] ?? 'param ' . ($j + 1)] = Params::toString($param);
+            $row["{$this->metric}"] = Params::toString($trial['score']);
+
+            $params = [];
+
+            foreach ($trial['params'] as $j => $param) {
+                $params[$names[$j]] = Params::toString($param);
             }
 
-            $row["{$this->metric}"] = Params::toString($scores[$i]);
+            $row['params'] = $params;
 
-            yield $row;
-        }
-    }
-
-    /**
-     * Return the best combination of parameters found during the last search along with
-     * their validation score in a 2-tuple.
-     *
-     * @return array{0: array<mixed>|null, 1: float|null}
-     */
-    public function best() : array
-    {
-        if (!$this->history) {
-            return [null, null];
+            $results['Trial ' . ($i + 1)] = $row;
         }
 
-        $params = iterator_first($this->results());
-
-        $score = array_pop($params);
-
-        return [$params, $score];
+        return new Report($results);
     }
 
     /**
@@ -579,7 +563,6 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      * Make a prediction on a given sample dataset.
      *
      * @param Dataset $dataset
-     * @throws Exceptions\RuntimeException
      * @return mixed[]
      */
     public function predict(Dataset $dataset) : array
