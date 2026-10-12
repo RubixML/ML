@@ -13,9 +13,9 @@ use Rubix\ML\Datasets\Labeled;
  */
 class OPTICSBench
 {
-    protected const TRAINING_SIZE = 2000;
+    protected const TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 2000;
+    protected const TESTING_SIZE = 10000;
 
     /**
      * @var Labeled
