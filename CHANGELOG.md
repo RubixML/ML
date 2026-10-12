@@ -1,5 +1,10 @@
 # Changelog
 
+- 3.2.0
+    - Added Bayesian Search meta-estimator
+    - Added Power Transformer
+    - Added Word Stemmer tokenizer with Porter English stemmer
+
 - 3.1.0
     - Added K-medoids clusterer
     - Added `ARFF` and `Shuffler` extractors
