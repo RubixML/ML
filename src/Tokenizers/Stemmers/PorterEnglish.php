@@ -5,7 +5,7 @@ namespace Rubix\ML\Tokenizers\Stemmers;
 /**
  * Porter English
  *
- * A pure PHP implementation of the Porter stemming algorithm for English.
+ * An implementation of the Porter stemming algorithm for English.
  *
  * References:
  * [1] M. F. Porter. (1980). An algorithm for suffix stripping. Program, 14(3), 130-137.
