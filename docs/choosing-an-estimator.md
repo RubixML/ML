@@ -60,6 +60,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 | [K Means](clusterers/k-means.md) | Low | ● | ● | ● | ● | Continuous |
 | [K Medoids](clusterers/k-medoids.md) | Low | ● | | ● | ● | Depends on distance kernel |
 | [Mean Shift](clusterers/mean-shift.md) | Medium | ● | | ● | ● | Continuous |
+| [OPTICS](clusterers/optics.md) | High | ● | | ● | ● | Depends on distance kernel |
 
 ## Anomaly Detectors
 
