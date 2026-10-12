@@ -133,8 +133,6 @@ class ColorJitterTest extends TestCase
         $this->assertInstanceOf(\GdImage::class, $samples[0][0]);
         $this->assertInstanceOf(\GdImage::class, $samples[0][1]);
         $this->assertSame('test', $samples[0][2]);
-
-        imagedestroy($img2);
     }
 
     public function testTransformWithBrightness() : void
@@ -182,8 +180,6 @@ class ColorJitterTest extends TestCase
 
         $this->assertNotSame(64, $dark & 0xFF, 'Dark grayscale pixel must respond to contrast.');
         $this->assertNotSame(192, $light & 0xFF, 'Light grayscale pixel must respond to contrast.');
-
-        imagedestroy($image);
     }
 
     public function testTransformWithSaturation() : void
@@ -235,8 +231,6 @@ class ColorJitterTest extends TestCase
         $this->assertInstanceOf(\GdImage::class, $samples[0][0]);
         $this->assertSame(5, imagesx($samples[0][0]));
         $this->assertSame(5, imagesy($samples[0][0]));
-
-        imagedestroy($gray);
     }
 
     public function testToString() : void
