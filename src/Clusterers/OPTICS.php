@@ -507,11 +507,11 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $samples = $dataset->samples();
 
-        $this->ordering = [];
         $this->reachability = array_fill(0, $n, INF);
         $this->coreDistances = array_fill(0, $n, INF);
         $this->predecessor = array_fill(0, $n, -1);
         $this->processed = array_fill(0, $n, false);
+        $this->ordering = [];
 
         $queue = new SplPriorityQueue();
 
@@ -729,7 +729,9 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
             }
         }
 
-        return $this->labelClusters($clusters);
+        $labels = $this->labelClusters($clusters);
+
+        return $labels;
     }
 
     /**
