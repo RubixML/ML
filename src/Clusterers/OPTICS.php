@@ -537,10 +537,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
             $this->ordering[] = $i;
 
-            $coreDistance = $this->coreDistance($samples[$i]);
-            $this->coreDistances[$i] = $coreDistance;
-
-            $this->updateReachability($queue, $i, $coreDistance, $samples);
+            $this->processPoint($queue, $i, $samples);
 
             while (!$queue->isEmpty()) {
                 $point = (int) $queue->extract();
@@ -553,58 +550,42 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
                 $this->ordering[] = $point;
 
-                $coreDistance = $this->coreDistance($samples[$point]);
-                $this->coreDistances[$point] = $coreDistance;
-
-                $this->updateReachability($queue, $point, $coreDistance, $samples);
+                $this->processPoint($queue, $point, $samples);
             }
         }
     }
 
     /**
-     * Compute the core distance of a sample, the smallest radius at which it becomes a core
-     * point, or infinity if it is not a core point within the given radius.
-     *
-     * @internal
-     *
-     * @param list<int|float> $sample
-     * @return float
-     */
-    protected function coreDistance(array $sample) : float
-    {
-        [, , $distances] = $this->tree->nearest($sample, $this->minDensity);
-
-        if (count($distances) < $this->minDensity) {
-            return INF;
-        }
-
-        $coreDistance = (float) max($distances);
-
-        return $coreDistance <= $this->radius ? $coreDistance : INF;
-    }
-
-    /**
-     * Update the reachability distances of the unprocessed neighbors of a point and enqueue
-     * the candidates whose reachability has improved.
+     * Process a point in the OPTICS ordering: compute its core distance and update the
+     * reachability of its unprocessed neighbors within that core distance.
      *
      * @internal
      *
      * @param SplPriorityQueue<float,int> $queue
      * @param int $point
-     * @param float $coreDistance
-     * @param list<list<int|float>> $samples
+     * @param list<list<string|int|float>> $samples
      */
-    protected function updateReachability(
-        SplPriorityQueue $queue,
-        int $point,
-        float $coreDistance,
-        array $samples
-    ) : void {
-        if (is_infinite($coreDistance)) {
+    protected function processPoint(SplPriorityQueue $queue, int $point, array $samples) : void
+    {
+        [, , $distances] = $this->tree->nearest($samples[$point], $this->minDensity);
+
+        if (count($distances) < $this->minDensity) {
+            $this->coreDistances[$point] = INF;
+
             return;
         }
 
-        [, $labels, $distances] = $this->tree->range($samples[$point], $this->radius);
+        $coreDistance = (float) max($distances);
+
+        if ($coreDistance > $this->radius) {
+            $this->coreDistances[$point] = INF;
+
+            return;
+        }
+
+        $this->coreDistances[$point] = $coreDistance;
+
+        [, $labels, $distances] = $this->tree->range($samples[$point], $coreDistance);
 
         foreach ($labels as $i => $label) {
             $index = (int) $label;
