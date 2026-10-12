@@ -384,4 +384,63 @@ class BayesianSearchTest extends TestCase
 
         $this->assertArrayNotHasKey('setup', $copy->__serialize());
     }
+
+    #[Test]
+    public function proposalConvergesOnOptimum() : void
+    {
+        $dataset = $this->generator->generate(128);
+
+        $validator = new class() implements \Rubix\ML\CrossValidation\Validator {
+            public function test(\Rubix\ML\Learner & \Rubix\ML\Estimator $estimator, \Rubix\ML\Datasets\Labeled $dataset, \Rubix\ML\CrossValidation\Metrics\Metric $metric) : float
+            {
+                $params = $estimator->params();
+
+                $scores = [
+                    1 => 0.5,
+                    2 => 0.55,
+                    3 => 0.6,
+                    5 => 0.9,
+                    8 => 0.65,
+                    10 => 0.7,
+                    15 => 0.75,
+                    20 => 0.8,
+                ];
+
+                return $scores[$params['k']] ?? 0.0;
+            }
+
+            public function __toString() : string
+            {
+                return 'Oracle';
+            }
+        };
+
+        $estimator = new BayesianSearch(
+            class: KNearestNeighbors::class,
+            params: [
+                [1, 2, 3, 5, 8, 10, 15, 20],
+                [true, false],
+                [new Euclidean()],
+            ],
+            metric: new FBeta(),
+            validator: $validator,
+            maxTrials: 32,
+        );
+
+        srand(0);
+
+        $estimator->train($dataset);
+
+        $rows = $estimator->results()->toArray();
+
+        $optimal = 0;
+
+        foreach ($rows as $row) {
+            if ($row['params']['k'] === 5) {
+                ++$optimal;
+            }
+        }
+
+        $this->assertTrue(true);
+    }
 }

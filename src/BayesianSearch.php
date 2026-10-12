@@ -81,6 +81,12 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     protected const int MAX_RESAMPLES = 10;
 
     /**
+     * The number of candidate values to draw from the good density when proposing each
+     * hyper-parameter.
+     */
+    protected const int CANDIDATES = 24;
+
+    /**
      * The Laplace smoothing factor applied to the likelihood ratio of each candidate value.
      */
     protected const float SMOOTHING = 1.0;
@@ -628,10 +634,16 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
             }
         }
 
+        $unevaluated = [];
+
         foreach ($this->combinations() as $candidate) {
             if (!isset($evaluated[serialize($candidate)])) {
-                return $candidate;
+                $unevaluated[] = $candidate;
             }
+        }
+
+        if ($unevaluated) {
+            return $unevaluated[rand(0, count($unevaluated) - 1)];
         }
 
         return $this->bestParams($history);
@@ -669,20 +681,27 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         $top = max(1, (int) floor($this->quantile * count($history)));
 
         $good = array_slice($trialParams, 0, $top);
-
         $bad = array_slice($trialParams, $top);
 
         if (empty($bad)) {
             return $this->sample();
         }
 
-        $candidate = [];
+        $evaluated = [];
+
+        foreach ($trialParams as $params) {
+            $evaluated[serialize($params)] = true;
+        }
+
+        $goodTotal = count($good);
+        $badTotal = count($bad);
+
+        $distributions = [];
 
         foreach ($this->params as $i => $params) {
             $keys = array_map('serialize', $params);
 
             $goodCounts = array_fill_keys($keys, 0);
-
             $badCounts = array_fill_keys($keys, 0);
 
             foreach ($good as $trial) {
@@ -693,17 +712,55 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
                 ++$badCounts[serialize($trial[$i])];
             }
 
-            $weights = [];
+            $numValues = count($params);
 
-            foreach ($keys as $j => $key) {
-                $weights[] = ($goodCounts[$key] + self::SMOOTHING)
-                    / ($badCounts[$key] + self::SMOOTHING);
+            $densities = [];
+
+            $ratios = [];
+
+            foreach ($keys as $key) {
+                $goodDensity = ($goodCounts[$key] + self::SMOOTHING)
+                    / ($goodTotal + self::SMOOTHING * $numValues);
+
+                $badDensity = ($badCounts[$key] + self::SMOOTHING)
+                    / ($badTotal + self::SMOOTHING * $numValues);
+
+                $densities[] = $goodDensity;
+
+                $ratios[$key] = $goodDensity / $badDensity;
             }
 
-            $candidate[] = $this->draw($params, $weights);
+            $distributions[] = [$densities, $ratios];
         }
 
-        return $candidate;
+        $best = null;
+        $bestRatio = 0.0;
+
+        for ($c = 0; $c < self::CANDIDATES; ++$c) {
+            $candidate = [];
+
+            foreach ($this->params as $i => $params) {
+                $candidate[] = $this->draw($params, $distributions[$i][0]);
+            }
+
+            if (isset($evaluated[serialize($candidate)])) {
+                continue;
+            }
+
+            $ratio = 1.0;
+
+            foreach ($candidate as $i => $value) {
+                $ratio *= $distributions[$i][1][serialize($value)];
+            }
+
+            if ($ratio > $bestRatio) {
+                $best = $candidate;
+
+                $bestRatio = $ratio;
+            }
+        }
+
+        return $best ?? $this->sample();
     }
 
     /**
