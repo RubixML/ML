@@ -11,7 +11,6 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Clusterers\OPTICS;
-use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -22,8 +21,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 use function Rubix\ML\argmax;
-use function array_column;
-use function array_map;
 use function array_sum;
 use function is_infinite;
 use function range;
@@ -207,39 +204,6 @@ class OPTICSTest extends TestCase
 
         $this->assertCount(self::TRAIN_SIZE, $coreDistances);
         $this->assertContainsOnlyFloat($coreDistances);
-    }
-
-    #[Test]
-    public function progressContract() : void
-    {
-        $this->assertSame([], iterator_to_array($this->estimator->progress(), false));
-
-        $this->estimator->setLogger(new BlackHole());
-
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $rows = iterator_to_array($this->estimator->progress(), false);
-
-        $this->assertCount(self::TRAIN_SIZE, $rows);
-
-        foreach ($rows as $row) {
-            $this->assertIsInt($row['Point']);
-            $this->assertIsFloat($row['Reachability']);
-        }
-
-        $ordering = $this->estimator->ordering();
-        $reachability = $this->estimator->reachability();
-
-        $this->assertSame($ordering, array_column($rows, 'Point'));
-
-        $expected = array_map(
-            fn (int $point) => $reachability[$point],
-            $ordering
-        );
-
-        $this->assertSame($expected, array_column($rows, 'Reachability'));
     }
 
     #[Test]

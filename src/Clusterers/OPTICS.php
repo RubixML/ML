@@ -23,7 +23,6 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use SplPriorityQueue;
-use Generator;
 
 use function Rubix\ML\argmax;
 use function array_fill;
@@ -293,25 +292,6 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     public function coreDistances() : ?array
     {
         return $this->coreDistances;
-    }
-
-    /**
-     * Return an iterable progress table from the last training session.
-     *
-     * @return Generator<mixed[]>
-     */
-    public function progress() : Generator
-    {
-        if (!$this->ordering) {
-            return;
-        }
-
-        foreach ($this->ordering as $point) {
-            yield [
-                'Point' => $point,
-                'Reachability' => $this->reachability[$point],
-            ];
-        }
     }
 
     /**
