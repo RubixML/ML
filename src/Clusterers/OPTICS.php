@@ -555,7 +555,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $this->coreDistances[$point] = $coreDistance;
 
-        [, $labels, $distances] = $this->tree->range($samples[$point], $coreDistance);
+        [, $labels, $distances] = $this->tree->range($samples[$point], $this->radius);
 
         foreach ($labels as $i => $label) {
             $index = (int) $label;
