@@ -66,6 +66,13 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
     protected const float LAMBDA_MAX = 5.0;
 
     /**
+     * The target width of the lambda search bracket.
+     *
+     * @var float
+     */
+    protected const float LAMBDA_TOLERANCE = 1.0E-6;
+
+    /**
      * A user-specified lambda to apply to all features. When null, the lambda is estimated per feature
      * via maximum likelihood during fitting.
      *
@@ -295,7 +302,9 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
         $fc = $this->logLikelihood($c, $values, $sigma);
         $fd = $this->logLikelihood($d, $values, $sigma);
 
-        for ($i = 0; $i < 100; ++$i) {
+        $i = 0;
+
+        while (($ho - $lo) > self::LAMBDA_TOLERANCE and $i < 100) {
             if ($fc >= $fd) {
                 $ho = $d;
                 $d = $c;
@@ -311,6 +320,8 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
                 $d = $lo + ($ho - $lo) * self::GOLDEN_RATIO;
                 $fd = $this->logLikelihood($d, $values, $sigma);
             }
+
+            ++$i;
         }
 
         return ($lo + $ho) / 2.0;
@@ -328,15 +339,23 @@ class PowerTransformer implements Transformer, Stateful, Reversible, Persistable
     {
         $n = count($values);
 
-        $transformed = [];
+        $sum = 0.0;
+        $sumSq = 0.0;
 
         foreach ($values as $value) {
-            $transformed[] = self::yeoJohnson($value, $lambda);
+            $z = self::yeoJohnson($value, $lambda);
+
+            if (!is_finite($z)) {
+                return -INF;
+            }
+
+            $sum += $z;
+            $sumSq += $z * $z;
         }
 
-        $variance = Stats::variance($transformed);
+        $variance = ($sumSq / $n) - ($sum / $n) ** 2;
 
-        if ($variance <= 0.0 or !is_finite($variance)) {
+        if ($variance <= 0.0) {
             return -INF;
         }
 
