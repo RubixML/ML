@@ -552,8 +552,10 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
             $score = $this->validator->test($estimator, $dataset, $this->metric);
 
             if ($this->logger) {
+                $namedParams = $this->named($params);
+
                 $this->logger->info("{$this->metric}: $score, "
-                    . 'params: [' . Params::stringify($params) . ']');
+                    . 'params: [' . Params::stringify($namedParams) . ']');
             }
 
             $history[] = [
@@ -573,8 +575,8 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         }
 
         if ($this->logger) {
-            $this->logger->info('Training with best hyper-parameters'
-                . Params::stringify($params) . ' on full dataset.');
+            $this->logger->info('Training with best hyper-parameters '
+                . Params::stringify($this->named($params)) . ' on full dataset.');
         }
 
         $estimator->train($dataset);
@@ -742,6 +744,27 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         array_multisort($scores, SORT_DESC, $trialParams);
 
         return $trialParams[0];
+    }
+
+    /**
+     * Reindex a positional parameter list by the base constructor's parameter names.
+     *
+     * @internal
+     *
+     * @param list<mixed> $params
+     * @return mixed[]
+     */
+    protected function named(array $params) : array
+    {
+        $names = self::constructorParamNames($this->class);
+
+        $named = [];
+
+        foreach ($params as $i => $param) {
+            $named[$names[$i] ?? 'param ' . ($i + 1)] = $param;
+        }
+
+        return $named;
     }
 
     /**
