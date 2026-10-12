@@ -14,7 +14,7 @@ use Rubix\ML\Clusterers\OPTICS;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -61,16 +61,18 @@ class OPTICSTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate([
-            'red' => new Blob([0.0, 0.0], [1.0, 1.0]),
-            'green' => new Blob([10.0, 0.0], [1.0, 1.0]),
-            'blue' => new Blob([5.0, 8.0], [1.0, 1.0]),
-        ]);
+        $this->generator = new Agglomerate(
+            [
+                'inner' => new Circle(x: 0.0, y: 0.0, scale: 1.0, noise: 0.01),
+                'middle' => new Circle(x: 0.0, y: 0.0, scale: 5.0, noise: 0.05),
+                'outer' => new Circle(x: 0.0, y: 0.0, scale: 10.0, noise: 0.1),
+            ]
+        );
 
         $this->estimator = new OPTICS(
-            radius: 2.0,
-            minDensity: 20,
-            steepness: 0.05,
+            radius: 3.0,
+            minDensity: 10,
+            steepness: 0.3,
             minClusterSize: 20,
             weighted: false,
             tree: new BallTree()
@@ -139,9 +141,9 @@ class OPTICSTest extends TestCase
     public function params() : void
     {
         $expected = [
-            'radius' => 2.0,
-            'min density' => 20,
-            'steepness' => 0.05,
+            'radius' => 3.0,
+            'min density' => 10,
+            'steepness' => 0.3,
             'min cluster size' => 20,
             'weighted' => false,
             'tree' => new BallTree(),
@@ -253,9 +255,9 @@ class OPTICSTest extends TestCase
 
         foreach ([false, true] as $weighted) {
             $estimator = new OPTICS(
-                radius: 2.0,
-                minDensity: 20,
-                steepness: 0.05,
+                radius: 3.0,
+                minDensity: 10,
+                steepness: 0.3,
                 minClusterSize: 20,
                 weighted: $weighted,
                 tree: new BallTree()
