@@ -280,7 +280,7 @@ nav:
       - Word Stemmer: tokenizers/word-stemmer.md
       - Stemmers:
         - API Reference: tokenizers/stemmers/stemmer.md
-        - Porter English: tokenizers/stemmers/english-porter.md
+        - Porter English: tokenizers/stemmers/porter-english.md
     - Persisters:
       - API Reference: persisters/api.md
       - Filesystem: persisters/filesystem.md

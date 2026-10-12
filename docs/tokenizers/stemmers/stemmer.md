@@ -6,4 +6,4 @@ A stemmer reduces inflected and derived words to their root form. Stemmers are u
 
 ## Available stemmers
 
-- [Porter English](english-porter.md)
+- [Porter English](porter-english.md)

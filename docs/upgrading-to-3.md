@@ -204,7 +204,7 @@ Parallel backends also now default to the number of **physical** CPU cores rathe
 
 ### 10. The Word Stemmer tokenizer now uses a pluggable stemmer
 
-The `Rubix\ML\Tokenizers\WordStemmer` tokenizer no longer takes a language code. It now takes a [stemmer](tokenizers/stemmers/stemmer.md), defaulting to the [Porter English](tokenizers/stemmers/english-porter.md) stemmer.
+The `Rubix\ML\Tokenizers\WordStemmer` tokenizer no longer takes a language code. It now takes a [stemmer](tokenizers/stemmers/stemmer.md), defaulting to the [Porter English](tokenizers/stemmers/porter-english.md) stemmer.
 
 ```php
 use Rubix\ML\Tokenizers\WordStemmer;
