@@ -99,11 +99,11 @@ class BayesianSearchTest extends TestCase
                 [true, false],
                 [new Euclidean(), new Manhattan()],
             ],
-            'metric' => new FBeta(),
-            'validator' => new HoldOut(0.2),
+            'initialTrials' => 10,
             'maxTrials' => 12,
             'quantile' => 0.25,
-            'startup' => 10,
+            'metric' => new FBeta(),
+            'validator' => new HoldOut(0.2),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -239,11 +239,11 @@ class BayesianSearchTest extends TestCase
                 [false],
                 [new Euclidean(), new Manhattan()],
             ],
-            'metric' => new FBeta(),
-            'validator' => new KFold(5),
+            'initialTrials' => 10,
             'maxTrials' => 32,
             'quantile' => 0.25,
-            'startup' => 10,
+            'metric' => new FBeta(),
+            'validator' => new KFold(5),
         ];
 
         $this->assertEquals($expected, $estimator->params());
@@ -264,11 +264,11 @@ class BayesianSearchTest extends TestCase
                 [false],
                 [null],
             ],
-            'metric' => new FBeta(),
-            'validator' => new KFold(5),
+            'initialTrials' => 10,
             'maxTrials' => 32,
             'quantile' => 0.25,
-            'startup' => 10,
+            'metric' => new FBeta(),
+            'validator' => new KFold(5),
         ];
 
         $this->assertEquals($expected, $estimator->params());
@@ -315,11 +315,11 @@ class BayesianSearchTest extends TestCase
     }
 
     #[Test]
-    public function rejectsNegativeStartup() : void
+    public function rejectsNegativeInitialTrials() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new BayesianSearch(KNearestNeighbors::class, [[1]], startup: -1);
+        new BayesianSearch(KNearestNeighbors::class, [[1]], initialTrials: -1);
     }
 
     #[Test]

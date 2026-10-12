@@ -100,18 +100,11 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     protected array $params;
 
     /**
-     * The fraction of the top performing trials to use as the *good* set during sampling.
-     *
-     * @var float
-     */
-    protected float $quantile;
-
-    /**
      * The number of initial trials to run using random search before beginning estimation.
      *
      * @var int
      */
-    protected int $startup;
+    protected int $initialTrials;
 
     /**
      * The maximum number of trials to run during a single training session.
@@ -119,6 +112,13 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      * @var int
      */
     protected int $maxTrials;
+
+    /**
+     * The fraction of the top performing trials to use as the *good* set during sampling.
+     *
+     * @var float
+     */
+    protected float $quantile;
 
     /**
      * The validation metric used to score the estimator.
@@ -163,9 +163,9 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      *
      * @param class-string $class
      * @param array<string, list<mixed>> $params
-     * @param float $quantile
-     * @param int $startup
+     * @param int $initialTrials
      * @param int $maxTrials
+     * @param float $quantile
      * @param Metric|null $metric
      * @param Validator|null $validator
      * @throws InvalidArgumentException
@@ -174,9 +174,9 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     public static function fromNamedParams(
         string $class,
         array $params,
-        float $quantile = 0.25,
-        int $startup = 10,
+        int $initialTrials = 10,
         int $maxTrials = 32,
+        float $quantile = 0.25,
         ?Metric $metric = null,
         ?Validator $validator = null,
     ) : self {
@@ -222,7 +222,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
                 . " parameter of $class.");
         }
 
-        return new self($class, $ordered, $quantile, $startup, $maxTrials, $metric, $validator);
+        return new self($class, $ordered, $initialTrials, $maxTrials, $quantile, $metric, $validator);
     }
 
     /**
@@ -251,9 +251,9 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     /**
      * @param class-string $class
      * @param array<mixed> $params
-     * @param float $quantile
-     * @param int $startup
+     * @param int $initialTrials
      * @param int $maxTrials
+     * @param float $quantile
      * @param Metric|null $metric
      * @param Validator|null $validator
      * @throws InvalidArgumentException
@@ -261,9 +261,9 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     public function __construct(
         string $class,
         array $params,
-        float $quantile = 0.25,
-        int $startup = 10,
+        int $initialTrials = 10,
         int $maxTrials = 32,
+        float $quantile = 0.25,
         ?Metric $metric = null,
         ?Validator $validator = null
     ) {
@@ -276,6 +276,11 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
                 . ' supplied in the order they are given to the constructor.');
         }
 
+        if ($initialTrials < 0) {
+            throw new InvalidArgumentException('Number of initial trials'
+                . ' must be greater than or equal to 0.');
+        }
+
         if ($maxTrials < 1) {
             throw new InvalidArgumentException('Maximum number of trials'
                 . ' must be greater than 0.');
@@ -284,11 +289,6 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         if ($quantile <= 0.0 or $quantile >= 1.0) {
             throw new InvalidArgumentException('Quantile must be between'
                 . ' 0 and 1 exclusive.');
-        }
-
-        if ($startup < 0) {
-            throw new InvalidArgumentException('Number of startup trials'
-                . ' must be greater than or equal to 0.');
         }
 
         $reflector = new ReflectionClass($class);
@@ -348,11 +348,11 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
 
         $this->class = $class;
         $this->params = $params;
-        $this->metric = $metric;
-        $this->validator = $validator ?? new KFold(5);
+        $this->initialTrials = $initialTrials;
         $this->maxTrials = $maxTrials;
         $this->quantile = $quantile;
-        $this->startup = $startup;
+        $this->metric = $metric;
+        $this->validator = $validator ?? new KFold(5);
         $this->base = $proxy;
     }
 
@@ -405,11 +405,11 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         return [
             'class' => $this->class,
             'params' => $this->params,
-            'metric' => $this->metric,
-            'validator' => $this->validator,
+            'initialTrials' => $this->initialTrials,
             'maxTrials' => $this->maxTrials,
             'quantile' => $this->quantile,
-            'startup' => $this->startup,
+            'metric' => $this->metric,
+            'validator' => $this->validator,
         ];
     }
 
@@ -602,8 +602,8 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
-     * Propose the next combination of hyper-parameters using random search during the
-     * startup phase and the TPE sampler thereafter.
+     * Propose the next combination of hyper-parameters using random search for the
+     * initial trials and the TPE sampler thereafter.
      *
      * @param list<array{params: list<mixed>, score: float}> $history
      * @return list<mixed>
@@ -617,7 +617,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         }
 
         for ($attempt = 0; $attempt < self::MAX_RESAMPLES; ++$attempt) {
-            if (count($history) < $this->startup) {
+            if (count($history) < $this->initialTrials) {
                 $candidate = $this->sample();
             } else {
                 $candidate = $this->tpe($history);
