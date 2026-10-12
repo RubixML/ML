@@ -14,11 +14,11 @@ Bayesian Search is a form of hyper-parameter optimization that uses the *Tree-st
 | --- | --- | --- | --- | --- |
 | 1 | base | | string | The class name of the base learner. |
 | 2 | params | | array | An array of lists containing the possible values for each of the base learner's constructor parameters. |
-| 3 | metric | auto | Metric | The validation metric used to score each set of hyper-parameters. |
-| 4 | validator | KFold | Validator | The validator used to test and score the model. |
+| 3 | quantile | 0.25 | float | The fraction of the top performing trials to use as the *good* set during sampling. |
+| 4 | startup | 10 | int | The number of initial trials to run using random search before beginning estimation. |
 | 5 | maxTrials | 32 | int | The maximum number of trials to run during a single training session. |
-| 6 | quantile | 0.25 | float | The fraction of the top performing trials to use as the *good* set during sampling. |
-| 7 | startup | 10 | int | The number of initial trials to run using random search before beginning estimation. |
+| 6 | metric | auto | Metric | The validation metric used to score each set of hyper-parameters. |
+| 7 | validator | KFold | Validator | The validator used to test and score the model. |
 
 ## Example
 
@@ -34,7 +34,7 @@ $params = [
     [1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()],
 ];
 
-$estimator = new BayesianSearch(KNearestNeighbors::class, $params, new FBeta(), new KFold(5));
+$estimator = new BayesianSearch(KNearestNeighbors::class, $params, 0.25, 10, 32, new FBeta(), new KFold(5));
 
 $estimator->train($dataset);
 
@@ -53,6 +53,9 @@ $estimator = BayesianSearch::fromNamedParams(
         'k' => [1, 3, 5, 10],
         'weighted' => [true, false],
     ],
+    0.25,
+    10,
+    32,
     new FBeta(),
     new KFold(5)
 );
@@ -65,7 +68,7 @@ Some estimators expose configuration methods that are unrelated to their constru
 The callback receives the base estimator instance and may call any of its methods. It is not serialized with the bayesian search instance.
 
 ```php
-$estimator = new BayesianSearch(LogisticRegression::class, $params, new FBeta(), new KFold(5));
+$estimator = new BayesianSearch(LogisticRegression::class, $params, 0.25, 10, 32, new FBeta(), new KFold(5));
 
 $estimator->setup(function (LogisticRegression $regressor) : void {
     $regressor->setValidationDataset($validation);

@@ -100,6 +100,27 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     protected array $params;
 
     /**
+     * The fraction of the top performing trials to use as the *good* set during sampling.
+     *
+     * @var float
+     */
+    protected float $quantile;
+
+    /**
+     * The number of initial trials to run using random search before beginning estimation.
+     *
+     * @var int
+     */
+    protected int $startup;
+
+    /**
+     * The maximum number of trials to run during a single training session.
+     *
+     * @var int
+     */
+    protected int $maxTrials;
+
+    /**
      * The validation metric used to score the estimator.
      *
      * @var Metric
@@ -119,27 +140,6 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      * @var Learner & Estimator
      */
     protected Learner & Estimator $base;
-
-    /**
-     * The maximum number of trials to run during a single training session.
-     *
-     * @var int
-     */
-    protected int $maxTrials;
-
-    /**
-     * The fraction of the top performing trials to use as the *good* set during sampling.
-     *
-     * @var float
-     */
-    protected float $quantile;
-
-    /**
-     * The number of initial trials to run using random search before beginning estimation.
-     *
-     * @var int
-     */
-    protected int $startup;
 
     /**
      * The hyper-parameters evaluated during the last search along with their validation scores.
@@ -163,22 +163,22 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      *
      * @param class-string $class
      * @param array<string, list<mixed>> $params
-     * @param Metric|null $metric
-     * @param Validator|null $validator
-     * @param int $maxTrials
      * @param float $quantile
      * @param int $startup
+     * @param int $maxTrials
+     * @param Metric|null $metric
+     * @param Validator|null $validator
      * @throws InvalidArgumentException
      * @return self
      */
     public static function fromNamedParams(
         string $class,
         array $params,
+        float $quantile = 0.25,
+        int $startup = 10,
+        int $maxTrials = 32,
         ?Metric $metric = null,
         ?Validator $validator = null,
-        int $maxTrials = 32,
-        float $quantile = 0.25,
-        int $startup = 10
     ) : self {
         if (!class_exists($class)) {
             throw new InvalidArgumentException("Class $class does not exist.");
@@ -222,7 +222,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
                 . " parameter of $class.");
         }
 
-        return new self($class, $ordered, $metric, $validator, $maxTrials, $quantile, $startup);
+        return new self($class, $ordered, $quantile, $startup, $maxTrials, $metric, $validator);
     }
 
     /**
@@ -251,21 +251,21 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     /**
      * @param class-string $class
      * @param array<mixed> $params
-     * @param Metric|null $metric
-     * @param Validator|null $validator
-     * @param int $maxTrials
      * @param float $quantile
      * @param int $startup
+     * @param int $maxTrials
+     * @param Metric|null $metric
+     * @param Validator|null $validator
      * @throws InvalidArgumentException
      */
     public function __construct(
         string $class,
         array $params,
-        ?Metric $metric = null,
-        ?Validator $validator = null,
-        int $maxTrials = 32,
         float $quantile = 0.25,
-        int $startup = 10
+        int $startup = 10,
+        int $maxTrials = 32,
+        ?Metric $metric = null,
+        ?Validator $validator = null
     ) {
         if (!class_exists($class)) {
             throw new InvalidArgumentException("Class $class does not exist.");
