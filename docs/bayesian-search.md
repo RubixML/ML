@@ -17,8 +17,9 @@ Bayesian Search is a form of hyper-parameter optimization that uses the *Tree-st
 | 3 | initialTrials | 10 | int | The number of initial trials to run using random search before beginning estimation. |
 | 4 | maxTrials | 32 | int | The maximum number of trials to run during a single training session. |
 | 5 | quantile | 0.25 | float | The fraction of the top performing trials to use as the *good* set during sampling. |
-| 6 | metric | auto | Metric | The validation metric used to score each set of hyper-parameters. |
-| 7 | validator | KFold | Validator | The validator used to test and score the model. |
+| 6 | smoothing | 1.0 | float | The Laplace smoothing factor applied to the likelihood ratio between the *good* and *bad* candidate sets. A higher value produces a flatter, more uniform estimate (more exploration), while a lower value sharpens the preference for well-performing candidates (more exploitation). |
+| 7 | metric | auto | Metric | The validation metric used to score each set of hyper-parameters. |
+| 8 | validator | KFold | Validator | The validator used to test and score the model. |
 
 ## Example
 
@@ -34,7 +35,7 @@ $params = [
     [1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()],
 ];
 
-$estimator = new BayesianSearch(KNearestNeighbors::class, $params, 10, 32, 0.25, new FBeta(), new KFold(5));
+$estimator = new BayesianSearch(KNearestNeighbors::class, $params, 10, 32, 0.25, 1.0, new FBeta(), new KFold(5));
 
 $estimator->train($dataset);
 
@@ -56,6 +57,7 @@ $estimator = BayesianSearch::fromNamedParams(
     10,
     32,
     0.25,
+    1.0,
     new FBeta(),
     new KFold(5)
 );
@@ -68,7 +70,7 @@ Some estimators expose configuration methods that are unrelated to their constru
 The callback receives the base estimator instance and may call any of its methods. It is not serialized with the bayesian search instance.
 
 ```php
-$estimator = new BayesianSearch(LogisticRegression::class, $params, 10, 32, 0.25, new FBeta(), new KFold(5));
+$estimator = new BayesianSearch(LogisticRegression::class, $params, 10, 32, 0.25, 1.0, new FBeta(), new KFold(5));
 
 $estimator->setup(function (LogisticRegression $regressor) : void {
     $regressor->setValidationDataset($validation);

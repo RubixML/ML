@@ -102,6 +102,7 @@ class BayesianSearchTest extends TestCase
             'initialTrials' => 10,
             'maxTrials' => 12,
             'quantile' => 0.25,
+            'smoothing' => 1.0,
             'metric' => new FBeta(),
             'validator' => new HoldOut(0.2),
         ];
@@ -242,6 +243,7 @@ class BayesianSearchTest extends TestCase
             'initialTrials' => 10,
             'maxTrials' => 32,
             'quantile' => 0.25,
+            'smoothing' => 1.0,
             'metric' => new FBeta(),
             'validator' => new KFold(5),
         ];
@@ -267,6 +269,7 @@ class BayesianSearchTest extends TestCase
             'initialTrials' => 10,
             'maxTrials' => 32,
             'quantile' => 0.25,
+            'smoothing' => 1.0,
             'metric' => new FBeta(),
             'validator' => new KFold(5),
         ];
@@ -312,6 +315,14 @@ class BayesianSearchTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new BayesianSearch(KNearestNeighbors::class, [[1]], quantile: 1.0);
+    }
+
+    #[Test]
+    public function rejectsSmoothingZero() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new BayesianSearch(KNearestNeighbors::class, [[1]], smoothing: 0.0);
     }
 
     #[Test]

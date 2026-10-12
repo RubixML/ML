@@ -36,6 +36,7 @@ use function array_multisort;
 use function array_key_exists;
 use function array_is_list;
 use function array_key_last;
+use function array_rand;
 use function is_array;
 use function count;
 use function min;
@@ -87,11 +88,6 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
     protected const int CANDIDATES = 24;
 
     /**
-     * The Laplace smoothing factor applied to the likelihood ratio of each candidate value.
-     */
-    protected const float SMOOTHING = 1.0;
-
-    /**
      * The class name of the base estimator.
      *
      * @var string
@@ -125,6 +121,13 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      * @var float
      */
     protected float $quantile;
+
+    /**
+     * The Laplace smoothing factor applied to the likelihood ratio of each candidate value.
+     *
+     * @var float
+     */
+    protected float $smoothing;
 
     /**
      * The validation metric used to score the estimator.
@@ -172,6 +175,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      * @param int $initialTrials
      * @param int $maxTrials
      * @param float $quantile
+     * @param float $smoothing
      * @param Metric|null $metric
      * @param Validator|null $validator
      * @throws InvalidArgumentException
@@ -183,6 +187,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         int $initialTrials = 10,
         int $maxTrials = 32,
         float $quantile = 0.25,
+        float $smoothing = 1.0,
         ?Metric $metric = null,
         ?Validator $validator = null,
     ) : self {
@@ -228,7 +233,16 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
                 . " parameter of $class.");
         }
 
-        return new self($class, $ordered, $initialTrials, $maxTrials, $quantile, $metric, $validator);
+        return new self(
+            $class,
+            $ordered,
+            $initialTrials,
+            $maxTrials,
+            $quantile,
+            $smoothing,
+            $metric,
+            $validator
+        );
     }
 
     /**
@@ -260,6 +274,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      * @param int $initialTrials
      * @param int $maxTrials
      * @param float $quantile
+     * @param float $smoothing
      * @param Metric|null $metric
      * @param Validator|null $validator
      * @throws InvalidArgumentException
@@ -270,6 +285,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         int $initialTrials = 10,
         int $maxTrials = 32,
         float $quantile = 0.25,
+        float $smoothing = 1.0,
         ?Metric $metric = null,
         ?Validator $validator = null
     ) {
@@ -295,6 +311,10 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         if ($quantile <= 0.0 or $quantile >= 1.0) {
             throw new InvalidArgumentException('Quantile must be between'
                 . ' 0 and 1 exclusive.');
+        }
+
+        if ($smoothing <= 0.0) {
+            throw new InvalidArgumentException('Smoothing must be greater than 0.');
         }
 
         $reflector = new ReflectionClass($class);
@@ -357,6 +377,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         $this->initialTrials = $initialTrials;
         $this->maxTrials = $maxTrials;
         $this->quantile = $quantile;
+        $this->smoothing = $smoothing;
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(5);
         $this->base = $proxy;
@@ -414,6 +435,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
             'initialTrials' => $this->initialTrials,
             'maxTrials' => $this->maxTrials,
             'quantile' => $this->quantile,
+            'smoothing' => $this->smoothing,
             'metric' => $this->metric,
             'validator' => $this->validator,
         ];
@@ -659,7 +681,7 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
         $candidate = [];
 
         foreach ($this->params as $params) {
-            $candidate[] = $params[rand(0, count($params) - 1)];
+            $candidate[] = $params[array_rand($params)];
         }
 
         return $candidate;
@@ -673,8 +695,8 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
      */
     protected function tpe(array $history) : array
     {
-        $scores = array_column($history, 'score');
         $trialParams = array_column($history, 'params');
+        $scores = array_column($history, 'score');
 
         array_multisort($scores, SORT_DESC, $trialParams);
 
@@ -719,11 +741,11 @@ class BayesianSearch implements Estimator, Learner, Verbose, Persistable
             $ratios = [];
 
             foreach ($keys as $key) {
-                $goodDensity = ($goodCounts[$key] + self::SMOOTHING)
-                    / ($goodTotal + self::SMOOTHING * $numValues);
+                $goodDensity = ($goodCounts[$key] + $this->smoothing)
+                    / ($goodTotal + $this->smoothing * $numValues);
 
-                $badDensity = ($badCounts[$key] + self::SMOOTHING)
-                    / ($badTotal + self::SMOOTHING * $numValues);
+                $badDensity = ($badCounts[$key] + $this->smoothing)
+                    / ($badTotal + $this->smoothing * $numValues);
 
                 $densities[] = $goodDensity;
 
