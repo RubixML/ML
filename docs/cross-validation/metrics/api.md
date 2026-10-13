@@ -50,6 +50,35 @@ $metric = new ProbabilisticAccuracy;
 $score = $metric->score($probabilities, $dataset->labels());
 ```
 
+## Scoring Embeddings
+
+Metrics like Trustworthiness score the output of a dimensionality-reducing transformer (an embedding) rather than an estimator's predictions. They take the original samples and their transformed embedding and return a single score.
+
+```php
+public score(array $samples, array $embedded) : float
+```
+
+```php
+use Rubix\ML\Transformers\TSNE;
+use Rubix\ML\CrossValidation\Metrics\Trustworthiness;
+
+$transformer = new TSNE(2);
+
+$samples = $dataset->samples();
+$embedding = $samples;
+$transformer->transform($embedding);
+
+$metric = new Trustworthiness(5);
+
+$score = $metric->score($samples, $embedding);
+
+echo $score;
+```
+
+```text
+0.88
+```
+
 ## Score Range
 
 Output the minimum and maximum value the validation score can take in a [2-tuple](../../faq.md#what-is-a-tuple).
