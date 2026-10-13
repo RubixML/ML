@@ -231,18 +231,18 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $maxMerges = $n - $this->k;
 
         $samples = $dataset->samples();
-        $d = count($samples[0]);
+        $numFeatures = $dataset->numFeatures();
 
         $norms = [];
 
         foreach ($samples as $row) {
-            $sq = 0.0;
+            $norm = 0.0;
 
             foreach ($row as $value) {
-                $sq += $value * $value;
+                $norm += $value * $value;
             }
 
-            $norms[] = $sq;
+            $norms[] = $norm;
         }
 
         $cost = array_fill(0, $n * $n, 0.0);
@@ -252,15 +252,15 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
                 $dot = $this->innerProduct($samples[$i], $samples[$j]);
-                
+
                 $distance = $norms[$i] + $norms[$j] - 2.0 * $dot;
 
-                $halfDistance = 0.5 * $distance;
+                $distance *= 0.5;
 
-                $cost[$i * $n + $j] = $halfDistance;
-                $cost[$j * $n + $i] = $halfDistance;
+                $cost[$i * $n + $j] = $distance;
+                $cost[$j * $n + $i] = $distance;
 
-                $heap->insert([$halfDistance, $i, $j]);
+                $heap->insert([$distance, $i, $j]);
             }
         }
 
@@ -271,37 +271,34 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $this->losses = [];
 
         for ($epoch = 1; $epoch <= $maxMerges; ++$epoch) {
-            $tuple = null;
+            $candidate = null;
 
             while ($heap->count() > 0) {
-                $candidate = $heap->extract();
-                $i = $candidate[1];
-                $j = $candidate[2];
+                [$distance, $i, $j] = $heap->extract();
 
                 if ($parent[$i] !== $i or $parent[$j] !== $j) {
                     continue;
                 }
 
-                if ($candidate[0] !== $cost[$i * $n + $j]) {
+                if ($distance !== $cost[$i * $n + $j]) {
                     continue;
                 }
 
-                $tuple = $candidate;
+                $candidate = [$distance, $i, $j];
 
                 break;
             }
 
-            if ($tuple === null) {
+            if ($candidate === null) {
                 break;
             }
 
-            $a = $tuple[1];
-            $b = $tuple[2];
+            [$distance, $a, $b] = $candidate;
+
             $nA = $sizes[$a];
             $nB = $sizes[$b];
-            $dAB = $tuple[0];
 
-            if (is_nan($dAB)) {
+            if (is_nan($distance)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
@@ -310,16 +307,16 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch: $epoch, Cost: $dAB");
+                $this->logger->info("Epoch: $epoch, Cost: $distance");
             }
 
-            $this->losses[$epoch] = $dAB;
+            $this->losses[$epoch] = $distance;
 
             $parent[$b] = $a;
             $sizes[$a] += $sizes[$b];
             $sizes[$b] = 0;
 
-            for ($x = 0; $x < $d; ++$x) {
+            for ($x = 0; $x < $numFeatures; ++$x) {
                 $sums[$a][$x] += $sums[$b][$x];
             }
 
@@ -328,20 +325,21 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                     continue;
                 }
 
-                $nC = $sizes[$c];
                 $kAC = ($a < $c ? $a : $c) * $n + ($a < $c ? $c : $a);
                 $kBC = ($b < $c ? $b : $c) * $n + ($b < $c ? $c : $b);
+                $nC = $sizes[$c];
 
-                $newCost = (($nA + $nC) * $cost[$kAC] + ($nB + $nC) * $cost[$kBC] - $nC * $dAB)
-                    / ($nA + $nB + $nC);
+                $numerator = ($nA + $nC) * $cost[$kAC] + ($nB + $nC) * $cost[$kBC] - $nC * $distance;
+
+                $newDistance = $numerator / ($nA + $nB + $nC);
 
                 $lo = $a < $c ? $a : $c;
                 $hi = $a < $c ? $c : $a;
 
-                $cost[$lo * $n + $hi] = $newCost;
-                $cost[$hi * $n + $lo] = $newCost;
+                $cost[$lo * $n + $hi] = $newDistance;
+                $cost[$hi * $n + $lo] = $newDistance;
 
-                $heap->insert([$newCost, $lo, $hi]);
+                $heap->insert([$newDistance, $lo, $hi]);
             }
         }
 
