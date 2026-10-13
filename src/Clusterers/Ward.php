@@ -251,11 +251,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
-                $dot = $this->innerProduct($samples[$i], $samples[$j]);
-
-                $distance = $norms[$i] + $norms[$j] - 2.0 * $dot;
-
-                $distance *= 0.5;
+$distance = 0.5 * $this->kernel->compute($samples[$i], $samples[$j]) ** 2;
 
                 $cost[$i * $n + $j] = $distance;
                 $cost[$j * $n + $i] = $distance;
