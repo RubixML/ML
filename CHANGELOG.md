@@ -1,10 +1,12 @@
 # Changelog
 
+- 3.3.0
+    - Added Trustworthiness metric for scoring embedding quality
+
 - 3.2.0
     - Added Bayesian Search meta-estimator
     - Added Power Transformer
     - Added Word Stemmer tokenizer with Porter English stemmer
-    - Added Trustworthiness metric for scoring embedding quality
 
 - 3.1.0
     - Added K-medoids clusterer
