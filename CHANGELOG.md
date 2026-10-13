@@ -1,5 +1,8 @@
 # Changelog
 
+- Unreleased
+    - Added Ward clusterer
+
 - 3.2.0
     - Added Bayesian Search meta-estimator
     - Added Power Transformer

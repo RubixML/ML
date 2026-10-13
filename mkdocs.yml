@@ -102,6 +102,7 @@ nav:
       - K Means: clusterers/k-means.md
       - K Medoids: clusterers/k-medoids.md
       - Mean Shift: clusterers/mean-shift.md
+      - Ward: clusterers/ward.md
     - Anomaly Detectors:
       - Gaussian MLE: anomaly-detectors/gaussian-mle.md
       - Isolation Forest: anomaly-detectors/isolation-forest.md
