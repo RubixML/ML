@@ -42,7 +42,7 @@ class Trustworthiness implements Stringable
      *
      * @var int
      */
-    protected int $nNeighbors;
+    protected int $k;
 
     /**
      * The distance kernel used to measure dissimilarity in the input space.
@@ -53,23 +53,19 @@ class Trustworthiness implements Stringable
     protected Distance $kernel;
 
     /**
-     * @param int $nNeighbors
+     * @param int $k
      * @param ?Distance $kernel
      * @throws InvalidArgumentException
      */
-    public function __construct(int $nNeighbors = 5, ?Distance $kernel = null)
+    public function __construct(int $k = 5, ?Distance $kernel = null)
     {
-        if ($nNeighbors < 1) {
-            throw new InvalidArgumentException('Number of neighbours must be'
-                . " greater than 0, $nNeighbors given.");
+        if ($k < 1) {
+            throw new InvalidArgumentException('Number of neighbors must be'
+                . " greater than 0, $k given.");
         }
 
-        if (!($kernel instanceof Distance)) {
-            $kernel = new Euclidean();
-        }
-
-        $this->nNeighbors = $nNeighbors;
-        $this->kernel = $kernel;
+        $this->k = $k;
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
@@ -117,10 +113,8 @@ class Trustworthiness implements Stringable
             return 1.0;
         }
 
-        $k = $this->nNeighbors;
-
-        if ($k >= intdiv($n, 2)) {
-            throw new InvalidArgumentException("Number of neighbours ($k) must be"
+        if ($this->k >= intdiv($n, 2)) {
+            throw new InvalidArgumentException("Number of neighbors ($this->k) must be"
                 . ' less than n / 2 (' . intdiv($n, 2) . ') or the'
                 . ' Trustworthiness could fall below 0.');
         }
@@ -130,14 +124,14 @@ class Trustworthiness implements Stringable
         $total = 0.0;
 
         for ($i = 0; $i < $n; ++$i) {
-            $neighbors = $this->embeddedNeighbors($embedded, $i, $k);
+            $neighbors = $this->embeddedNeighbors($embedded, $i, $this->k);
 
             foreach ($neighbors as $j) {
-                $total += max(0, $ranks[$i][$j] - $k);
+                $total += max(0, $ranks[$i][$j] - $this->k);
             }
         }
 
-        $denominator = $n * $k * (2 * $n - 3 * $k - 1);
+        $denominator = $n * $this->k * (2 * $n - 3 * $this->k - 1);
 
         return 1.0 - (2.0 * $total) / $denominator;
     }
@@ -181,7 +175,7 @@ class Trustworthiness implements Stringable
     }
 
     /**
-     * Return the indices of the $k nearest neighbors of sample $i in the
+     * Return the indices of the k nearest neighbors of sample $i in the
      * embedded space, excluding $i itself.
      *
      * @internal
