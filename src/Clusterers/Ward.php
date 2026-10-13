@@ -14,7 +14,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\SquaredEuclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -46,11 +46,15 @@ use const Rubix\ML\EPSILON;
  * `INF` — permits the full *n - k* merges.
  *
  * The increase in WCSS incurred by each merge — the *merge cost* — is tracked
- * with the **Lance-Williams** recurrence, which allows the full cost matrix to
+ * with the Lance-Williams recurrence, which allows the full cost matrix to
  * be updated in O(n) per round instead of being recomputed from scratch:
  *
  *     δ(C, A∪B) = ((|C|+|A|)·δ(C,A) + (|C|+|B|)·δ(C,B) − |C|·δ(A,B))
  *                 / (|C|+|A|+|B|)
+ *
+ * The recurrence is only valid when the distance is the [squared Euclidean
+ * distance](../kernels/distance/squared-euclidean.md), so the kernel —
+ * defaulted to `SquaredEuclidean` — is restricted to that form.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -76,7 +80,9 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     protected float $maxDistance;
 
     /**
-     * The distance kernel used to compute the pairwise distance between samples.
+     * The distance kernel used to compute the squared Euclidean distance
+     * between samples — the cost the **Lance-Williams** recurrence is
+     * derived for.
      *
      * @var Distance
      */
@@ -123,7 +129,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $this->k = $k;
         $this->maxDistance = $maxDistance;
-        $this->kernel = new Euclidean();
+        $this->kernel = new SquaredEuclidean();
     }
 
     /**
@@ -269,7 +275,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
-                $distance = 0.5 * $this->kernel->compute($samples[$i], $samples[$j]) ** 2;
+                $distance = 0.5 * $this->kernel->compute($samples[$i], $samples[$j]);
 
                 $cost[$i * $n + $j] = $distance;
                 $cost[$j * $n + $i] = $distance;
