@@ -212,10 +212,6 @@ class WardTest extends TestCase
         $this->assertCount(3, $sizes);
         $this->assertEquals($training->numSamples(), array_sum($sizes));
 
-        $labels = $this->estimator->labels();
-
-        $this->assertCount($training->numSamples(), $labels);
-
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
@@ -356,7 +352,6 @@ class WardTest extends TestCase
         $estimatorB->train($training);
 
         $this->assertEquals($estimatorA->centroids(), $estimatorB->centroids());
-        $this->assertEquals($estimatorA->labels(), $estimatorB->labels());
     }
 
     #[Test]

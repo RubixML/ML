@@ -27,6 +27,8 @@ use Generator;
 use function Rubix\ML\argmin;
 use function count;
 use function array_map;
+use function array_search;
+use function array_merge;
 use function get_object_vars;
 use function is_nan;
 
@@ -140,10 +142,8 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 . implode(', ', self::ALLOWED_KERNELS) . ", $kernel given.");
         }
 
-        $kernel ??= new Euclidean();
-
         $this->k = $k;
-        $this->kernel = $kernel;
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
@@ -210,17 +210,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Return the cluster assignment of each sample in the training data, indexed
-     * by the sample's offset in the training set.
-     *
-     * @return list<int>
-     */
-    public function labels() : array
-    {
-        return $this->labels;
-    }
-
-    /**
      * Return an iterable progress table with the epoch steps from the last
      * training session.
      *
@@ -266,10 +255,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
             new SamplesAreCompatibleWithEstimator($dataset, $this),
         ])->check();
 
-        if ($this->logger) {
-            $this->logger->info("Training $this");
-        }
-
         $n = $dataset->numSamples();
 
         if ($n < $this->k) {
@@ -277,17 +262,21 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 . " samples, $n given.");
         }
 
-        $this->losses = [];
+        if ($this->logger) {
+            $this->logger->info("Training $this");
+        }
 
-        $costs = $this->initializeCosts($dataset);
-        $sizes = array_fill(0, $n, 1);
+        $maxMerges = $n - $this->k;
 
         $parent = range(0, $n - 1);
+        $sizes = array_fill(0, $n, 1);
         $memberships = array_map(fn ($i) => [$i], range(0, $n - 1));
 
-        $merges = $n - $this->k;
+        $costs = $this->initializeCosts($dataset);
 
-        for ($epoch = 1; $epoch <= $merges; ++$epoch) {
+        $this->losses = [];
+
+        for ($epoch = 1; $epoch <= $maxMerges; ++$epoch) {
             $i = 0;
             $j = 1;
             $min = INF;
@@ -304,9 +293,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
             }
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, Cost: $min";
-
-                $this->logger->info($message);
+                $this->logger->info("Epoch: $epoch, Cost: $min");
             }
 
             if (is_nan($min)) {
@@ -329,7 +316,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $parent[$b] = $a;
 
             for ($c = 0; $c < $n; ++$c) {
-                if ($c === $a || $c === $b) {
+                if ($c === $a or $c === $b) {
                     continue;
                 }
 
@@ -366,7 +353,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $count = count($roots);
 
-        $this->labels = [];
+        $labels = [];
 
         for ($i = 0; $i < $n; ++$i) {
             $root = $i;
@@ -381,16 +368,16 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 throw new RuntimeException('Failed to resolve cluster for a sample.');
             }
 
-            $this->labels[$i] = $cluster;
+            $labels[$i] = $cluster;
         }
 
-        $this->sizes = array_fill(0, $count, 0);
+        $sizes = array_fill(0, $count, 0);
 
-        foreach ($this->labels as $i => $cluster) {
-            ++$this->sizes[$cluster];
+        foreach ($labels as $i => $cluster) {
+            ++$sizes[$cluster];
         }
 
-        $this->centroids = [];
+        $centroids = [];
 
         foreach ($roots as $root) {
             $cluster = array_search($root, $roots, true);
@@ -405,10 +392,13 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 }
             }
 
-            $size = $this->sizes[$cluster];
+            $size = $sizes[$cluster];
 
-            $this->centroids[$cluster] = array_map(fn ($v) => $v / $size, $sum);
+            $centroids[$cluster] = array_map(fn ($v) => $v / $size, $sum);
         }
+
+        $this->centroids = $centroids;
+        $this->sizes = $sizes;
 
         if ($this->logger) {
             $this->logger->info('Training complete');
