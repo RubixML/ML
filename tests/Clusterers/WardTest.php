@@ -13,10 +13,6 @@ use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Ward;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\Hamming;
-use Rubix\ML\Kernels\Distance\Manhattan;
-use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -77,10 +73,7 @@ class WardTest extends TestCase
             weights: [0.5, 0.2, 0.3]
         );
 
-        $this->estimator = new Ward(
-            k: 3,
-            kernel: new Euclidean()
-        );
+        $this->estimator = new Ward(k: 3);
 
         $this->metric = new VMeasure();
 
@@ -100,7 +93,7 @@ class WardTest extends TestCase
 
         srand(self::RANDOM_SEED);
 
-        $estimator = new Ward(k: 3, kernel: new Euclidean());
+        $estimator = new Ward(k: 3);
 
         $estimator->setLogger(new BlackHole());
 
@@ -137,7 +130,7 @@ class WardTest extends TestCase
     #[Test]
     public function tooFewSamples() : void
     {
-        $estimator = new Ward(k: 5, kernel: new Euclidean());
+        $estimator = new Ward(k: 5);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -161,27 +154,10 @@ class WardTest extends TestCase
     }
 
     #[Test]
-    public function badKernel() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Ward(k: 3, kernel: new Hamming());
-    }
-
-    #[Test]
-    public function badKernelManhattan() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Ward(k: 3, kernel: new Manhattan());
-    }
-
-    #[Test]
     public function params() : void
     {
         $expected = [
             'k' => 3,
-            'kernel' => new Euclidean(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -230,21 +206,13 @@ class WardTest extends TestCase
     }
 
     #[Test]
-    public function badKernelSafeEuclidean() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Ward(k: 3, kernel: new SafeEuclidean());
-    }
-
-    #[Test]
     public function trainKEqualsNumSamples() : void
     {
         srand(self::RANDOM_SEED);
 
         $training = Unlabeled::quick(samples: [[1.0], [2.0], [3.0], [4.0], [5.0]]);
 
-        $estimator = new Ward(k: 5, kernel: new Euclidean());
+        $estimator = new Ward(k: 5);
 
         $estimator->train($training);
 
@@ -306,10 +274,10 @@ class WardTest extends TestCase
         srand(self::RANDOM_SEED);
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
-        $estimatorA = new Ward(k: 3, kernel: new Euclidean());
+        $estimatorA = new Ward(k: 3);
         $estimatorA->train($training);
 
-        $estimatorB = new Ward(k: 3, kernel: new Euclidean());
+        $estimatorB = new Ward(k: 3);
         $estimatorB->train($training);
 
         $this->assertEquals($estimatorA->centroids(), $estimatorB->centroids());

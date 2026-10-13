@@ -59,13 +59,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     use AutotrackRevisions, LoggerAware;
 
     /**
-     * The list of allowed distance kernels for the Ward algorithm.
-     */
-    public const array ALLOWED_KERNELS = [
-        Euclidean::class,
-    ];
-
-    /**
      * The target number of clusters.
      *
      * @var positive-int
@@ -103,23 +96,17 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
     /**
      * @param int $k
-     * @param Distance|null $kernel
      * @throws InvalidArgumentException
      */
-    public function __construct(int $k, ?Distance $kernel = null)
+    public function __construct(int $k)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('K must be greater'
                 . " than 0, $k given.");
         }
 
-        if (isset($kernel) and !in_array($kernel::class, self::ALLOWED_KERNELS)) {
-            throw new InvalidArgumentException('Kernel must be one of '
-                . implode(', ', self::ALLOWED_KERNELS) . ", $kernel given.");
-        }
-
         $this->k = $k;
-        $this->kernel = $kernel ?? new Euclidean();
+        $this->kernel = new Euclidean();
     }
 
     /**
@@ -151,7 +138,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     {
         return [
             'k' => $this->k,
-            'kernel' => $this->kernel,
         ];
     }
 
@@ -260,6 +246,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         }
 
         $cost = array_fill(0, $n * $n, 0.0);
+
         $heap = new SplMinHeap();
 
         for ($i = 0; $i < $n; ++$i) {
@@ -376,21 +363,22 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $labels[$i] = $roots[$root];
         }
 
-        $this->sizes = array_fill(0, $count, 0);
+        $sizes = array_fill(0, $count, 0);
 
         foreach ($labels as $cluster) {
-            ++$this->sizes[$cluster];
+            ++$sizes[$cluster];
         }
 
         $centroids = [];
 
         foreach ($roots as $root => $cluster) {
-            $size = $this->sizes[$cluster];
+            $size = $sizes[$cluster];
 
             $centroids[$cluster] = array_map(fn ($v) => $v / $size, $sums[$root]);
         }
 
         $this->centroids = array_values($centroids);
+        $this->sizes = $sizes;
 
         if ($this->logger) {
             $this->logger->info('Training complete');
