@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Ward;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -231,49 +230,11 @@ class WardTest extends TestCase
     }
 
     #[Test]
-    public function trainSafeEuclidean() : void
+    public function badKernelSafeEuclidean() : void
     {
-        srand(self::RANDOM_SEED);
+        $this->expectException(InvalidArgumentException::class);
 
-        $rows = [
-            [1.0, 1.0, 1.0],
-            [1.1, 0.9, 1.2],
-            [0.9, 1.1, 0.8],
-            [1.2, 1.0, 0.9],
-            [0.8, 1.0, 1.1],
-            [10.0, 10.0, 10.0],
-            [10.1, 9.9, 10.2],
-            [9.9, 10.1, 9.8],
-            [10.2, 10.0, 9.9],
-            [9.8, 10.0, 10.1],
-            [20.0, 20.0, 20.0],
-            [20.1, 19.9, 20.2],
-            [19.9, 20.1, 19.8],
-            [20.2, 20.0, 19.9],
-            [19.8, 20.0, 20.1],
-        ];
-
-        $labels = [
-            'red', 'red', 'red', 'red', 'red',
-            'green', 'green', 'green', 'green', 'green',
-            'blue', 'blue', 'blue', 'blue', 'blue',
-        ];
-
-        $training = Labeled::quick($rows, $labels);
-
-        $estimator = new Ward(k: 3, kernel: new SafeEuclidean());
-
-        $estimator->train($training);
-
-        $this->assertTrue($estimator->trained());
-
-        $this->assertCount(3, $estimator->centroids());
-
-        $predictions = $estimator->predict($training);
-
-        $score = $this->metric->score($predictions, $training->labels());
-
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        new Ward(k: 3, kernel: new SafeEuclidean());
     }
 
     #[Test]

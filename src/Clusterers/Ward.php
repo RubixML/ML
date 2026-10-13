@@ -15,20 +15,18 @@ use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\SafeEuclidean;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
+use SplMinHeap;
 use Generator;
 
 use function Rubix\ML\argmin;
 use function count;
 use function array_map;
-use function array_search;
-use function array_merge;
 use function get_object_vars;
 use function is_nan;
 
@@ -52,14 +50,6 @@ use const Rubix\ML\EPSILON;
  *     δ(C, A∪B) = ((|C|+|A|)·δ(C,A) + (|C|+|B|)·δ(C,B) − |C|·δ(A,B))
  *                 / (|C|+|A|+|B|)
  *
- * For the squared-Euclidean kernel this recovers the classic Ward minimum-
- * variance rule exactly (the ½·‖a − b‖² seed is the within-cluster sum of
- * squares of the two-point cluster, and the recurrence exactly tracks the
- * increase in WCSS). Because this objective only holds for the squared-Euclidean
- * metric, the distance kernel is restricted to the Euclidean family. The
- * algorithm is deterministic: given the same data and the same hyper-parameters
- * the resulting clustering is always identical.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -73,7 +63,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public const array ALLOWED_KERNELS = [
         Euclidean::class,
-        SafeEuclidean::class,
     ];
 
     /**
@@ -93,29 +82,16 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * The computed cluster centroids of the training data.
      *
-     * @var list<list<string|int|float>>
+     * @var list<list<string|int|float>>|null
      */
-    protected array $centroids = [
-        //
-    ];
+    protected ?array $centroids = null;
 
     /**
      * The number of training samples assigned to each cluster.
      *
-     * @var int[]
+     * @var int[]|null
      */
-    protected array $sizes = [
-        //
-    ];
-
-    /**
-     * The cluster assignment of each training sample (index = sample offset).
-     *
-     * @var list<int>
-     */
-    protected array $labels = [
-        //
-    ];
+    protected ?array $sizes = null;
 
     /**
      * The cost — the increase in the total within-cluster sum of squares —
@@ -186,15 +162,15 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function trained() : bool
     {
-        return !empty($this->centroids);
+        return $this->centroids !== null;
     }
 
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return list<list<string|int|float>>
+     * @return list<list<string|int|float>>|null
      */
-    public function centroids() : array
+    public function centroids() : ?array
     {
         return $this->centroids;
     }
@@ -202,9 +178,9 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * Return the number of training samples each cluster is responsible for.
      *
-     * @return int[]
+     * @return int[]|null
      */
-    public function sizes() : array
+    public function sizes() : ?array
     {
         return $this->sizes;
     }
@@ -268,35 +244,73 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $maxMerges = $n - $this->k;
 
+        $samples = $dataset->samples();
+        $d = count($samples[0]);
+
+        $norms = [];
+
+        foreach ($samples as $row) {
+            $sq = 0.0;
+
+            foreach ($row as $value) {
+                $sq += $value * $value;
+            }
+
+            $norms[] = $sq;
+        }
+
+        $cost = array_fill(0, $n * $n, 0.0);
+        $heap = new SplMinHeap();
+
+        for ($i = 0; $i < $n; ++$i) {
+            for ($j = $i + 1; $j < $n; ++$j) {
+                $distance = $norms[$i] + $norms[$j] - 2.0 * $this->innerProduct($samples[$i], $samples[$j]);
+
+                $cost[$i * $n + $j] = 0.5 * $distance;
+                $cost[$j * $n + $i] = 0.5 * $distance;
+
+                $heap->insert([0.5 * $distance, $i, $j]);
+            }
+        }
+
         $parent = range(0, $n - 1);
         $sizes = array_fill(0, $n, 1);
-        $memberships = array_map(fn ($i) => [$i], range(0, $n - 1));
-
-        $costs = $this->initializeCosts($dataset);
+        $sums = array_map(fn ($row) => array_map('floatval', $row), $samples);
 
         $this->losses = [];
 
         for ($epoch = 1; $epoch <= $maxMerges; ++$epoch) {
-            $i = 0;
-            $j = 1;
-            $min = INF;
+            $tuple = null;
 
-            for ($a = 0; $a < $n; ++$a) {
-                for ($b = $a + 1; $b < $n; ++$b) {
-                    if ($costs[$a][$b] < $min) {
-                        $min = $costs[$a][$b];
+            while ($heap->count() > 0) {
+                $candidate = $heap->extract();
+                $i = $candidate[1];
+                $j = $candidate[2];
 
-                        $i = $a;
-                        $j = $b;
-                    }
+                if ($parent[$i] !== $i or $parent[$j] !== $j) {
+                    continue;
                 }
+
+                if ($candidate[0] !== $cost[$i * $n + $j]) {
+                    continue;
+                }
+
+                $tuple = $candidate;
+
+                break;
             }
 
-            if ($this->logger) {
-                $this->logger->info("Epoch: $epoch, Cost: $min");
+            if ($tuple === null) {
+                break;
             }
 
-            if (is_nan($min)) {
+            $a = $tuple[1];
+            $b = $tuple[2];
+            $nA = $sizes[$a];
+            $nB = $sizes[$b];
+            $dAB = $tuple[0];
+
+            if (is_nan($dAB)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
                 }
@@ -304,50 +318,47 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 break;
             }
 
-            $this->losses[$epoch] = $min;
+            if ($this->logger) {
+                $this->logger->info("Epoch: $epoch, Cost: $dAB");
+            }
 
-            $a = $i;
-            $b = $j;
-            $nA = $sizes[$a];
-            $nB = $sizes[$b];
-            $dAB = $costs[$a][$b];
+            $this->losses[$epoch] = $dAB;
 
-            $memberships[$a] = array_merge($memberships[$a], $memberships[$b]);
             $parent[$b] = $a;
+            $sizes[$a] += $sizes[$b];
+            $sizes[$b] = 0;
+
+            for ($x = 0; $x < $d; ++$x) {
+                $sums[$a][$x] += $sums[$b][$x];
+            }
 
             for ($c = 0; $c < $n; ++$c) {
-                if ($c === $a or $c === $b) {
+                if ($parent[$c] !== $c or $c === $a or $c === $b) {
                     continue;
                 }
 
                 $nC = $sizes[$c];
+                $kAC = ($a < $c ? $a : $c) * $n + ($a < $c ? $c : $a);
+                $kBC = ($b < $c ? $b : $c) * $n + ($b < $c ? $c : $b);
 
-                $newCost = (($nA + $nC) * $costs[$a][$c] + ($nB + $nC) * $costs[$b][$c] - $nC * $dAB)
+                $newCost = (($nA + $nC) * $cost[$kAC] + ($nB + $nC) * $cost[$kBC] - $nC * $dAB)
                     / ($nA + $nB + $nC);
 
-                $costs[$a][$c] = $newCost;
-                $costs[$c][$a] = $newCost;
+                $lo = $a < $c ? $a : $c;
+                $hi = $a < $c ? $c : $a;
 
-                $costs[$b][$c] = INF;
-                $costs[$c][$b] = INF;
+                $cost[$lo * $n + $hi] = $newCost;
+                $cost[$hi * $n + $lo] = $newCost;
+
+                $heap->insert([$newCost, $lo, $hi]);
             }
-
-            $costs[$a][$b] = INF;
-            $costs[$b][$a] = INF;
-
-            $sizes[$a] += $sizes[$b];
-            $sizes[$b] = 0;
         }
 
         $roots = [];
 
         for ($root = 0; $root < $n; ++$root) {
-            if ($parent[$root] !== $root) {
-                continue;
-            }
-
-            if ($sizes[$root] > 0) {
-                $roots[] = $root;
+            if ($parent[$root] === $root and $sizes[$root] > 0) {
+                $roots[$root] = count($roots);
             }
         }
 
@@ -362,43 +373,24 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 $root = $parent[$root];
             }
 
-            $cluster = array_search($root, $roots, true);
-
-            if ($cluster === false) {
-                throw new RuntimeException('Failed to resolve cluster for a sample.');
-            }
-
-            $labels[$i] = $cluster;
+            $labels[$i] = $roots[$root];
         }
 
-        $sizes = array_fill(0, $count, 0);
+        $this->sizes = array_fill(0, $count, 0);
 
-        foreach ($labels as $i => $cluster) {
-            ++$sizes[$cluster];
+        foreach ($labels as $cluster) {
+            ++$this->sizes[$cluster];
         }
 
         $centroids = [];
 
-        foreach ($roots as $root) {
-            $cluster = array_search($root, $roots, true);
+        foreach ($roots as $root => $cluster) {
+            $size = $this->sizes[$cluster];
 
-            $sum = array_fill(0, count($dataset->sample(0)), 0.0);
-
-            foreach ($memberships[$root] as $idx) {
-                $sample = $dataset->sample($idx);
-
-                foreach ($sample as $x => $value) {
-                    $sum[$x] += $value;
-                }
-            }
-
-            $size = $sizes[$cluster];
-
-            $centroids[$cluster] = array_map(fn ($v) => $v / $size, $sum);
+            $centroids[$cluster] = array_map(fn ($v) => $v / $size, $sums[$root]);
         }
 
-        $this->centroids = $centroids;
-        $this->sizes = $sizes;
+        $this->centroids = array_values($centroids);
 
         if ($this->logger) {
             $this->logger->info('Training complete');
@@ -414,11 +406,13 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (!$this->trained()) {
+        $centroids = $this->centroids;
+
+        if (!$centroids) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
+        DatasetHasDimensionality::with($dataset, count(current($centroids)))->check();
 
         return array_map([$this, 'predictSample'], $dataset->samples());
     }
@@ -445,11 +439,13 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->trained()) {
+        $centroids = $this->centroids;
+
+        if (!$centroids) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, count(current($this->centroids)))->check();
+        DatasetHasDimensionality::with($dataset, count(current($centroids)))->check();
 
         return array_map([$this, 'probaSample'], $dataset->samples());
     }
@@ -466,7 +462,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     {
         $distances = $proba = [];
 
-        foreach ($this->centroids as $centroid) {
+        foreach ($this->centroids ?? [] as $centroid) {
             $distances[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
         }
 
@@ -495,7 +491,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     {
         $distances = [];
 
-        foreach ($this->centroids as $centroid) {
+        foreach ($this->centroids ?? [] as $centroid) {
             $distances[] = $this->kernel->compute($sample, $centroid);
         }
 
@@ -503,33 +499,23 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Compute the initial merge-cost matrix between every pair of singleton
-     * clusters using the distance kernel.
+     * Compute the dot product of two numeric vectors.
      *
-     * The cost of merging two singletons is ½·‖a − b‖²; we square the kernel
-     * distance because the Ward recurrence is derived from the squared-distance
-     * WCSS relation.
+     * @internal
      *
-     * @param Dataset $dataset
-     * @return list<list<float>>
+     * @param list<string|int|float> $a
+     * @param list<string|int|float> $b
+     * @return float
      */
-    protected function initializeCosts(Dataset $dataset) : array
+    protected function innerProduct(array $a, array $b) : float
     {
-        $n = $dataset->numSamples();
+        $dot = 0.0;
 
-        $costs = array_fill(0, $n, array_fill(0, $n, 0.0));
-
-        for ($i = 0; $i < $n; ++$i) {
-            for ($j = $i + 1; $j < $n; ++$j) {
-                $distance = $this->kernel->compute($dataset->sample($i), $dataset->sample($j));
-                $cost = 0.5 * $distance * $distance;
-
-                $costs[$i][$j] = $cost;
-                $costs[$j][$i] = $cost;
-            }
+        foreach ($a as $i => $value) {
+            $dot += $value * $b[$i];
         }
 
-        return $costs;
+        return $dot;
     }
 
     /**
