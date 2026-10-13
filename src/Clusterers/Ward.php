@@ -233,18 +233,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $samples = $dataset->samples();
         $numFeatures = $dataset->numFeatures();
 
-if ($maxMerges === 0) {
-            $this->centroids = array_map(fn ($row) => array_map('floatval', $row), $samples);
-            $this->sizes = array_fill(0, $n, 1);
-            $this->losses = [];
-
-            if ($this->logger) {
-                $this->logger->info('Training complete');
-            }
-
-            return;
-        }
-
         $norms = [];
 
         foreach ($samples as $row) {
@@ -263,7 +251,7 @@ if ($maxMerges === 0) {
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
-$distance = 0.5 * $this->kernel->compute($samples[$i], $samples[$j]) ** 2;
+                $distance = 0.5 * $this->kernel->compute($samples[$i], $samples[$j]) ** 2;
 
                 $cost[$i * $n + $j] = $distance;
                 $cost[$j * $n + $i] = $distance;

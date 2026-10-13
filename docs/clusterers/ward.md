@@ -13,15 +13,13 @@ An *agglomerative* (bottom-up) hierarchical clustering algorithm named after *J.
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | k | | int | The number of target clusters. |
-| 2 | kernel | Euclidean | Distance | The distance kernel, restricted to `Euclidean`, used to compute the distance between sample points. |
 
 ## Example
 
 ```php
 use Rubix\ML\Clusterers\Ward;
-use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new Ward(3, new Euclidean());
+$estimator = new Ward(3);
 ```
 
 ## Additional Methods
