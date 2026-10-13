@@ -2,7 +2,7 @@
 
 # Ward
 
-An *agglomerative* (bottom-up) hierarchical clustering algorithm named after *J. H. Ward, Jr.*. Unlike the iterative re-estimation schemes used by [K Means](k-means.md) or [K Medoids](k-medoids.md), Ward begins with each sample as its own singleton cluster and then greedily merges the pair of clusters whose union causes the smallest increase in the total *within-cluster sum of squares*, repeating until the target number of clusters *k* remains. The increase in within-cluster variance incurred by each merge is tracked with the **Lance-Williams** recurrence, allowing the full cost matrix to be updated in linear time. Because this objective only holds for the Euclidean distance, the distance kernel is restricted to `Euclidean`. The algorithm is fully deterministic and requires no seeding, initialization, or epoch tuning.
+An *agglomerative* (bottom-up) hierarchical clustering algorithm named after *J. H. Ward, Jr.*. Unlike the iterative re-estimation schemes used by [K Means](k-means.md) or [K Medoids](k-medoids.md), Ward begins with each sample as its own singleton cluster and then greedily merges the pair of clusters whose union causes the smallest increase in the total *within-cluster sum of squares*, repeating until the target number of clusters *k* remains. Merging halts early if the cost of the next cheapest merge exceeds `maxDistance`, which — defaulted to `INF` — permits the full *n - k* merges. The increase in within-cluster variance incurred by each merge is tracked with the **Lance-Williams** recurrence, allowing the full cost matrix to be updated in linear time. Because this objective only holds for the Euclidean distance, the distance kernel is restricted to `Euclidean`. The algorithm is fully deterministic and requires no seeding, initialization, or epoch tuning.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
 
@@ -13,13 +13,14 @@ An *agglomerative* (bottom-up) hierarchical clustering algorithm named after *J.
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | k | | int | The number of target clusters. |
+| 2 | maxDistance | INF | float | The maximum allowed cost — the increase in the total within-cluster sum of squares — for any single merge. Training stops early once the next cheapest merge would exceed this threshold. Defaults to `INF` (no limit). |
 
 ## Example
 
 ```php
 use Rubix\ML\Clusterers\Ward;
 
-$estimator = new Ward(3);
+$estimator = new Ward(3, INF);
 ```
 
 ## Additional Methods

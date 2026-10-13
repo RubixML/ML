@@ -23,6 +23,8 @@ use function count;
 use function array_sum;
 use function iterator_to_array;
 
+use const Rubix\ML\EPSILON;
+
 #[Group('Clusterers')]
 #[CoversClass(Ward::class)]
 class WardTest extends TestCase
@@ -128,6 +130,14 @@ class WardTest extends TestCase
     }
 
     #[Test]
+    public function badMaxDistance() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Ward(k: 3, maxDistance: -0.5);
+    }
+
+    #[Test]
     public function tooFewSamples() : void
     {
         $estimator = new Ward(k: 5);
@@ -158,6 +168,7 @@ class WardTest extends TestCase
     {
         $expected = [
             'k' => 3,
+            'maxDistance' => INF,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -232,6 +243,50 @@ class WardTest extends TestCase
         $this->assertCount(5, $predictions);
 
         $this->assertEqualsCanonicalizing(range(0, 4), $predictions);
+    }
+
+    #[Test]
+    public function trainStopsEarlyAtMaxDistance() : void
+    {
+        $training = Unlabeled::quick(samples: [[0.0], [1.0], [2.0], [5.0]]);
+
+        $estimator = new Ward(k: 1, maxDistance: 1.5);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $this->assertCount(2, $estimator->centroids());
+
+        $losses = $estimator->losses();
+
+        $this->assertIsArray($losses);
+        $this->assertCount(2, $losses);
+
+        foreach ($losses as $cost) {
+            $this->assertLessThanOrEqual(1.5, $cost);
+        }
+    }
+
+    #[Test]
+    public function trainNoMergeWithTinyMaxDistance() : void
+    {
+        $training = Unlabeled::quick(samples: [[1.0], [2.0], [3.0]]);
+
+        $estimator = new Ward(k: 1, maxDistance: EPSILON);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $this->assertCount(3, $estimator->centroids());
+        $this->assertSame([], $estimator->losses());
+
+        $sizes = $estimator->sizes();
+
+        foreach ($sizes as $size) {
+            $this->assertSame(1, $size);
+        }
     }
 
     #[Test]

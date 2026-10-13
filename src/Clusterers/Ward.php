@@ -41,7 +41,9 @@ use const Rubix\ML\EPSILON;
  * sample as its own singleton cluster and then *greedily* merges the pair of
  * clusters whose union causes the smallest increase in the total *within-cluster
  * sum of squares* (WCSS), repeating until the target number of clusters *k*
- * remains.
+ * remains. Merging halts early if the cost of the next cheapest pair of
+ * clusters exceeds the *maxDistance* threshold, which — defaulted to
+ * `INF` — permits the full *n - k* merges.
  *
  * The increase in WCSS incurred by each merge — the *merge cost* — is tracked
  * with the **Lance-Williams** recurrence, which allows the full cost matrix to
@@ -64,6 +66,14 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      * @var positive-int
      */
     protected int $k;
+
+    /**
+     * The maximum cost — the increase in the total within-cluster sum of
+     * squares — a single merge may incur before training halts early.
+     *
+     * @var float
+     */
+    protected float $maxDistance;
 
     /**
      * The distance kernel used to compute the pairwise distance between samples.
@@ -96,16 +106,23 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
     /**
      * @param int $k
+     * @param float $maxDistance
      * @throws InvalidArgumentException
      */
-    public function __construct(int $k)
+    public function __construct(int $k, float $maxDistance = INF)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('K must be greater'
                 . " than 0, $k given.");
         }
 
+        if ($maxDistance < 0.0) {
+            throw new InvalidArgumentException('Max distance must be positive,'
+                . " $maxDistance given.");
+        }
+
         $this->k = $k;
+        $this->maxDistance = $maxDistance;
         $this->kernel = new Euclidean();
     }
 
@@ -138,6 +155,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     {
         return [
             'k' => $this->k,
+            'maxDistance' => $this->maxDistance,
         ];
     }
 
@@ -290,6 +308,10 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
             }
 
             [$distance, $a, $b] = $candidate;
+
+            if ($distance > $this->maxDistance) {
+                break;
+            }
 
             $nA = $sizes[$a];
             $nB = $sizes[$b];
