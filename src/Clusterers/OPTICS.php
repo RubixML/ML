@@ -527,7 +527,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Process a point in the OPTICS ordering: compute its core distance and update the
-     * reachability of its unprocessed neighbors within that core distance.
+     * reachability of its unprocessed neighbors within radius.
      *
      * @internal
      *
@@ -555,7 +555,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $this->coreDistances[$point] = $coreDistance;
 
-        [, $labels, $distances] = $this->tree->range($samples[$point], $coreDistance);
+        [, $labels, $distances] = $this->tree->range($samples[$point], $this->radius);
 
         foreach ($labels as $i => $label) {
             $index = (int) $label;

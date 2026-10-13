@@ -207,6 +207,30 @@ class OPTICSTest extends TestCase
     }
 
     #[Test]
+    public function updatesReachabilityOfNeighborsBeyondCoreDistance() : void
+    {
+        $dataset = Unlabeled::quick([
+            [0.0, 0.0],
+            [0.25, 0.0],
+            [0.75, 0.0],
+        ]);
+
+        $estimator = new OPTICS(
+            radius: 1.0,
+            minDensity: 2,
+            minClusterSize: 2,
+            tree: new BallTree()
+        );
+
+        $estimator->train($dataset);
+
+        $reachability = $estimator->reachability();
+
+        $this->assertEqualsWithDelta(0.25, $reachability[1], 1e-8);
+        $this->assertEqualsWithDelta(0.5, $reachability[2], 1e-8);
+    }
+
+    #[Test]
     public function predictsNoiseForIsolatedSamples() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
