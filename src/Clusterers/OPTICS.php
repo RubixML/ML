@@ -160,20 +160,6 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
     protected ?array $coreDistances = null;
 
     /**
-     * The predecessor of each sample from the last training session.
-     *
-     * @var list<int>|null
-     */
-    protected ?array $predecessor = null;
-
-    /**
-     * The set of samples already added to the cluster ordering.
-     *
-     * @var list<bool>|null
-     */
-    protected ?array $processed = null;
-
-    /**
      * @param float $radius
      * @param int $minDensity
      * @param float $steepness
@@ -325,9 +311,9 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $this->tree->grow(Labeled::quick($dataset->samples(), $labels));
 
-        $this->order($dataset);
+        $predecessor = $this->order($dataset);
 
-        $predictions = $this->extractClusters();
+        $predictions = $this->extractClusters($predecessor);
 
         $clusterCount = 0;
 
@@ -481,17 +467,19 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
      * @internal
      *
      * @param Dataset $dataset
+     * @return list<int>
      */
-    protected function order(Dataset $dataset) : void
+    protected function order(Dataset $dataset) : array
     {
         $n = $dataset->numSamples();
 
         $samples = $dataset->samples();
 
+        $predecessor = array_fill(0, $n, -1);
+        $processed = array_fill(0, $n, false);
+
         $this->reachability = array_fill(0, $n, INF);
         $this->coreDistances = array_fill(0, $n, INF);
-        $this->predecessor = array_fill(0, $n, -1);
-        $this->processed = array_fill(0, $n, false);
         $this->ordering = [];
 
         $queue = new SplPriorityQueue();
@@ -499,31 +487,33 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $queue->setExtractFlags(SplPriorityQueue::EXTR_DATA);
 
         for ($i = 0; $i < $n; ++$i) {
-            if ($this->processed[$i]) {
+            if ($processed[$i]) {
                 continue;
             }
 
-            $this->processed[$i] = true;
+            $processed[$i] = true;
             $this->reachability[$i] = INF;
 
             $this->ordering[] = $i;
 
-            $this->processPoint($queue, $i, $samples);
+            $this->processPoint($queue, $i, $samples, $processed, $predecessor);
 
             while (!$queue->isEmpty()) {
                 $point = (int) $queue->extract();
 
-                if ($this->processed[$point]) {
+                if ($processed[$point]) {
                     continue;
                 }
 
-                $this->processed[$point] = true;
+                $processed[$point] = true;
 
                 $this->ordering[] = $point;
 
-                $this->processPoint($queue, $point, $samples);
+                $this->processPoint($queue, $point, $samples, $processed, $predecessor);
             }
         }
+
+        return $predecessor;
     }
 
     /**
@@ -535,9 +525,16 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
      * @param SplPriorityQueue<float,int> $queue
      * @param int $point
      * @param list<list<string|int|float>> $samples
+     * @param list<bool> $processed
+     * @param array<int,int> $predecessor
      */
-    protected function processPoint(SplPriorityQueue $queue, int $point, array $samples) : void
-    {
+    protected function processPoint(
+        SplPriorityQueue $queue,
+        int $point,
+        array $samples,
+        array $processed,
+        array &$predecessor
+    ) : void {
         [, $labels, $distances] = $this->tree->range($samples[$point], $this->radius);
 
         if (count($labels) < $this->minDensity) {
@@ -555,7 +552,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
         foreach ($labels as $i => $label) {
             $index = (int) $label;
 
-            if ($this->processed[$index]) {
+            if ($processed[$index]) {
                 continue;
             }
 
@@ -563,7 +560,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
             if ($reachability < $this->reachability[$index]) {
                 $this->reachability[$index] = $reachability;
-                $this->predecessor[$index] = $point;
+                $predecessor[$index] = $point;
 
                 $queue->insert($index, -$reachability);
             }
@@ -575,9 +572,10 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
      *
      * @internal
      *
+     * @param list<int> $predecessor
      * @return list<int>
      */
-    protected function extractClusters() : array
+    protected function extractClusters(array $predecessor) : array
     {
         $n = count($this->ordering);
 
@@ -592,7 +590,7 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $predecessors = [];
 
         foreach ($this->ordering as $point) {
-            $predecessors[] = $this->predecessor[$point];
+            $predecessors[] = $predecessor[$point];
         }
 
         $steepnessComplement = 1.0 - $this->steepness;
@@ -877,8 +875,6 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $properties['ordering'],
             $properties['reachability'],
             $properties['coreDistances'],
-            $properties['predecessor'],
-            $properties['processed'],
             $properties['logger'],
         );
 
