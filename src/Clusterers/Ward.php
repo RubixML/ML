@@ -315,8 +315,9 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $this->losses = [];
 
         for ($epoch = 1; $epoch <= $maxMerges; ++$epoch) {
-            $clusters = $n - $epoch + 1;
-            $activePairs = ($clusters * ($clusters - 1)) >> 1;
+            $numClusters = $n - $epoch + 1;
+            
+            $activePairs = ($numClusters * ($numClusters - 1)) >> 1;
 
             if ($heap->count() > self::HEAP_COMPACTION_RATIO * $activePairs) {
                 self::rebuildHeap($heap, $cost, $parent, $sizes, $n);
