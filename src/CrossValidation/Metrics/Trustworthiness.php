@@ -51,7 +51,8 @@ class Trustworthiness implements Stringable
     protected Symmetric $inputKernel;
 
     /**
-     * The symmetric distance kernel used to measure dissimilarity in the embedded space.
+     * The symmetric distance kernel used to measure dissimilarity in the embedded
+     * space.
      *
      * @var Symmetric
      */
@@ -59,10 +60,10 @@ class Trustworthiness implements Stringable
 
     /**
      * @param int $k
-     * @param ?Symmetric $kernel
+     * @param ?Symmetric $inputKernel
      * @throws InvalidArgumentException
      */
-    public function __construct(int $k = 5, ?Symmetric $kernel = null)
+    public function __construct(int $k = 5, ?Symmetric $inputKernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('Number of neighbors must be'
@@ -70,7 +71,7 @@ class Trustworthiness implements Stringable
         }
 
         $this->k = $k;
-        $this->inputKernel = $kernel ?? new Euclidean();
+        $this->inputKernel = $inputKernel ?? new Euclidean();
         $this->embeddingKernel = new SquaredEuclidean();
     }
 
