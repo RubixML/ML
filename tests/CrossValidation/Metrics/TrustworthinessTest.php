@@ -82,7 +82,7 @@ class TrustworthinessTest extends TestCase
     }
 
     #[Test]
-    public function rigidRotationInVariance() : void
+    public function rigidRotationInvariance() : void
     {
         // 8 points on a unit circle, rotated rigidly.
         $n = 8;
