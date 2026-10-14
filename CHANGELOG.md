@@ -1,7 +1,7 @@
 # Changelog
 
 - 3.3.0
-    - Added OPTICS clusterer
+    - Added OPTICS and Ward clusterers
 
 - 3.2.0
     - Added Bayesian Search meta-estimator
