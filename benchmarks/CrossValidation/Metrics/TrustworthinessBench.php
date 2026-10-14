@@ -43,15 +43,13 @@ class TrustworthinessBench
 
         $dataset = (new Blob($center, 1.5))->generate(self::SIZE);
 
+        $pca = new PrincipalComponentAnalysis(self::TARGET_DIMS);
+
         $this->samples = $dataset->samples();
 
-        $pca = new PrincipalComponentAnalysis(self::TARGET_DIMS);
-        $pca->fit($dataset);
+        $dataset->apply($pca);
 
-        $embedding = $this->samples;
-        $pca->transform($embedding);
-
-        $this->embedding = $embedding;
+        $this->embedding = $dataset->samples();
 
         $this->metric = new Trustworthiness(5);
     }
