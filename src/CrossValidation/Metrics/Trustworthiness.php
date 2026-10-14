@@ -4,16 +4,15 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Symmetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
 
 use function max;
 use function count;
 use function asort;
-use function array_slice;
-use function array_keys;
+use function is_infinite;
 
 /**
  * Trustworthiness
@@ -45,19 +44,20 @@ class Trustworthiness implements Stringable
     protected int $k;
 
     /**
-     * The distance kernel used to measure dissimilarity in the input space.
-     * The embedded space is always assessed with Euclidean distance.
+     * The symmetric distance kernel used to measure dissimilarity in the input
+     * space. Symmetry allows the pairwise distance matrix to be computed by
+     * only evaluating the upper triangle and mirroring the result.
      *
-     * @var Distance
+     * @var Symmetric
      */
-    protected Distance $kernel;
+    protected Symmetric $kernel;
 
     /**
      * @param int $k
-     * @param ?Distance $kernel
+     * @param ?Symmetric $kernel
      * @throws InvalidArgumentException
      */
-    public function __construct(int $k = 5, ?Distance $kernel = null)
+    public function __construct(int $k = 5, ?Symmetric $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('Number of neighbors must be'
@@ -121,12 +121,12 @@ class Trustworthiness implements Stringable
 
         $ranks = $this->inputRanks($samples);
 
+        $distances = $this->pairwiseDistances($embedded, [$this, 'euclidean']);
+
         $total = 0.0;
 
         for ($i = 0; $i < $n; ++$i) {
-            $neighbors = $this->embeddedNeighbors($embedded, $i, $this->k);
-
-            foreach ($neighbors as $j) {
+            foreach ($this->kNearest($distances, $i, $this->k) as $j) {
                 $total += max(0, $ranks[$i][$j] - $this->k);
             }
         }
@@ -148,25 +148,25 @@ class Trustworthiness implements Stringable
     protected function inputRanks(array $samples) : array
     {
         $n = count($samples);
+
+        $distances = $this->pairwiseDistances($samples);
+
         $ranks = [];
 
         for ($i = 0; $i < $n; ++$i) {
-            $distances = [];
+            $row = $distances[$i];
 
-            for ($j = 0; $j < $n; ++$j) {
-                if ($j === $i) {
-                    continue;
-                }
-
-                $distances[$j] = $this->kernel->compute($samples[$i], $samples[$j]);
-            }
-
-            asort($distances);
+            asort($row);
 
             $rank = 1;
 
-            foreach ($distances as $j => $_rank) {
+            foreach ($row as $j => $_distance) {
+                if (is_infinite($_distance)) {
+                    break;
+                }
+
                 $ranks[$i][$j] = $rank;
+
                 ++$rank;
             }
         }
@@ -175,32 +175,72 @@ class Trustworthiness implements Stringable
     }
 
     /**
-     * Return the indices of the k nearest neighbors of sample $i in the
-     * embedded space, excluding $i itself.
+     * Compute the full n x n pairwise distance matrix between every pair of
+     * sample points, seeding the diagonal so that each point sorts last and can
+     * never be selected as its own neighbor.
+     *
+     * Only the upper triangle is computed and mirrored, halving the number of
+     * distance evaluations.
      *
      * @internal
      *
-     * @param list<list<float>> $embedded
+     * @param list<list<string|int|float>> $samples
+     * @return array<int, array<int, float>>
+     */
+    protected function pairwiseDistances(array $samples) : array
+    {
+        $n = count($samples);
+
+        $matrix = [];
+
+        for ($i = 0; $i < $n; ++$i) {
+            $matrix[$i][$i] = INF;
+        }
+
+        for ($i = 0; $i < $n; ++$i) {
+            for ($j = $i + 1; $j < $n; ++$j) {
+                $distance = $this->kernel->compute($samples[$i], $samples[$j]);
+
+                $matrix[$i][$j] = $distance;
+                $matrix[$j][$i] = $distance;
+            }
+        }
+
+        return $matrix;
+    }
+
+    /**
+     * Return the indices of the k closest points to point $i, excluding $i
+     * itself (whose distance is seeded high enough to sort last).
+     *
+     * @internal
+     *
+     * @param array<int, array<int, float>> $matrix
      * @param int $i
      * @param int $k
      * @return list<int>
      */
-    protected function embeddedNeighbors(array $embedded, int $i, int $k) : array
+    protected function kNearest(array $matrix, int $i, int $k) : array
     {
-        $n = count($embedded);
-        $distances = [];
+        $row = $matrix[$i];
 
-        for ($j = 0; $j < $n; ++$j) {
-            if ($j === $i) {
-                continue;
+        asort($row);
+
+        $neighbors = [];
+
+        foreach ($row as $j => $distance) {
+            if (is_infinite($distance)) {
+                break;
             }
 
-            $distances[$j] = $this->euclidean($embedded[$i], $embedded[$j]);
+            $neighbors[] = $j;
+
+            if (count($neighbors) === $k) {
+                break;
+            }
         }
 
-        asort($distances);
-
-        return array_slice(array_keys($distances), 0, $k);
+        return $neighbors;
     }
 
     /**
@@ -218,6 +258,7 @@ class Trustworthiness implements Stringable
 
         foreach ($a as $i => $value) {
             $delta = $value - $b[$i];
+
             $distance += $delta * $delta;
         }
 

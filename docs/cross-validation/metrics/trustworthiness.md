@@ -24,7 +24,7 @@ A score of 1.0 means the embedding preserves local structure perfectly; lower sc
 | # | Name | Default | Type | Description |
 | --- | --- | --- | --- | --- |
 | 1 | k | 5 | int | The number of nearest neighbors to consider when scoring local structure. |
-| 2 | kernel | Euclidean | Distance | The kernel used to measure dissimilarity in the original feature space. |
+| 2 | kernel | Euclidean | Symmetric | The symmetric kernel used to measure dissimilarity in the original feature space. |
 
 ## Example
 
