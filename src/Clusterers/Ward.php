@@ -299,13 +299,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
             [$distance, $a, $b] = $candidate;
 
-            if ($distance > $this->maxDistance) {
-                break;
-            }
-
-            $nA = $sizes[$a];
-            $nB = $sizes[$b];
-
             if (is_nan($distance)) {
                 if ($this->logger) {
                     $this->logger->warning('Numerical instability detected');
@@ -313,6 +306,13 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
                 break;
             }
+
+            if ($distance > $this->maxDistance) {
+                break;
+            }
+
+            $nA = $sizes[$a];
+            $nB = $sizes[$b];
 
             if ($this->logger) {
                 $this->logger->info("Epoch: $epoch, Cost: $distance");
