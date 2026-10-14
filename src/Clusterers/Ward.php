@@ -52,10 +52,6 @@ use const Rubix\ML\EPSILON;
  *     δ(C, A∪B) = ((|C|+|A|)·δ(C,A) + (|C|+|B|)·δ(C,B) − |C|·δ(A,B))
  *                 / (|C|+|A|+|B|)
  *
- * The recurrence is only valid when the distance is the [squared Euclidean
- * distance](../kernels/distance/squared-euclidean.md), so the kernel —
- * defaulted to `SquaredEuclidean` — is restricted to that form.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -161,7 +157,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     {
         return [
             'k' => $this->k,
-            'maxDistance' => $this->maxDistance,
+            'max distance' => $this->maxDistance,
         ];
     }
 
