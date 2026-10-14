@@ -168,7 +168,7 @@ class WardTest extends TestCase
     {
         $expected = [
             'k' => 3,
-            'maxDistance' => INF,
+            'max distance' => INF,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
