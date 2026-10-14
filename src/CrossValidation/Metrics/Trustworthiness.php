@@ -113,9 +113,9 @@ class Trustworthiness implements Stringable
             return 1.0;
         }
 
-        if ($this->k >= intdiv($n, 2)) {
+        if (2 * $this->k >= $n) {
             throw new InvalidArgumentException("Number of neighbors ($this->k) must be"
-                . ' less than n / 2 (' . intdiv($n, 2) . ') or the'
+                . ' less than n / 2 (' . ($n / 2) . ') or the'
                 . ' Trustworthiness could fall below 0.');
         }
 
