@@ -1,6 +1,7 @@
 # Changelog
 
 - 3.3.0
+    - Added Ward clusterer
     - Added Trustworthiness metric for scoring embedding quality
 
 - 3.2.0

@@ -18,7 +18,7 @@
         "outlier detection", "php", "php ai", "php machine learning", "php ml", "predictive modeling",
         "prediction", "random forest", "ranking", "regression", "regressor", "recommendation", "ridge",
         "rubix", "rubixml", "rubix ml", "softmax", "supervised learning", "support vector machine",
-        "svm", "text mining", "tf-idf", "tf idf", "t-sne", "tsne", "unsupervised learning"
+        "svm", "text mining", "tf-idf", "tf idf", "t-sne", "tsne", "unsupervised learning", "ward"
     ],
     "authors": [
         {
