@@ -161,7 +161,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     {
         return [
             'k' => $this->k,
-            'max distance' => $this->maxDistance,
+            'maxDistance' => $this->maxDistance,
         ];
     }
 
@@ -256,18 +256,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $samples = $dataset->samples();
         $numFeatures = $dataset->numFeatures();
-
-        $norms = [];
-
-        foreach ($samples as $row) {
-            $norm = 0.0;
-
-            foreach ($row as $value) {
-                $norm += $value * $value;
-            }
-
-            $norms[] = $norm;
-        }
 
         $cost = array_fill(0, $n * $n, 0.0);
 
@@ -510,26 +498,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         }
 
         return $distances;
-    }
-
-    /**
-     * Compute the dot product of two numeric vectors.
-     *
-     * @internal
-     *
-     * @param list<string|int|float> $a
-     * @param list<string|int|float> $b
-     * @return float
-     */
-    protected function innerProduct(array $a, array $b) : float
-    {
-        $dot = 0.0;
-
-        foreach ($a as $i => $value) {
-            $dot += $value * $b[$i];
-        }
-
-        return $dot;
     }
 
     /**
