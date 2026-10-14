@@ -120,14 +120,14 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      *
      * @internal
      *
-     * @param SplMinHeap<int,array{float,int,int}> $heap
-     * @param-out SplMinHeap<int,array{float,int,int}> $heap
+     * @param SplMinHeap<mixed> $heap
+     * @param-out SplMinHeap<mixed> $heap
      * @param float[] $cost
      * @param int[] $parent
      * @param int[] $sizes
      * @param int $n
      */
-    protected static function rebuildHeap(&$heap, array $cost, array $parent, array $sizes, int $n) : void
+    protected static function rebuildHeap(SplMinHeap &$heap, array $cost, array $parent, array $sizes, int $n) : void
     {
         $heap = new SplMinHeap();
 
