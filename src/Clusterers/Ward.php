@@ -61,6 +61,14 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     use AutotrackRevisions, LoggerAware;
 
     /**
+     * The ratio of heap entries to active merge candidates above which the
+     * lazy heap is compacted to reclaim entries left stale by earlier merges.
+     *
+     * @var float
+     */
+    protected const float HEAP_COMPACTION_RATIO = 2.0;
+
+    /**
      * The target number of clusters.
      *
      * @var positive-int
@@ -105,6 +113,38 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      * @var float[]|null
      */
     protected ?array $losses = null;
+
+    /**
+     * Rebuild the merge candidate heap from the current pairwise costs,
+     * discarding entries left stale by earlier merges.
+     *
+     * @internal
+     *
+     * @param SplMinHeap<int,array{float,int,int}> $heap
+     * @param-out SplMinHeap<int,array{float,int,int}> $heap
+     * @param float[] $cost
+     * @param int[] $parent
+     * @param int[] $sizes
+     * @param int $n
+     */
+    protected static function rebuildHeap(&$heap, array $cost, array $parent, array $sizes, int $n) : void
+    {
+        $heap = new SplMinHeap();
+
+        for ($i = 0; $i < $n; ++$i) {
+            if ($parent[$i] !== $i or $sizes[$i] === 0) {
+                continue;
+            }
+
+            for ($j = $i + 1; $j < $n; ++$j) {
+                if ($parent[$j] !== $j or $sizes[$j] === 0) {
+                    continue;
+                }
+
+                $heap->insert([$cost[$i * $n + $j], $i, $j]);
+            }
+        }
+    }
 
     /**
      * @param int $k
@@ -275,6 +315,13 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $this->losses = [];
 
         for ($epoch = 1; $epoch <= $maxMerges; ++$epoch) {
+            $clusters = $n - $epoch + 1;
+            $activePairs = ($clusters * ($clusters - 1)) >> 1;
+
+            if ($heap->count() > self::HEAP_COMPACTION_RATIO * $activePairs) {
+                self::rebuildHeap($heap, $cost, $parent, $sizes, $n);
+            }
+
             $candidate = null;
 
             while ($heap->count() > 0) {
