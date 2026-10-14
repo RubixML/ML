@@ -161,7 +161,7 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
     {
         return [
             'k' => $this->k,
-            'maxDistance' => $this->maxDistance,
+            'max distance' => $this->maxDistance,
         ];
     }
 
