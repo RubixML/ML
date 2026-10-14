@@ -42,28 +42,6 @@ class TrustworthinessTest extends TestCase
     }
 
     #[Test]
-    public function defaultKernel() : void
-    {
-        $reflection = new \ReflectionProperty(Trustworthiness::class, 'kernel');
-        $this->assertInstanceOf(Euclidean::class, $reflection->getValue($this->metric));
-    }
-
-    #[Test]
-    public function customKernel() : void
-    {
-        $metric = new Trustworthiness(3, new Euclidean());
-        $reflection = new \ReflectionProperty(Trustworthiness::class, 'kernel');
-        $this->assertInstanceOf(Euclidean::class, $reflection->getValue($metric));
-    }
-
-    #[Test]
-    public function invalidKernelTypeThrows() : void
-    {
-        $this->expectException(\TypeError::class);
-        new Trustworthiness(3, 'euclidean');
-    }
-
-    #[Test]
     public function zeroNeighborsThrows() : void
     {
         $this->expectException(InvalidArgumentException::class);

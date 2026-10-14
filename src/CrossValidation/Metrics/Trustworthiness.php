@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\SquaredEuclidean;
 use Rubix\ML\Kernels\Distance\Symmetric;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Stringable;
@@ -36,21 +37,25 @@ use function is_infinite;
 class Trustworthiness implements Stringable
 {
     /**
-     * The number of nearest neighbors considered when scoring local
-     * structure preservation.
+     * The number of nearest neighbors considered when scoring local structure preservation.
      *
      * @var int
      */
     protected int $k;
 
     /**
-     * The symmetric distance kernel used to measure dissimilarity in the input
-     * space. Symmetry allows the pairwise distance matrix to be computed by
-     * only evaluating the upper triangle and mirroring the result.
+     * The symmetric distance kernel used to measure dissimilarity in the input space.
      *
      * @var Symmetric
      */
-    protected Symmetric $kernel;
+    protected Symmetric $inputKernel;
+
+    /**
+     * The symmetric distance kernel used to measure dissimilarity in the embedded space.
+     *
+     * @var Symmetric
+     */
+    protected Symmetric $embeddingKernel;
 
     /**
      * @param int $k
@@ -65,7 +70,8 @@ class Trustworthiness implements Stringable
         }
 
         $this->k = $k;
-        $this->kernel = $kernel ?? new Euclidean();
+        $this->inputKernel = $kernel ?? new Euclidean();
+        $this->embeddingKernel = new SquaredEuclidean();
     }
 
     /**
@@ -121,12 +127,14 @@ class Trustworthiness implements Stringable
 
         $ranks = $this->inputRanks($samples);
 
-        $distances = $this->pairwiseDistances($embedded, [$this, 'euclidean']);
+        $distances = $this->pairwiseDistances($embedded, $this->embeddingKernel);
 
         $total = 0.0;
 
         for ($i = 0; $i < $n; ++$i) {
-            foreach ($this->kNearest($distances, $i, $this->k) as $j) {
+            $neighbors = $this->nearest($distances, $i, $this->k);
+
+            foreach ($neighbors as $j) {
                 $total += max(0, $ranks[$i][$j] - $this->k);
             }
         }
@@ -149,7 +157,7 @@ class Trustworthiness implements Stringable
     {
         $n = count($samples);
 
-        $distances = $this->pairwiseDistances($samples);
+        $distances = $this->pairwiseDistances($samples, $this->inputKernel);
 
         $ranks = [];
 
@@ -185,9 +193,10 @@ class Trustworthiness implements Stringable
      * @internal
      *
      * @param list<list<string|int|float>> $samples
+     * @param Symmetric $kernel
      * @return array<int, array<int, float>>
      */
-    protected function pairwiseDistances(array $samples) : array
+    protected function pairwiseDistances(array $samples, Symmetric $kernel) : array
     {
         $n = count($samples);
 
@@ -199,7 +208,7 @@ class Trustworthiness implements Stringable
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
-                $distance = $this->kernel->compute($samples[$i], $samples[$j]);
+                $distance = $kernel->compute($samples[$i], $samples[$j]);
 
                 $matrix[$i][$j] = $distance;
                 $matrix[$j][$i] = $distance;
@@ -220,7 +229,7 @@ class Trustworthiness implements Stringable
      * @param int $k
      * @return list<int>
      */
-    protected function kNearest(array $matrix, int $i, int $k) : array
+    protected function nearest(array $matrix, int $i, int $k) : array
     {
         $row = $matrix[$i];
 
@@ -241,28 +250,6 @@ class Trustworthiness implements Stringable
         }
 
         return $neighbors;
-    }
-
-    /**
-     * Return the squared Euclidean distance between two points.
-     *
-     * @internal
-     *
-     * @param list<float> $a
-     * @param list<float> $b
-     * @return float
-     */
-    protected function euclidean(array $a, array $b) : float
-    {
-        $distance = 0.0;
-
-        foreach ($a as $i => $value) {
-            $delta = $value - $b[$i];
-
-            $distance += $delta * $delta;
-        }
-
-        return $distance;
     }
 
     /**
