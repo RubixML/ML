@@ -37,6 +37,7 @@ use function get_object_vars;
 use function is_infinite;
 use function max;
 use function range;
+use function sort;
 
 /**
  * OPTICS
@@ -537,25 +538,19 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     protected function processPoint(SplPriorityQueue $queue, int $point, array $samples) : void
     {
-        [, , $distances] = $this->tree->nearest($samples[$point], $this->minDensity);
+        [, $labels, $distances] = $this->tree->range($samples[$point], $this->radius);
 
-        if (count($distances) < $this->minDensity) {
+        if (count($labels) < $this->minDensity) {
             $this->coreDistances[$point] = INF;
 
             return;
         }
 
-        $coreDistance = (float) max($distances);
+        sort($distances);
 
-        if ($coreDistance > $this->radius) {
-            $this->coreDistances[$point] = INF;
-
-            return;
-        }
+        $coreDistance = (float) $distances[$this->minDensity - 1];
 
         $this->coreDistances[$point] = $coreDistance;
-
-        [, $labels, $distances] = $this->tree->range($samples[$point], $this->radius);
 
         foreach ($labels as $i => $label) {
             $index = (int) $label;
