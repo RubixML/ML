@@ -99,9 +99,7 @@ class AveragePrecision implements ProbabilisticMetric
             }
         }
 
-        $negatives = $n - $positives;
-
-        if ($positives === 0 or $negatives === 0) {
+        if ($positives === 0) {
             return 0.0;
         }
 
