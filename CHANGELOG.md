@@ -1,7 +1,8 @@
 # Changelog
 
-- Unreleased
+- 3.3.0
     - Added Ward clusterer
+    - Added Squared Euclidean distance kernel
 
 - 3.2.0
     - Added Bayesian Search meta-estimator
