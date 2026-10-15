@@ -119,6 +119,7 @@ echo $score;
 
 | Name | Range | Formula | Notes |
 | --- | --- | --- | --- |
+| [Average Precision](cross-validation/metrics/average-precision.md) | [0, 1] | $\frac{1}{P}\sum\limits _{i=1}^{P} P(k_i)$ | Positive class set in constructor |
 | [Brier Score](cross-validation/metrics/brier-score.md) | [-2, 0] | $\frac{1}{n}\sum\limits _{i=1}^{n}\sum\limits _{j=1}^{c}(P_{ij}-{\hat {P_{ij}}})^2$ | |
 | [Probabilistic Accuracy](cross-validation/metrics/probabilistic-accuracy.md) | [0, 1] | $\frac{1}{n}\sum\limits _{i=1}^{n} P_{label}$ | |
 | [ROC AUC](cross-validation/metrics/rocauc.md) | [0, 1] | $\frac{\sum_{i \in P}\mathrm{rank}_{i}-\frac{P(P+1)}{2}}{P \cdot N}$ | Positive class set in constructor |

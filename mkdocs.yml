@@ -242,6 +242,7 @@ nav:
       - Metrics:
         - API Reference: cross-validation/metrics/api.md
         - Accuracy: cross-validation/metrics/accuracy.md
+        - Average Precision: cross-validation/metrics/average-precision.md
         - Brier Score: cross-validation/metrics/brier-score.md
         - F Beta: cross-validation/metrics/f-beta.md
         - Informedness: cross-validation/metrics/informedness.md
