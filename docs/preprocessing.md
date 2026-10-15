@@ -80,13 +80,14 @@ Oftentimes, the continuous features of a dataset will be on different scales bec
 
 Feature converters are transformers that convert feature columns of one data type to another by changing their representation.
 
-| Transformer | From | To | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
-| --- | --- | --- | --- | --- |
-| [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | ● | |
-| [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | ● | |
-| [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | |
-| [Float Type Converter](transformers/float-type-converter.md) | Categorical | Continuous | | |
-| [Boolean Converter](transformers/boolean-converter.md) | Mixed | Categorical or Continuous | | |
+| Transformer | From | To | Supervised | [Stateful](transformers/api.md#stateful) | [Elastic](transformers/api.md#elastic) |
+| --- | --- | --- | --- | --- | --- |
+| [Interval Discretizer](transformers/interval-discretizer.md) | Continuous | Categorical | | ● | |
+| [One Hot Encoder](transformers/one-hot-encoder.md) | Categorical | Continuous | | ● | |
+| [Target Encoder](transformers/target-encoder.md) | Categorical | Continuous | ● | ● | |
+| [Numeric String Converter](transformers/numeric-string-converter.md) | Categorical | Continuous | | | |
+| [Float Type Converter](transformers/float-type-converter.md) | Categorical | Continuous | | | |
+| [Boolean Converter](transformers/boolean-converter.md) | Mixed | Categorical or Continuous | | | |
 
 ### Dimensionality Reduction
 

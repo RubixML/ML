@@ -139,6 +139,7 @@ nav:
       - Feature Conversion:
         - Interval Discretizer: transformers/interval-discretizer.md
         - One Hot Encoder: transformers/one-hot-encoder.md
+        - Target Encoder: transformers/target-encoder.md
         - Numeric String Converter: transformers/numeric-string-converter.md
         - Float Type Converter: transformers/float-type-converter.md
         - Boolean Converter: transformers/boolean-converter.md
