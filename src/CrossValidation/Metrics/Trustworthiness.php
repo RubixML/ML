@@ -142,7 +142,7 @@ class Trustworthiness implements Stringable
                 $rank = 1;
 
                 foreach ($inputRow as $l => $distance) {
-                    if ($distance < $inputRow[$j] || ($distance == $inputRow[$j] && $l < $j)) {
+                    if ($distance < $inputRow[$j] or ($distance == $inputRow[$j] and $l < $j)) {
                         ++$rank;
                     }
                 }
@@ -166,22 +166,22 @@ class Trustworthiness implements Stringable
      * @internal
      *
      * @param list<list<string|int|float>> $samples
-     * @param int $i
+     * @param int $index
      * @param Symmetric $kernel
      * @return array<int, float>
      */
-    protected function distancesFrom(array $samples, int $i, Symmetric $kernel) : array
+    protected function distancesFrom(array $samples, int $index, Symmetric $kernel) : array
     {
         $row = [];
 
-        $sample = $samples[$i];
+        $sample = $samples[$index];
 
-        for ($j = 0; $j < count($samples); ++$j) {
-            if ($j === $i) {
+        for ($i = 0; $i < count($samples); ++$i) {
+            if ($i === $index) {
                 continue;
             }
 
-            $row[$j] = $kernel->compute($sample, $samples[$j]);
+            $row[$i] = $kernel->compute($sample, $samples[$i]);
         }
 
         return $row;
