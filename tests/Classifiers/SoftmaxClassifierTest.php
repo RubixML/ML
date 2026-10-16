@@ -266,6 +266,38 @@ class SoftmaxClassifierTest extends TestCase
     }
 
     #[Test]
+    public function featureImportances() : void
+    {
+        $this->estimator->setLogger(new BlackHole());
+
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
+
+        $dataset->apply(new ZScaleStandardizer());
+
+        $this->estimator->train($dataset);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertIsArray($importances);
+        $this->assertCount(3, $importances);
+        $this->assertContainsOnlyFloat($importances);
+
+        foreach ($importances as $importance) {
+            $this->assertGreaterThanOrEqual(0.0, $importance);
+        }
+    }
+
+    #[Test]
+    public function featureImportancesUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->featureImportances();
+    }
+
+    #[Test]
     public function snapshotPathIsTransientAndResolvedLazily() : void
     {
         $this->estimator->setLogger(new BlackHole());

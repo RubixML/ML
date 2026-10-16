@@ -7,6 +7,7 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -69,7 +70,7 @@ use function sys_get_temp_dir;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Verbose, Persistable
+class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, RanksFeatures, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -703,6 +704,29 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ve
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Return the importance scores of each feature column of the training set.
+     *
+     * @throws RuntimeException
+     * @return float[]
+     */
+    public function featureImportances() : array
+    {
+        if (!$this->network) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $layer = current($this->network->hidden());
+
+        if (!$layer instanceof Dense) {
+            throw new RuntimeException('Weight layer not found.');
+        }
+
+        $importances = $layer->weights()->transpose()->abs()->mean()->asArray();
+
+        return $importances;
     }
 
     /**
