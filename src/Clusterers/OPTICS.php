@@ -543,9 +543,11 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
             return;
         }
 
-        sort($distances);
+        $sortedDistances = $distances;
 
-        $coreDistance = (float) $distances[$this->minDensity - 1];
+        sort($sortedDistances);
+
+        $coreDistance = (float) $sortedDistances[$this->minDensity - 1];
 
         $this->coreDistances[$point] = $coreDistance;
 
@@ -559,10 +561,11 @@ class OPTICS implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $reachability = max($coreDistance, $distances[$i]);
 
             if ($reachability < $this->reachability[$index]) {
-                $this->reachability[$index] = $reachability;
                 $predecessor[$index] = $point;
 
                 $queue->insert($index, -$reachability);
+
+                $this->reachability[$index] = $reachability;
             }
         }
     }

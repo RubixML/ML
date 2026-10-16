@@ -231,6 +231,33 @@ class OPTICSTest extends TestCase
     }
 
     #[Test]
+    public function reachabilityPairsLabelWithItsDistance() : void
+    {
+        $dataset = Unlabeled::quick([
+            [0.0, 0.0],   // seed
+            [4.0, 0.0],   // far neighbor (distance 4.0)
+            [-1.0, 0.0],  // near neighbor (distance 1.0)
+        ]);
+
+        $estimator = new OPTICS(
+            radius: 4.0,
+            minDensity: 2,
+            minClusterSize: 2,
+            tree: new BallTree()
+        );
+
+        $estimator->train($dataset);
+
+        $reachability = $estimator->reachability();
+
+        // range() returns neighbors in traversal order (index order), not distance order.
+        // The far neighbor (index 1) precedes the near neighbor (index 2), so a bug that
+        // sorts $distances in place would pair the wrong distance with each label.
+        $this->assertEqualsWithDelta(4.0, $reachability[1], 1e-8);
+        $this->assertEqualsWithDelta(1.0, $reachability[2], 1e-8);
+    }
+
+    #[Test]
     public function predictsNoiseForIsolatedSamples() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
