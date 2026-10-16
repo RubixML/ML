@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Kernels\Distance\Canberra;
@@ -136,5 +137,28 @@ class BallTreeTest extends TestCase
         }
 
         $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function rangeIncludesBoundarySamples() : void
+    {
+        $dataset = Labeled::quick(
+            [[0.0], [10.0]],
+            ['a', 'b']
+        );
+
+        $tree = new BallTree(
+            maxLeafSize: 20,
+            kernel: new Euclidean()
+        );
+
+        $tree->grow(clone $dataset);
+
+        [$samples, $labels, $distances] = $tree->range([5.0], 5.0);
+
+        $this->assertCount(2, $samples);
+        $this->assertCount(2, $labels);
+        $this->assertCount(2, $distances);
+        $this->assertSame([5.0, 5.0], $distances);
     }
 }
