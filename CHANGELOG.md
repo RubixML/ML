@@ -2,6 +2,7 @@
 
 - 3.3.0
     - Added OPTICS and Ward clusterers
+    - Added ROCAUC and Average Precision probabilistic metrics
     - Added Trustworthiness metric for scoring embedding quality
     - Added Squared Euclidean distance kernel
     
