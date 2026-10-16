@@ -2,6 +2,7 @@
 
 - 3.3.0
     - Added OPTICS and Ward clusterers
+    - Added Trustworthiness metric for scoring embedding quality
     - Added Squared Euclidean distance kernel
     
 - 3.2.1
