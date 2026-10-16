@@ -2,6 +2,7 @@
 
 - 3.2.1
     - Fix Ball and Vantage tree range() query boundary
+    - Fix Leave P Out rounding error
 
 - 3.2.0
     - Added Bayesian Search meta-estimator
