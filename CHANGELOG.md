@@ -1,5 +1,8 @@
 # Changelog
 
+- 3.2.1
+    - Fix Ball and Vantage tree range() query boundary
+
 - 3.2.0
     - Added Bayesian Search meta-estimator
     - Added Power Transformer
