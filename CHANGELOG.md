@@ -1,8 +1,14 @@
 # Changelog
 
 - 3.3.0
-    - Added Ward clusterer
+    - Added OPTICS and Ward clusterers
+    - Added Trustworthiness metric for scoring embedding quality
     - Added Squared Euclidean distance kernel
+    
+- 3.2.1
+    - Fix Ball and Vantage tree range() query boundary
+    - Fix Leave P Out rounding error
+    - Fix Column Picker exception message column index
 
 - 3.2.0
     - Added Bayesian Search meta-estimator

@@ -7,6 +7,7 @@ namespace Rubix\ML\Tests\Extractors;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Extractors\CSV;
 use Rubix\ML\Extractors\ColumnPicker;
 use PHPUnit\Framework\TestCase;
@@ -82,6 +83,23 @@ class ColumnPickerTest extends TestCase
 
         $this->assertEquals($expected, $records);
         $this->assertTrue(array_is_list($records[0]));
+    }
+
+    #[Test]
+    public function missingColumnReportsRowOffset() : void
+    {
+        $iterable = (function () {
+            yield ['a' => 1, 'b' => 2];
+            yield ['a' => 3, 'b' => 4];
+            yield ['a' => 5, 'b' => 6];
+        })();
+
+        $extractor = new ColumnPicker($iterable, ['a', 'b', 'missing']);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Column \'missing\' not found at row offset 0.');
+
+        iterator_to_array($extractor, false);
     }
 
     #[Test]

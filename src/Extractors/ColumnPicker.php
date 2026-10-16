@@ -57,14 +57,14 @@ class ColumnPicker implements Extractor
         foreach ($this->iterator as $i => $record) {
             $picked = [];
 
-            foreach ($this->columns as $i => $column) {
+            foreach ($this->columns as $j => $column) {
                 if (!array_key_exists($column, $record)) {
                     throw new RuntimeException("Column '$column' not found"
                         . " at row offset $i.");
                 }
 
                 if (is_int($column)) {
-                    $picked[$i] = $record[$column];
+                    $picked[$j] = $record[$column];
                 } else {
                     $picked[$column] = $record[$column];
                 }

@@ -276,7 +276,7 @@ class VantageTree implements BinaryTree, Spatial
                     if ($child instanceof Hypersphere) {
                         $distance = $this->kernel->compute($sample, $child->center());
 
-                        if ($distance - $child->radius() < $radius) {
+                        if ($distance - $child->radius() <= $radius) {
                             $stack[] = $child;
                         }
                     }
