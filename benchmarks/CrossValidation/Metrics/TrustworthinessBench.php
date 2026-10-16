@@ -12,7 +12,7 @@ use Rubix\ML\CrossValidation\Metrics\Trustworthiness;
  */
 class TrustworthinessBench
 {
-    protected const SIZE = 1000;
+    protected const SIZE = 2000;
 
     protected const DIMS = 10;
 

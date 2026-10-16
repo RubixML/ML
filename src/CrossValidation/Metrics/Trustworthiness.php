@@ -13,7 +13,8 @@ use Stringable;
 use function max;
 use function count;
 use function asort;
-use function is_infinite;
+use function array_keys;
+use function array_slice;
 
 /**
  * Trustworthiness
@@ -126,17 +127,27 @@ class Trustworthiness implements Stringable
                 . ' Trustworthiness could fall below 0.');
         }
 
-        $ranks = $this->inputRanks($samples);
-
-        $distances = $this->pairwiseDistances($embedded, $this->embeddingKernel);
-
         $total = 0.0;
 
         for ($i = 0; $i < $n; ++$i) {
-            $neighbors = $this->nearest($distances, $i, $this->k);
+            $embeddedRow = $this->distancesFrom($embedded, $i, $this->embeddingKernel);
+
+            asort($embeddedRow);
+
+            $neighbors = array_slice(array_keys($embeddedRow), 0, $this->k);
+
+            $inputRow = $this->distancesFrom($samples, $i, $this->inputKernel);
 
             foreach ($neighbors as $j) {
-                $total += max(0, $ranks[$i][$j] - $this->k);
+                $rank = 1;
+
+                foreach ($inputRow as $l => $distance) {
+                    if ($distance < $inputRow[$j] || ($distance == $inputRow[$j] && $l < $j)) {
+                        ++$rank;
+                    }
+                }
+
+                $total += max(0, $rank - $this->k);
             }
         }
 
@@ -146,111 +157,34 @@ class Trustworthiness implements Stringable
     }
 
     /**
-     * For each sample, assign a 1-based rank (1 = closest) to every other
-     * sample by input-space distance.
+     * Compute the distance from sample $i to every other sample, keyed by index
+     * with $i itself omitted. Because $i is absent, no INF diagonal sentinel is
+     * needed — a point can never be its own neighbor — and the keys are emitted
+     * in ascending index order so that a stable sort reproduces the index-order
+     * tie-break.
      *
      * @internal
      *
      * @param list<list<string|int|float>> $samples
-     * @return array<int, array<int,int>>
-     */
-    protected function inputRanks(array $samples) : array
-    {
-        $n = count($samples);
-
-        $distances = $this->pairwiseDistances($samples, $this->inputKernel);
-
-        $ranks = [];
-
-        for ($i = 0; $i < $n; ++$i) {
-            $row = $distances[$i];
-
-            asort($row);
-
-            $rank = 1;
-
-            foreach ($row as $j => $_distance) {
-                if (is_infinite($_distance)) {
-                    break;
-                }
-
-                $ranks[$i][$j] = $rank;
-
-                ++$rank;
-            }
-        }
-
-        return $ranks;
-    }
-
-    /**
-     * Compute the full n x n pairwise distance matrix between every pair of
-     * sample points, seeding the diagonal so that each point sorts last and can
-     * never be selected as its own neighbor.
-     *
-     * Only the upper triangle is computed and mirrored, halving the number of
-     * distance evaluations.
-     *
-     * @internal
-     *
-     * @param list<list<string|int|float>> $samples
-     * @param Symmetric $kernel
-     * @return array<int, array<int, float>>
-     */
-    protected function pairwiseDistances(array $samples, Symmetric $kernel) : array
-    {
-        $n = count($samples);
-
-        $matrix = [];
-
-        for ($i = 0; $i < $n; ++$i) {
-            $matrix[$i][$i] = INF;
-        }
-
-        for ($i = 0; $i < $n; ++$i) {
-            for ($j = $i + 1; $j < $n; ++$j) {
-                $distance = $kernel->compute($samples[$i], $samples[$j]);
-
-                $matrix[$i][$j] = $distance;
-                $matrix[$j][$i] = $distance;
-            }
-        }
-
-        return $matrix;
-    }
-
-    /**
-     * Return the indices of the k closest points to point $i, excluding $i
-     * itself (whose distance is seeded high enough to sort last).
-     *
-     * @internal
-     *
-     * @param array<int, array<int, float>> $matrix
      * @param int $i
-     * @param int $k
-     * @return list<int>
+     * @param Symmetric $kernel
+     * @return array<int, float>
      */
-    protected function nearest(array $matrix, int $i, int $k) : array
+    protected function distancesFrom(array $samples, int $i, Symmetric $kernel) : array
     {
-        $row = $matrix[$i];
+        $row = [];
 
-        asort($row);
+        $sample = $samples[$i];
 
-        $neighbors = [];
-
-        foreach ($row as $j => $distance) {
-            if (is_infinite($distance)) {
-                break;
+        for ($j = 0; $j < count($samples); ++$j) {
+            if ($j === $i) {
+                continue;
             }
 
-            $neighbors[] = $j;
-
-            if (count($neighbors) === $k) {
-                break;
-            }
+            $row[$j] = $kernel->compute($sample, $samples[$j]);
         }
 
-        return $neighbors;
+        return $row;
     }
 
     /**
