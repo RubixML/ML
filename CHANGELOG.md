@@ -1,7 +1,7 @@
 # Changelog
 
 - 3.3.0
-    - Added Ward clusterer
+    - Added OPTICS and Ward clusterers
     - Added Squared Euclidean distance kernel
     
 - 3.2.1
