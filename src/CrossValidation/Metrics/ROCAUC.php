@@ -18,6 +18,8 @@ use function asort;
  * the positive-class probability ranks the samples. A score of 1.0 means that every positive
  * sample has a higher positive-class probability than every negative sample, 0.5 means the
  * estimator is random, and 0.0 means the positive and negative samples are perfectly inverted.
+ * If either the positive or negative class is entirely absent from the evaluation set the score
+ * is undefined and defaults to 0.5 (chance level).
  *
  * !!! note
  *     Metric assumes probabilities are between 0 and 1 and their joint distribution sums to 1.
@@ -101,7 +103,7 @@ class ROCAUC implements ProbabilisticMetric
         $negatives = $n - $positives;
 
         if ($positives === 0 or $negatives === 0) {
-            return 0.0;
+            return 0.5;
         }
 
         $sorted = $scores;

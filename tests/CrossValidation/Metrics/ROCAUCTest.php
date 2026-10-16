@@ -140,7 +140,20 @@ class ROCAUCTest extends TestCase
 
         $score = $this->metric->score(probabilities: $probabilities, labels: ['B', 'B']);
 
-        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+        $this->assertEqualsWithDelta(0.5, $score, 1e-8);
+    }
+
+    #[Test]
+    public function scoreWithMissingNegativeClass() : void
+    {
+        $probabilities = [
+            ['A' => 0.8, 'B' => 0.2],
+            ['A' => 0.7, 'B' => 0.3],
+        ];
+
+        $score = $this->metric->score(probabilities: $probabilities, labels: ['A', 'A']);
+
+        $this->assertEqualsWithDelta(0.5, $score, 1e-8);
     }
 
     #[Test]

@@ -2,7 +2,7 @@
 
 # ROC AUC
 
-The Area Under the Receiver Operating Characteristic (ROC) Curve measures the ability of an estimator to discriminate the positive class from every other class by looking at how well the positive-class probability ranks the samples. A score of 1.0 means that every positive sample has a higher positive-class probability than every negative sample, a score of 0.5 means the estimator is random, and a score of 0.0 means the positive and negative samples are perfectly inverted.
+The Area Under the Receiver Operating Characteristic (ROC) Curve measures the ability of an estimator to discriminate the positive class from every other class by looking at how well the positive-class probability ranks the samples. A score of 1.0 means that every positive sample has a higher positive-class probability than every negative sample, a score of 0.5 means the estimator is random, and a score of 0.0 means the positive and negative samples are perfectly inverted. If either the positive or negative class is entirely absent from the evaluation set the score is undefined and defaults to 0.5 (chance level), which keeps a poorly stratified cross-validation fold from silently dragging down the mean score.
 
 !!! note
     Metric assumes probabilities are between 0 and 1 and their joint distribution sums to 1.

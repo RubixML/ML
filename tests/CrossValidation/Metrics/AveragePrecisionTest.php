@@ -140,7 +140,7 @@ class AveragePrecisionTest extends TestCase
 
         $score = $this->metric->score(probabilities: $probabilities, labels: ['B', 'B']);
 
-        $this->assertEqualsWithDelta(0.0, $score, 1e-8);
+        $this->assertEqualsWithDelta(0.5, $score, 1e-8);
     }
 
     #[Test]

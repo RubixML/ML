@@ -16,10 +16,10 @@ use function arsort;
  * Average Precision measures the ability of an estimator to discriminate the positive class from
  * every other class by looking at how well the positive-class probability ranks the samples. It is
  * equivalent to the Area Under the Precision-Recall Curve. A score of 1.0 means that every positive
- * sample has a higher positive-class probability than every negative sample, and a score of 0.0 can
- * only occur when there are no positive samples. When one or more positive samples are present, the
- * minimum score is determined by their prevalence and is strictly greater than 0, so a fully inverted
- * ranking does not score 0.0.
+ * sample has a higher positive-class probability than every negative sample. When one or more
+ * positive samples are present the minimum score is determined by their prevalence and is strictly
+ * greater than 0, so a fully inverted ranking does not score 0.0. If the positive class is entirely
+ * absent from the evaluation set the score is undefined and defaults to 0.5 (chance level).
  *
  * !!! note
  *     Metric assumes probabilities are between 0 and 1 and their joint distribution sums to 1.
@@ -102,7 +102,7 @@ class AveragePrecision implements ProbabilisticMetric
         }
 
         if ($positives === 0) {
-            return 0.0;
+            return 0.5;
         }
 
         $sorted = $scores;
