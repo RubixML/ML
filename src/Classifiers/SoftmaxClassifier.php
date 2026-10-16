@@ -724,7 +724,7 @@ class SoftmaxClassifier implements Estimator, Learner, Online, Probabilistic, Ra
             throw new RuntimeException('Weight layer not found.');
         }
 
-        $importances = $layer->weights()->transpose()->abs()->mean()->asArray();
+        $importances = $layer->weights()->transpose()->variance()->sqrt()->asArray();
 
         return $importances;
     }

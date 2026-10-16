@@ -6,6 +6,7 @@ namespace Rubix\ML\Tests\Classifiers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
@@ -295,6 +296,61 @@ class SoftmaxClassifierTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $this->estimator->featureImportances();
+    }
+
+    #[Test]
+    #[TestDox('A constant feature is ranked below a discriminative feature')]
+    public function featureImportancesRankConstantFeatureBelowDiscriminative() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $estimator = new SoftmaxClassifier(
+            batchSize: 32,
+            optimizer: new Adam(new Constant(0.01)),
+            l2Penalty: 1e-4,
+            epochs: 200,
+            minChange: 1e-6,
+            evalInterval: 1,
+            window: 0,
+            costFn: new MulticlassCrossEntropy(),
+            metric: new FBeta(),
+        );
+
+        $samples = [];
+        $labels = [];
+
+        for ($i = 0; $i < 512; ++$i) {
+            $signal = (rand() / getrandmax()) * 10.0 - 5.0;
+
+            $samples[] = [1.0, $signal, 0.0];
+            $labels[] = $signal > 0.0 ? 'a' : 'b';
+        }
+
+        $estimator->train(Labeled::quick($samples, $labels));
+
+        $this->assertTrue($estimator->trained());
+
+        $importances = $estimator->featureImportances();
+
+        $this->assertCount(3, $importances);
+
+        $this->assertGreaterThan(
+            0.05,
+            $importances[1],
+            'The discriminative feature must have non-trivial importance.'
+        );
+
+        $this->assertLessThan(
+            $importances[1] * 0.1,
+            $importances[0],
+            'A constant feature should have near-zero importance relative to a discriminative feature.'
+        );
+
+        $this->assertLessThan(
+            $importances[1] * 0.1,
+            $importances[2],
+            'An unused feature should have near-zero importance relative to a discriminative feature.'
+        );
     }
 
     #[Test]
