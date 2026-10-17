@@ -195,7 +195,6 @@ class TrackingBackend implements Backend
     public function enqueue(Task $task, ?callable $after = null) : void
     {
         $reflection = new \ReflectionProperty(Task::class, 'args');
-        $reflection->setAccessible(true);
 
         $args = $reflection->getValue($task);
 
