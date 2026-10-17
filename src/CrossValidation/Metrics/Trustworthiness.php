@@ -3,7 +3,6 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Tuple;
-use Rubix\ML\EstimatorType;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\SquaredEuclidean;
 use Rubix\ML\Kernels\Distance\Symmetric;
@@ -84,19 +83,6 @@ class Trustworthiness implements Stringable
     public function range() : Tuple
     {
         return new Tuple(0.0, 1.0);
-    }
-
-    /**
-     * Trustworthiness scores point clouds (embeddings) directly rather than
-     * estimator predictions, so it is compatible with no estimator type.
-     *
-     * @internal
-     *
-     * @return list<EstimatorType>
-     */
-    public function compatibility() : array
-    {
-        return [];
     }
 
     /**
@@ -196,6 +182,6 @@ class Trustworthiness implements Stringable
      */
     public function __toString() : string
     {
-        return 'Trustworthiness';
+        return "Trustworthiness (k: {$this->k}, kernel: {$this->inputKernel})";
     }
 }

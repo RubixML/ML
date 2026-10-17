@@ -35,12 +35,6 @@ class TrustworthinessTest extends TestCase
     }
 
     #[Test]
-    public function compatibility() : void
-    {
-        $this->assertSame([], $this->metric->compatibility());
-    }
-
-    #[Test]
     public function zeroNeighborsThrows() : void
     {
         $this->expectException(InvalidArgumentException::class);
