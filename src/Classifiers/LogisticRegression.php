@@ -732,9 +732,9 @@ class LogisticRegression implements Estimator, Learner, Online, Probabilistic, R
             throw new RuntimeException('Weight layer not found.');
         }
 
-        $weights = $layer->weights()->abs()->asArray();
+        $importances = $layer->weights()->flatten()->abs()->asArray();
 
-        return $weights[0] ?? [];
+        return $importances;
     }
 
     /**

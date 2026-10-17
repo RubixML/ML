@@ -7,7 +7,7 @@ A multiclass generalization of [Logistic Regression](logistic-regression.md) usi
 !!! note
     Progress monitoring and early stopping require a validation set. Use `setValidationDataset()` to supply one.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Ranks Features](../ranks-features.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
