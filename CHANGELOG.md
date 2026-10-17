@@ -6,6 +6,9 @@
     - Added Trustworthiness metric for scoring embedding quality
     - Added Squared Euclidean distance kernel
     
+- 3.2.2
+    - Remove ARFF deprecation warnings on PHP 8.5+
+
 - 3.2.1
     - Fix Ball and Vantage tree range() query boundary
     - Fix Leave P Out rounding error
