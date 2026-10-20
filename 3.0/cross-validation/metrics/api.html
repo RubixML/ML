@@ -2738,6 +2738,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clusterers/optics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    OPTICS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clusterers/ward.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ward
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -6295,6 +6341,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kernels/distance/squared-euclidean.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Squared Euclidean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -6613,6 +6682,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scoring-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scoring Embeddings
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#score-range" class="md-nav__link">
     <span class="md-ellipsis">
       Score Range
@@ -6643,6 +6721,29 @@
   
   <span class="md-ellipsis">
     Accuracy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="average-precision.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Average Precision
     
   </span>
   
@@ -6827,6 +6928,29 @@
   
   <span class="md-ellipsis">
     Probabilistic Accuracy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rocauc.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ROC AUC
     
   </span>
   
@@ -7034,6 +7158,29 @@
   
   <span class="md-ellipsis">
     Top K Accuracy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="trustworthiness.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trustworthiness
     
   </span>
   
@@ -8475,6 +8622,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scoring-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scoring Embeddings
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#score-range" class="md-nav__link">
     <span class="md-ellipsis">
       Score Range
@@ -8540,6 +8696,27 @@
 
 <span class="nv">$score</span> <span class="o">=</span> <span class="nv">$metric</span><span class="o">-&gt;</span><span class="na">score</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">,</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
 </code></pre></div>
+<h2 id="scoring-embeddings">Scoring Embeddings<a class="headerlink" href="#scoring-embeddings" title="Permanent link">#</a></h2>
+<p>Metrics like Trustworthiness score the output of a dimensionality-reducing transformer (an embedding) rather than an estimator's predictions. They take the original samples and their transformed embedding and return a single score.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nx">score</span><span class="p">(</span><span class="k">array</span> <span class="nv">$samples</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$embedded</span><span class="p">)</span> <span class="o">:</span> <span class="nx">float</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\Transformers\TSNE</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Metrics\Trustworthiness</span><span class="p">;</span>
+
+<span class="nv">$transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TSNE</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="nv">$samples</span> <span class="o">=</span> <span class="nv">$dataset</span><span class="o">-&gt;</span><span class="na">samples</span><span class="p">();</span>
+<span class="nv">$embedding</span> <span class="o">=</span> <span class="nv">$samples</span><span class="p">;</span>
+<span class="nv">$transformer</span><span class="o">-&gt;</span><span class="na">transform</span><span class="p">(</span><span class="nv">$embedding</span><span class="p">);</span>
+
+<span class="nv">$metric</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Trustworthiness</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+
+<span class="nv">$score</span> <span class="o">=</span> <span class="nv">$metric</span><span class="o">-&gt;</span><span class="na">score</span><span class="p">(</span><span class="nv">$samples</span><span class="p">,</span> <span class="nv">$embedding</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="nv">$score</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>0.88
+</code></pre></div>
 <h2 id="score-range">Score Range<a class="headerlink" href="#score-range" title="Permanent link">#</a></h2>
 <p>Output the minimum and maximum value the validation score can take in a <a href="../../faq.html#what-is-a-tuple">2-tuple</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="nb">range</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Rubix\ML\Tuple</span><span class="p">{</span><span class="nx">float</span><span class="p">,</span> <span class="nx">float</span><span class="p">}</span>
@@ -8572,7 +8749,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 30, 2026 01:02:37">August 30, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 20, 2026 23:09:53">October 20, 2026</span>
   </span>
 
     

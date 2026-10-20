@@ -2964,6 +2964,52 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clusterers/optics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    OPTICS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clusterers/ward.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ward
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -6521,6 +6567,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="kernels/distance/squared-euclidean.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Squared Euclidean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -6813,6 +6882,29 @@
   
   
     <li class="md-nav__item">
+      <a href="cross-validation/metrics/average-precision.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Average Precision
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="cross-validation/metrics/brier-score.html" class="md-nav__link">
         
   
@@ -6980,6 +7072,29 @@
   
   <span class="md-ellipsis">
     Probabilistic Accuracy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cross-validation/metrics/rocauc.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ROC AUC
     
   </span>
   
@@ -7187,6 +7302,29 @@
   
   <span class="md-ellipsis">
     Top K Accuracy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cross-validation/metrics/trustworthiness.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trustworthiness
     
   </span>
   
@@ -8996,9 +9134,9 @@
 <p>These metrics calculate validation scores from the estimated probabilities of a <a href="probabilistic.html">Probabilistic</a> classifier instead of their class predictions.</p>
 <div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Rubix\ML\CrossValidation\Metrics\TopKAccuracy</span><span class="p">;</span>
 
-<span class="nv">$probabilities</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">proba</span><span class="p">(</span><span class="nv">$testing</span><span class="p">);</span>
-
 <span class="nv">$metric</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TopKAccuracy</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+
+<span class="nv">$probabilities</span> <span class="o">=</span> <span class="nv">$estimator</span><span class="o">-&gt;</span><span class="na">proba</span><span class="p">(</span><span class="nv">$testing</span><span class="p">);</span>
 
 <span class="nv">$score</span> <span class="o">=</span> <span class="nv">$metric</span><span class="o">-&gt;</span><span class="na">score</span><span class="p">(</span><span class="nv">$probabilities</span><span class="p">,</span> <span class="nv">$testing</span><span class="o">-&gt;</span><span class="na">labels</span><span class="p">());</span>
 
@@ -9017,6 +9155,12 @@
 </thead>
 <tbody>
 <tr>
+<td><a href="cross-validation/metrics/average-precision.html">Average Precision</a></td>
+<td>[0, 1]</td>
+<td><span class="arithmatex">\(\frac{1}{P}\sum\limits _{i=1}^{P} P(k_i)\)</span></td>
+<td>Positive class set in constructor</td>
+</tr>
+<tr>
 <td><a href="cross-validation/metrics/brier-score.html">Brier Score</a></td>
 <td>[-2, 0]</td>
 <td><span class="arithmatex">\(\frac{1}{n}\sum\limits _{i=1}^{n}\sum\limits _{j=1}^{c}(P_{ij}-{\hat {P_{ij}}})^2\)</span></td>
@@ -9027,6 +9171,12 @@
 <td>[0, 1]</td>
 <td><span class="arithmatex">\(\frac{1}{n}\sum\limits _{i=1}^{n} P_{label}\)</span></td>
 <td></td>
+</tr>
+<tr>
+<td><a href="cross-validation/metrics/rocauc.html">ROC AUC</a></td>
+<td>[0, 1]</td>
+<td><span class="arithmatex">\(\frac{\sum_{i \in P}\mathrm{rank}_{i}-\frac{P(P+1)}{2}}{P \cdot N}\)</span></td>
+<td>Positive class set in constructor</td>
 </tr>
 <tr>
 <td><a href="cross-validation/metrics/top-k-accuracy.html">Top K Accuracy</a></td>
@@ -9181,7 +9331,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 17:24:40">October 6, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 20, 2026 23:09:53">October 20, 2026</span>
   </span>
 
     
