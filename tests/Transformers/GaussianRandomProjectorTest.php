@@ -9,17 +9,29 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\GaussianRandomProjector;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Generator;
+use Rubix\ML\CrossValidation\Metrics\Trustworthiness;
 
 #[Group('Transformers')]
 #[CoversClass(GaussianRandomProjector::class)]
 class GaussianRandomProjectorTest extends TestCase
 {
     /**
-     * Constant used to see the random number generator.
+     * The number of samples used for the trustworthiness check.
+     */
+    protected const int TEST_SIZE = 64;
+
+    /**
+     * The minimum trustworthiness score required to pass the test.
+     */
+    protected const float MIN_SCORE = 0.6;
+
+    /**
+     * Constant used to seed the random number generator.
      */
     protected const int RANDOM_SEED = 0;
 
@@ -107,6 +119,34 @@ class GaussianRandomProjectorTest extends TestCase
 
         $this->assertGreaterThan(0.7, $meanFactor, 'Projector does not preserve magnitude (too small).');
         $this->assertLessThan(1.3, $meanFactor, 'Projector does not preserve magnitude (too large).');
+    }
+
+    #[Test]
+    public function trustworthiness() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $generator = new Agglomerate([
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
+        ], [2, 3, 4]);
+
+        $dataset = $generator->generate(self::TEST_SIZE);
+
+        $original = clone $dataset;
+
+        $reduction = new GaussianRandomProjector(1);
+
+        $reduction->fit($dataset);
+
+        $transformed = $dataset->samples();
+
+        $reduction->transform($transformed);
+
+        $score = (new Trustworthiness())->score($original->samples(), $transformed);
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     #[Test]

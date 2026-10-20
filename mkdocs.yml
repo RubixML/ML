@@ -102,6 +102,8 @@ nav:
       - K Means: clusterers/k-means.md
       - K Medoids: clusterers/k-medoids.md
       - Mean Shift: clusterers/mean-shift.md
+      - OPTICS: clusterers/optics.md
+      - Ward: clusterers/ward.md
     - Anomaly Detectors:
       - Gaussian MLE: anomaly-detectors/gaussian-mle.md
       - Isolation Forest: anomaly-detectors/isolation-forest.md
@@ -231,6 +233,7 @@ nav:
         - Minkowski: kernels/distance/minkowski.md
         - Safe Euclidean: kernels/distance/safe-euclidean.md
         - Sparse Cosine: kernels/distance/sparse-cosine.md
+        - Squared Euclidean: kernels/distance/squared-euclidean.md
       - SVM:
         - Linear: kernels/svm/linear.md
         - Polynomial: kernels/svm/polynomial.md
@@ -240,6 +243,7 @@ nav:
       - Metrics:
         - API Reference: cross-validation/metrics/api.md
         - Accuracy: cross-validation/metrics/accuracy.md
+        - Average Precision: cross-validation/metrics/average-precision.md
         - Brier Score: cross-validation/metrics/brier-score.md
         - F Beta: cross-validation/metrics/f-beta.md
         - Informedness: cross-validation/metrics/informedness.md
@@ -248,6 +252,7 @@ nav:
         - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
         - Median Absolute Error: cross-validation/metrics/median-absolute-error.md
         - Probabilistic Accuracy: cross-validation/metrics/probabilistic-accuracy.md
+        - ROC AUC: cross-validation/metrics/rocauc.md
         - RMSE: cross-validation/metrics/rmse.md
         - R Squared: cross-validation/metrics/r-squared.md
         - SMAPE: cross-validation/metrics/smape.md
@@ -257,6 +262,7 @@ nav:
         - Homogeneity: cross-validation/metrics/homogeneity.md
         - Rand Index: cross-validation/metrics/rand-index.md
         - Top K Accuracy: cross-validation/metrics/top-k-accuracy.md
+        - Trustworthiness: cross-validation/metrics/trustworthiness.md
         - V Measure: cross-validation/metrics/v-measure.md
       - Reports:
         - API Reference: cross-validation/reports/api.md
