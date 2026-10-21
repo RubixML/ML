@@ -16,12 +16,12 @@ class SLINKBench
     /**
      * The number of samples in the training set.
      */
-    protected const int TRAINING_SIZE = 500;
+    protected const int TRAINING_SIZE = 10000;
 
     /**
      * The number of samples in the testing set.
      */
-    protected const int TESTING_SIZE = 250;
+    protected const int TESTING_SIZE = 10000;
 
     protected Labeled $training;
 

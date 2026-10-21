@@ -7,7 +7,6 @@ use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
@@ -32,8 +31,6 @@ use function array_map;
 use function get_object_vars;
 use function is_nan;
 use function usort;
-
-use const Rubix\ML\EPSILON;
 
 /**
  * SLINK
@@ -77,7 +74,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
+class SLINK implements Estimator, Learner, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
 
@@ -457,67 +454,6 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
         [, $labels] = $this->tree->nearest($sample, 1);
 
         return (int) $labels[0];
-    }
-
-    /**
-     * Estimate the joint probabilities for each possible outcome.
-     *
-     * @param Dataset $dataset
-     * @throws RuntimeException
-     * @return list<float[]>
-     */
-    public function proba(Dataset $dataset) : array
-    {
-        if (!$this->trained() or $this->featureCount === null) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-
-        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
-
-        return array_map([$this, 'probaSample'], $dataset->samples());
-    }
-
-    /**
-     * Return the membership of a sample to each of the *k* clusters.
-     *
-     * @internal
-     *
-     * @param list<string|int|float> $sample
-     * @return float[]
-     */
-    public function probaSample(array $sample) : array
-    {
-        [, $labels, $distances] = $this->tree->nearest($sample, $this->numSamples);
-
-        $min = array_fill(0, $this->clusterCount, INF);
-
-        foreach ($labels as $i => $label) {
-            $label = (int) $label;
-
-            $distance = $distances[$i];
-
-            if ($distance < $min[$label]) {
-                $min[$label] = $distance;
-            }
-        }
-
-        $distances = $proba = [];
-
-        foreach ($min as $distance) {
-            $distances[] = $distance ?: EPSILON;
-        }
-
-        foreach ($distances as $distanceA) {
-            $sigma = 0.0;
-
-            foreach ($distances as $distanceB) {
-                $sigma += $distanceA / $distanceB;
-            }
-
-            $proba[] = 1.0 / $sigma;
-        }
-
-        return $proba;
     }
 
     /**

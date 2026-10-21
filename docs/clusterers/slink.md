@@ -6,7 +6,7 @@ An *agglomerative* (bottom-up) hierarchical clustering algorithm that groups sam
 
 The distance kernel and the data types the estimator is compatible with are those of the tree. By default, SLINK uses a [Ball Tree](../graph/trees/ball-tree.md) with a Euclidean kernel, which accepts any *subadditive* distance kernel. A [KD Tree](../graph/trees/k-d-tree.md) can be substituted when a *monotonic* kernel is required. The algorithm is fully deterministic and requires no seeding, initialization, or epoch tuning.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
 
 **Data Type Compatibility:** Depends on distance kernel of the tree
 

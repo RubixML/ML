@@ -22,8 +22,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-use function Rubix\ML\argmax;
-
 use function count;
 use function array_sum;
 use function array_unique;
@@ -433,14 +431,6 @@ class SLINKTest extends TestCase
     }
 
     #[Test]
-    public function probaUntrained() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->estimator->proba(Unlabeled::quick(samples: [[1.0]]));
-    }
-
-    #[Test]
     public function restoreStateFromSerializedModel() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -457,7 +447,6 @@ class SLINKTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
-        $this->assertEquals($this->estimator->proba($testing), $restored->proba($testing));
     }
 
     #[Test]
@@ -478,36 +467,5 @@ class SLINKTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->assertEquals($estimatorA->predict($testing), $estimatorB->predict($testing));
-        $this->assertEquals($estimatorA->proba($testing), $estimatorB->proba($testing));
-    }
-
-    #[Test]
-    public function proba() : void
-    {
-        srand(self::RANDOM_SEED);
-
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $proba = $this->estimator->proba($testing);
-        $predictions = $this->estimator->predict($testing);
-
-        $this->assertCount(self::TEST_SIZE, $proba);
-
-        foreach ($proba as $i => $distributions) {
-            $this->assertCount(3, $distributions);
-
-            $this->assertEqualsWithDelta(1.0, array_sum($distributions), EPSILON);
-
-            foreach ($distributions as $p) {
-                $this->assertGreaterThanOrEqual(0.0, $p);
-                $this->assertLessThanOrEqual(1.0, $p);
-            }
-
-            $this->assertSame($predictions[$i], argmax($distributions));
-        }
     }
 }
