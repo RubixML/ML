@@ -123,6 +123,36 @@ class GeneticSearchTest extends TestCase
     }
 
     /**
+     * Values with different PHP types remain separate choices.
+     */
+    #[Test]
+    public function preservesCandidateTypes() : void
+    {
+        $search = new GeneticSearch(KNearestNeighbors::class, [[1, '1', 1.0, true, 1]]);
+
+        $this->assertSame([1, '1', 1.0, true], $search->params()['params'][0]);
+    }
+
+    /**
+     * A resource cannot be restored from a serialized search.
+     */
+    #[Test]
+    public function rejectsResourceCandidates() : void
+    {
+        $stream = fopen('php://memory', 'r+');
+
+        $this->assertIsResource($stream);
+
+        try {
+            $this->expectException(InvalidArgumentException::class);
+
+            new GeneticSearch(KNearestNeighbors::class, [[1, $stream]]);
+        } finally {
+            fclose($stream);
+        }
+    }
+
+    /**
      * Results are only available after training.
      */
     #[Test]
