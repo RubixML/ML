@@ -29,8 +29,6 @@ use function class_exists;
 use function array_keys;
 use function array_map;
 use function array_column;
-use function array_unique;
-use function array_values;
 use function array_key_exists;
 use function array_is_list;
 use function array_fill;
@@ -43,6 +41,7 @@ use function implode;
 use function intdiv;
 use function is_array;
 use function is_finite;
+use function is_resource;
 use function min;
 use function number_format;
 use function rand;
@@ -315,20 +314,34 @@ class GeneticSearch implements Estimator, Learner, Verbose, Persistable
                 if ($parameter and $parameter->isDefaultValueAvailable()) {
                     $tuple = [$parameter->getDefaultValue()];
                 }
-            } else {
-                $tuple = array_values(array_unique($tuple, SORT_REGULAR));
             }
 
+            $unique = [];
+            $seen = [];
+
             foreach ($tuple as $value) {
+                if (is_resource($value)) {
+                    throw new InvalidArgumentException(
+                        'Hyper-parameter values must not be resources.'
+                    );
+                }
+
                 try {
-                    serialize($value);
+                    $key = serialize($value);
                 } catch (Throwable $exception) {
                     throw new InvalidArgumentException(
                         'Hyper-parameter values must be serializable.',
                         previous: $exception
                     );
                 }
+
+                if (!isset($seen[$key])) {
+                    $seen[$key] = true;
+                    $unique[] = $value;
+                }
             }
+
+            $tuple = $unique;
         }
 
         $proxy = new $class(...array_map('current', $params));
