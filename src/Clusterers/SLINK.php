@@ -109,13 +109,6 @@ class SLINK implements Estimator, Learner, Verbose, Persistable
     protected ?int $featureCount = null;
 
     /**
-     * The number of samples in the training set.
-     *
-     * @var int
-     */
-    protected int $numSamples = 0;
-
-    /**
      * The number of clusters formed during the last training session.
      *
      * @var int
@@ -406,7 +399,6 @@ class SLINK implements Estimator, Learner, Verbose, Persistable
 
         $this->sizes = $sizes;
         $this->clusterCount = $count;
-        $this->numSamples = $n;
         $this->featureCount = $dataset->numFeatures();
 
         $this->tree->grow(Labeled::quick($samples, $labels));
