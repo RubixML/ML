@@ -10,21 +10,24 @@ use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\DataType;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\SLINK;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Hamming;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
+use function Rubix\ML\argmax;
+
 use function count;
 use function array_sum;
-use function in_array;
+use function array_unique;
+use function array_values;
 use function iterator_to_array;
 
 use const Rubix\ML\EPSILON;
@@ -168,9 +171,9 @@ class SLINKTest extends TestCase
     }
 
     #[Test]
-    public function compatibilityKernelDependent() : void
+    public function compatibilityTreeDependent() : void
     {
-        $estimator = new SLINK(k: 3, kernel: new Hamming());
+        $estimator = new SLINK(k: 3, tree: new BallTree(kernel: new Hamming()));
 
         $expected = [
             DataType::categorical(),
@@ -185,7 +188,7 @@ class SLINKTest extends TestCase
         $expected = [
             'k' => 3,
             'max distance' => INF,
-            'kernel' => new Euclidean(),
+            'tree' => new BallTree(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
@@ -203,20 +206,10 @@ class SLINKTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $medoids = $this->estimator->medoids();
+        $tree = $this->estimator->tree();
 
-        $this->assertIsArray($medoids);
-        $this->assertCount(3, $medoids);
-        $this->assertContainsOnlyArray($medoids);
-
-        $samples = $training->samples();
-
-        foreach ($medoids as $index => $medoid) {
-            $this->assertTrue(
-                in_array($medoid, $samples, true),
-                "Medoid at offset $index is not a sample in the training set."
-            );
-        }
+        $this->assertInstanceOf(BallTree::class, $tree);
+        $this->assertFalse($tree->bare());
 
         $sizes = $this->estimator->sizes();
 
@@ -229,6 +222,11 @@ class SLINKTest extends TestCase
         $this->assertIsArray($losses);
         $this->assertContainsOnlyFloat($losses);
         $this->assertCount($training->numSamples() - 3, $losses);
+
+        $predictions = $this->estimator->predict($training);
+
+        $this->assertCount($training->numSamples(), $predictions);
+        $this->assertEqualsCanonicalizing([0, 1, 2], array_values(array_unique($predictions)));
 
         $predictions = $this->estimator->predict($testing);
 
@@ -273,17 +271,11 @@ class SLINKTest extends TestCase
 
         $training = Labeled::quick($rows, $labels);
 
-        $estimator = new SLINK(k: 3, kernel: new Hamming());
+        $estimator = new SLINK(k: 3, tree: new BallTree(kernel: new Hamming()));
 
         $estimator->train($training);
 
         $this->assertTrue($estimator->trained());
-
-        $samples = $training->samples();
-
-        foreach ($estimator->medoids() as $medoid) {
-            $this->assertTrue(in_array($medoid, $samples, true));
-        }
 
         $predictions = $estimator->predict($training);
 
@@ -305,11 +297,50 @@ class SLINKTest extends TestCase
 
         $this->assertEquals([3, 1], $estimator->sizes());
 
-        $this->assertEquals([[1.0], [10.0]], $estimator->medoids());
-
         $this->assertEquals([1.0, 1.0], array_values($estimator->losses()));
 
         $this->assertEquals([0, 0, 0, 1], $estimator->predict($training));
+
+        $this->assertSame([1], $estimator->predict(Unlabeled::quick(samples: [[10.0]])));
+    }
+
+    #[Test]
+    public function trainLongerChainPreservesMembership() : void
+    {
+        $training = Unlabeled::quick(samples: [[0.0], [3.0], [6.0], [9.0], [12.0], [16.0]]);
+
+        $estimator = new SLINK(k: 2);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+
+        $this->assertEquals([5, 1], $estimator->sizes());
+
+        $labels = [0, 0, 0, 0, 0, 1];
+
+        $this->assertSame($labels, $estimator->predict($training));
+
+        $this->assertSame([0], $estimator->predict(Unlabeled::quick(samples: [[12.0]])));
+
+        $longer = Unlabeled::quick(samples: [
+            [0.0], [1.0], [2.0], [3.0], [4.0],
+            [5.0], [6.0], [7.0], [8.0], [20.0],
+        ]);
+
+        $estimator = new SLINK(k: 2);
+
+        $estimator->train($longer);
+
+        $labels = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
+
+        $this->assertEquals([9, 1], $estimator->sizes());
+
+        $this->assertSame($labels, $estimator->predict($longer));
+
+        $this->assertSame([0], $estimator->predict(Unlabeled::quick(samples: [[9.0]])));
+
+        $this->assertSame([1], $estimator->predict(Unlabeled::quick(samples: [[15.0]])));
     }
 
     #[Test]
@@ -325,10 +356,11 @@ class SLINKTest extends TestCase
 
         $this->assertTrue($estimator->trained());
 
-        $this->assertCount(5, $estimator->medoids());
         $this->assertSame([], $estimator->losses());
 
         $sizes = $estimator->sizes();
+
+        $this->assertCount(5, $sizes);
 
         foreach ($sizes as $size) {
             $this->assertSame(1, $size);
@@ -336,9 +368,7 @@ class SLINKTest extends TestCase
 
         $predictions = $estimator->predict($training);
 
-        $this->assertCount(5, $predictions);
-
-        $this->assertEqualsCanonicalizing(range(0, 4), $predictions);
+        $this->assertSame(range(0, 4), $predictions);
     }
 
     #[Test]
@@ -352,7 +382,7 @@ class SLINKTest extends TestCase
 
         $this->assertTrue($estimator->trained());
 
-        $this->assertCount(2, $estimator->medoids());
+        $this->assertCount(2, $estimator->sizes());
 
         $losses = $estimator->losses();
 
@@ -375,10 +405,11 @@ class SLINKTest extends TestCase
 
         $this->assertTrue($estimator->trained());
 
-        $this->assertCount(3, $estimator->medoids());
         $this->assertSame([], $estimator->losses());
 
         $sizes = $estimator->sizes();
+
+        $this->assertCount(3, $sizes);
 
         foreach ($sizes as $size) {
             $this->assertSame(1, $size);
@@ -421,10 +452,12 @@ class SLINKTest extends TestCase
         $restored = unserialize(serialize($this->estimator));
 
         $this->assertTrue($restored->trained());
+        $this->assertFalse($restored->tree()->bare());
 
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
+        $this->assertEquals($this->estimator->proba($testing), $restored->proba($testing));
     }
 
     #[Test]
@@ -439,9 +472,13 @@ class SLINKTest extends TestCase
         $estimatorB = new SLINK(k: 3);
         $estimatorB->train($training);
 
-        $this->assertEquals($estimatorA->medoids(), $estimatorB->medoids());
         $this->assertEquals($estimatorA->sizes(), $estimatorB->sizes());
         $this->assertEquals($estimatorA->losses(), $estimatorB->losses());
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $this->assertEquals($estimatorA->predict($testing), $estimatorB->predict($testing));
+        $this->assertEquals($estimatorA->proba($testing), $estimatorB->proba($testing));
     }
 
     #[Test]
@@ -456,16 +493,21 @@ class SLINKTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $proba = $this->estimator->proba($testing);
+        $predictions = $this->estimator->predict($testing);
 
         $this->assertCount(self::TEST_SIZE, $proba);
 
-        foreach ($proba as $distributions) {
+        foreach ($proba as $i => $distributions) {
             $this->assertCount(3, $distributions);
+
+            $this->assertEqualsWithDelta(1.0, array_sum($distributions), EPSILON);
 
             foreach ($distributions as $p) {
                 $this->assertGreaterThanOrEqual(0.0, $p);
                 $this->assertLessThanOrEqual(1.0, $p);
             }
+
+            $this->assertSame($predictions[$i], argmax($distributions));
         }
     }
 }

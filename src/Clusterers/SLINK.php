@@ -11,11 +11,11 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Traits\LoggerAware;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\Symmetric;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
@@ -24,7 +24,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use Generator;
 
-use function Rubix\ML\argmin;
 use function count;
 use function min;
 use function range;
@@ -57,10 +56,22 @@ use const Rubix\ML\EPSILON;
  * representation and cutting it after *n - k* merges.
  *
  * Because single-link clusters are connected by chains of nearby samples, they
- * tend to be elongated and are therefore anchored by a *medoid* — the actual
- * training sample with the lowest total distance to the rest of its cluster —
- * rather than a mean vector, making predictions robust to the chaining effect
- * and valid for any symmetric distance kernel.
+ * tend to be elongated and cannot be characterized by a mean vector. A sample
+ * is therefore assigned to the cluster that contains its *nearest member* —
+ * the single-link extension rule — which guarantees that the partition
+ * recovered during training is reproduced exactly. The training samples and
+ * their cluster labels are stored only in a *spatial tree* that is grown at the
+ * end of training, so prediction is a nearest neighbor query rather than a
+ * scan of every cluster. Probabilities are estimated from the distance to the
+ * nearest member of each cluster, which is recovered with the tree as well.
+ *
+ * The distance kernel and the data types supported by the estimator are those
+ * of the tree. A `BallTree` (Euclidean by default) pairs with any *subadditive*
+ * kernel, while a `KDTree` requires a *monotonic* one.
+ *
+ * References:
+ * [1] R. Sibson. (1973). SLINK: An Optimally Efficient Algorithm for the
+ * Single-Link Cluster Method.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -86,19 +97,33 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
     protected float $maxDistance;
 
     /**
-     * The distance kernel used to compute the dissimilarity between samples.
+     * The spatial tree used to store the training samples and their labels and
+     * to search for nearest neighbors.
      *
-     * @var Distance
+     * @var Spatial
      */
-    protected Distance $kernel;
+    protected Spatial $tree;
 
     /**
-     * The computed cluster medoids of the training data i.e. the actual samples
-     * that anchor each cluster.
+     * The number of features in the training set.
      *
-     * @var list<list<string|int|float>>|null
+     * @var int|null
      */
-    protected ?array $medoids = null;
+    protected ?int $featureCount = null;
+
+    /**
+     * The number of samples in the training set.
+     *
+     * @var int
+     */
+    protected int $numSamples = 0;
+
+    /**
+     * The number of clusters formed during the last training session.
+     *
+     * @var int
+     */
+    protected int $clusterCount = 0;
 
     /**
      * The number of training samples assigned to each cluster.
@@ -118,10 +143,10 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
     /**
      * @param int $k
      * @param float $maxDistance
-     * @param Distance|null $kernel
+     * @param Spatial|null $tree
      * @throws InvalidArgumentException
      */
-    public function __construct(int $k, float $maxDistance = INF, ?Distance $kernel = null)
+    public function __construct(int $k, float $maxDistance = INF, ?Spatial $tree = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('K must be greater'
@@ -133,13 +158,9 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
                 . " $maxDistance given.");
         }
 
-        if (isset($kernel) and !$kernel instanceof Symmetric) {
-            throw new InvalidArgumentException('Kernel must implement the Symmetric interface.');
-        }
-
         $this->k = $k;
         $this->maxDistance = $maxDistance;
-        $this->kernel = $kernel ?? new Euclidean();
+        $this->tree = $tree ?? new BallTree();
     }
 
     /**
@@ -159,7 +180,7 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return $this->tree->kernel()->compatibility();
     }
 
     /**
@@ -172,7 +193,7 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
         return [
             'k' => $this->k,
             'max distance' => $this->maxDistance,
-            'kernel' => $this->kernel,
+            'tree' => $this->tree,
         ];
     }
 
@@ -183,18 +204,18 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function trained() : bool
     {
-        return $this->medoids !== null;
+        return !$this->tree->bare() and $this->featureCount !== null;
     }
 
     /**
-     * Return the computed cluster medoids of the training data i.e. the actual
-     * samples that anchor each cluster.
+     * Return the spatial tree that stores the training samples and their
+     * cluster labels.
      *
-     * @return list<list<string|int|float>>|null
+     * @return Spatial
      */
-    public function medoids() : ?array
+    public function tree() : Spatial
     {
-        return $this->medoids;
+        return $this->tree;
     }
 
     /**
@@ -265,6 +286,8 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $this->logger->info("Training $this");
         }
 
+        $kernel = $this->tree->kernel();
+
         $samples = $dataset->samples();
 
         $pi = range(0, $n - 1);
@@ -276,7 +299,7 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
             $lambda[$i] = INF;
 
             for ($j = 0; $j < $i; ++$j) {
-                $mu[$j] = $this->kernel->compute($samples[$j], $samples[$i]);
+                $mu[$j] = $kernel->compute($samples[$j], $samples[$i]);
             }
 
             for ($j = 0; $j < $i; ++$j) {
@@ -373,12 +396,23 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $count = count($clusters);
 
-        $this->sizes = array_map('count', $clusters);
-        $this->medoids = [];
+        $labels = array_fill(0, $n, 0);
+        $sizes = [];
 
-        foreach ($clusters as $members) {
-            $this->medoids[] = $samples[$this->medoid($samples, $members)];
+        foreach ($clusters as $label => $members) {
+            foreach ($members as $offset) {
+                $labels[$offset] = $label;
+            }
+
+            $sizes[$label] = count($members);
         }
+
+        $this->sizes = $sizes;
+        $this->clusterCount = $count;
+        $this->numSamples = $n;
+        $this->featureCount = $dataset->numFeatures();
+
+        $this->tree->grow(Labeled::quick($samples, $labels));
 
         if ($count !== $this->k) {
             if ($this->logger) {
@@ -401,19 +435,17 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $medoids = $this->medoids;
-
-        if (!$medoids) {
+        if (!$this->trained() or $this->featureCount === null) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, count(current($medoids)))->check();
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'predictSample'], $dataset->samples());
     }
 
     /**
-     * Label a given sample based on its distance from each cluster medoid.
+     * Label a given sample with the cluster of its nearest training sample.
      *
      * @internal
      *
@@ -422,7 +454,9 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function predictSample(array $sample) : int
     {
-        return argmin($this->medoidDistances($sample));
+        [, $labels] = $this->tree->nearest($sample, 1);
+
+        return (int) $labels[0];
     }
 
     /**
@@ -434,19 +468,17 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        $medoids = $this->medoids;
-
-        if (!$medoids) {
+        if (!$this->trained() or $this->featureCount === null) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        DatasetHasDimensionality::with($dataset, count(current($medoids)))->check();
+        DatasetHasDimensionality::with($dataset, $this->featureCount)->check();
 
         return array_map([$this, 'probaSample'], $dataset->samples());
     }
 
     /**
-     * Return the membership of a sample to each of the *k* cluster medoids.
+     * Return the membership of a sample to each of the *k* clusters.
      *
      * @internal
      *
@@ -455,10 +487,24 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
      */
     public function probaSample(array $sample) : array
     {
+        [, $labels, $distances] = $this->tree->nearest($sample, $this->numSamples);
+
+        $min = array_fill(0, $this->clusterCount, INF);
+
+        foreach ($labels as $i => $label) {
+            $label = (int) $label;
+
+            $distance = $distances[$i];
+
+            if ($distance < $min[$label]) {
+                $min[$label] = $distance;
+            }
+        }
+
         $distances = $proba = [];
 
-        foreach ($this->medoids ?? [] as $medoid) {
-            $distances[] = $this->kernel->compute($sample, $medoid) ?: EPSILON;
+        foreach ($min as $distance) {
+            $distances[] = $distance ?: EPSILON;
         }
 
         foreach ($distances as $distanceA) {
@@ -472,58 +518,6 @@ class SLINK implements Estimator, Learner, Probabilistic, Verbose, Persistable
         }
 
         return $proba;
-    }
-
-    /**
-     * Compute the distance from a sample to each cluster medoid.
-     *
-     * @internal
-     *
-     * @param list<string|int|float> $sample
-     * @return list<float>
-     */
-    protected function medoidDistances(array $sample) : array
-    {
-        $distances = [];
-
-        foreach ($this->medoids ?? [] as $medoid) {
-            $distances[] = $this->kernel->compute($sample, $medoid);
-        }
-
-        return $distances;
-    }
-
-    /**
-     * Return the offset of the medoid of a cluster i.e. the member with the
-     * lowest total dissimilarity to the rest of its cluster.
-     *
-     * @param list<list<string|int|float>> $samples
-     * @param list<int> $members
-     * @return int
-     */
-    protected function medoid(array $samples, array $members) : int
-    {
-        $medoid = $members[0];
-        $min = INF;
-
-        foreach ($members as $i) {
-            $sum = 0.0;
-
-            foreach ($members as $j) {
-                if ($i === $j) {
-                    continue;
-                }
-
-                $sum += $this->kernel->compute($samples[$i], $samples[$j]);
-            }
-
-            if ($sum < $min) {
-                $min = $sum;
-                $medoid = $i;
-            }
-        }
-
-        return $medoid;
     }
 
     /**

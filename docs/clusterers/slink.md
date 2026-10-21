@@ -2,15 +2,13 @@
 
 # SLINK
 
-An *agglomerative* (bottom-up) hierarchical clustering algorithm that groups samples by the *single-link* (nearest neighbor) criterion, named after the optimally efficient algorithm of *R. Sibson*. Unlike the iterative re-estimation schemes used by [K Means](k-means.md) or [K Medoids](k-medoids.md), SLINK begins with each sample as its own singleton cluster and then greedily merges the pair of clusters whose closest pair of members is nearest, repeating until the target number of clusters *k* remains. Merging halts early if the distance of the next closest pair of clusters exceeds `maxDistance`, which — defaulted to `INF` — permits the full *n - k* merges.
+An *agglomerative* (bottom-up) hierarchical clustering algorithm that groups samples by the *single-link* criterion, named after the optimally efficient algorithm of *R. Sibson*. Unlike the iterative re-estimation schemes used by [K Means](k-means.md) or [K Medoids](k-medoids.md), SLINK begins with each sample as its own singleton cluster and then greedily merges the pair of clusters whose closest pair of members is nearest, repeating until the target number of clusters *k* remains. Merging halts early if the distance of the next closest pair of clusters exceeds `maxDistance`, which — defaulted to `INF` — permits the full *n - k* merges.
 
-Rather than storing the pairwise distance matrix, SLINK maintains a compact *pointer representation* of the dendrogram in two length-n arrays, refreshing it in amortized linear time as each sample is added. This yields a total running time of O(n²) with only O(n) auxiliary space — optimal in both bounds — making the single-link method feasible for datasets well into the thousands of samples.
-
-Because single-link clusters are connected by chains of nearby samples, they tend to be elongated and are therefore anchored by a *medoid* — the actual training sample with the lowest total distance to the rest of its cluster — rather than a mean vector. Unlike [Ward](ward.md), which is restricted to the squared Euclidean distance, SLINK is valid for any symmetric distance kernel. The algorithm is fully deterministic and requires no seeding, initialization, or epoch tuning.
+The distance kernel and the data types the estimator is compatible with are those of the tree. By default, SLINK uses a [Ball Tree](../graph/trees/ball-tree.md) with a Euclidean kernel, which accepts any *subadditive* distance kernel. A [KD Tree](../graph/trees/k-d-tree.md) can be substituted when a *monotonic* kernel is required. The algorithm is fully deterministic and requires no seeding, initialization, or epoch tuning.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md), [Verbose](../verbose.md)
 
-**Data Type Compatibility:** Depends on distance kernel
+**Data Type Compatibility:** Depends on distance kernel of the tree
 
 ## Parameters
 
@@ -18,23 +16,24 @@ Because single-link clusters are connected by chains of nearby samples, they ten
 | --- | --- | --- | --- | --- |
 | 1 | k | | int | The number of target clusters. |
 | 2 | maxDistance | INF | float | The maximum single-link distance any single merge may incur. Training stops early once the next closest pair of clusters exceeds this threshold. Defaults to `INF` (no limit). |
-| 3 | kernel | Euclidean | Distance | The symmetric distance kernel to use when computing the distance between samples. |
+| 3 | tree | BallTree | Spatial | The spatial tree used to store the training samples and their labels and to search for nearest neighbors. |
 
 ## Example
 
 ```php
 use Rubix\ML\Clusterers\SLINK;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
-$estimator = new SLINK(3, INF, new Manhattan());
+$estimator = new SLINK(3, INF, new BallTree(kernel: new Manhattan()));
 ```
 
 ## Additional Methods
 
-Return the *k* computed medoids of the training set i.e. the actual samples that anchor each cluster.
+Return the spatial tree that stores the training samples and their cluster labels.
 
 ```php
-public medoids() : array[]|null
+public tree() : Spatial
 ```
 
 Return the number of training samples that each cluster is responsible for.
