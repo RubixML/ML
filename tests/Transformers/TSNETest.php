@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\CrossValidation\Metrics\Trustworthiness;
 
 #[Group('Transformers')]
 #[CoversClass(TSNE::class)]
@@ -27,7 +28,12 @@ class TSNETest extends TestCase
      *
      * @var int
      */
-    protected const TEST_SIZE = 30;
+    protected const TEST_SIZE = 64;
+
+    /**
+     * The minimum validation score required to pass the test.
+     */
+    protected const float MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
@@ -46,6 +52,11 @@ class TSNETest extends TestCase
      */
     protected TSNE $embedder;
 
+    /**
+     * @var Trustworthiness
+     */
+    protected Trustworthiness $metric;
+
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
@@ -57,6 +68,8 @@ class TSNETest extends TestCase
         $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, 50, 5, new Euclidean());
 
         $this->embedder->setLogger(new BlackHole());
+
+        $this->metric = new Trustworthiness();
 
         srand(self::RANDOM_SEED);
     }
@@ -368,6 +381,8 @@ class TSNETest extends TestCase
     {
         $dataset = $this->generator->generate(self::TEST_SIZE);
 
+        $original = clone $dataset;
+
         $dataset->apply($this->embedder);
 
         $this->assertCount(self::TEST_SIZE, $dataset);
@@ -377,6 +392,10 @@ class TSNETest extends TestCase
 
         $this->assertIsArray($losses);
         $this->assertContainsOnlyFloat($losses);
+
+        $score = $this->metric->score($original->samples(), $dataset->samples());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     /**

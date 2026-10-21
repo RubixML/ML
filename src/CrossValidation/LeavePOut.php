@@ -70,7 +70,7 @@ class LeavePOut implements Validator, Parallel
                 . " greater than or equal to P, {$this->p} given.");
         }
 
-        $n = (int) round($dataset->numSamples() / $this->p);
+        $n = (int) ceil($dataset->numSamples() / $this->p);
 
         $this->backend->flush();
 

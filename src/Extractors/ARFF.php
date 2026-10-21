@@ -385,7 +385,7 @@ class ARFF implements Extractor
                         $inHeader = false;
                     }
                 } else {
-                    $values = str_getcsv($clean, ',', "'");
+                    $values = str_getcsv($clean, ',', "'", '\\');
 
                     if (count($values) !== count($attributes)) {
                         throw new RuntimeException("Malformed record on line $line.");

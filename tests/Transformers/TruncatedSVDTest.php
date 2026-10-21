@@ -10,17 +10,39 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TruncatedSVD;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Rubix\ML\CrossValidation\Metrics\Trustworthiness;
 
 #[Group('Transformers')]
 #[CoversClass(TruncatedSVD::class)]
 class TruncatedSVDTest extends TestCase
 {
+    /**
+     * The number of samples in the validation set.
+     *
+     * @var int
+     */
+    protected const TEST_SIZE = 64;
+
+    /**
+     * The minimum trustworthiness score required to pass the test.
+     */
+    protected const float MIN_SCORE = 0.8;
+
+    /**
+     * Constant used to seed the random number generator.
+     *
+     * @var int
+     */
+    protected const RANDOM_SEED = 0;
+
     protected TruncatedSVD $transformer;
 
     protected Unlabeled $dataset;
@@ -107,6 +129,34 @@ class TruncatedSVDTest extends TestCase
         );
 
         $this->assertEqualsWithDelta($expected, $magnitudes, 1e-8);
+    }
+
+    #[Test]
+    public function trustworthiness() : void
+    {
+        srand(self::RANDOM_SEED);
+
+        $generator = new Agglomerate([
+            'red' => new Blob([255, 32, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 20.0),
+        ], [2, 3, 4]);
+
+        $dataset = $generator->generate(self::TEST_SIZE);
+
+        $original = clone $dataset;
+
+        $reduction = new TruncatedSVD(1);
+
+        $reduction->fit($dataset);
+
+        $transformed = $dataset->samples();
+
+        $reduction->transform($transformed);
+
+        $score = (new Trustworthiness())->score($original->samples(), $transformed);
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     #[Test]

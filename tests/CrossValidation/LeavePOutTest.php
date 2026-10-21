@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
 use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Swoole;
+use Rubix\ML\Backends\Tasks\Task;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -126,5 +128,123 @@ class LeavePOutTest extends TestCase
             dataset: $dataset,
             metric: $this->metric
         );
+    }
+
+    #[Test]
+    public function everySampleIsTestedAtLeastOnce() : void
+    {
+        foreach ([12 => 5, 10 => 3] as $n => $p) {
+            $samples = $labels = [];
+
+            for ($i = 0; $i < $n; ++$i) {
+                // First feature column encodes the original sample index so the
+                // tracking backend can recover which indices were held out.
+                $samples[] = [(float) $i, (float) $i * 0.1, (float) $i * 0.2];
+                $labels[] = $i % 2;
+            }
+
+            $dataset = Labeled::quick($samples, $labels);
+
+            $backend = new TrackingBackend();
+            $validator = new LeavePOut($p);
+            $validator->setBackend($backend);
+
+            $validator->test(
+                estimator: new GaussianNB(),
+                dataset: $dataset,
+                metric: new Accuracy()
+            );
+
+            $tested = array_unique($backend->testedIndices);
+            sort($tested);
+
+            $this->assertSame(
+                range(0, $n - 1),
+                $tested,
+                "Not all samples were tested for n=$n, p=$p."
+            );
+        }
+    }
+}
+
+/**
+ * A backend that records the original sample indices held out in each round.
+ *
+ * Samples carry their original index in the first feature column, so the backend
+ * can recover which dataset positions were used as testing sets.
+ */
+class TrackingBackend implements Backend
+{
+    /**
+     * The original sample indices that have been placed in a testing set.
+     *
+     * @var int[]
+     */
+    public array $testedIndices = [];
+
+    /**
+     * Dummy validation scores, one per enqueued round.
+     *
+     * @var list<float>
+     */
+    protected array $results = [];
+
+    /**
+     * @inheritDoc
+     */
+    public function enqueue(Task $task, ?callable $after = null) : void
+    {
+        $reflection = new \ReflectionProperty(Task::class, 'args');
+
+        $args = $reflection->getValue($task);
+
+        if (isset($args[2]) and $args[2] instanceof Labeled) {
+            foreach ($args[2]->samples() as $sample) {
+                $this->testedIndices[] = (int) $sample[0];
+            }
+        }
+
+        $this->results[] = 0.5;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function workers() : int
+    {
+        return 1;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function process() : array
+    {
+        $results = $this->results;
+        $this->results = [];
+
+        return $results;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function flush() : void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function shutdown() : void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __toString() : string
+    {
+        return 'TrackingBackend';
     }
 }
