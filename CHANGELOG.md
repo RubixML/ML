@@ -1,5 +1,8 @@
 # Changelog
 
+- Unreleased
+    - Added Genetic Search meta-estimator
+
 - 3.3.0
     - Added `OPTICS` and `Ward` clusterers
     - Added `ROCAUC` and `Average Precision` probabilistic metrics
