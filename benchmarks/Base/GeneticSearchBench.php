@@ -20,12 +20,12 @@ class GeneticSearchBench
     /**
      * The number of samples used to train each candidate.
      */
-    protected const int TRAINING_SIZE = 200;
+    protected const int TRAINING_SIZE = 250;
 
     /**
      * The number of samples used for inference.
      */
-    protected const int TESTING_SIZE = 200;
+    protected const int TESTING_SIZE = 250;
 
     /**
      * The training dataset.
