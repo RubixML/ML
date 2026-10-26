@@ -419,9 +419,7 @@ class GeneticSearch implements Estimator, Learner, Verbose, Persistable
      */
     public function compatibility() : array
     {
-        return $this->trained()
-            ? $this->base->compatibility()
-            : DataType::all();
+        return $this->base->compatibility();
     }
 
     /**

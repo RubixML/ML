@@ -18,6 +18,7 @@ use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -76,6 +77,41 @@ class GeneticSearchTest extends TestCase
         $search = new GeneticSearch(KNearestNeighbors::class, [[], [], []]);
 
         $this->assertEquals([[5], [false], [null]], $search->params()['params']);
+    }
+
+    /**
+     * The base estimator's supported data types are known before training.
+     */
+    #[Test]
+    public function compatibilityMatchesBaseBeforeAndAfterTraining() : void
+    {
+        $search = new GeneticSearch(
+            KNearestNeighbors::class,
+            [[1]],
+            validator: new GeneticSearchOracle()
+        );
+
+        $this->assertFalse($search->trained());
+        $this->assertEquals([DataType::continuous()], $search->compatibility());
+
+        $search->train($this->dataset(16));
+
+        $this->assertTrue($search->trained());
+        $this->assertEquals([DataType::continuous()], $search->compatibility());
+    }
+
+    /**
+     * Incompatible samples fail the search's guard before candidate evaluation.
+     */
+    #[Test]
+    public function rejectsIncompatibleSamplesBeforeSearch() : void
+    {
+        $search = new GeneticSearch(KNearestNeighbors::class, [[1]]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage((string) $search . ' is incompatible with categorical data types.');
+
+        $search->train(Labeled::build([['red'], ['blue']], ['a', 'b']));
     }
 
     /**
