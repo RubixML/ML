@@ -116,6 +116,7 @@ nav:
       - Bayesian Search: bayesian-search.md
       - Bootstrap Aggregator: bootstrap-aggregator.md
       - Committee Machine: committee-machine.md
+      - Genetic Search: genetic-search.md
       - Grid Search: grid-search.md
       - Persistent Model: persistent-model.md
     - Transformers:

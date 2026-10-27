@@ -126,3 +126,17 @@ $estimator->train($dataset);
 ### Grid Search vs. Bayesian Search
 
 Grid Search is exhaustive and deterministic, guaranteeing the best combination within the search space is found, but the number of models trained grows multiplicatively with the number of parameters. Bayesian Search samples the space sequentially and uses the results of previous trials to guide future proposals, so it can explore much larger spaces with a bounded number of trials, at the cost of not being able to guarantee the global optimum is found. As a rule of thumb, use Grid Search when the search space is small and the best combination is important, and Bayesian Search when the space is large or training is expensive.
+
+### Genetic Search
+
+[Genetic Search](genetic-search.md) is another bounded search strategy for a finite set of candidate values. It scores a population of parameter combinations by cross-validation, then uses tournament selection, uniform crossover, mutation, and elitism to evolve new candidates. Duplicate combinations are scored only once. The search ends after the configured number of generations or when there are no unseen combinations left, and the best base learner is retrained on the full dataset.
+
+```php
+use Rubix\ML\GeneticSearch;
+
+$estimator = new GeneticSearch(KNearestNeighbors::class, $params);
+
+$estimator->train($dataset);
+```
+
+Choose Grid Search when evaluating every combination is practical. Bayesian Search and Genetic Search limit the number of evaluations for larger spaces; Bayesian Search proposes candidates one trial at a time from a model of earlier scores, while Genetic Search evolves a population by combining and mutating candidates. Neither bounded search guarantees the best combination in the entire space.
