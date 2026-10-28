@@ -15,6 +15,21 @@ $labels = ['not monster', 'monster'];
 $dataset = new Labeled($samples, $labels);
 ```
 
+## Modifying a Dataset
+
+A return type of `self` does not by itself tell you whether a method modifies the dataset. Some methods return the same object for chaining, while others create a new dataset.
+
+| Methods | Effect on the original dataset | Return value |
+| --- | --- | --- |
+| `apply()`, `reverseApply()`, `dropFeature()`, `randomize()` | Modify the original dataset in place | The same dataset object |
+| `filter()`, `sort()`, `deduplicate()`, `head()`, `tail()`, `slice()`, `merge()`, `join()`, `randomSubset()`, `randomSubsetWithReplacement()`, `randomWeightedSubsetWithReplacement()` | Leave the original dataset unchanged | A new dataset object |
+| `split()`, `fold()`, `batch()` | Leave the original dataset unchanged | An array of new dataset objects |
+| `take()`, `leave()`, `splice()` | Remove rows from the original dataset | A new dataset containing the removed rows |
+
+For labeled datasets, row operations keep each sample paired with its label. The additional `transformLabels()` method modifies the labels in place and returns the same dataset object.
+
+Assign the result of a method such as `filter()` to retain the new dataset. Assigning the result of an in-place method to another variable does not make a copy: both variables refer to the same dataset object.
+
 ## Factory Methods
 
 Build a dataset with the records of a 2-dimensional iterable data table:
@@ -137,7 +152,7 @@ public feature(int $offset) : mixed[]
 
 ## Dropping
 
-Drop a feature at a given column offset from the dataset:
+Drop a feature at a given column offset in place and return the same dataset object:
 
 ```php
 public dropFeature(int $offset) : self
@@ -230,7 +245,7 @@ $batches = $dataset->batch(250);
 
 ## Randomization
 
-Randomize the order of the dataset and return it for method chaining:
+Randomize the order of the dataset in place and return the same dataset object for method chaining:
 
 ```php
 public randomize() : self
@@ -270,7 +285,7 @@ Each weight must be non-negative and the sum of the weights must be greater than
 
 ## Applying Transformations
 
-You can apply a [Transformer](../transformers/api.md) to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object. If a [Stateful](../transformers/api.md#stateful) transformer has not been fitted beforehand, it will automatically be fitted before being applied to the samples.
+You can apply a [Transformer](../transformers/api.md) to the samples in a Dataset object by passing it as an argument to the `apply()` method on the dataset object. This modifies the samples in place and returns the same dataset object. If a [Stateful](../transformers/api.md#stateful) transformer has not been fitted beforehand, it will automatically be fitted before being applied to the samples.
 
 ```php
 public apply(Transformer $transformer) : self
@@ -282,10 +297,10 @@ use Rubix\ML\Transformers\RobustStandardizer;
 $dataset->apply(new RobustStandardizer);
 ```
 
-To reverse the transformation, pass a [Reversible](api.md#reversible) transformer to the dataset objects `reverseApply()` method.
+To reverse the transformation in place, pass a [Reversible](../transformers/api.md#reversible) transformer to the dataset object's `reverseApply()` method. This also returns the same dataset object.
 
 ```php
-public apply(Reversible $transformer) : self
+public reverseApply(Reversible $transformer) : self
 ```
 
 ```php
@@ -302,7 +317,7 @@ $dataset->reverseApply($transformer);
 
 ## Filtering
 
-Filter the records of the dataset using a callback function to determine if a row should be included in the return dataset:
+Return a new dataset containing the records accepted by a callback function. The original dataset is unchanged:
 
 ```php
 public filter(callable $callback) : self
@@ -313,8 +328,10 @@ $tallPeople = function ($record) {
     return $record[3] > 178.5;
 };
 
-$dataset = $dataset->filter($tallPeople);
+$tallDataset = $dataset->filter($tallPeople);
 ```
+
+Use `$dataset = $dataset->filter($tallPeople)` if you want to replace the variable with the filtered dataset. Other variables referring to the original object still refer to the unfiltered dataset.
 
 ## Stacking
 
@@ -340,7 +357,7 @@ $dataset = Labeled::stack([
 
 ## Merging and Joining
 
-To merge the rows of this dataset with another dataset:
+Return a new dataset containing the rows of this dataset followed by those of another dataset. Both input datasets are unchanged:
 
 ```php
 public merge(Dataset $dataset) : self
@@ -353,7 +370,7 @@ public merge(Dataset $dataset) : self
 $dataset = $dataset1->merge($dataset2);
 ```
 
-To join the columns of this dataset with another dataset:
+Return a new dataset by joining the columns of this dataset with another dataset. Both input datasets are unchanged:
 
 ```php
 public join(Dataset $dataset) : self
@@ -407,7 +424,7 @@ echo $dataset->describe();
 
 ## Sorting
 
-Sort the records in the dataset using a callback for comparisons between samples. The callback function accepts two records to be compared and should return `true` if the records should be swapped.
+Return a new dataset with its records sorted using a callback for comparisons between samples. The original dataset is unchanged. The callback function accepts two records to be compared and should return `true` if the records should be swapped.
 
 ```php
 public function sort(callable $callback) : self
@@ -421,7 +438,7 @@ $sorted = $dataset->sort(function ($recordA, $recordB) {
 
 ## De-duplication
 
-Remove duplicate rows from the dataset:
+Return a new dataset with duplicate rows removed. The original dataset is unchanged:
 
 ```php
 public deduplicate() : self
