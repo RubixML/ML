@@ -1,0 +1,64 @@
+<?php
+
+namespace Rubix\ML\Benchmarks\Clusterers;
+
+use Rubix\ML\Clusterers\SLINK;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Datasets\Labeled;
+
+/**
+ * @Groups({"Clusterers"})
+ * @BeforeMethods({"setUp"})
+ */
+class SLINKBench
+{
+    /**
+     * The number of samples in the training set.
+     */
+    protected const int TRAINING_SIZE = 10000;
+
+    /**
+     * The number of samples in the testing set.
+     */
+    protected const int TESTING_SIZE = 10000;
+
+    protected Labeled $training;
+
+    protected Labeled $testing;
+
+    protected SLINK $estimator;
+
+    public function setUp() : void
+    {
+        $generator = new Agglomerate([
+            'Iris-setosa' => new Blob(
+                center: [5.0, 3.42, 1.46, 0.24],
+                stdDev: [0.35, 0.38, 0.17, 0.1]
+            ),
+            'Iris-versicolor' => new Blob(
+                center: [5.94, 2.77, 4.26, 1.33],
+                stdDev: [0.51, 0.31, 0.47, 0.2]
+            ),
+            'Iris-virginica' => new Blob(
+                center: [6.59, 2.97, 5.55, 2.03],
+                stdDev: [0.63, 0.32, 0.55, 0.27]
+            ),
+        ]);
+
+        $this->training = $generator->generate(self::TRAINING_SIZE);
+        $this->testing = $generator->generate(self::TESTING_SIZE);
+        $this->estimator = new SLINK(3);
+    }
+
+    /**
+     * @Subject
+     * @Iterations(5)
+     * @OutputTimeUnit("seconds", precision=3)
+     */
+    public function trainPredict() : void
+    {
+        $this->estimator->train($this->training);
+        $this->estimator->predict($this->testing);
+    }
+}
