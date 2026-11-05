@@ -225,4 +225,47 @@ class CSVTest extends TestCase
 
         unlink($path);
     }
+
+    #[Test]
+    public function exportOverwriteNoTrailingNewline() : void
+    {
+        $path = sys_get_temp_dir() . '/csv_' . uniqid() . '.csv';
+
+        file_put_contents($path, 'nice,furry');
+
+        $extractor = new CSV($path);
+
+        $extractor->export([
+            ['shy', 'smooth'],
+        ], overwrite: true);
+
+        $this->assertSame("shy,smooth\n", file_get_contents($path));
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function exportAppendToEmptyFileWritesHeader() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'csv_');
+
+        $extractor = new CSV($path, header: true);
+
+        $extractor->export([
+            ['attitude' => 'nice', 'texture' => 'furry'],
+        ]);
+
+        $extractor->export([
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+        ]);
+
+        $this->assertSame("attitude,texture\nnice,furry\nshy,smooth\n", file_get_contents($path));
+
+        $this->assertEquals([
+            ['attitude' => 'nice', 'texture' => 'furry'],
+            ['attitude' => 'shy', 'texture' => 'smooth'],
+        ], iterator_to_array($extractor, false));
+
+        unlink($path);
+    }
 }

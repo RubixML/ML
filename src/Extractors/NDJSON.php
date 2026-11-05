@@ -16,6 +16,10 @@ use function fopen;
 use function fgets;
 use function fputs;
 use function fclose;
+use function fread;
+use function fseek;
+use function filesize;
+use function clearstatcache;
 use function rtrim;
 
 use const JSON_PRESERVE_ZERO_FRACTION;
@@ -68,6 +72,8 @@ class NDJSON implements Extractor, Exporter
      */
     public function export(iterable $iterator, bool $overwrite = false) : void
     {
+        clearstatcache(true, $this->path);
+
         if (is_file($this->path) and !is_writable($this->path)) {
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
@@ -76,13 +82,41 @@ class NDJSON implements Extractor, Exporter
             throw new RuntimeException("Path {$this->path} is not writable.");
         }
 
+        $needsSeparator = false;
+
+        if (!$overwrite and is_file($this->path) and filesize($this->path) > 0) {
+            $existing = fopen($this->path, 'r');
+
+            if ($existing) {
+                fseek($existing, -1, SEEK_END);
+
+                $last = fread($existing, 1);
+
+                fclose($existing);
+
+                if ($last !== "\n" and $last !== "\r") {
+                    $needsSeparator = true;
+                }
+            }
+        }
+
         $handle = fopen($this->path, $overwrite ? 'w' : 'a');
 
         if (!$handle) {
             throw new RuntimeException('Could not open file pointer.');
         }
 
+        $firstRow = true;
+
         foreach (enumerate($iterator, 1) as $line => $row) {
+            if ($firstRow and $needsSeparator) {
+                if (fputs($handle, PHP_EOL) === false) {
+                    throw new RuntimeException('Row separator could not be written.');
+                }
+            }
+
+            $firstRow = false;
+
             $data = JSON::encode($row, JSON_PRESERVE_ZERO_FRACTION) . PHP_EOL;
 
             $length = fputs($handle, $data);
