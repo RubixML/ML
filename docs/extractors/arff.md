@@ -5,7 +5,7 @@
 The Attribute-Relation File Format (ARFF) is an ASCII text format that is native to the Weka machine learning workbench. Along with being widely used in academic research, ARFF files retain the data type of each column via the attribute declarations in the header of the file.
 
 !!! note
-    Missing values, denoted by a question mark (`?`), are imported as `NAN` for numeric and real attributes and as the categorical placeholder string for integer, date, and categorical attributes.
+    Missing values, denoted by an unquoted question mark (`?`), are imported as `NAN` for numeric and real attributes and as the categorical placeholder string for integer, date, and categorical attributes.
 
 **Interfaces:** [Extractor](api.md)
 
