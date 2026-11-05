@@ -128,7 +128,7 @@ class ARFFTest extends TestCase
         $extractor = new ARFF($path);
 
         $expected = [
-            ['a' => 1.0, 'b' => 'don\\\'t'],
+            ['a' => 1.0, 'b' => "don't"],
             ['a' => 2.0, 'b' => 'ok'],
         ];
 
@@ -150,7 +150,7 @@ class ARFFTest extends TestCase
         $extractor = new ARFF($path);
 
         $expected = [
-            ['b' => 'don\\\'t'],
+            ['b' => "don't"],
         ];
 
         $this->assertEquals($expected, iterator_to_array($extractor, false));
@@ -239,6 +239,90 @@ class ARFFTest extends TestCase
         $path = tempnam(sys_get_temp_dir(), 'arff_');
 
         file_put_contents($path, "@relation test\n@attribute a numeric\n@data\nfoo\n");
+
+        $extractor = new ARFF($path);
+
+        $this->expectException(RuntimeException::class);
+
+        iterator_to_array($extractor, false);
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function extractWhitespaceAroundValues() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'arff_');
+
+        file_put_contents(
+            $path,
+            "@relation test\n@attribute a numeric\n@attribute b {x,y}\n@attribute c integer\n@attribute d string\n"
+            . "@data\n 1.5 , y ,\t3 , don't\n?, 'x' , ? ,  5\" tall \n"
+        );
+
+        $extractor = new ARFF($path, 'unknown');
+
+        $records = iterator_to_array($extractor, false);
+
+        $this->assertSame(['a' => 1.5, 'b' => 'y', 'c' => 3, 'd' => "don't"], $records[0]);
+
+        $this->assertNan($records[1]['a']);
+        $this->assertSame('x', $records[1]['b']);
+        $this->assertSame('unknown', $records[1]['c']);
+        $this->assertSame('5" tall', $records[1]['d']);
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function extractDoubleQuotedValues() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'arff_');
+
+        file_put_contents(
+            $path,
+            "@relation test\n@attribute \"full name\" string\n@attribute note string\n"
+            . "@data\n\"Smith, John\", \"it's 50% off\" % comment\n\"say \"\"hi\"\"\",'single'\n"
+        );
+
+        $extractor = new ARFF($path);
+
+        $this->assertEquals(['full name', 'note'], $extractor->header());
+
+        $expected = [
+            ['full name' => 'Smith, John', 'note' => "it's 50% off"],
+            ['full name' => 'say "hi"', 'note' => 'single'],
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($extractor, false));
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function extractQuotedQuestionMark() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'arff_');
+
+        file_put_contents($path, "@relation test\n@attribute a string\n@attribute b string\n@data\n?,'?'\n");
+
+        $extractor = new ARFF($path, 'unknown');
+
+        $expected = [
+            ['a' => 'unknown', 'b' => '?'],
+        ];
+
+        $this->assertEquals($expected, iterator_to_array($extractor, false));
+
+        unlink($path);
+    }
+
+    #[Test]
+    public function extractTextAfterClosingQuote() : void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'arff_');
+
+        file_put_contents($path, "@relation test\n@attribute a string\n@attribute b string\n@data\n'nice'ly,furry\n");
 
         $extractor = new ARFF($path);
 
