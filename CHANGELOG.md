@@ -1,5 +1,9 @@
 # Changelog
 
+- 3.3.1
+    - Parse ARFF data records according to ARFF quoting rules
+    - Fix NDJSON and CSV export handling of existing file contents
+
 - 3.3.0
     - Added `OPTICS` and `Ward` clusterers
     - Added `ROCAUC` and `Average Precision` probabilistic metrics
