@@ -20,6 +20,7 @@ use function fread;
 use function fseek;
 use function fwrite;
 use function filesize;
+use function clearstatcache;
 use function array_combine;
 use function array_count_values;
 use function implode;
@@ -144,6 +145,8 @@ class CSV implements Extractor, Exporter
      */
     public function export(iterable $iterator, bool $overwrite = false) : void
     {
+        clearstatcache(true, $this->path);
+
         if (is_file($this->path) and !is_writable($this->path)) {
             throw new RuntimeException("File {$this->path} is not writable.");
         }
@@ -152,11 +155,13 @@ class CSV implements Extractor, Exporter
             throw new RuntimeException('Folder ' . dirname($this->path) . ' is not writable.');
         }
 
-        $writeHeader = $this->header && ($overwrite or !is_file($this->path));
+        $empty = !is_file($this->path) || filesize($this->path) === 0;
+
+        $writeHeader = $this->header && ($overwrite or $empty);
 
         $needsSeparator = false;
 
-        if (!$writeHeader and is_file($this->path) and filesize($this->path) > 0) {
+        if (!$overwrite and !$empty) {
             $existing = fopen($this->path, 'r');
 
             if ($existing) {
