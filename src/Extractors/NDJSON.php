@@ -94,7 +94,7 @@ class NDJSON implements Extractor, Exporter
 
                 fclose($existing);
 
-if ($last !== "\n") {
+                if ($last !== "\n") {
                     $needsSeparator = true;
                 }
             }
