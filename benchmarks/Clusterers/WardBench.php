@@ -13,9 +13,15 @@ use Rubix\ML\Datasets\Labeled;
  */
 class WardBench
 {
-    protected const TRAINING_SIZE = 500;
+    /**
+     * The number of samples in the training set.
+     */
+    protected const int TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 250;
+    /**
+     * The number of samples in the testing set.
+     */
+    protected const int TESTING_SIZE = 10000;
 
     /**
      * @var Labeled

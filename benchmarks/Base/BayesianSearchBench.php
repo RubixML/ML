@@ -15,9 +15,9 @@ use Rubix\ML\Kernels\Distance\Euclidean;
  */
 class BayesianSearchBench
 {
-    protected const int TRAINING_SIZE = 250;
+    protected const int TRAINING_SIZE = 2500;
 
-    protected const int TESTING_SIZE = 250;
+    protected const int TESTING_SIZE = 1000;
 
     /**
      * @var Labeled

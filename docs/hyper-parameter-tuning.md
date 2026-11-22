@@ -114,6 +114,7 @@ use Rubix\ML\BayesianSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
+
 $params = [
     [1, 3, 5, 10], [true, false], [new Euclidean(), new Manhattan()]
 ];
@@ -122,10 +123,6 @@ $estimator = new BayesianSearch(KNearestNeighbors::class, $params);
 
 $estimator->train($dataset);
 ```
-
-### Grid Search vs. Bayesian Search
-
-Grid Search is exhaustive and deterministic, guaranteeing the best combination within the search space is found, but the number of models trained grows multiplicatively with the number of parameters. Bayesian Search samples the space sequentially and uses the results of previous trials to guide future proposals, so it can explore much larger spaces with a bounded number of trials, at the cost of not being able to guarantee the global optimum is found. As a rule of thumb, use Grid Search when the search space is small and the best combination is important, and Bayesian Search when the space is large or training is expensive.
 
 ### Genetic Search
 

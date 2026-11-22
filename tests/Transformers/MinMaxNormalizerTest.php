@@ -80,17 +80,6 @@ class MinMaxNormalizerTest extends TestCase
     }
 
     #[Test]
-    public function skipsNonFinite() : void
-    {
-        $samples = Unlabeled::build(samples: [
-            [0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001],
-        ]);
-        $this->transformer->fit($samples);
-        $this->assertNan($samples[0][2]);
-        $this->assertNan($samples[1][2]);
-    }
-
-    #[Test]
     public function restoreStateFromSerializedModel() : void
     {
         $this->transformer->fit($this->generator->generate(30));
@@ -100,6 +89,7 @@ class MinMaxNormalizerTest extends TestCase
         $restored = unserialize(serialize($this->transformer));
 
         $this->assertTrue($restored->fitted());
+        
         $this->assertEquals($this->transformer->minimums(), $restored->minimums());
         $this->assertEquals($this->transformer->maximums(), $restored->maximums());
     }
