@@ -10,6 +10,7 @@ use function Rubix\ML\iterator_first;
 use function filter_var;
 use function array_keys;
 use function count;
+use function explode;
 use function fclose;
 use function feof;
 use function fgets;
@@ -22,7 +23,11 @@ use function ltrim;
 use function preg_split;
 use function rtrim;
 use function strlen;
-use function str_getcsv;
+use function strpos;
+use function strpbrk;
+use function strspn;
+use function strcspn;
+use function str_contains;
 use function str_starts_with;
 use function strtolower;
 use function strtotime;
@@ -39,9 +44,9 @@ use const FILTER_VALIDATE_INT;
  * machine learning workbench. Along with being widely used in academic research, ARFF files
  * retain the data type of each column via attribute declarations in the header of the file.
  *
- * > **Note:** Missing values are denoted by a question mark (?) in the file. Missing real values
- * > are imported as NAN, and missing integer, date, and categorical values are imported as the
- * > categorical placeholder which defaults to '?'.
+ * > **Note:** Missing values are denoted by an unquoted question mark (?) in the file. Missing
+ * > real values are imported as NAN, and missing integer, date, and categorical values are
+ * > imported as the categorical placeholder which defaults to '?'.
  *
  * References:
  * [1] I. H. Witten et al. (1999). WEKA - Data Mining with the Java Algorithms for Machine
@@ -173,45 +178,20 @@ class ARFF implements Extractor
 
     /**
      * Extract the first token of a string, either a bare token delimited by whitespace or a
-     * single-quoted token with '' representing a literal quote. Return the token and the
-     * remainder of the string.
+     * quoted token. Return the token and the remainder of the string.
      *
      * @param string $string
+     * @throws RuntimeException
      * @return array{string, string}
      */
     protected static function token(string $string) : array
     {
         $string = ltrim($string);
 
-        if (isset($string[0]) and $string[0] === "'") {
-            $token = '';
-            $length = strlen($string);
+        if (isset($string[0]) and self::opensQuote($string, 0)) {
+            [$token, $offset] = self::quoted($string, 0);
 
-            for ($i = 1; $i < $length; ++$i) {
-                if ($string[$i] === '\\' and isset($string[$i + 1])) {
-                    $token .= $string[$i + 1];
-                    ++$i;
-
-                    continue;
-                }
-
-                if ($string[$i] !== "'") {
-                    $token .= $string[$i];
-
-                    continue;
-                }
-
-                if (isset($string[$i + 1]) and $string[$i + 1] === "'") {
-                    $token .= "'";
-                    ++$i;
-
-                    continue;
-                }
-
-                return [$token, substr($string, $i + 1)];
-            }
-
-            throw new RuntimeException('Unterminated quoted string.');
+            return [$token, substr($string, $offset)];
         }
 
         $parts = preg_split('/\s+/', $string, 2) ?: [$string];
@@ -220,37 +200,177 @@ class ARFF implements Extractor
     }
 
     /**
-     * Do the single quotes in a line represent a balanced (fully enclosed) string?
+     * Read a single or double-quoted string starting at the given offset of the opening quote.
+     * A backslash escapes the next character and a doubled quote represents a literal quote.
+     * Return the unquoted string and the offset immediately after the closing quote.
+     *
+     * @param string $string
+     * @param int $offset
+     * @throws RuntimeException
+     * @return array{string, int}
+     */
+    protected static function quoted(string $string, int $offset) : array
+    {
+        $quote = $string[$offset];
+
+        $token = '';
+        $length = strlen($string);
+
+        for ($i = $offset + 1; $i < $length; ++$i) {
+            if ($string[$i] === '\\' and isset($string[$i + 1])) {
+                $token .= $string[$i + 1];
+                ++$i;
+
+                continue;
+            }
+
+            if ($string[$i] !== $quote) {
+                $token .= $string[$i];
+
+                continue;
+            }
+
+            if (isset($string[$i + 1]) and $string[$i + 1] === $quote) {
+                $token .= $quote;
+                ++$i;
+
+                continue;
+            }
+
+            return [$token, $i + 1];
+        }
+
+        throw new RuntimeException('Unterminated quoted string.');
+    }
+
+    /**
+     * Split a data record into its comma-separated values. Whitespace surrounding a value is
+     * ignored and quoted values are unquoted. An unquoted question mark denotes a missing
+     * value and is returned as null.
+     *
+     * @param string $line
+     * @param int $lineNumber
+     * @throws RuntimeException
+     * @return list<string|null>
+     */
+    protected static function values(string $line, int $lineNumber) : array
+    {
+        $values = [];
+
+        if (strpbrk($line, '\'"') === false) {
+            foreach (explode(',', $line) as $value) {
+                $value = trim($value, " \t");
+
+                $values[] = $value === self::MISSING ? null : $value;
+            }
+
+            return $values;
+        }
+
+        $length = strlen($line);
+        $offset = 0;
+
+        while (true) {
+            $offset += strspn($line, " \t", $offset);
+
+            if (isset($line[$offset]) and self::opensQuote($line, $offset)) {
+                [$value, $offset] = self::quoted($line, $offset);
+
+                $offset += strspn($line, " \t", $offset);
+
+                if ($offset < $length and $line[$offset] !== ',') {
+                    throw new RuntimeException("Malformed record on line $lineNumber.");
+                }
+
+                $values[] = $value;
+            } else {
+                $end = strpos($line, ',', $offset);
+
+                if ($end === false) {
+                    $end = $length;
+                }
+
+                $value = rtrim(substr($line, $offset, $end - $offset), " \t");
+
+                $values[] = $value === self::MISSING ? null : $value;
+
+                $offset = $end;
+            }
+
+            if ($offset >= $length) {
+                break;
+            }
+
+            ++$offset;
+        }
+
+        return $values;
+    }
+
+    /**
+     * Does the character at the given offset open a quoted string? A single or double quote
+     * opens a quoted string only at the beginning of a token.
+     *
+     * @param string $line
+     * @param int $offset
+     * @return bool
+     */
+    protected static function opensQuote(string $line, int $offset) : bool
+    {
+        if ($line[$offset] !== "'" and $line[$offset] !== '"') {
+            return false;
+        }
+
+        return $offset === 0 or str_contains(" \t\r\n,{", $line[$offset - 1]);
+    }
+
+    /**
+     * Do the quotes in a line represent a balanced (fully enclosed) string?
      *
      * @param string $line
      * @return bool
      */
     protected static function balanced(string $line) : bool
     {
-        $inQuote = false;
+        $quote = null;
         $length = strlen($line);
+        $i = 0;
 
-        for ($i = 0; $i < $length; ++$i) {
-            if ($line[$i] === '\\' and isset($line[$i + 1])) {
+        while ($i < $length) {
+            $i += strcspn($line, $quote === null ? '\\\'"' : '\\' . $quote, $i);
+
+            if ($i >= $length) {
+                break;
+            }
+
+            if ($line[$i] === '\\') {
+                $i += 2;
+
+                continue;
+            }
+
+            if ($quote === null) {
+                if (self::opensQuote($line, $i)) {
+                    $quote = $line[$i];
+                }
+
                 ++$i;
 
                 continue;
             }
 
-            if ($line[$i] !== "'") {
-                continue;
-            }
-
-            if (isset($line[$i + 1]) and $line[$i + 1] === "'") {
-                ++$i;
+            if (isset($line[$i + 1]) and $line[$i + 1] === $quote) {
+                $i += 2;
 
                 continue;
             }
 
-            $inQuote = !$inQuote;
+            $quote = null;
+
+            ++$i;
         }
 
-        return !$inQuote;
+        return $quote === null;
     }
 
     /**
@@ -262,31 +382,46 @@ class ARFF implements Extractor
      */
     protected static function stripComment(string $line) : string
     {
-        $inQuote = false;
+        $quote = null;
         $length = strlen($line);
+        $i = 0;
 
-        for ($i = 0; $i < $length; ++$i) {
-            if ($line[$i] === '\\' and isset($line[$i + 1])) {
+        while ($i < $length) {
+            $i += strcspn($line, $quote === null ? '\\\'"%' : '\\' . $quote, $i);
+
+            if ($i >= $length) {
+                break;
+            }
+
+            if ($line[$i] === '\\') {
+                $i += 2;
+
+                continue;
+            }
+
+            if ($quote === null) {
+                if ($line[$i] === '%') {
+                    return substr($line, 0, $i);
+                }
+
+                if (self::opensQuote($line, $i)) {
+                    $quote = $line[$i];
+                }
+
                 ++$i;
 
                 continue;
             }
 
-            if ($line[$i] === "'") {
-                if (isset($line[$i + 1]) and $line[$i + 1] === "'") {
-                    ++$i;
-
-                    continue;
-                }
-
-                $inQuote = !$inQuote;
+            if (isset($line[$i + 1]) and $line[$i + 1] === $quote) {
+                $i += 2;
 
                 continue;
             }
 
-            if ($line[$i] === '%' and !$inQuote) {
-                return substr($line, 0, $i);
-            }
+            $quote = null;
+
+            ++$i;
         }
 
         return $line;
@@ -385,7 +520,7 @@ class ARFF implements Extractor
                         $inHeader = false;
                     }
                 } else {
-                    $values = str_getcsv($clean, ',', "'", '\\');
+                    $values = self::values($clean, $line);
 
                     if (count($values) !== count($attributes)) {
                         throw new RuntimeException("Malformed record on line $line.");
@@ -400,7 +535,7 @@ class ARFF implements Extractor
 
                         switch ($type) {
                             case self::TYPE_FLOAT:
-                                if ($value !== self::MISSING) {
+                                if ($value !== null) {
                                     if (!is_numeric($value)) {
                                         throw new RuntimeException("Expected numeric value on line $line.");
                                     }
@@ -413,14 +548,14 @@ class ARFF implements Extractor
                                 break;
 
                             case self::TYPE_STRING:
-                                if ($value === self::MISSING) {
+                                if ($value === null) {
                                     $value = $this->categoricalPlaceholder;
                                 }
 
                                 break;
 
                             case self::TYPE_INTEGER:
-                                if ($value !== self::MISSING) {
+                                if ($value !== null) {
                                     if (filter_var($value, FILTER_VALIDATE_INT) === false) {
                                         throw new RuntimeException("Expected integer value on line $line.");
                                     }
@@ -433,7 +568,7 @@ class ARFF implements Extractor
                                 break;
 
                             case self::TYPE_DATE:
-                                if ($value !== self::MISSING) {
+                                if ($value !== null) {
                                     $timestamp = strtotime($value);
 
                                     if ($timestamp === false) {
