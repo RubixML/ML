@@ -18,10 +18,12 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\AbstractLogger;
 
 use function count;
 use function array_sum;
 use function iterator_to_array;
+use function mt_srand;
 
 use const Rubix\ML\EPSILON;
 
@@ -290,6 +292,57 @@ class WardTest extends TestCase
     }
 
     #[Test]
+    public function trainHaltsOnNumericalInstability() : void
+    {
+        $logger = new CapturingLogger();
+
+        $estimator = new Ward(k: 1);
+        $estimator->setLogger($logger);
+
+        $training = Unlabeled::quick(samples: [[1.0, 1.0], [NAN, 1.0]]);
+
+        $estimator->train($training);
+
+        $this->assertTrue($estimator->trained());
+        $this->assertSame([], $estimator->losses());
+
+        $sizes = $estimator->sizes();
+
+        $this->assertIsArray($sizes);
+        $this->assertCount(2, $sizes);
+
+        $this->assertContains(
+            ['warning', 'Numerical instability detected'],
+            $logger->records
+        );
+    }
+
+    #[Test]
+    public function trainBreaksTiesDeterministically() : void
+    {
+        $training = Unlabeled::quick(
+            samples: [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
+        );
+
+        $first = new Ward(k: 2);
+        $first->train($training);
+
+        $second = new Ward(k: 2);
+        $second->train($training);
+
+        $this->assertEquals($first->sizes(), [2, 2]);
+
+        $this->assertSame([
+            1 => 0.5,
+            2 => 0.5,
+        ], $first->losses());
+
+        $this->assertEquals($first->centroids(), [[0.5, 0.0], [0.5, 1.0]]);
+        $this->assertEquals($first->predict($training), [0, 0, 1, 1]);
+        $this->assertEquals($second->predict($training), $first->predict($training));
+    }
+
+    #[Test]
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -339,6 +392,68 @@ class WardTest extends TestCase
     }
 
     #[Test]
+    public function goldenResults() : void
+    {
+        mt_srand(42);
+
+        $generator = new Agglomerate([
+            'a' => new Blob([10.0, 5.0, 2.5, 1.0], [1.0, 0.8, 0.5, 0.3]),
+            'b' => new Blob([3.0, 12.0, 6.0, 2.0], [0.9, 0.7, 0.6, 0.4]),
+            'c' => new Blob([8.0, 1.0, 9.0, 0.5], [0.8, 0.9, 0.4, 0.5]),
+            'd' => new Blob([1.0, 8.0, 3.0, 7.0], [0.7, 0.5, 0.8, 0.6]),
+        ]);
+
+        $estimator = new Ward(k: 4);
+
+        $estimator->train($generator->generate(2000));
+
+        $this->assertSame([500, 500, 500, 500], $estimator->sizes());
+
+        $this->assertSame([
+            [
+                9.994883942441556,
+                5.002276226342784,
+                2.5178300989142746,
+                0.9735263596817586,
+            ],
+            [
+                2.9234761471338304,
+                11.9830018899956,
+                6.004151367582773,
+                1.9978006572997362,
+            ],
+            [
+                7.977894830296039,
+                0.996125079534376,
+                8.970820898889903,
+                0.5088731953613101,
+            ],
+            [
+                0.9574379447966698,
+                7.978423184525995,
+                2.993708421120229,
+                6.986690659892554,
+            ],
+        ], $estimator->centroids());
+
+        $losses = $estimator->losses();
+
+        $this->assertCount(1996, $losses);
+
+        $this->assertSame([
+            0.0020815154283982265,
+            0.002265369391517068,
+            0.002773461197778765,
+        ], array_slice($losses, 0, 3));
+
+        $this->assertSame([
+            220.91270249873045,
+            231.08970773846366,
+            245.69357211887998,
+        ], array_slice($losses, -3));
+    }
+
+    #[Test]
     public function proba() : void
     {
         srand(self::RANDOM_SEED);
@@ -361,5 +476,22 @@ class WardTest extends TestCase
                 $this->assertLessThanOrEqual(1.0, $p);
             }
         }
+    }
+}
+
+/**
+ * A PSR-3 logger that captures records for test assertions.
+ *
+ * @internal
+ */
+class CapturingLogger extends AbstractLogger
+{
+    public array $records = [
+        //
+    ];
+
+    public function log($level, string|\Stringable $message, array $context = []) : void
+    {
+        $this->records[] = [(string) $level, (string) $message];
     }
 }

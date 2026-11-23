@@ -21,13 +21,14 @@ use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use SplMinHeap;
+use Rubix\ML\IndexedMinHeap;
 use Generator;
 
 use function Rubix\ML\argmin;
 use function count;
 use function array_map;
 use function get_object_vars;
+use function intdiv;
 use function is_nan;
 
 use const Rubix\ML\EPSILON;
@@ -52,6 +53,13 @@ use const Rubix\ML\EPSILON;
  *     δ(C, A∪B) = ((|C|+|A|)·δ(C,A) + (|C|+|B|)·δ(C,B) − |C|·δ(A,B))
  *                 / (|C|+|A|+|B|)
  *
+ * The cheapest candidate is always selected first with the help of an
+ * indexed min-heap of merge candidates, which tracks the cost between every
+ * pair of active clusters and adjusts the affected ones in place as the
+ * merges proceed. When two candidates incur exactly the same cost, the pair
+ * with the smaller index is merged first, making the full course of training
+ * completely deterministic.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -59,14 +67,6 @@ use const Rubix\ML\EPSILON;
 class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use AutotrackRevisions, LoggerAware;
-
-    /**
-     * The ratio of heap entries to active merge candidates above which the
-     * lazy heap is compacted to reclaim entries left stale by earlier merges.
-     *
-     * @var float
-     */
-    protected const float HEAP_COMPACTION_RATIO = 2.0;
 
     /**
      * The target number of clusters.
@@ -113,38 +113,6 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
      * @var float[]|null
      */
     protected ?array $losses = null;
-
-    /**
-     * Rebuild the merge candidate heap from the current pairwise costs,
-     * discarding entries left stale by earlier merges.
-     *
-     * @internal
-     *
-     * @param SplMinHeap<mixed> $heap
-     * @param-out SplMinHeap<mixed> $heap
-     * @param float[] $cost
-     * @param int[] $parent
-     * @param int[] $sizes
-     * @param int $n
-     */
-    protected static function rebuildHeap(SplMinHeap &$heap, array $cost, array $parent, array $sizes, int $n) : void
-    {
-        $heap = new SplMinHeap();
-
-        for ($i = 0; $i < $n; ++$i) {
-            if ($parent[$i] !== $i or $sizes[$i] === 0) {
-                continue;
-            }
-
-            for ($j = $i + 1; $j < $n; ++$j) {
-                if ($parent[$j] !== $j or $sizes[$j] === 0) {
-                    continue;
-                }
-
-                $heap->insert([$cost[$i * $n + $j], $i, $j]);
-            }
-        }
-    }
 
     /**
      * @param int $k
@@ -293,20 +261,22 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
         $samples = $dataset->samples();
         $numFeatures = $dataset->numFeatures();
 
-        $cost = array_fill(0, $n * $n, 0.0);
+        $pairs = [];
 
-        $heap = new SplMinHeap();
+        $costs = [];
 
         for ($i = 0; $i < $n; ++$i) {
             for ($j = $i + 1; $j < $n; ++$j) {
-                $distance = 0.5 * $this->kernel->compute($samples[$i], $samples[$j]);
+                $pair = $i * $n + $j;
 
-                $cost[$i * $n + $j] = $distance;
-                $cost[$j * $n + $i] = $distance;
+                $costs[$pair] = 0.5 * $this->kernel->compute($samples[$i], $samples[$j]);
 
-                $heap->insert([$distance, $i, $j]);
+                $pairs[] = $pair;
             }
         }
+
+        $heap = new IndexedMinHeap();
+        $heap->build($pairs, $costs);
 
         $parent = range(0, $n - 1);
         $sizes = array_fill(0, $n, 1);
@@ -314,38 +284,11 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
 
         $this->losses = [];
 
-        for ($epoch = 1; $epoch <= $maxMerges; ++$epoch) {
-            $numClusters = $n - $epoch + 1;
+        for ($epoch = 1; $epoch <= $maxMerges and $heap->count() > 0; ++$epoch) {
+            [$distance, $pair] = $heap->extractMin();
 
-            $activePairs = ($numClusters * ($numClusters - 1)) >> 1;
-
-            if ($heap->count() > self::HEAP_COMPACTION_RATIO * $activePairs) {
-                self::rebuildHeap($heap, $cost, $parent, $sizes, $n);
-            }
-
-            $candidate = null;
-
-            while ($heap->count() > 0) {
-                [$distance, $i, $j] = $heap->extract();
-
-                if ($parent[$i] !== $i or $parent[$j] !== $j) {
-                    continue;
-                }
-
-                if ($distance !== $cost[$i * $n + $j]) {
-                    continue;
-                }
-
-                $candidate = [$distance, $i, $j];
-
-                break;
-            }
-
-            if ($candidate === null) {
-                break;
-            }
-
-            [$distance, $a, $b] = $candidate;
+            $a = intdiv($pair, $n);
+            $b = $pair % $n;
 
             if (is_nan($distance)) {
                 if ($this->logger) {
@@ -381,21 +324,18 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
                     continue;
                 }
 
-                $kAC = ($a < $c ? $a : $c) * $n + ($a < $c ? $c : $a);
-                $kBC = ($b < $c ? $b : $c) * $n + ($b < $c ? $c : $b);
+                $costAC = $heap->key(($a < $c ? $a : $c) * $n + ($a < $c ? $c : $a));
+                $costBC = $heap->key(($b < $c ? $b : $c) * $n + ($b < $c ? $c : $b));
+
                 $nC = $sizes[$c];
 
-                $numerator = ($nA + $nC) * $cost[$kAC] + ($nB + $nC) * $cost[$kBC] - $nC * $distance;
+                $numerator = ($nA + $nC) * $costAC + ($nB + $nC) * $costBC - $nC * $distance;
 
                 $newDistance = $numerator / ($nA + $nB + $nC);
 
-                $lo = $a < $c ? $a : $c;
-                $hi = $a < $c ? $c : $a;
+                $heap->set(($a < $c ? $a : $c) * $n + ($a < $c ? $c : $a), $newDistance);
 
-                $cost[$lo * $n + $hi] = $newDistance;
-                $cost[$hi * $n + $lo] = $newDistance;
-
-                $heap->insert([$newDistance, $lo, $hi]);
+                $heap->remove(($b < $c ? $b : $c) * $n + ($b < $c ? $c : $b));
             }
         }
 
