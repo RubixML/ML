@@ -7,7 +7,6 @@ namespace Rubix\ML\Tests\Transformers;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 use Rubix\ML\Exceptions\RuntimeException;
@@ -89,7 +88,7 @@ class MinMaxNormalizerTest extends TestCase
         $restored = unserialize(serialize($this->transformer));
 
         $this->assertTrue($restored->fitted());
-        
+
         $this->assertEquals($this->transformer->minimums(), $restored->minimums());
         $this->assertEquals($this->transformer->maximums(), $restored->maximums());
     }

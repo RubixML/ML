@@ -97,6 +97,7 @@ nav:
         - Preset: clusterers/seeders/preset.md
         - Random: clusterers/seeders/random.md
       - DBSCAN: clusterers/dbscan.md
+      - E Means: clusterers/e-means.md
       - Fuzzy C Means: clusterers/fuzzy-c-means.md
       - Gaussian Mixture: clusterers/gaussian-mixture.md
       - K Means: clusterers/k-means.md

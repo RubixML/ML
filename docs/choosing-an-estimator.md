@@ -55,6 +55,7 @@ Clusterers are unsupervised learners that predict an integer-valued cluster numb
 | Name | Flexibility | [Proba](probabilistic.md) | [Online](online.md) | [Verbose](verbose.md) | [Persistable](persistable.md) | Data Compatibility |
 | --- | --- | --- | --- | --- | --- | --- |
 | [DBSCAN](clusterers/dbscan.md) | High | | | | | Depends on distance kernel |
+| [E Means](clusterers/e-means.md) | Low | ● | | ● | ● | Continuous |
 | [Fuzzy C Means](clusterers/fuzzy-c-means.md) | Low | ● | | ● | ● | Continuous |
 | [Gaussian Mixture](clusterers/gaussian-mixture.md) | Medium | ● | | ● | ● | Continuous |
 | [K Means](clusterers/k-means.md) | Low | ● | ● | ● | ● | Continuous |
