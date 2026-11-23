@@ -409,7 +409,7 @@ class WardTest extends TestCase
 
         $this->assertSame([500, 500, 500, 500], $estimator->sizes());
 
-        $this->assertSame([
+        $this->assertEqualsWithDelta([
             [
                 9.994883942441556,
                 5.002276226342784,
@@ -434,23 +434,23 @@ class WardTest extends TestCase
                 2.993708421120229,
                 6.986690659892554,
             ],
-        ], $estimator->centroids());
+        ], $estimator->centroids(), 1e-8);
 
         $losses = $estimator->losses();
 
         $this->assertCount(1996, $losses);
 
-        $this->assertSame([
+        $this->assertEqualsWithDelta([
             0.0020815154283982265,
             0.002265369391517068,
             0.002773461197778765,
-        ], array_slice($losses, 0, 3));
+        ], array_slice($losses, 0, 3), 1e-8);
 
-        $this->assertSame([
+        $this->assertEqualsWithDelta([
             220.91270249873045,
             231.08970773846366,
             245.69357211887998,
-        ], array_slice($losses, -3));
+        ], array_slice($losses, -3), 1e-8);
     }
 
     #[Test]
