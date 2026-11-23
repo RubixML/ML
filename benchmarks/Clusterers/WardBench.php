@@ -13,9 +13,9 @@ use Rubix\ML\Datasets\Labeled;
  */
 class WardBench
 {
-    protected const TRAINING_SIZE = 500;
+    protected const TRAINING_SIZE = 10000;
 
-    protected const TESTING_SIZE = 250;
+    protected const TESTING_SIZE = 10000;
 
     /**
      * @var Labeled

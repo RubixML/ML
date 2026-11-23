@@ -1,5 +1,8 @@
 # Changelog
 
+- 3.3.2
+    - Optimize Ward with indexed min heap
+
 - 3.3.1
     - Parse ARFF data records according to ARFF quoting rules
     - Fix NDJSON and CSV export handling of existing file contents
