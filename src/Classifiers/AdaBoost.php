@@ -460,7 +460,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 break;
             }
 
-            $loss /= $totalWeight ?: EPSILON;
+            $loss /= $totalWeight;
 
             $lossChange = abs($prevLoss - $loss);
 
