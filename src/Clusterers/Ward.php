@@ -275,9 +275,9 @@ class Ward implements Estimator, Learner, Probabilistic, Verbose, Persistable
             }
         }
 
-$heap = new IndexedMinHeap();
-$heap->build($pairs, $costs);
-unset($pairs, $costs);
+        $heap = new IndexedMinHeap();
+        $heap->build($pairs, $costs);
+        unset($pairs, $costs);
 
         $parent = range(0, $n - 1);
         $sizes = array_fill(0, $n, 1);
